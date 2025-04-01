@@ -81,7 +81,7 @@ const setShowInformation = (index: number) => {
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Fornecedores" icon="local_shipping"/>
+      <TitlePage class="col-7" title="Fornecedores" icon="list_alt"/>
       <div>
         <q-btn 
           color="white" 

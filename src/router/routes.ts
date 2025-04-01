@@ -26,24 +26,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/Dashboard.vue'),
       },
       {
-        path: 'command-order',
-        name: 'command-order',
-        component: () => import('src/pages/CommandOrder.vue'),
-      },
-      {
-        path: 'order',
-        name: 'order',
-        component: () => import('src/pages/Order.vue'),
-      },
-      {
-        path: 'launch',
-        name: 'launch',
-        component: () => import('src/pages/Launch.vue'),
-      },
-      {
-        path: 'category',
-        name: 'category',
-        component: () => import('src/pages/Category.vue'),
+        path: 'delivery',
+        name: 'delivery',
+        component: () => import('src/pages/Delivery.vue'),
       },
       {
         path: 'product',
@@ -54,16 +39,6 @@ const routes: RouteRecordRaw[] = [
         path: 'coupon',
         name: 'coupon',
         component: () => import('src/pages/Coupon.vue'),
-      },
-      {
-        path: 'offer',
-        name: 'offer',
-        component: () => import('src/pages/Offer.vue'),
-      },
-      {
-        path: 'workspace',
-        name: 'workspace',
-        component: () => import('src/pages/Workspace.vue'),
       },
       {
         path: 'stock',
@@ -106,24 +81,14 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/Account.vue'),
       },
       {
-        path: 'movement',
-        name: 'movement',
-        component: () => import('src/pages/Movement.vue'),
-      },
-      {
-        path: 'schedule',
-        name: 'schedule',
-        component: () => import('src/pages/Schedule.vue'),
+        path: 'transaction',
+        name: 'transaction',
+        component: () => import('src/pages/Transaction.vue'),
       },
       {
         path: 'user',
         name: 'user',
         component: () => import('src/pages/User.vue'),
-      },
-      {
-        path: 'department',
-        name: 'department',
-        component: () => import('src/pages/Department.vue'),
       },
       {
         path: 'setting',

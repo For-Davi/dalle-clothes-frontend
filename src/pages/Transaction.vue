@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 defineOptions({
-  name: 'CommandOrder',
+  name: 'Transaction',
 });
 </script>
 <template>
  <main class="q-pa-lg">
     <section>
-      <TitlePage title="Comandas"  icon="receipt_long"/>
+      <TitlePage title="Transações" icon="sync_alt"/>
     </section>
   </main>
 </template>

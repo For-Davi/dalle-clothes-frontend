@@ -67,54 +67,21 @@ function isActive(routeName: string) {
               </q-item-section>
             </q-item>
 
-            <q-item 
-              clickable 
-              v-ripple 
-              class="text-white"
-              :to="{ name: 'command-order' }" 
-              :active="isActive('command-order')"
-              active-class="bg-white text-deep-orange-10 text-bold"
-            >
-              <q-item-section avatar>
-                <q-icon name="receipt_long" />
-              </q-item-section>
-
-              <q-item-section>
-                Comandas
-              </q-item-section>
-            </q-item>
 
             <q-item 
               clickable 
               v-ripple 
               class="text-white"
-              :to="{ name: 'order' }" 
-              :active="isActive('order')"
+              :to="{ name: 'delivery' }" 
+              :active="isActive('delivery')"
               active-class="bg-white text-deep-orange-10 text-bold"
             >
               <q-item-section avatar>
-                <q-icon name="room_service" />
+                <q-icon name="local_shipping" />
               </q-item-section>
 
               <q-item-section>
-                Pedidos
-              </q-item-section>
-            </q-item>
-
-            <q-item 
-              clickable 
-              v-ripple
-              class="text-white" 
-              :to="{ name: 'launch' }"  
-              :active="isActive('launch')"
-              active-class="bg-white text-deep-orange-10 text-bold"
-            >
-              <q-item-section avatar>
-                <q-icon name="list_alt" />
-              </q-item-section>
-
-              <q-item-section>
-                Lançamentos
+                Entregas
               </q-item-section>
             </q-item>
 
@@ -156,23 +123,6 @@ function isActive(routeName: string) {
               clickable 
               v-ripple
               class="text-white"   
-              :to="{ name: 'category' }" 
-              :active="isActive('category')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
-            >
-              <q-item-section avatar>
-                <q-icon name="category" />
-              </q-item-section>
-
-              <q-item-section>
-                Categorias
-              </q-item-section>
-            </q-item>
-
-            <q-item 
-              clickable 
-              v-ripple
-              class="text-white"   
               :to="{ name: 'coupon' }" 
               :active="isActive('coupon')"
               active-class="bg-white text-deep-orange-10 text-bold" 
@@ -183,40 +133,6 @@ function isActive(routeName: string) {
 
               <q-item-section>
                 Cupons
-              </q-item-section>
-            </q-item>
-
-            <q-item 
-              clickable 
-              v-ripple
-              class="text-white" 
-              :to="{ name: 'offer' }" 
-              :active="isActive('offer')"
-              active-class="bg-white text-deep-orange-10 text-bold"  
-            >
-              <q-item-section avatar>
-                <q-icon name="percent" />
-              </q-item-section>
-
-              <q-item-section>
-                Ofertas
-              </q-item-section>
-            </q-item>
-
-            <q-item 
-              clickable 
-              v-ripple
-              class="text-white" 
-              :to="{ name: 'workspace' }" 
-              :active="isActive('workspace')"
-              active-class="bg-white text-deep-orange-10 text-bold"  
-            >
-              <q-item-section avatar>
-                <q-icon name="work" />
-              </q-item-section>
-
-              <q-item-section>
-                Ambientes
               </q-item-section>
             </q-item>
 
@@ -275,25 +191,8 @@ function isActive(routeName: string) {
               clickable 
               v-ripple
               class="text-white" 
-              :to="{ name: 'department' }" 
-              :active="isActive('department')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
-            >
-              <q-item-section avatar>
-                <q-icon name="group" />
-              </q-item-section>
-
-              <q-item-section>
-                Departamentos
-              </q-item-section>
-            </q-item>
-
-            <q-item 
-              clickable 
-              v-ripple
-              class="text-white" 
-              :to="{ name: 'movement' }" 
-              :active="isActive('movement')"
+              :to="{ name: 'transaction' }" 
+              :active="isActive('transaction')"
               active-class="bg-white text-deep-orange-10 text-bold" 
             >
               <q-item-section avatar>
@@ -301,24 +200,7 @@ function isActive(routeName: string) {
               </q-item-section>
 
               <q-item-section>
-                Movimentações
-              </q-item-section>
-            </q-item>
-
-            <q-item 
-              clickable 
-              v-ripple
-              class="text-white" 
-              :to="{ name: 'schedule' }" 
-              :active="isActive('schedule')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
-            >
-              <q-item-section avatar>
-                <q-icon name="history" />
-              </q-item-section>
-
-              <q-item-section>
-                Agendamentos
+                Transações
               </q-item-section>
             </q-item>
 
@@ -348,7 +230,7 @@ function isActive(routeName: string) {
               active-class="bg-white text-deep-orange-10 text-bold" 
             >
               <q-item-section avatar>
-                <q-icon name="local_shipping" />
+                <q-icon name="list_alt" />
               </q-item-section>
 
               <q-item-section>
