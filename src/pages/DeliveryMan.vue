@@ -3,7 +3,7 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import type {  QuasarSelect, QuasarTable } from 'src/ts/Quasar';
 import { reactive, ref } from 'vue';
 defineOptions({
-  name: 'Motorcyclist',
+  name: 'DeliveryMan',
 });
 
 const filterMotocyclist = ref<string>('')
@@ -81,7 +81,7 @@ const setShowInformation = (index: number) => {
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Motociclistas" icon="sports_motorsports"/>
+      <TitlePage class="col-7" title="Entregadores" icon="rocket_launch"/>
       <div>
         <q-btn 
           color="white" 

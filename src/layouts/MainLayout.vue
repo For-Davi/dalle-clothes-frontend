@@ -208,16 +208,16 @@ function isActive(routeName: string) {
               clickable 
               v-ripple
               class="text-white" 
-              :to="{ name: 'motorcyclist' }" 
-              :active="isActive('motorcyclist')"
+              :to="{ name: 'delivery-man' }" 
+              :active="isActive('delivery-man')"
               active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
-                <q-icon name="sports_motorsports" />
+                <q-icon name="rocket_launch" />
               </q-item-section>
 
               <q-item-section>
-                Motociclistas
+                Entregadores
               </q-item-section>
             </q-item>
 

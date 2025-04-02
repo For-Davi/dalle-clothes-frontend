@@ -66,9 +66,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/Payment.vue'),
       },
       {
-        path: 'motorcyclist',
-        name: 'motorcyclist',
-        component: () => import('src/pages/Motorcyclist.vue'),
+        path: 'delivery-man',
+        name: 'delivery-man',
+        component: () => import('src/pages/DeliveryMan.vue'),
       },
       {
         path: 'supplier',
