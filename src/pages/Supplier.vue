@@ -150,7 +150,7 @@ const setShowInformation = (index: number) => {
               {{ props.row.name }}
             </q-td>
             <q-td key="email" :props="props" class="text-left">
-              {{ props.row.category }}
+              {{ props.row.email }}
             </q-td>
             <q-td key="phone" :props="props" class="text-left">
               {{ props.row.phone }}
