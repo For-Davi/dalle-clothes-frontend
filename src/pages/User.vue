@@ -47,6 +47,12 @@ const columnsUser = reactive<QuasarTable[]>([
     align: 'left',
   },
   {
+    name: 'department',
+    label: 'Departamento',
+    field: 'department',
+    align: 'left',
+  },
+  {
     name: 'active',
     label: 'Ativo',
     field: 'active',
@@ -64,12 +70,14 @@ const rows = [
     name: 'Carlos Davi',
     email: 'carlos@gmail.com',
     position: 'Gerente',
+    department: 'Financeiro',
     active: 1
   },
   {
     name: 'Ellen Maria',
     email: 'ellen@gmail.com',
     position: 'Administrador',
+    department: 'Não definido',
     active: 0
   },
 ]
@@ -162,6 +170,9 @@ const setShowInformation = (index: number) => {
             </q-td>
             <q-td key="position" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)">
               {{ props.row.position }}
+            </q-td>
+            <q-td key="department" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)">
+              {{ props.row.department }}
             </q-td>
             <q-td key="active" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)">
               <q-icon 
