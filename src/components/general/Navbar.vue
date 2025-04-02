@@ -12,7 +12,6 @@ const emit = defineEmits<{
   'update:openFormPerfil': [void];
   'update:openFormEnterprise': [void];
   'update:openEmailInfo': [void];
-  'update:openViewEnterprise': [void];
   'update:changeOpenMenu': [void];
 }>();
 
@@ -132,7 +131,6 @@ const openInbox = (): void => {
         <UserOptions
           @update:open-form-perfil="emit('update:openFormPerfil')"
           @update:open-form-enterprise="emit('update:openFormEnterprise')"
-          @update:open-form-view-enterprise="emit('update:openViewEnterprise')"
         />
       </div>
     </q-toolbar>

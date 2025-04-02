@@ -9,7 +9,6 @@ defineOptions({
 const emit = defineEmits<{
   'update:openFormPerfil': [void];
   'update:openFormEnterprise': [void];
-  'update:openFormViewEnterprise': [void];
 }>();
 
 const router = useRouter();
@@ -19,11 +18,6 @@ const openPerfil = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (dropdown.value as any).hide();
   emit('update:openFormPerfil');
-};
-const openViewEnterprise = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (dropdown.value as any).hide();
-  emit('update:openFormViewEnterprise');
 };
 const logout = async () => {
   await router.push({ name: 'auth' });
@@ -53,18 +47,6 @@ const logout = async () => {
           </q-avatar>
         </q-item-section>
         <q-item-section>Perfil</q-item-section>
-      </q-item>
-      <q-item
-        clickable
-        v-ripple
-        @click="openViewEnterprise"
-      >
-        <q-item-section avatar>
-          <q-avatar>
-            <q-icon name="fa-solid fa-gears" />
-          </q-avatar>
-        </q-item-section>
-        <q-item-section>Mudar visão</q-item-section>
       </q-item>
       <q-item clickable v-ripple @click="logout">
         <q-item-section avatar>

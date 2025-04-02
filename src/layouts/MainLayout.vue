@@ -15,7 +15,7 @@ function isActive(routeName: string) {
 <template>
   <div>
     <q-layout view="hHh Lpr lff" container style="height: 100vh">
-      <q-header class="bg-deep-orange-10">
+      <q-header class="bg-blue-10">
         <Navbar />
       </q-header>
 
@@ -39,7 +39,7 @@ function isActive(routeName: string) {
               class="text-white"
               :to="{ name: 'dashboard' }" 
               :active="isActive('dashboard')"
-              active-class="bg-white text-deep-orange-10 text-bold"
+              active-class="bg-white text-blue-10 text-bold"
             >
               <q-item-section avatar>
                 <q-icon name="space_dashboard" />
@@ -56,7 +56,7 @@ function isActive(routeName: string) {
               class="text-white"
               :to="{ name: 'payment' }" 
               :active="isActive('payment')"
-              active-class="bg-white text-deep-orange-10 text-bold"
+              active-class="bg-white text-blue-10 text-bold"
             >
               <q-item-section avatar>
                 <q-icon name="point_of_sale" />
@@ -74,7 +74,7 @@ function isActive(routeName: string) {
               class="text-white"
               :to="{ name: 'delivery' }" 
               :active="isActive('delivery')"
-              active-class="bg-white text-deep-orange-10 text-bold"
+              active-class="bg-white text-blue-10 text-bold"
             >
               <q-item-section avatar>
                 <q-icon name="local_shipping" />
@@ -91,7 +91,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'fidelity' }"  
               :active="isActive('fidelity')"
-              active-class="bg-white text-deep-orange-10 text-bold"
+              active-class="bg-white text-blue-10 text-bold"
             >
               <q-item-section avatar>
                 <q-icon name="favorite" />
@@ -108,7 +108,7 @@ function isActive(routeName: string) {
               class="text-white"  
               :to="{ name: 'product' }" 
               :active="isActive('product')"
-              active-class="bg-white text-deep-orange-10 text-bold"
+              active-class="bg-white text-blue-10 text-bold"
             >
               <q-item-section avatar>
                 <q-icon name="inventory_2" />
@@ -125,7 +125,7 @@ function isActive(routeName: string) {
               class="text-white"   
               :to="{ name: 'coupon' }" 
               :active="isActive('coupon')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="sell" />
@@ -142,7 +142,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'stock' }" 
               :active="isActive('stock')"
-              active-class="bg-white text-deep-orange-10 text-bold"  
+              active-class="bg-white text-blue-10 text-bold"  
             >
               <q-item-section avatar>
                 <q-icon name="inventory"/>
@@ -159,7 +159,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'sale' }" 
               :active="isActive('sale')"
-              active-class="bg-white text-deep-orange-10 text-bold"  
+              active-class="bg-white text-blue-10 text-bold"  
             >
               <q-item-section avatar>
                 <q-icon name="paid"/>
@@ -176,7 +176,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'user' }" 
               :active="isActive('user')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="person" />
@@ -193,7 +193,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'employee' }" 
               :active="isActive('employee')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="badge" />
@@ -210,7 +210,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'motorcyclist' }" 
               :active="isActive('motorcyclist')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="sports_motorsports" />
@@ -227,7 +227,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'transaction' }" 
               :active="isActive('transaction')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="sync_alt" />
@@ -244,7 +244,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'account' }" 
               :active="isActive('account')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="account_balance" />
@@ -261,7 +261,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'supplier' }" 
               :active="isActive('supplier')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="list_alt" />
@@ -278,7 +278,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'report' }" 
               :active="isActive('report')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="equalizer" />
@@ -295,7 +295,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'diary' }" 
               :active="isActive('diary')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="calendar_month" />
@@ -312,7 +312,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'setting' }" 
               :active="isActive('setting')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="settings" />
@@ -329,7 +329,7 @@ function isActive(routeName: string) {
               class="text-white" 
               :to="{ name: 'help' }" 
               :active="isActive('help')"
-              active-class="bg-white text-deep-orange-10 text-bold" 
+              active-class="bg-white text-blue-10 text-bold" 
             >
               <q-item-section avatar>
                 <q-icon name="help" />

@@ -85,7 +85,7 @@ const setShowInformation = (index: number) => {
       <div>
         <q-btn 
           color="white" 
-          text-color="deep-orange-10" 
+          text-color="black" 
           label="Categorias" 
           icon-right="settings" 
           no-caps
@@ -93,7 +93,7 @@ const setShowInformation = (index: number) => {
         />
         <q-btn 
           color="white" 
-          text-color="deep-orange-10" 
+          text-color="black" 
           label="Novo fornecedor" 
           icon-right="add" 
           no-caps

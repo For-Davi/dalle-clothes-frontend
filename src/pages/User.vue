@@ -61,7 +61,7 @@ const rows = [
       <div>
         <q-btn 
           color="white" 
-          text-color="deep-orange-10" 
+          text-color="black" 
           label="Permissões" 
           icon-right="rule" 
           no-caps
@@ -69,7 +69,7 @@ const rows = [
         />
         <q-btn 
           color="white" 
-          text-color="deep-orange-10" 
+          text-color="black" 
           label="Departamentos" 
           icon-right="group_work" 
           no-caps
@@ -77,7 +77,7 @@ const rows = [
         />
         <q-btn 
           color="white" 
-          text-color="deep-orange-10" 
+          text-color="black" 
           label="Novo usuário" 
           icon-right="add" 
           no-caps
