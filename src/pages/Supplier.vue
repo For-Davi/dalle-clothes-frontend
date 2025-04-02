@@ -145,17 +145,17 @@ const setShowInformation = (index: number) => {
           </q-tr>
         </template>
         <template v-slot:body="props">
-          <q-tr :props="props" @click="setShowInformation(props.rowIndex)" class="cursor-pointer">
-            <q-td key="name" :props="props" class="text-left">
+          <q-tr :props="props" class="cursor-pointer">
+            <q-td key="name" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)" >
               {{ props.row.name }}
             </q-td>
-            <q-td key="email" :props="props" class="text-left">
+            <q-td key="email" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)" >
               {{ props.row.email }}
             </q-td>
-            <q-td key="phone" :props="props" class="text-left">
+            <q-td key="phone" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)" >
               {{ props.row.phone }}
             </q-td>
-            <q-td key="active" :props="props" class="text-left">
+            <q-td key="active" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)" >
               <q-icon 
                 :name="props.row.active === 1 ? 'check_circle':'close'" 
                 :color="props.row.active === 1 ? 'green':'red'"

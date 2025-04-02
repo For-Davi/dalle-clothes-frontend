@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import type {  QuasarTable } from 'src/ts/Quasar';
+import type {  QuasarSelect, QuasarTable } from 'src/ts/Quasar';
 import { reactive, ref } from 'vue';
 defineOptions({
   name: 'User',
@@ -8,6 +8,25 @@ defineOptions({
 
 const filterUser = ref<string>('')
 const showInformation = ref<number>(0)
+const selectedActive = ref<QuasarSelect<number>>({
+  label: 'Todos',
+  value: 2
+})
+const optionsActive = reactive<QuasarSelect<number>[]>([
+  {
+    label: 'Todos',
+    value: 2
+  },
+  {
+    label: 'Ativos',
+    value: 1
+  },
+  {
+    label: 'Inativos',
+    value: 0
+  },
+
+])
 const columnsUser = reactive<QuasarTable[]>([
   {
     name: 'name',
@@ -98,6 +117,15 @@ const setShowInformation = (index: number) => {
               <q-icon name="search" size="20px" color="black"/>
             </template>
           </q-input>
+          <q-select outlined v-model="selectedActive" dense :options="optionsActive"  style="width:200px" class="bg-white rounded-borders">
+            <template v-slot:prepend>
+              <q-icon 
+                :name="selectedActive.value == 1 ? 'check_circle' : (selectedActive.value == 2 ? 'done_all' : 'close' )" 
+                size="20px" 
+                :color="selectedActive.value == 1 ? 'green' :(selectedActive.value == 2 ? 'blue' : 'red' )"
+                />
+            </template>
+          </q-select>
         </div>
       </q-banner>
       <q-table
@@ -125,17 +153,17 @@ const setShowInformation = (index: number) => {
           </q-tr>
         </template>
         <template v-slot:body="props">
-          <q-tr :props="props"  @click="setShowInformation(props.rowIndex)" class="cursor-pointer">
-            <q-td key="name" :props="props" class="text-left">
+          <q-tr :props="props" class="cursor-pointer">
+            <q-td key="name" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)">
               {{ props.row.name }}
             </q-td>
-            <q-td key="email" :props="props" class="text-left">
+            <q-td key="email" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)">
               {{ props.row.email }}
             </q-td>
-            <q-td key="position" :props="props" class="text-left">
+            <q-td key="position" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)">
               {{ props.row.position }}
             </q-td>
-            <q-td key="active" :props="props" class="text-left">
+            <q-td key="active" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)">
               <q-icon 
                 :name="props.row.active === 1 ? 'check_circle':'close'" 
                 :color="props.row.active === 1 ? 'green':'red'"
