@@ -7,6 +7,7 @@ defineOptions({
 });
 
 const filterUser = ref<string>('')
+const showInformation = ref<number>(0)
 const columnsUser = reactive<QuasarTable[]>([
   {
     name: 'name',
@@ -53,6 +54,10 @@ const rows = [
     active: 0
   },
 ]
+
+const setShowInformation = (index: number) => {
+  showInformation.value = (showInformation.value === (index + 1)) ? 0 : (index + 1);
+};
 </script>
 <template>
   <main class="q-pa-lg">
@@ -120,7 +125,7 @@ const rows = [
           </q-tr>
         </template>
         <template v-slot:body="props">
-          <q-tr :props="props" class="cursor-pointer">
+          <q-tr :props="props"  @click="setShowInformation(props.rowIndex)" class="cursor-pointer">
             <q-td key="name" :props="props" class="text-left">
               {{ props.row.name }}
             </q-td>
@@ -154,6 +159,11 @@ const rows = [
                 color="red"
                 icon="delete"
               />
+            </q-td>
+          </q-tr>
+          <q-tr v-show="showInformation == props.rowIndex + 1" :props="props">
+            <q-td colspan="100%" class="bg-grey-3">
+              <div class="text-left">This is expand slot for row above: {{ props.row.name }}.</div>
             </q-td>
           </q-tr>
         </template>
