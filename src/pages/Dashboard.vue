@@ -7,7 +7,7 @@ defineOptions({
 <template>
  <main class="q-pa-lg">
     <section>
-      <TitlePage title="Dashboard" icon="space_dashboard"/>
+      <TitlePage title="Dashboard" icon="equalizer"/>
     </section>
   </main>
 </template>

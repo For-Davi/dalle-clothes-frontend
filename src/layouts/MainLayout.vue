@@ -42,7 +42,7 @@ function isActive(routeName: string) {
               active-class="bg-white text-blue-10 text-bold"
             >
               <q-item-section avatar>
-                <q-icon name="space_dashboard" />
+                <q-icon name="equalizer" />
               </q-item-section>
 
               <q-item-section>
@@ -286,23 +286,6 @@ function isActive(routeName: string) {
 
               <q-item-section>
                 Fornecedores
-              </q-item-section>
-            </q-item>
-
-            <q-item 
-              clickable 
-              v-ripple
-              class="text-white" 
-              :to="{ name: 'report' }" 
-              :active="isActive('report')"
-              active-class="bg-white text-blue-10 text-bold" 
-            >
-              <q-item-section avatar>
-                <q-icon name="equalizer" />
-              </q-item-section>
-
-              <q-item-section>
-                Relatórios
               </q-item-section>
             </q-item>
 
