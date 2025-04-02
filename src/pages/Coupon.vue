@@ -15,7 +15,7 @@ const rows = [
     code: '54FGHB35',
     active: 1,
     hasLimit: 1,
-    used: 6,
+    used: 1,
     limit:6,
     dateExpiration: null
   },
@@ -30,8 +30,8 @@ const rows = [
     dateExpiration: '23/03/2025'
   },
   {
-    name: 'Cupom 10%',
-    description: 'Para novos clientes',
+    name: 'Cupom R$ 10 OFF',
+    description: null,
     code: 'JFUICN41',
     active: 0,
     hasLimit: 1,
@@ -50,12 +50,12 @@ const rows = [
     dateExpiration: null
   },
   {
-    name: 'Cupom 50%',
-    description: 'Para sorteios do Facebook',
+    name: 'Cupom R$ 5 OFF',
+    description: null,
     code: '175JDFY',
     active: 1,
     hasLimit: 0,
-    used: 5,
+    used: 23,
     limit:null,
     dateExpiration: '23/03/2025'
   },

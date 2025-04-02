@@ -7,7 +7,7 @@ defineOptions({
 
 const props = defineProps<{
   name: string;
-  description: string;
+  description: string | null;
   code: string;
   active: number;
   hasLimit: number;
@@ -88,6 +88,12 @@ const getColorDate = computed((): string => {
         </q-linear-progress>
       </q-card-actions>
       <q-card-actions align="right">
+        <q-btn v-show="description" icon-right="info" rounded color="purple"  flat>
+          <q-tooltip>{{ description }}</q-tooltip>
+        </q-btn>
+        <q-btn icon-right="visibility" rounded color="orange"  flat>
+          <q-tooltip>Detalhes</q-tooltip>
+        </q-btn>
         <q-btn :icon-right="getIconStatus" rounded :color="getColorStatus"  flat>
           <q-tooltip>{{ active === 1 ? 'Ativo' : 'Inativo' }}</q-tooltip>
         </q-btn>
