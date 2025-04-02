@@ -174,6 +174,23 @@ function isActive(routeName: string) {
               clickable 
               v-ripple
               class="text-white" 
+              :to="{ name: 'earnings' }" 
+              :active="isActive('earnings')"
+              active-class="bg-white text-blue-10 text-bold"  
+            >
+              <q-item-section avatar>
+                <q-icon name="savings"/>
+              </q-item-section>
+
+              <q-item-section>
+                Ganhos
+              </q-item-section>
+            </q-item>
+
+            <q-item 
+              clickable 
+              v-ripple
+              class="text-white" 
               :to="{ name: 'user' }" 
               :active="isActive('user')"
               active-class="bg-white text-blue-10 text-bold" 
