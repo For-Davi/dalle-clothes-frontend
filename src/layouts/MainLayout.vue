@@ -157,6 +157,23 @@ function isActive(routeName: string) {
               clickable 
               v-ripple
               class="text-white" 
+              :to="{ name: 'sale' }" 
+              :active="isActive('sale')"
+              active-class="bg-white text-deep-orange-10 text-bold"  
+            >
+              <q-item-section avatar>
+                <q-icon name="paid"/>
+              </q-item-section>
+
+              <q-item-section>
+                Vendas
+              </q-item-section>
+            </q-item>
+
+            <q-item 
+              clickable 
+              v-ripple
+              class="text-white" 
               :to="{ name: 'user' }" 
               :active="isActive('user')"
               active-class="bg-white text-deep-orange-10 text-bold" 
@@ -167,6 +184,23 @@ function isActive(routeName: string) {
 
               <q-item-section>
                 Usuários
+              </q-item-section>
+            </q-item>
+
+            <q-item 
+              clickable 
+              v-ripple
+              class="text-white" 
+              :to="{ name: 'employee' }" 
+              :active="isActive('employee')"
+              active-class="bg-white text-deep-orange-10 text-bold" 
+            >
+              <q-item-section avatar>
+                <q-icon name="badge" />
+              </q-item-section>
+
+              <q-item-section>
+                Funcionários
               </q-item-section>
             </q-item>
 
@@ -235,6 +269,23 @@ function isActive(routeName: string) {
 
               <q-item-section>
                 Fornecedores
+              </q-item-section>
+            </q-item>
+
+            <q-item 
+              clickable 
+              v-ripple
+              class="text-white" 
+              :to="{ name: 'report' }" 
+              :active="isActive('report')"
+              active-class="bg-white text-deep-orange-10 text-bold" 
+            >
+              <q-item-section avatar>
+                <q-icon name="equalizer" />
+              </q-item-section>
+
+              <q-item-section>
+                Relatórios
               </q-item-section>
             </q-item>
 
