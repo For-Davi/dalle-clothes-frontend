@@ -87,7 +87,7 @@ const setShowInformation = (index: number) => {
           color="white" 
           text-color="black" 
           label="Categorias" 
-          icon-right="settings" 
+          icon-right="category" 
           no-caps
           class="q-mr-sm" 
         />

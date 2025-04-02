@@ -86,7 +86,7 @@ const setShowInformation = (index: number) => {
         <q-btn 
           color="white" 
           text-color="black" 
-          label="Novo motociclista" 
+          label="Novo entregador" 
           icon-right="add" 
           no-caps
           class="q-mr-sm" 
