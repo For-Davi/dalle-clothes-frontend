@@ -76,7 +76,7 @@ const columnsSchedule = reactive<QuasarTable[]>([
     align: 'right',
   },
 ]);
-const rows = [
+const rows = reactive([
   {
     date_movement: '16/03/2025',
     value: 'R$ 100,00',
@@ -98,8 +98,7 @@ const rows = [
     account: 'Banco do Brasil',
     type: 'entrada'
   },
-  
-]
+])
 
 const setShowInformationMovement = (index: number) => {
   showInformationMovement.value = (showInformationMovement.value === (index + 1)) ? 0 : (index + 1);
@@ -219,9 +218,9 @@ watch(tab, () => {
               :columns="columnsMovement"
               :filter="filterMovement"
               :loading="false"
-              title="Lista de agendamentos"
+              title="Lista de movementações"
               row-key="index"
-              no-data-label="Nenhum agendamento para mostrar"
+              no-data-label="Nenhuma movimentação para mostrar"
               virtual-scroll
               :rows-per-page-options="[10]"
               
@@ -240,7 +239,7 @@ watch(tab, () => {
               </template>
               <template v-slot:body="props">
                 <q-tr :props="props" class="cursor-pointer"  :class="props.row.type === 'entrada' ? 'text-green' : 'text-red'">
-                  <q-td key="date_movement" :props="props" class="text-left" >
+                  <q-td key="date_movement" :props="props" class="text-left" @click="setShowInformationMovement(props.rowIndex)">
                     {{ props.row.date_movement }}
                   </q-td>
                   <q-td key="value" :props="props" class="text-left" @click="setShowInformationMovement(props.rowIndex)">
@@ -273,7 +272,7 @@ watch(tab, () => {
                 </q-tr>
                 <q-tr v-show="showInformationMovement == props.rowIndex + 1" :props="props">
                   <q-td colspan="100%" class="bg-grey-3">
-                    <div class="text-left">This is expand slot for row above: {{ props.row.name }}.</div>
+                    <div class="text-left">Aqui deve mostrar os dados da conta: {{ props.row.name }}</div>
                   </q-td>
                 </q-tr>
               </template>
@@ -365,7 +364,7 @@ watch(tab, () => {
                 </q-tr>
                 <q-tr v-show="showInformationSchedule == props.rowIndex + 1" :props="props">
                   <q-td colspan="100%" class="bg-grey-3">
-                    <div class="text-left">This is expand slot for row above: {{ props.row.name }}.</div>
+                    <div class="text-left">Aqui deve mostrar os dados da conta: {{ props.row.name }}.</div>
                   </q-td>
                 </q-tr>
               </template>
