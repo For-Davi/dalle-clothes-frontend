@@ -35,6 +35,12 @@ const columnsSupplier = reactive<QuasarTable[]>([
     align: 'left',
   },
   {
+    name: 'category',
+    label: 'Categoria',
+    field: 'category',
+    align: 'left',
+  },
+  {
     name: 'email',
     label: 'E-mail',
     field: 'email',
@@ -64,12 +70,14 @@ const rows = [
     name: 'Raul Bebidas',
     email: 'raul@gmail.com',
     phone: '(85)98180-4849',
+    category: 'Bebidas',
     active: 1
   },
   {
     name: 'Nort comidas',
     email: 'nort@gmail.com',
     phone: '(85)98740-4849',
+    category: 'Comidas',
     active: 0
   },
 ]
@@ -88,6 +96,14 @@ const setShowInformation = (index: number) => {
           text-color="black" 
           label="Categorias" 
           icon-right="category" 
+          no-caps
+          class="q-mr-sm" 
+        />
+        <q-btn 
+          color="white" 
+          text-color="black" 
+          label="Compras" 
+          icon-right="paid" 
           no-caps
           class="q-mr-sm" 
         />
@@ -148,6 +164,9 @@ const setShowInformation = (index: number) => {
           <q-tr :props="props" class="cursor-pointer">
             <q-td key="name" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)" >
               {{ props.row.name }}
+            </q-td>
+            <q-td key="category" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)" >
+              {{ props.row.category }}
             </q-td>
             <q-td key="email" :props="props" class="text-left" @click="setShowInformation(props.rowIndex)" >
               {{ props.row.email }}
