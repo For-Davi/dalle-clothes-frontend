@@ -63,7 +63,7 @@ const getColorDate = computed((): string => {
 });
 </script>
 <template>
-  <q-card class="full-width my-card bg-grey-1">
+  <q-card class="full-width bg-grey-1">
       <q-card-section>
         <div class="text-h6">{{ name }}</div>
         <div class="text-subtitle1 text-blue text-bold">

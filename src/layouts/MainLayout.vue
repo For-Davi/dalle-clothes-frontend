@@ -105,6 +105,23 @@ function isActive(routeName: string) {
             <q-item 
               clickable 
               v-ripple
+              class="text-white" 
+              :to="{ name: 'client' }"  
+              :active="isActive('client')"
+              active-class="bg-white text-blue-10 text-bold"
+            >
+              <q-item-section avatar>
+                <q-icon name="groups" />
+              </q-item-section>
+
+              <q-item-section>
+                Clientes
+              </q-item-section>
+            </q-item>
+
+            <q-item 
+              clickable 
+              v-ripple
               class="text-white"  
               :to="{ name: 'product' }" 
               :active="isActive('product')"
