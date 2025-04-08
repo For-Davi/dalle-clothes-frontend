@@ -306,7 +306,9 @@ function isActive(routeName: string) {
       </q-drawer>
 
       <q-page-container>
-        <router-view></router-view>
+        <transition name="fade" mode="out-in">
+          <router-view></router-view>
+        </transition>
       </q-page-container>
     </q-layout>
   </div>
