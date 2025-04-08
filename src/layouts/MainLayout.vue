@@ -111,15 +111,15 @@ function isActive(routeName: string) {
               clickable
               v-ripple
               class="text-white"
-              :to="{ name: 'product' }"
-              :active="isActive('product')"
+              :to="{ name: 'store' }"
+              :active="isActive('store')"
               active-class="bg-white text-blue-10 text-bold"
             >
               <q-item-section avatar>
-                <q-icon name="inventory_2" />
+                <q-icon name="storefront" />
               </q-item-section>
 
-              <q-item-section> Produtos </q-item-section>
+              <q-item-section> Loja </q-item-section>
             </q-item>
 
             <q-item
