@@ -146,9 +146,6 @@ onMounted(() => {
       :class="props.data.active === 0 ? 'opacity-4' : ''"
     >
       <div>
-        <q-btn icon-right="visibility" rounded color="orange" flat>
-          <q-tooltip>Detalhes</q-tooltip>
-        </q-btn>
         <q-btn v-show="props.data.description" icon-right="info" rounded color="primary" flat>
           <q-tooltip>{{ props.data.description }}</q-tooltip>
         </q-btn>
@@ -164,14 +161,20 @@ onMounted(() => {
           padding="xs"
           label-class="q-px-md"
         >
+          <q-fab-action :hide-label="hideLabels" color="white" icon="delete" class="text-red" />
           <q-fab-action :hide-label="hideLabels" color="white" icon="edit" class="text-black" />
+          <q-fab-action
+            :hide-label="hideLabels"
+            color="white"
+            icon="visibility"
+            class="text-orange"
+          />
           <q-fab-action
             :hide-label="hideLabels"
             color="white"
             :icon="getIconStatus"
             :class="getColorStatus"
           />
-          <q-fab-action :hide-label="hideLabels" color="white" icon="delete" class="text-red" />
         </q-fab>
       </div>
     </q-card-actions>
