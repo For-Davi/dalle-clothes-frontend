@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 defineOptions({
   name: 'ProductCard',
@@ -19,6 +19,8 @@ const props = defineProps<{
 }>();
 
 const slide = ref<number>(1);
+const fab = ref<boolean>(false);
+const hideLabels = ref<boolean>(false);
 const tab = ref<'price' | 'info'>('price');
 
 const getIconStatus = computed((): string => {
@@ -30,19 +32,20 @@ const getIconStatus = computed((): string => {
 });
 const getColorStatus = computed((): string => {
   if (props.data.active === 1) {
-    return 'green';
+    return 'text-green';
   } else {
-    return 'black';
+    return 'text-black';
   }
 });
 
-let intervalId = setInterval(() => {
-  tab.value = tab.value === 'price' ? 'info' : 'price';
-}, 4000);
+onMounted(() => {
+  const interval = setInterval(() => {
+    tab.value = tab.value === 'price' ? 'info' : 'price';
+  }, 4000);
 
-// Caso esteja utilizando o <script setup>, você pode usar onUnmounted para limpar o intervalo
-onUnmounted(() => {
-  clearInterval(intervalId);
+  onUnmounted(() => {
+    clearInterval(interval);
+  });
 });
 </script>
 <template>
@@ -50,7 +53,7 @@ onUnmounted(() => {
     <q-img
       v-if="props.data.images.length == 0"
       src="https://cdn.quasar.dev/img/mountains.jpg"
-      fit="scale-down"
+      fit="fill"
       height="300px"
     />
     <q-img
@@ -83,22 +86,23 @@ onUnmounted(() => {
     <q-card-section class="q-py-sm" :class="props.data.active === 0 ? 'opacity-4' : ''">
       <div class="text-h6">{{ props.data.name }}</div>
     </q-card-section>
-    <q-separator />
-    <q-card-section class="q-py-sm q-px-none" :class="props.data.active === 0 ? 'opacity-4' : ''">
+    <q-card-section class="q-py-none q-px-none" :class="props.data.active === 0 ? 'opacity-4' : ''">
       <q-tabs v-model="tab" dense align="center" inline-label :breakpoint="0" no-caps>
         <q-tab
           name="price"
           :class="tab == 'price' ? 'text-primary' : 'text-grey'"
           icon="attach_money"
+          @click.prevent.stop
         />
         <q-tab
           name="info"
           :class="tab == 'info' ? 'text-primary' : 'text-grey'"
           icon="trending_up"
+          @click.prevent.stop
         />
       </q-tabs>
       <q-tab-panels v-model="tab" animated class="q-pa-none">
-        <q-tab-panel name="price" class="q-px-md q-py-sm">
+        <q-tab-panel name="price" class="q-px-md q-py-sm border-top-grey-light bg-grey-1">
           <div
             class="row items-center"
             :class="props.data.offer ? 'justify-between' : 'justify-center'"
@@ -120,24 +124,7 @@ onUnmounted(() => {
           </div>
         </q-tab-panel>
 
-        <q-tab-panel name="info" class="q-px-md q-py-sm">
-          <!-- <div
-            class="text-bold row justify-between items-center"
-            :class="props.data.active === 0 ? 'opacity-4' : ''"
-          >
-            <span
-              ><span class="text-white bg-secondary q-px-sm rounded-borders text-h6">{{
-                props.data.sales
-              }}</span>
-              Vendas</span
-            >
-            <span
-              ><span class="text-white bg-dark q-px-sm rounded-borders text-h6">{{
-                props.data.stock
-              }}</span>
-              Disponíveis</span
-            >
-          </div> -->
+        <q-tab-panel name="info" class="q-px-md q-py-sm border-top-grey-light bg-grey-1">
           <div
             class="row justify-between items-center"
             :class="props.data.active === 0 ? 'opacity-4' : ''"
@@ -154,20 +141,39 @@ onUnmounted(() => {
     </q-card-section>
     <q-separator />
 
-    <q-separator />
-
-    <q-card-actions align="right" :class="props.data.active === 0 ? 'opacity-4' : ''">
-      <q-btn v-show="props.data.description" icon-right="info" rounded color="primary" flat>
-        <q-tooltip>{{ props.data.description }}</q-tooltip>
-      </q-btn>
-      <q-btn icon-right="sell" rounded color="purple" flat>
-        <q-tooltip>Tags</q-tooltip>
-      </q-btn>
-      <q-btn :icon-right="getIconStatus" rounded :color="getColorStatus" flat>
-        <q-tooltip>{{ props.data.active === 1 ? 'Ativo' : 'Inativo' }}</q-tooltip>
-      </q-btn>
-      <q-btn icon-right="edit" rounded flat />
-      <q-btn icon-right="delete" rounded color="red" flat />
+    <q-card-actions
+      class="row justify-between items-center"
+      :class="props.data.active === 0 ? 'opacity-4' : ''"
+    >
+      <div>
+        <q-btn icon-right="visibility" rounded color="orange" flat>
+          <q-tooltip>Detalhes</q-tooltip>
+        </q-btn>
+        <q-btn v-show="props.data.description" icon-right="info" rounded color="primary" flat>
+          <q-tooltip>{{ props.data.description }}</q-tooltip>
+        </q-btn>
+      </div>
+      <div>
+        <q-fab
+          v-model="fab"
+          label="Ações"
+          color="grey-7"
+          icon="add"
+          direction="up"
+          unelevated
+          padding="xs"
+          label-class="q-px-md"
+        >
+          <q-fab-action :hide-label="hideLabels" color="white" icon="edit" class="text-black" />
+          <q-fab-action
+            :hide-label="hideLabels"
+            color="white"
+            :icon="getIconStatus"
+            :class="getColorStatus"
+          />
+          <q-fab-action :hide-label="hideLabels" color="white" icon="delete" class="text-red" />
+        </q-fab>
+      </div>
     </q-card-actions>
   </q-card>
 </template>

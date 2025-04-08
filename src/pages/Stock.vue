@@ -104,6 +104,14 @@ const rows = [
         <q-btn
           color="white"
           text-color="black"
+          label="Grade"
+          icon-right="pin"
+          no-caps
+          class="q-mr-sm"
+        />
+        <q-btn
+          color="white"
+          text-color="black"
           label="Entrada/Saída"
           icon-right="repeat"
           no-caps
@@ -136,7 +144,7 @@ const rows = [
         :columns="columnsStock"
         :filter="filterStock"
         :loading="false"
-        title="Lista de fornecedores"
+        title="Gerenciamento de estoque"
         row-key="index"
         no-data-label="Nenhum dado para mostrar"
         virtual-scroll

@@ -45,7 +45,7 @@ const rows = [
   },
   {
     name: 'Boné',
-    images: ['/images/bone/1.jpeg'],
+    images: [],
     description: 'Uma belo boné',
     price: 15.0,
     offer: null,
