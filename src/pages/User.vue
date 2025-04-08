@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import type { QuasarSelect, QuasarTable } from 'src/ts/Quasar';
+import type { QuasarTable } from 'src/ts/Quasar';
 import { reactive, ref } from 'vue';
 defineOptions({
   name: 'User',
@@ -8,24 +8,24 @@ defineOptions({
 
 const filterUser = ref<string>('');
 const showInformation = ref<number>(0);
-const selectedActive = ref<QuasarSelect<number>>({
-  label: 'Todos',
-  value: 2,
-});
-const optionsActive = reactive<QuasarSelect<number>[]>([
-  {
-    label: 'Todos',
-    value: 2,
-  },
-  {
-    label: 'Ativos',
-    value: 1,
-  },
-  {
-    label: 'Inativos',
-    value: 0,
-  },
-]);
+// const selectedActive = ref<QuasarSelect<number>>({
+//   label: 'Todos',
+//   value: 2,
+// });
+// const optionsActive = reactive<QuasarSelect<number>[]>([
+//   {
+//     label: 'Todos',
+//     value: 2,
+//   },
+//   {
+//     label: 'Ativos',
+//     value: 1,
+//   },
+//   {
+//     label: 'Inativos',
+//     value: 0,
+//   },
+// ]);
 const columnsUser = reactive<QuasarTable[]>([
   {
     name: 'name',
@@ -118,7 +118,7 @@ const setShowInformation = (index: number) => {
     </section>
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
-        <div class="row q-gutter-x-sm">
+        <div class="row q-gutter-x-sm justify-end items-center">
           <q-input
             label="Pesquise"
             outlined
@@ -131,7 +131,10 @@ const setShowInformation = (index: number) => {
               <q-icon name="search" size="20px" color="black" />
             </template>
           </q-input>
-          <q-select
+          <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
+            <q-badge floating color="red" rounded />
+          </q-btn>
+          <!-- <q-select
             outlined
             v-model="selectedActive"
             dense
@@ -154,7 +157,7 @@ const setShowInformation = (index: number) => {
                 "
               />
             </template>
-          </q-select>
+          </q-select> -->
         </div>
       </q-banner>
       <q-table

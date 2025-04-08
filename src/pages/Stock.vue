@@ -113,7 +113,7 @@ const rows = [
     </section>
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
-        <div class="row q-gutter-x-sm">
+        <div class="row q-gutter-x-sm justify-end items-center">
           <q-input
             label="Pesquise"
             outlined
@@ -126,6 +126,9 @@ const rows = [
               <q-icon name="search" size="20px" color="black" />
             </template>
           </q-input>
+          <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
+            <q-badge floating color="red" rounded />
+          </q-btn>
         </div>
       </q-banner>
       <q-table

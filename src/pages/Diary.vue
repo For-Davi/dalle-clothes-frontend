@@ -256,7 +256,7 @@ const rows = [
     </section>
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
-        <div class="row q-gutter-x-sm">
+        <div class="row q-gutter-x-sm justify-end items-center">
           <q-input
             label="Pesquise"
             outlined

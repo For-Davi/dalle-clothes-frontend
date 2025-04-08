@@ -9,7 +9,7 @@ defineOptions({
 const showInformationMovement = ref<number>(0);
 const showInformationSchedule = ref<number>(0);
 const tab = ref<'movement' | 'schedule'>('movement');
-const selectedDate = ref<string>('02/04/2025');
+// const selectedDate = ref<string>('02/04/2025');
 const filterMovement = ref<string>('');
 const filterSchedule = ref<string>('');
 const columnsMovement = reactive<QuasarTable[]>([
@@ -176,19 +176,23 @@ watch(tab, () => {
     </section>
     <section class="q-mt-sm">
       <q-tabs v-model="tab" class="q-px-md" dense align="left" inline-label :breakpoint="0" no-caps>
-        <q-tab name="movement" :class="tab == 'movement' ? 'text-black' : 'text-grey'">
-          <q-icon name="currency_exchange" size="20px" />
-          <span class="q-ml-sm text-body1">Movimentações</span>
-        </q-tab>
-        <q-tab name="schedule" :class="tab == 'schedule' ? 'text-black' : 'text-grey'">
-          <q-icon name="today" size="20px" />
-          <span class="q-ml-sm text-body1">Agendamentos</span>
-        </q-tab>
+        <q-tab
+          name="movement"
+          :class="tab == 'movement' ? 'text-primary' : 'text-grey'"
+          label="Movimentações"
+          icon="currency_exchange"
+        />
+        <q-tab
+          name="schedule"
+          :class="tab == 'schedule' ? 'text-primary' : 'text-grey'"
+          icon="today"
+          label="Agendamentos"
+        />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="movement">
           <q-banner rounded class="bg-grey-4 q-mb-sm">
-            <div class="row q-gutter-x-sm">
+            <div class="row q-gutter-x-sm justify-end items-center">
               <q-input
                 label="Pesquise"
                 outlined
@@ -201,7 +205,10 @@ watch(tab, () => {
                   <q-icon name="search" size="20px" color="black" />
                 </template>
               </q-input>
-              <q-select
+              <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
+                <q-badge floating color="red" rounded />
+              </q-btn>
+              <!-- <q-select
                 outlined
                 v-model="selectedDate"
                 dense
@@ -212,7 +219,7 @@ watch(tab, () => {
                 <template v-slot:prepend>
                   <q-icon name="calendar_month" size="20px" />
                 </template>
-              </q-select>
+              </q-select> -->
             </div>
           </q-banner>
           <q-table
@@ -289,7 +296,7 @@ watch(tab, () => {
 
         <q-tab-panel name="schedule">
           <q-banner rounded class="bg-grey-4 q-mb-sm">
-            <div class="row q-gutter-x-sm">
+            <div class="row q-gutter-x-sm justify-end items-center">
               <q-input
                 label="Pesquise"
                 outlined
@@ -302,7 +309,10 @@ watch(tab, () => {
                   <q-icon name="search" size="20px" color="black" />
                 </template>
               </q-input>
-              <q-select
+              <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
+                <q-badge floating color="red" rounded />
+              </q-btn>
+              <!-- <q-select
                 outlined
                 v-model="selectedDate"
                 dense
@@ -313,7 +323,7 @@ watch(tab, () => {
                 <template v-slot:prepend>
                   <q-icon name="calendar_month" size="20px" />
                 </template>
-              </q-select>
+              </q-select> -->
             </div>
           </q-banner>
           <q-table

@@ -144,23 +144,7 @@ const rowsMotocyclist = [
       </div>
     </section>
     <section class="q-mt-sm">
-      <q-banner rounded class="bg-grey-4 q-mb-sm">
-        <div class="row q-gutter-x-sm">
-          <q-input
-            label="Pesquise"
-            outlined
-            v-model="filterSupplier"
-            dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
-          >
-            <template v-slot:prepend>
-              <q-icon name="search" size="20px" color="black" />
-            </template>
-          </q-input>
-        </div>
-      </q-banner>
-      <q-tabs v-model="tab" dense align="left" :breakpoint="0" inline-label>
+      <q-tabs v-model="tab" dense align="left" :breakpoint="0" inline-label no-caps>
         <q-tab
           name="employee"
           icon="groups_3"
@@ -177,7 +161,26 @@ const rowsMotocyclist = [
       <q-separator />
 
       <q-tab-panels v-model="tab" animated>
-        <q-tab-panel name="employee" class="q-pa-sm">
+        <q-tab-panel name="employee">
+          <q-banner rounded class="bg-grey-4 q-mb-sm">
+            <div class="row q-gutter-x-sm justify-end items-center">
+              <q-input
+                label="Pesquise"
+                outlined
+                v-model="filterSupplier"
+                dense
+                style="width: 200px"
+                class="bg-white rounded-borders"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="search" size="20px" color="black" />
+                </template>
+              </q-input>
+              <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
+                <q-badge floating color="red" rounded />
+              </q-btn>
+            </div>
+          </q-banner>
           <q-table
             class="q-mt-sm"
             :rows="rows"
@@ -228,7 +231,26 @@ const rowsMotocyclist = [
           </q-table>
         </q-tab-panel>
 
-        <q-tab-panel name="delivery" class="q-pa-sm">
+        <q-tab-panel name="delivery">
+          <q-banner rounded class="bg-grey-4 q-mb-sm">
+            <div class="row q-gutter-x-sm justify-end items-center">
+              <q-input
+                label="Pesquise"
+                outlined
+                v-model="filterSupplier"
+                dense
+                style="width: 200px"
+                class="bg-white rounded-borders"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="search" size="20px" color="black" />
+                </template>
+              </q-input>
+              <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
+                <q-badge floating color="red" rounded />
+              </q-btn>
+            </div>
+          </q-banner>
           <q-table
             class="q-mt-sm"
             :rows="rowsMotocyclist"
