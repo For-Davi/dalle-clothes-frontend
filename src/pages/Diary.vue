@@ -269,6 +269,9 @@ const rows = [
               <q-icon name="search" size="20px" color="black" />
             </template>
           </q-input>
+          <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
+            <q-badge floating color="red" rounded />
+          </q-btn>
         </div>
       </q-banner>
       <div class="q-mt-sm row wrap items-start q-col-gutter-md">
