@@ -4,7 +4,5 @@ defineOptions({
 });
 </script>
 <template>
-  <main>
-    INDEX
-  </main>
+  <main>INDEX</main>
 </template>

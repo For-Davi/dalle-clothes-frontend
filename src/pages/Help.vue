@@ -5,9 +5,9 @@ defineOptions({
 });
 </script>
 <template>
- <main class="q-pa-lg">
+  <main class="q-pa-lg">
     <section>
-      <TitlePage title="Ajuda" icon="help"/>
+      <TitlePage title="Ajuda" icon="help" />
     </section>
   </main>
 </template>

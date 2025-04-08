@@ -4,7 +4,5 @@ defineOptions({
 });
 </script>
 <template>
-  <main>
-    FormFeedback
-  </main>
+  <main>FormFeedback</main>
 </template>

@@ -4,7 +4,5 @@ defineOptions({
 });
 </script>
 <template>
-  <main>
-    Inbox
-  </main>
+  <main>Inbox</main>
 </template>

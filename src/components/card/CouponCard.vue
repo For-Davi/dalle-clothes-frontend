@@ -13,32 +13,32 @@ const props = defineProps<{
   hasLimit: number;
   used: number;
   limit: number | null;
-  dateExpiration: string | null
+  dateExpiration: string | null;
 }>();
 
 const getIconStatus = computed((): string => {
-  if(props.active === 1) {
-    return 'task_alt'
+  if (props.active === 1) {
+    return 'task_alt';
   } else {
-    return 'cancel'
+    return 'cancel';
   }
-})
+});
 const getColorStatus = computed((): string => {
-  if(props.active === 1) {
-    return 'green'
+  if (props.active === 1) {
+    return 'green';
   } else {
-    return 'black'
+    return 'black';
   }
-})
+});
 const getColorLinear = computed((): string => {
   if (props.hasLimit === 0) {
-    return 'grey'
-  } else if (props.hasLimit === 1 && (props.used === props.limit)) {
-    return 'red'
+    return 'grey';
+  } else if (props.hasLimit === 1 && props.used === props.limit) {
+    return 'red';
   } else {
-    return 'blue'
+    return 'blue';
   }
-})
+});
 const getColorDate = computed((): string => {
   const dateStr = props.dateExpiration ?? '';
   if (!dateStr) return 'text-grey';
@@ -64,40 +64,44 @@ const getColorDate = computed((): string => {
 </script>
 <template>
   <q-card class="full-width bg-grey-1">
-      <q-card-section>
-        <div class="text-h6">{{ name }}</div>
-        <div class="text-subtitle1 text-blue text-bold">
-            {{ code }}
+    <q-card-section>
+      <div class="text-h6">{{ name }}</div>
+      <div class="text-subtitle1 text-blue text-bold">
+        {{ code }}
+      </div>
+      <div :class="getColorDate" class="text-subtitle2 q-mb-sm">
+        Validade: {{ dateExpiration ?? 'Sem expiração' }}
+      </div>
+      <q-separator />
+    </q-card-section>
+    <q-card-actions>
+      <q-linear-progress
+        size="20px"
+        :value="hasLimit === 0 ? 1 : used / (limit ?? 1)"
+        :color="getColorLinear"
+        stripe
+        rounded
+      >
+        <div div class="absolute-full flex flex-center">
+          <q-badge
+            color="white"
+            text-color="black"
+            :label="hasLimit === 0 ? `${used}/ထ` : `${used}/${limit}`"
+          />
         </div>
-        <div :class="getColorDate" class="text-subtitle2 q-mb-sm">
-            Validade: {{ dateExpiration ?? 'Sem expiração' }}
-        </div>
-        <q-separator  />
-      </q-card-section>
-      <q-card-actions >
-        <q-linear-progress 
-          size="20px" 
-          :value="hasLimit === 0 ? 1 : (used / (limit ?? 1))" 
-          :color="getColorLinear" 
-          stripe 
-          rounded 
-        >
-          <div div class="absolute-full flex flex-center">
-            <q-badge color="white" text-color="black" :label="hasLimit === 0 ? `${used}/ထ` : `${used}/${limit}`" />
-          </div>
-        </q-linear-progress>
-      </q-card-actions>
-      <q-card-actions align="right">
-        <q-btn v-show="description" icon-right="info" rounded color="purple"  flat>
-          <q-tooltip>{{ description }}</q-tooltip>
-        </q-btn>
-        <q-btn icon-right="visibility" rounded color="orange"  flat>
-          <q-tooltip>Detalhes</q-tooltip>
-        </q-btn>
-        <q-btn :icon-right="getIconStatus" rounded :color="getColorStatus"  flat>
-          <q-tooltip>{{ active === 1 ? 'Ativo' : 'Inativo' }}</q-tooltip>
-        </q-btn>
-        <q-btn icon-right="delete" rounded color="red"  flat/>
-      </q-card-actions>
-    </q-card>
+      </q-linear-progress>
+    </q-card-actions>
+    <q-card-actions align="right">
+      <q-btn v-show="description" icon-right="info" rounded color="purple" flat>
+        <q-tooltip>{{ description }}</q-tooltip>
+      </q-btn>
+      <q-btn icon-right="visibility" rounded color="orange" flat>
+        <q-tooltip>Detalhes</q-tooltip>
+      </q-btn>
+      <q-btn :icon-right="getIconStatus" rounded :color="getColorStatus" flat>
+        <q-tooltip>{{ active === 1 ? 'Ativo' : 'Inativo' }}</q-tooltip>
+      </q-btn>
+      <q-btn icon-right="delete" rounded color="red" flat />
+    </q-card-actions>
+  </q-card>
 </template>

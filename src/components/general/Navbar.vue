@@ -35,12 +35,7 @@ const openInbox = (): void => {
   <nav>
     <q-toolbar class="row items-center justify-between">
       <div class="row items-center q-gutter-x-sm">
-        <q-btn
-          @click="emit('update:changeOpenMenu')"
-          flat
-          icon-right="menu"
-          rounded
-        />
+        <q-btn @click="emit('update:changeOpenMenu')" flat icon-right="menu" rounded />
         <!-- <img
           v-show="!$q.screen.lt.md"
           @click="$router.push({ name: 'admin-feed' })"
@@ -68,28 +63,12 @@ const openInbox = (): void => {
           >
             <q-tooltip> Entrar em contato </q-tooltip>
           </q-btn>
-          <q-btn
-            @click="openFormFeedback"
-            flat
-            icon-right="chat"
-            rounded
-          >
+          <q-btn @click="openFormFeedback" flat icon-right="chat" rounded>
             <q-tooltip> Enviar sugestão </q-tooltip>
           </q-btn>
-          <q-btn
-            @click="openInbox"
-            flat
-            icon-right="notifications"
-            rounded
-            class="q-mr-md"
-          >
+          <q-btn @click="openInbox" flat icon-right="notifications" rounded class="q-mr-md">
             <q-tooltip> Notificações </q-tooltip>
-            <q-badge
-              color="black"
-              rounded
-              floating
-              :label="0"
-            />
+            <q-badge color="black" rounded floating :label="0" />
           </q-btn>
         </div>
         <div v-else>
@@ -138,4 +117,3 @@ const openInbox = (): void => {
     <Inbox :open="showInbox" @update:open="closeInbox" /> -->
   </nav>
 </template>
-

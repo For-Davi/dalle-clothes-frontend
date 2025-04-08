@@ -4,7 +4,5 @@ defineOptions({
 });
 </script>
 <template>
-  <main>
-    Auth
-  </main>
+  <main>Auth</main>
 </template>

@@ -4,7 +4,5 @@ defineOptions({
 });
 </script>
 <template>
-  <main>
-    Subscription
-  </main>
+  <main>Subscription</main>
 </template>

@@ -7,7 +7,7 @@ defineOptions({
   name: 'Coupon',
 });
 
-const filterCoupon = ref<string>('')
+const filterCoupon = ref<string>('');
 const rows = [
   {
     name: 'Cupom 100%',
@@ -16,8 +16,8 @@ const rows = [
     active: 1,
     hasLimit: 1,
     used: 1,
-    limit:6,
-    dateExpiration: null
+    limit: 6,
+    dateExpiration: null,
   },
   {
     name: 'Cupom 50%',
@@ -26,8 +26,8 @@ const rows = [
     active: 1,
     hasLimit: 0,
     used: 5,
-    limit:null,
-    dateExpiration: '23/03/2025'
+    limit: null,
+    dateExpiration: '23/03/2025',
   },
   {
     name: 'Cupom R$ 10 OFF',
@@ -36,8 +36,8 @@ const rows = [
     active: 0,
     hasLimit: 1,
     used: 7,
-    limit:10,
-    dateExpiration: '26/04/2025'
+    limit: 10,
+    dateExpiration: '26/04/2025',
   },
   {
     name: 'Cupom 100%',
@@ -46,8 +46,8 @@ const rows = [
     active: 1,
     hasLimit: 1,
     used: 6,
-    limit:6,
-    dateExpiration: null
+    limit: 6,
+    dateExpiration: null,
   },
   {
     name: 'Cupom R$ 5 OFF',
@@ -56,32 +56,39 @@ const rows = [
     active: 1,
     hasLimit: 0,
     used: 23,
-    limit:null,
-    dateExpiration: '23/03/2025'
+    limit: null,
+    dateExpiration: '23/03/2025',
   },
-]
+];
 </script>
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Cupons" icon="sell"/>
+      <TitlePage class="col-7" title="Cupons" icon="sell" />
       <div>
-        <q-btn 
-          color="white" 
-          text-color="black" 
-          label="Novo cupom" 
-          icon-right="add" 
+        <q-btn
+          color="white"
+          text-color="black"
+          label="Novo cupom"
+          icon-right="add"
           no-caps
-          class="q-mr-sm" 
+          class="q-mr-sm"
         />
       </div>
     </section>
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm">
-          <q-input label="Pesquise" outlined v-model="filterCoupon" dense style="width:200px" class="bg-white rounded-borders">
+          <q-input
+            label="Pesquise"
+            outlined
+            v-model="filterCoupon"
+            dense
+            style="width: 200px"
+            class="bg-white rounded-borders"
+          >
             <template v-slot:prepend>
-              <q-icon name="search" size="20px" color="black"/>
+              <q-icon name="search" size="20px" color="black" />
             </template>
           </q-input>
         </div>
@@ -92,7 +99,7 @@ const rows = [
           v-for="(item, index) in rows"
           :key="index"
         >
-          <CouponCard 
+          <CouponCard
             :name="item.name"
             :description="item.description"
             :active="item.active"
@@ -107,4 +114,3 @@ const rows = [
     </section>
   </main>
 </template>
-

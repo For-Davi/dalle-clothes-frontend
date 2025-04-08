@@ -7,7 +7,7 @@ defineOptions({
   name: 'Diary',
 });
 
-const filterDiary = ref<string>('')
+const filterDiary = ref<string>('');
 
 const rows = [
   {
@@ -16,13 +16,13 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Maria Lima', 'Camila Nunes', 'Patricia Gomes']
+        employees: ['Maria Lima', 'Camila Nunes', 'Patricia Gomes'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Fabio Mendes', 'Caio Almeida', 'Felipe Moura']
-      }
-    ]
+        employees: ['Fabio Mendes', 'Caio Almeida', 'Felipe Moura'],
+      },
+    ],
   },
   {
     date: '09/04/2025',
@@ -30,13 +30,13 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Leandro Batista', 'Maria Lima', 'Marcelo Farias']
+        employees: ['Leandro Batista', 'Maria Lima', 'Marcelo Farias'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Marina Costa', 'Viviane Rocha', 'Tatiane Braga']
-      }
-    ]
+        employees: ['Marina Costa', 'Viviane Rocha', 'Tatiane Braga'],
+      },
+    ],
   },
   {
     date: '10/04/2025',
@@ -44,13 +44,13 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Fernanda Azevedo', 'Marina Costa', 'Ana Clara']
+        employees: ['Fernanda Azevedo', 'Marina Costa', 'Ana Clara'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Viviane Rocha', 'Juliana Silva', 'Ellen Maria']
-      }
-    ]
+        employees: ['Viviane Rocha', 'Juliana Silva', 'Ellen Maria'],
+      },
+    ],
   },
   {
     date: '11/04/2025',
@@ -58,13 +58,13 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Rafael Martins', 'Josue Ferreira', 'Leticia Ramos']
+        employees: ['Rafael Martins', 'Josue Ferreira', 'Leticia Ramos'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Leandro Batista', 'Bruna Carvalho', 'Gustavo Lima']
-      }
-    ]
+        employees: ['Leandro Batista', 'Bruna Carvalho', 'Gustavo Lima'],
+      },
+    ],
   },
   {
     date: '12/04/2025',
@@ -72,9 +72,9 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Camila Nunes', 'Wesley Matos']
+        employees: ['Camila Nunes', 'Wesley Matos'],
       },
-    ]
+    ],
   },
   {
     date: '13/04/2025',
@@ -82,9 +82,9 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 12:00',
-        employees: ['Viviane Rocha']
+        employees: ['Viviane Rocha'],
       },
-    ]
+    ],
   },
   {
     date: '14/04/2025',
@@ -92,13 +92,13 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Ana Clara', 'Gustavo Lima', 'Fernanda Azevedo']
+        employees: ['Ana Clara', 'Gustavo Lima', 'Fernanda Azevedo'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Marina Costa', 'Caio Almeida', 'Bruno Santiago']
-      }
-    ]
+        employees: ['Marina Costa', 'Caio Almeida', 'Bruno Santiago'],
+      },
+    ],
   },
   {
     date: '15/04/2025',
@@ -106,9 +106,9 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Juliane Prado', 'Bruno Santiago', 'Claudia Ribeiro']
+        employees: ['Juliane Prado', 'Bruno Santiago', 'Claudia Ribeiro'],
       },
-    ]
+    ],
   },
   {
     date: '16/04/2025',
@@ -116,17 +116,17 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Caio Almeida', 'Patricia Gomes', 'Lucas Vieira']
+        employees: ['Caio Almeida', 'Patricia Gomes', 'Lucas Vieira'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['João Pedro', 'Rafael Martins', 'Felipe Moura']
+        employees: ['João Pedro', 'Rafael Martins', 'Felipe Moura'],
       },
       {
         time: '22:00 - 23:00',
-        employees: ['Patricia Gomes', 'Bruno Santiago']
+        employees: ['Patricia Gomes', 'Bruno Santiago'],
       },
-    ]
+    ],
   },
   {
     date: '17/04/2025',
@@ -134,17 +134,23 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Gustavo Lima', 'Patricia Gomes', 'Bruno Santiago','Fernanda Azevedo', 'Isabela Dias']
+        employees: [
+          'Gustavo Lima',
+          'Patricia Gomes',
+          'Bruno Santiago',
+          'Fernanda Azevedo',
+          'Isabela Dias',
+        ],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Roberto Teixeira', 'Fernanda Azevedo', 'Isabela Dias']
+        employees: ['Roberto Teixeira', 'Fernanda Azevedo', 'Isabela Dias'],
       },
       {
         time: '22:00 - 23:00',
-        employees: ['Patricia Gomes', 'Bruno Santiago']
+        employees: ['Patricia Gomes', 'Bruno Santiago'],
       },
-    ]
+    ],
   },
   {
     date: '18/04/2025',
@@ -152,13 +158,13 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Rafaela Nunes', 'Gustavo Lima', 'Tatiane Braga']
+        employees: ['Rafaela Nunes', 'Gustavo Lima', 'Tatiane Braga'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Felipe Moura', 'Maria Lima', 'Diego Castro','Tatiane Braga']
-      }
-    ]
+        employees: ['Felipe Moura', 'Maria Lima', 'Diego Castro', 'Tatiane Braga'],
+      },
+    ],
   },
   {
     date: '19/04/2025',
@@ -166,9 +172,9 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['João Pedro', 'Bruna Carvalho', 'Fernanda Azevedo','Fabio Mendes']
+        employees: ['João Pedro', 'Bruna Carvalho', 'Fernanda Azevedo', 'Fabio Mendes'],
       },
-    ]
+    ],
   },
   {
     date: '20/04/2025',
@@ -176,17 +182,17 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Ana Clara', 'Juliane Prado', 'Amanda Duarte','Bruna Carvalho', 'Maria Lima']
+        employees: ['Ana Clara', 'Juliane Prado', 'Amanda Duarte', 'Bruna Carvalho', 'Maria Lima'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Milena Souza', 'Ellen Maria', 'Vinicius Rocha']
+        employees: ['Milena Souza', 'Ellen Maria', 'Vinicius Rocha'],
       },
       {
         time: '22:00 - 23:00',
-        employees: ['Ana Clara', 'Juliane Prado', 'Amanda Duarte']
+        employees: ['Ana Clara', 'Juliane Prado', 'Amanda Duarte'],
       },
-    ]
+    ],
   },
   {
     date: '21/04/2025',
@@ -194,13 +200,20 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Bruna Carvalho', 'Maria Lima', 'João Pedro']
+        employees: ['Bruna Carvalho', 'Maria Lima', 'João Pedro'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Paula Medeiros', 'Ellen Maria', 'Vinicius Rocha','Bruna Carvalho', 'Maria Lima', 'João Pedro']
-      }
-    ]
+        employees: [
+          'Paula Medeiros',
+          'Ellen Maria',
+          'Vinicius Rocha',
+          'Bruna Carvalho',
+          'Maria Lima',
+          'João Pedro',
+        ],
+      },
+    ],
   },
   {
     date: '22/04/2025',
@@ -208,46 +221,52 @@ const rows = [
     schedule: [
       {
         time: '09:00 - 16:00',
-        employees: ['Felipe Moura', 'Milena Souza', 'Diego Castro']
+        employees: ['Felipe Moura', 'Milena Souza', 'Diego Castro'],
       },
       {
         time: '16:00 - 22:00',
-        employees: ['Maria Lima', 'Leticia Ramos', 'Henrique Tavares']
-      }
-    ]
-  }
+        employees: ['Maria Lima', 'Leticia Ramos', 'Henrique Tavares'],
+      },
+    ],
+  },
 ];
-
 </script>
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Agenda" icon="calendar_month"/>
+      <TitlePage class="col-7" title="Agenda" icon="calendar_month" />
       <div>
-        <q-btn 
-          color="white" 
-          text-color="black" 
-          label="Horários" 
-          icon-right="alarm" 
+        <q-btn
+          color="white"
+          text-color="black"
+          label="Horários"
+          icon-right="alarm"
           no-caps
-          class="q-mr-sm" 
+          class="q-mr-sm"
         />
-        <q-btn 
-          color="white" 
-          text-color="black" 
-          label="Nova agenda" 
-          icon-right="add" 
+        <q-btn
+          color="white"
+          text-color="black"
+          label="Nova agenda"
+          icon-right="add"
           no-caps
-          class="q-mr-sm" 
+          class="q-mr-sm"
         />
       </div>
     </section>
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm">
-          <q-input label="Pesquise" outlined v-model="filterDiary" dense style="width:200px" class="bg-white rounded-borders">
+          <q-input
+            label="Pesquise"
+            outlined
+            v-model="filterDiary"
+            dense
+            style="width: 200px"
+            class="bg-white rounded-borders"
+          >
             <template v-slot:prepend>
-              <q-icon name="search" size="20px" color="black"/>
+              <q-icon name="search" size="20px" color="black" />
             </template>
           </q-input>
         </div>
@@ -258,13 +277,9 @@ const rows = [
           v-for="(item, index) in rows"
           :key="index"
         >
-          <DayDiaryCard 
-            :data="item"
-          />
+          <DayDiaryCard :data="item" />
         </div>
       </div>
     </section>
   </main>
 </template>
-
-
