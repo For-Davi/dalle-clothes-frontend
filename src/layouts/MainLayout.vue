@@ -321,10 +321,12 @@ function isActive(routeName: string) {
       </q-drawer>
 
       <q-page-container>
-        <transition name="fade" mode="out-in">
-          <router-view></router-view>
-        </transition>
-      </q-page-container>
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
+    </q-page-container>
     </q-layout>
   </div>
 </template>
