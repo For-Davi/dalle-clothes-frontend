@@ -326,7 +326,7 @@ function isActive(routeName: string) {
             <component :is="Component" />
           </transition>
         </router-view>
-    </q-page-container>
+      </q-page-container>
     </q-layout>
   </div>
 </template>

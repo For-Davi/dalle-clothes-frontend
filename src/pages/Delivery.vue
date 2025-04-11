@@ -6,26 +6,27 @@ defineOptions({
   name: 'Delivery',
 });
 
+const filterDelivery = ref<string>('');
 const daySelected = ref<string>('');
-const monthSelected = ref<string>('');
-const yearSelected = ref<string>('');
+const splitterModel = ref<number>(30);
+const events = ref(['2025/04/15', '2025/04/16']);
 
 const setStartDate = () => {
   const now = new Date();
 
-  daySelected.value = String(now.getDate()).padStart(2, '0');
-  monthSelected.value = String(now.getMonth() + 1).padStart(2, '0');
-  yearSelected.value = String(now.getFullYear());
+  const day = String(now.getDate()).padStart(2, '0');
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const year = String(now.getFullYear());
+
+  daySelected.value = `${year}/${month}/${day}`;
 };
 
-const currentMonthDays = computed((): string[] => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-
-  const lastDay = new Date(year, month + 1, 0).getDate();
-
-  return Array.from({ length: lastDay }, (_, i) => String(i + 1).padStart(2, '0'));
+const dayFormatted = computed((): string => {
+  const parts = daySelected.value.split('/');
+  return `${parts[2]}/${parts[1]}/${parts[0]}`;
+});
+const hasDelivery = computed((): boolean => {
+  return events.value.includes(daySelected.value);
 });
 
 onMounted(() => {
@@ -50,26 +51,62 @@ onMounted(() => {
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm row justify-between items-center">
         <div class="row justify-between q-gutter-x-sm items-center">
-          <span class="text-h6">{{ daySelected }}/{{ monthSelected }}/{{ yearSelected }}</span>
-          <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
-            <q-badge floating color="red" rounded />
-          </q-btn>
+          <span class="text-h6">{{ dayFormatted }}</span>
+          <div class="row justify-between q-gutter-x-sm items-center">
+            <q-input
+              label="Pesquise"
+              outlined
+              v-model="filterDelivery"
+              dense
+              style="width: 200px"
+              class="bg-white rounded-borders"
+            >
+              <template v-slot:prepend>
+                <q-icon name="search" size="20px" color="black" />
+              </template>
+            </q-input>
+            <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
+              <q-badge floating color="red" rounded />
+            </q-btn>
+          </div>
         </div>
       </q-banner>
-      <div class="row justify-center">
-        <div class="row justify-center q-gutter-sm">
-          <q-btn
-            v-for="(item, index) in currentMonthDays"
-            @click="daySelected = item"
-            :label="item"
-            round
-            color="primary"
-            unelevated
-            :key="index"
-            :outline="daySelected != item"
-          />
-        </div>
-      </div>
+      <q-splitter v-model="splitterModel" separator-class="bg-white" class="row justify-center">
+        <template v-slot:before>
+          <div class="q-pa-sm full-width">
+            <q-date
+              v-model="daySelected"
+              :events="events"
+              event-color="orange"
+              class="full-width"
+            />
+          </div>
+        </template>
+
+        <template v-slot:after>
+          <transition name="fade" mode="out-in">
+            <div v-if="hasDelivery" class="q-pa-md">
+              <p class="text-h4 q-mb-md">{{ daySelected }}</p>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque
+                magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima
+                assumenda consectetur culpa fuga nulla ullam. In, libero.
+              </p>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis praesentium cumque
+                magnam odio iure quidem, quod illum numquam possimus obcaecati commodi minima
+                assumenda consectetur culpa fuga nulla ullam. In, libero.
+              </p>
+            </div>
+            <div v-else class="column justify-center items-center">
+              <p class="text-h6 bg-primary text-white q-px-sm rounded-borders q-mt-sm">
+                Sem entregas planejadas
+              </p>
+              <q-img src="/icons/empty.png" width="150px" class="q-mt-xl" />
+            </div>
+          </transition>
+        </template>
+      </q-splitter>
     </section>
   </main>
 </template>
