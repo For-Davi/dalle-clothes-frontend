@@ -31,6 +31,29 @@
     opacity: 0.5;
   }
 }
+.capitalize {
+  text-transform: lowercase;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+.no-resize {
+  resize: none !important;
+}
+.form-auth{
+  width: 500px;
+  max-width: 96%;
+  border-radius: 3px;
+}
+.background-auth {
+  background-image: url('/images/background/bg-auth.jpg');
+  background-position: center;
+  background-size: cover;
+}
+.container-view {
+  height: 100vh;
+}
 
 .opacity-6 {
   opacity: 0.6;
