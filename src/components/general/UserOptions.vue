@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { useAuthStore } from 'src/stores/auth-store';
 
 defineOptions({
   name: 'UserOptions',
@@ -20,6 +21,8 @@ const openPerfil = () => {
   emit('update:openFormPerfil');
 };
 const logout = async () => {
+  useAuthStore().setToken(null);
+  useAuthStore().setUser(null);
   await router.push({ name: 'auth' });
 };
 </script>

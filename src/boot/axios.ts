@@ -19,7 +19,7 @@ export default boot(({ app, router }) => {
   const logout = async () => {
     useAuthStore().setToken(null);
     useAuthStore().setUser(null);
-    await router.push('/');
+    await router.push({ name: 'auth' });
   };
 
   api.interceptors.request.use(
