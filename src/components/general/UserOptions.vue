@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
+import { storeToRefs } from 'pinia';
 
 defineOptions({
   name: 'UserOptions',
@@ -11,6 +12,8 @@ const emit = defineEmits<{
   'update:openFormPerfil': [void];
   'update:openFormEnterprise': [void];
 }>();
+
+const {user} = storeToRefs(useAuthStore());
 
 const router = useRouter();
 const dropdown = ref(null);
@@ -32,7 +35,7 @@ const logout = async () => {
     rounded
     flat
     class="q-pa-none q-px-md q-mr-sm text-white"
-    label="Carlos Davi"
+    :label="user?.name"
     ref="dropdown"
   >
     <template v-slot:label>
