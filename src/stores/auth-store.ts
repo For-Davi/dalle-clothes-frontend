@@ -39,7 +39,7 @@ export const useAuthStore = defineStore('auth', {
           this.setUser(response.data.user);
           this.setToken(response.data.token);
           this.enterpriseName = response.data.enterprise_name;
-          await this.router.push({ name: 'admin-feed' });
+          await this.router.push({ name: 'dashboard' });
         }
       } catch (error) {
         createError(error);
@@ -108,7 +108,7 @@ export const useAuthStore = defineStore('auth', {
           this.setUser(response.data.user);
           this.setToken(response.data.token);
           createSuccess(response.data.message);
-          await this.router.push({ name: 'admin-feed' });
+          await this.router.push({ name: 'dashboard' });
         }
       } catch (error) {
         createError(error);
