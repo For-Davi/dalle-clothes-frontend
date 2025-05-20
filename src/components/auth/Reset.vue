@@ -3,7 +3,6 @@ import { onMounted, reactive, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
 import TitleAuth from '../shared/TitleAuth.vue';
-import type { RenderAuth } from '@/types/Auth';
 import { checkDataReset, checkPassword } from 'src/composables/CheckData';
 import { createSuccess } from 'src/composables/CreateNotify';
 
@@ -12,7 +11,7 @@ defineOptions({
 });
 
 const emit = defineEmits<{
-  'update:changeRender': [RenderAuth];
+  'update:changeRender': [IRenderAuth];
 }>();
 
 const { loadingAuth } = storeToRefs(useAuthStore());
@@ -35,7 +34,7 @@ const clear = (): void => {
     passwordConfirm: '',
   });
 };
-const changeRender = (render: RenderAuth): void => {
+const changeRender = (render: IRenderAuth): void => {
   emit('update:changeRender', render);
 };
 const sendEmailReset = async () => {

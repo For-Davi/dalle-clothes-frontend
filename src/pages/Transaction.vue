@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import type { QuasarTable } from '@/types/Quasar';
 import { reactive, ref, watch } from 'vue';
 defineOptions({
   name: 'Transaction',
@@ -12,7 +11,7 @@ const tab = ref<'movement' | 'schedule'>('movement');
 // const selectedDate = ref<string>('02/04/2025');
 const filterMovement = ref<string>('');
 const filterSchedule = ref<string>('');
-const columnsMovement = reactive<QuasarTable[]>([
+const columnsMovement = reactive<IQuasarTable[]>([
   {
     name: 'date_movement',
     label: 'Data de movimentação',
@@ -44,7 +43,7 @@ const columnsMovement = reactive<QuasarTable[]>([
     align: 'right',
   },
 ]);
-const columnsSchedule = reactive<QuasarTable[]>([
+const columnsSchedule = reactive<IQuasarTable[]>([
   {
     name: 'date_movement',
     label: 'Data de agendamento',

@@ -2,7 +2,6 @@
 import { useDepartmentStore } from 'src/stores/department-store';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
-import type { Department } from 'src/ts/Department';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { watch } from 'vue';
 
@@ -14,14 +13,14 @@ const props = defineProps<{
   mode: 'form' | 'list';
 }>();
 const emit = defineEmits<{
-  'open:form-department': [string | null, Department | null];
+  'open:form-department': [string | null, IDepartment | null];
 }>();
 
 const { loadingDepartment, treeDepartment} = storeToRefs(useDepartmentStore())
 
 const searchDepartment = ref<string>('')
 const selectedDepartment = ref<string>('');
-const departmentEdit = ref<Department | null>(null);
+const departmentEdit = ref<IDepartment | null>(null);
 const showConfirmAction = ref<boolean>(false)
 const clickRootCreate = ref<string | null>(null);
 const dataExcludeId = ref<string | null>(null);
@@ -43,7 +42,7 @@ const openFormDepartment = (key = null): void => {
     departmentEdit.value
   )
 };
-const handleEdit = (department: Department) => {
+const handleEdit = (department: IDepartment) => {
     departmentEdit.value = department;
     openFormDepartment();
 }

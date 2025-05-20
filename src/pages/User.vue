@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import type { QuasarTable } from '@/types/Quasar';
 import { reactive, ref } from 'vue';
 defineOptions({
   name: 'User',
@@ -26,7 +25,7 @@ const showInformation = ref<number>(0);
 //     value: 0,
 //   },
 // ]);
-const columnsUser = reactive<QuasarTable[]>([
+const columnsUser = reactive<IQuasarTable[]>([
   {
     name: 'name',
     label: 'Nome',

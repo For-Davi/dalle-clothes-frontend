@@ -10,19 +10,18 @@ import {
   // updateUserDataService,
   // updateUserPasswordService,
 } from 'src/services/auth-service';
-import type { User } from '@/types/User';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     loadingAuth: false as boolean,
-    user: useStorage('themplus_user', {} as User | null),
+    user: useStorage('themplus_user', {} as IUser | null),
     token: useStorage('themplus_token', null as string | null),
     enterpriseCreated: useStorage('enterprise_created', null as string | null),
     enterprisePosition: useStorage('enterprise_position', 'client' as string),
     enterpriseName: useStorage('enterprise_name', null as string | null),
   }),
   actions: {
-    setUser(user: User | null) {
+    setUser(user: IUser | null) {
       this.user = user;
     },
     setToken(token: string | null) {

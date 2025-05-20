@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import type { QuasarTable } from '@/types/Quasar';
 import { reactive, ref } from 'vue';
 defineOptions({
   name: 'Account',
 });
 
 const filterAccount = ref<string>('');
-const columnsAccount = reactive<QuasarTable[]>([
+const columnsAccount = reactive<IQuasarTable[]>([
   {
     name: 'name',
     label: 'Nome',

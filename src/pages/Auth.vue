@@ -2,16 +2,15 @@
 import Login from 'src/components/auth/Login.vue';
 import Reset from 'src/components/auth/Reset.vue';
 import Register from 'src/components/auth/Register.vue';
-import type { RenderAuth } from '@/types/Auth';
 import { ref } from 'vue';
 
 defineOptions({
   name: 'Auth',
 });
 
-const render = ref<RenderAuth>('login');
+const render = ref<IRenderAuth>('login');
 
-const handleChangeRender = (value: RenderAuth) => {
+const handleChangeRender = (value: IRenderAuth) => {
   render.value = value;
 };
 </script>

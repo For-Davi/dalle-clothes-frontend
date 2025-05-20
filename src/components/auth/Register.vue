@@ -2,7 +2,6 @@
 import { onMounted, reactive, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
-import type { RenderAuth } from '@/types/Auth';
 import { createError } from 'src/composables/CreateNotify';
 import TitleAuth from '../shared/TitleAuth.vue';
 import { checkDataRegister } from 'src/composables/CheckData';
@@ -12,7 +11,7 @@ defineOptions({
 });
 
 const emit = defineEmits<{
-  'update:changeRender': [RenderAuth];
+  'update:changeRender': [IRenderAuth];
 }>();
 
 const { loadingAuth } = storeToRefs(useAuthStore());

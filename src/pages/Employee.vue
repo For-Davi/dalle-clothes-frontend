@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import type { QuasarTable } from '@/types/Quasar';
 import { reactive, ref } from 'vue';
 defineOptions({
   name: 'Employee',
@@ -9,7 +8,7 @@ defineOptions({
 const tab = ref<'employee' | 'delivery'>('employee');
 const filterSupplier = ref<string>('');
 const filterMotocyclist = ref<string>('');
-const columnsSupplier = reactive<QuasarTable[]>([
+const columnsSupplier = reactive<IQuasarTable[]>([
   {
     name: 'name',
     label: 'Nome',
@@ -55,7 +54,7 @@ const rows = [
     position: 'Assistente de limpeza',
   },
 ];
-const columnsMotocyclist = reactive<QuasarTable[]>([
+const columnsMotocyclist = reactive<IQuasarTable[]>([
   {
     name: 'name',
     label: 'Nome',

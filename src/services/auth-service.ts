@@ -1,5 +1,4 @@
 import { api } from 'src/boot/axios';
-import type { User } from '@/types/User';
 
 // const baseUrl = 'user';
 
@@ -9,7 +8,7 @@ export const doLoginService = (
 ): Promise<{
   status: number;
   data: {
-    user: User;
+    user: IUser;
     enterprise_name: string;
     token: string;
   };
@@ -51,7 +50,7 @@ export const doRegisterService = (
 ): Promise<{
   status: number;
   data: {
-    user: User;
+    user: IUser;
     token: string;
     message: string;
   };

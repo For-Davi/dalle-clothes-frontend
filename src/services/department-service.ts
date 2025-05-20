@@ -1,12 +1,11 @@
 import { api } from 'boot/axios';
-import type { Department } from '@/types/Department';
 
 const baseUrl = 'department';
 
 export const getDepartmentsService = (): Promise<{
   status: number;
   data: {
-    departments: Department[];
+    departments: IDepartment[];
   };
 }> => api.get(`${baseUrl}`);
 
@@ -16,7 +15,7 @@ export const createDepartmentService = (
 ): Promise<{
   status: number;
   data: {
-    departments: Department[];
+    departments: IDepartment[];
     message: string;
   };
 }> => api.post(`${baseUrl}/`, { name, parentId });
@@ -28,7 +27,7 @@ export const updateDepartmentService = (
 ): Promise<{
   status: number;
   data: {
-    departments: Department[];
+    departments: IDepartment[];
     message: string;
   };
 }> =>
@@ -44,6 +43,6 @@ export const deleteDepartmentService = (
   status: number;
   data: {
     message: string;
-    departments: Department[];
+    departments: IDepartment[];
   };
 }> => api.delete(`${baseUrl}/${id}`);

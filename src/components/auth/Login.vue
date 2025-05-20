@@ -4,7 +4,6 @@ import { Notify } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
 import TitleAuth from '../shared/TitleAuth.vue';
-import type { RenderAuth } from '@/types/Auth';
 import { checkDataLogin } from 'src/composables/CheckData';
 
 defineOptions({
@@ -12,7 +11,7 @@ defineOptions({
 });
 
 const emit = defineEmits<{
-  'update:changeRender': [RenderAuth];
+  'update:changeRender': [IRenderAuth];
 }>();
 
 const { loadingAuth } = storeToRefs(useAuthStore());
@@ -29,7 +28,7 @@ const clear = (): void => {
     password: '',
   });
 };
-const changeRender = (render: RenderAuth): void => {
+const changeRender = (render: IRenderAuth): void => {
   emit('update:changeRender', render);
 };
 const login = async () => {

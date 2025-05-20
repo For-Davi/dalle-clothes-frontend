@@ -6,18 +6,17 @@ import {
   getDepartmentsService,
   updateDepartmentService,
 } from 'src/services/department-service';
-import type { Department, DepartmentNode } from '@/types/Department';
 
 export const useDepartmentStore = defineStore('department', {
   state: () => ({
     filledData: true as boolean,
     loadingDepartment: false as boolean,
-    listDepartment: [] as Department[],
+    listDepartment: [] as IDepartment[],
   }),
   getters: {
     treeDepartment: (state) => {
-      function transformToTree(departments: Department[]): DepartmentNode[] {
-        const map = new Map<string, DepartmentNode>();
+      function transformToTree(departments: IDepartment[]): IDepartmentNode[] {
+        const map = new Map<string, IDepartmentNode>();
 
         for (const department of departments) {
           map.set(department.id, {
@@ -27,7 +26,7 @@ export const useDepartmentStore = defineStore('department', {
           });
         }
 
-        const tree: DepartmentNode[] = [];
+        const tree: IDepartmentNode[] = [];
 
         for (const department of departments) {
           const node = map.get(department.id);
@@ -42,8 +41,7 @@ export const useDepartmentStore = defineStore('department', {
           }
         }
 
-        // Função recursiva para ordenar alfabeticamente os nós e seus filhos
-        function sortNodes(nodes: DepartmentNode[]): DepartmentNode[] {
+        function sortNodes(nodes: IDepartmentNode[]): IDepartmentNode[] {
           return nodes
             .sort((a, b) => a.label.localeCompare(b.label))
             .map((node) => ({
@@ -55,7 +53,7 @@ export const useDepartmentStore = defineStore('department', {
         return sortNodes(tree);
       }
 
-      return transformToTree(state.listDepartment as Department[]);
+      return transformToTree(state.listDepartment as IDepartment[]);
     },
   },
   actions: {
