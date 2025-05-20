@@ -30,20 +30,17 @@ export default boot(({ app, router }) => {
       }
       return config;
     },
-    (error) => Promise.reject(new Error(error.message || 'Erro desconhecido'))
+    (error) => Promise.reject(new Error(error.message || 'Erro desconhecido')),
   );
 
   api.interceptors.response.use(
     (response) => response,
     async (error) => {
-      if (
-        error.response?.status === 401 &&
-        error.response.data?.message === 'Unauthenticated.'
-      ) {
+      if (error.response?.status === 401 && error.response.data?.message === 'Unauthenticated.') {
         await logout();
       }
-      return Promise.reject(new Error(error.message || 'Erro desconhecido'))
-    }
+      return Promise.reject(new Error(error.message || 'Erro desconhecido'));
+    },
   );
 
   app.config.globalProperties.$axios = axios;

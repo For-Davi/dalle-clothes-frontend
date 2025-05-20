@@ -1,5 +1,5 @@
 import { api } from 'src/boot/axios';
-import type { User } from 'src/ts/User';
+import type { User } from '@/types/User';
 
 // const baseUrl = 'user';
 

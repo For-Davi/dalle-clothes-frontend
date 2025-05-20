@@ -4,7 +4,7 @@ import { Notify } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
 import TitleAuth from '../shared/TitleAuth.vue';
-import type { RenderAuth } from 'src/ts/Auth';
+import type { RenderAuth } from '@/types/Auth';
 import { checkDataLogin } from 'src/composables/CheckData';
 
 defineOptions({

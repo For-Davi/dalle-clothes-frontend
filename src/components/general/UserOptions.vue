@@ -13,7 +13,7 @@ const emit = defineEmits<{
   'update:openFormEnterprise': [void];
 }>();
 
-const {user} = storeToRefs(useAuthStore());
+const { user } = storeToRefs(useAuthStore());
 
 const router = useRouter();
 const dropdown = ref(null);

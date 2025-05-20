@@ -10,7 +10,7 @@ import {
   // updateUserDataService,
   // updateUserPasswordService,
 } from 'src/services/auth-service';
-import type { User } from 'src/ts/User';
+import type { User } from '@/types/User';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({

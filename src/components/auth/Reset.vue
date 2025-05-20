@@ -3,7 +3,7 @@ import { onMounted, reactive, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
 import TitleAuth from '../shared/TitleAuth.vue';
-import type { RenderAuth } from 'src/ts/Auth';
+import type { RenderAuth } from '@/types/Auth';
 import { checkDataReset, checkPassword } from 'src/composables/CheckData';
 import { createSuccess } from 'src/composables/CreateNotify';
 

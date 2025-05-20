@@ -3,8 +3,7 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 
-
-const {user} = storeToRefs(useAuthStore())
+const { user } = storeToRefs(useAuthStore());
 defineOptions({
   name: 'Dashboard',
 });
