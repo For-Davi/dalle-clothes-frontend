@@ -30,7 +30,8 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "types/**/*.d.ts",
-    "quasar.d.ts"
+    "quasar.d.ts",
+    "quasar.config.ts"
   ],
   "exclude": [
     "node_modules"

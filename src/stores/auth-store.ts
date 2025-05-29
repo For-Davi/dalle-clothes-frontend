@@ -12,8 +12,6 @@ import {
 } from 'src/services/auth-service';
 import { useRouter } from 'vue-router';
 
-const router = useRouter();
-
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     loadingAuth: false as boolean,
@@ -41,6 +39,8 @@ export const useAuthStore = defineStore('auth', {
           this.setUser(response.data.user);
           this.setToken(response.data.token);
           this.enterpriseName = response.data.enterprise_name;
+
+          const router = useRouter();
           await router.push({ name: 'dashboard' });
         }
       } catch (error) {
@@ -110,6 +110,8 @@ export const useAuthStore = defineStore('auth', {
           this.setUser(response.data.user);
           this.setToken(response.data.token);
           createSuccess(response.data.message);
+
+          const router = useRouter();
           await router.push({ name: 'dashboard' });
         }
       } catch (error) {
