@@ -1,13 +1,38 @@
 {
   "compilerOptions": {
-    "types": [],
+    "target": "ESNext",
+    "module": "ESNext",
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
     "baseUrl": ".",
+    "types": [
+      "web-bluetooth"
+    ],
     "paths": {
-      "@/*": ["src/*"]
-    }
+      "@/*": ["src/*"],
+      "#q-app/*": ["src/boot/*"],
+      "boot/*": ["src/boot/*"],
+    },
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types"
+    ]
   },
   "include": [
-    "src",
-    "types"
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "types/**/*.d.ts",
+    "quasar.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

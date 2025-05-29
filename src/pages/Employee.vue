@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { reactive, ref } from 'vue';
+import DepartmentManage from 'src/components/manage/DepartmentManage.vue';
+import { columnsSupplier, columnsMotocyclist } from 'src/utils/columns';
+import { ref } from 'vue';
+
 defineOptions({
   name: 'Employee',
 });
@@ -8,38 +11,8 @@ defineOptions({
 const tab = ref<'employee' | 'delivery'>('employee');
 const filterSupplier = ref<string>('');
 const filterMotocyclist = ref<string>('');
-const columnsSupplier = reactive<IQuasarTable[]>([
-  {
-    name: 'name',
-    label: 'Nome',
-    field: 'name',
-    align: 'left',
-  },
-  {
-    name: 'department',
-    label: 'Departamento',
-    field: 'department',
-    align: 'left',
-  },
-  {
-    name: 'position',
-    label: 'Cargo',
-    field: 'position',
-    align: 'left',
-  },
-  {
-    name: 'date_birthday',
-    label: 'Data de nascimento',
-    field: 'date_birthday',
-    align: 'left',
-  },
-  {
-    name: 'action',
-    label: 'Ação',
-    field: 'action',
-    align: 'right',
-  },
-]);
+const showDepartmentManage = ref<boolean>(false);
+
 const rows = [
   {
     name: 'Maria Assunção',
@@ -54,38 +27,6 @@ const rows = [
     position: 'Assistente de limpeza',
   },
 ];
-const columnsMotocyclist = reactive<IQuasarTable[]>([
-  {
-    name: 'name',
-    label: 'Nome',
-    field: 'name',
-    align: 'left',
-  },
-  {
-    name: 'phone',
-    label: 'Telefone',
-    field: 'phone',
-    align: 'left',
-  },
-  {
-    name: 'delivery',
-    label: 'Entregas do mês',
-    field: 'delivery',
-    align: 'left',
-  },
-  {
-    name: 'active',
-    label: 'Ativo',
-    field: 'active',
-    align: 'left',
-  },
-  {
-    name: 'action',
-    label: 'Ação',
-    field: 'action',
-    align: 'right',
-  },
-]);
 const rowsMotocyclist = [
   {
     name: 'Carlos Davi',
@@ -100,6 +41,10 @@ const rowsMotocyclist = [
     active: 0,
   },
 ];
+
+const changeViewDepartmentManage = ():void => {
+  showDepartmentManage.value = !showDepartmentManage.value
+}
 </script>
 <template>
   <main class="q-pa-lg">
@@ -115,6 +60,7 @@ const rowsMotocyclist = [
           class="q-mr-sm"
         />
         <q-btn
+          @click="changeViewDepartmentManage"
           color="white"
           text-color="black"
           label="Departamentos"
@@ -298,5 +244,6 @@ const rowsMotocyclist = [
         </q-tab-panel>
       </q-tab-panels>
     </section>
+    <DepartmentManage :open="showDepartmentManage" @update:open="changeViewDepartmentManage"/>
   </main>
 </template>

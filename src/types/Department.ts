@@ -11,24 +11,18 @@ export interface Department {
   parent_id: string;
 }
 
-export interface DepartmentNode {
-  id: string;
-  label: string;
-  children: DepartmentNode[];
-}
-
 export interface TransformedDepartment {
   id: string;
   label: string;
   icon: string;
-  children?: TransformedDepartment[];
+  children: TransformedDepartment[];
 }
 
 export interface DepartmentNode {
   id: string;
   label: string;
   icon: string;
-  children?: TransformedDepartment[];
+  children: TransformedDepartment[];
 }
 
 export interface DepartmentRoot {

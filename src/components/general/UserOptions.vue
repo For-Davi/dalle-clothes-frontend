@@ -16,11 +16,10 @@ const emit = defineEmits<{
 const { user } = storeToRefs(useAuthStore());
 
 const router = useRouter();
-const dropdown = ref(null);
+const dropdown = ref<{ hide: () => void } | null>(null);
 
 const openPerfil = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (dropdown.value as any).hide();
+  dropdown.value?.hide();
   emit('update:openFormPerfil');
 };
 const logout = async () => {

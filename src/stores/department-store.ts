@@ -23,6 +23,7 @@ export const useDepartmentStore = defineStore('department', {
             id: department.id,
             label: department.name,
             children: [],
+            icon: ''
           });
         }
 
@@ -63,7 +64,7 @@ export const useDepartmentStore = defineStore('department', {
     setLoading(loading: boolean) {
       this.loadingDepartment = loading;
     },
-    setListDepartment(departments: Department[]) {
+    setListDepartment(departments: IDepartment[]) {
       departments.map((item) => this.listDepartment.push(item));
     },
     async getDepartments() {
