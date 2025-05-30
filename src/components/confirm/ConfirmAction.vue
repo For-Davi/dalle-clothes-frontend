@@ -44,7 +44,7 @@ watch(open, () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 form-basic">
       <q-card-section class="q-pa-none">
-        <TitlePage :title="props.title" icon="warning"/>
+        <TitlePage :title="props.title" icon="warning" />
       </q-card-section>
       <q-card-section>
         <div class="column text-subtitle2">

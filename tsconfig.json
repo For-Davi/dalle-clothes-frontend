@@ -11,18 +11,13 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "baseUrl": ".",
-    "types": [
-      "web-bluetooth"
-    ],
+    "types": ["web-bluetooth"],
     "paths": {
       "@/*": ["src/*"],
       "#q-app/*": ["src/boot/*"],
-      "boot/*": ["src/boot/*"],
+      "boot/*": ["src/boot/*"]
     },
-    "typeRoots": [
-      "node_modules/@types",
-      "src/types"
-    ]
+    "typeRoots": ["node_modules/@types", "src/types"]
   },
   "include": [
     "src/**/*.ts",
@@ -33,7 +28,5 @@
     "quasar.d.ts",
     "quasar.config.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

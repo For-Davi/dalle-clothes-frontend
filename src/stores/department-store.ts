@@ -23,7 +23,7 @@ export const useDepartmentStore = defineStore('department', {
             id: department.id,
             label: department.name,
             children: [],
-            icon: ''
+            icon: '',
           });
         }
 

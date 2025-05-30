@@ -16,12 +16,12 @@ const emit = defineEmits<{
   'open:form-department': [string | null, IDepartment | null];
 }>();
 
-const { loadingDepartment, treeDepartment} = storeToRefs(useDepartmentStore())
+const { loadingDepartment, treeDepartment } = storeToRefs(useDepartmentStore());
 
-const searchDepartment = ref<string>('')
+const searchDepartment = ref<string>('');
 const selectedDepartment = ref<string>('');
 const departmentEdit = ref<IDepartment | null>(null);
-const showConfirmAction = ref<boolean>(false)
+const showConfirmAction = ref<boolean>(false);
 const clickRootCreate = ref<string | null>(null);
 const dataExcludeId = ref<string | null>(null);
 
@@ -36,16 +36,12 @@ const openFormDepartment = (key = null): void => {
   if (key) {
     clickRootCreate.value = key;
   }
-  emit(
-    'open:form-department',
-    clickRootCreate.value, 
-    departmentEdit.value
-  )
+  emit('open:form-department', clickRootCreate.value, departmentEdit.value);
 };
 const handleEdit = (department: IDepartment) => {
-    departmentEdit.value = department;
-    openFormDepartment();
-}
+  departmentEdit.value = department;
+  openFormDepartment();
+};
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
   await useDepartmentStore().deleteDepartment(dataExcludeId.value ?? '');
@@ -60,11 +56,15 @@ const openConfirmAction = (id: string): void => {
   showConfirmAction.value = true;
 };
 
-watch(() => props.mode, async (mode) => {
-  if(mode === 'list'){
-    await useDepartmentStore().getDepartments();
-  }
-}, {immediate: true})
+watch(
+  () => props.mode,
+  async (mode) => {
+    if (mode === 'list') {
+      await useDepartmentStore().getDepartments();
+    }
+  },
+  { immediate: true },
+);
 </script>
 <template>
   <main class="q-pa-sm q-mb-md">

@@ -1,4 +1,4 @@
-export const columnsSupplier:IQuasarTable[] = [
+export const columnsSupplier: IQuasarTable[] = [
   {
     name: 'name',
     label: 'Nome',
@@ -31,7 +31,7 @@ export const columnsSupplier:IQuasarTable[] = [
   },
 ];
 
-export const columnsMotocyclist:IQuasarTable[] = [
+export const columnsMotocyclist: IQuasarTable[] = [
   {
     name: 'name',
     label: 'Nome',
@@ -48,6 +48,45 @@ export const columnsMotocyclist:IQuasarTable[] = [
     name: 'delivery',
     label: 'Entregas do mês',
     field: 'delivery',
+    align: 'left',
+  },
+  {
+    name: 'active',
+    label: 'Ativo',
+    field: 'active',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsUser: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'email',
+    label: 'E-mail',
+    field: 'email',
+    align: 'left',
+  },
+  {
+    name: 'position',
+    label: 'Permissão',
+    field: 'position',
+    align: 'left',
+  },
+  {
+    name: 'department',
+    label: 'Departamento',
+    field: 'department',
     align: 'left',
   },
   {

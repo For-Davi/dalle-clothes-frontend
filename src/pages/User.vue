@@ -1,68 +1,17 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
+import { columnsUser } from 'src/utils/columns';
+import DepartmentManage from 'src/components/manage/DepartmentManage.vue';
+
 defineOptions({
   name: 'User',
 });
 
 const filterUser = ref<string>('');
 const showInformation = ref<number>(0);
-// const selectedActive = ref<QuasarSelect<number>>({
-//   label: 'Todos',
-//   value: 2,
-// });
-// const optionsActive = reactive<QuasarSelect<number>[]>([
-//   {
-//     label: 'Todos',
-//     value: 2,
-//   },
-//   {
-//     label: 'Ativos',
-//     value: 1,
-//   },
-//   {
-//     label: 'Inativos',
-//     value: 0,
-//   },
-// ]);
-const columnsUser = reactive<IQuasarTable[]>([
-  {
-    name: 'name',
-    label: 'Nome',
-    field: 'name',
-    align: 'left',
-  },
-  {
-    name: 'email',
-    label: 'E-mail',
-    field: 'email',
-    align: 'left',
-  },
-  {
-    name: 'position',
-    label: 'Permissão',
-    field: 'position',
-    align: 'left',
-  },
-  {
-    name: 'department',
-    label: 'Departamento',
-    field: 'department',
-    align: 'left',
-  },
-  {
-    name: 'active',
-    label: 'Ativo',
-    field: 'active',
-    align: 'left',
-  },
-  {
-    name: 'action',
-    label: 'Ação',
-    field: 'action',
-    align: 'right',
-  },
-]);
+const showManageDepartment = ref<boolean>(false);
+
 const rows = [
   {
     name: 'Carlos Davi',
@@ -80,6 +29,9 @@ const rows = [
   },
 ];
 
+const changeShowDepartmentManage = (): void => {
+  showManageDepartment.value = !showManageDepartment.value;
+};
 const setShowInformation = (index: number) => {
   showInformation.value = showInformation.value === index + 1 ? 0 : index + 1;
 };
@@ -98,6 +50,7 @@ const setShowInformation = (index: number) => {
           class="q-mr-sm"
         />
         <q-btn
+          @click="changeShowDepartmentManage"
           color="white"
           text-color="black"
           label="Departamentos"
@@ -236,5 +189,6 @@ const setShowInformation = (index: number) => {
         </template>
       </q-table>
     </section>
+    <DepartmentManage :open="showManageDepartment" @update:open="changeShowDepartmentManage" />
   </main>
 </template>

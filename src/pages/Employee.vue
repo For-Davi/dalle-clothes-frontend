@@ -42,9 +42,9 @@ const rowsMotocyclist = [
   },
 ];
 
-const changeViewDepartmentManage = ():void => {
-  showDepartmentManage.value = !showDepartmentManage.value
-}
+const changeViewDepartmentManage = (): void => {
+  showDepartmentManage.value = !showDepartmentManage.value;
+};
 </script>
 <template>
   <main class="q-pa-lg">
@@ -244,6 +244,6 @@ const changeViewDepartmentManage = ():void => {
         </q-tab-panel>
       </q-tab-panels>
     </section>
-    <DepartmentManage :open="showDepartmentManage" @update:open="changeViewDepartmentManage"/>
+    <DepartmentManage :open="showDepartmentManage" @update:open="changeViewDepartmentManage" />
   </main>
 </template>

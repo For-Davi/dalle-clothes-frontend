@@ -93,3 +93,15 @@ export const checkDataReset = (data: { email: string }): { status: boolean; mess
   }
   return { status: true };
 };
+
+export const checkDataDepartment = (data: {
+  name: string | undefined;
+}): { status: boolean; message?: string } => {
+  if (data.name?.trim() === '' || !data.name) {
+    return {
+      status: false,
+      message: 'Deve ser informado o nome do departamento',
+    };
+  }
+  return { status: true };
+};

@@ -21,3 +21,10 @@ export const createSuccess = (message: string) => {
     type: 'positive',
   });
 };
+
+export const createErrorData = (message: string) => {
+  Notify.create({
+    message,
+    type: 'negative',
+  });
+};
