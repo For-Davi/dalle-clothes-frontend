@@ -10,7 +10,7 @@ import {
   // updateUserDataService,
   // updateUserPasswordService,
 } from 'src/services/auth-service';
-import { useRouter } from 'vue-router';
+import router from 'src/router';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -40,7 +40,6 @@ export const useAuthStore = defineStore('auth', {
           this.setToken(response.data.token);
           this.enterpriseName = response.data.enterprise_name;
 
-          const router = useRouter();
           await router.push({ name: 'dashboard' });
         }
       } catch (error) {
@@ -111,7 +110,6 @@ export const useAuthStore = defineStore('auth', {
           this.setToken(response.data.token);
           createSuccess(response.data.message);
 
-          const router = useRouter();
           await router.push({ name: 'dashboard' });
         }
       } catch (error) {
