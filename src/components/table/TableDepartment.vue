@@ -4,6 +4,8 @@ import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { watch } from 'vue';
+import Loading from '../shared/Loading.vue';
+import Banner from '../shared/Banner.vue';
 
 defineOptions({
   name: 'TableDepartment',
@@ -68,10 +70,10 @@ watch(
 );
 </script>
 <template>
-  <main>
-    <div class="row q-col-gutter-sm">
+  <main style="min-height: 400px">
+    <div class="row q-col-gutter-sm items-center justify-center">
       <q-tree
-        v-show="treeDepartment.length > 0"
+        v-show="treeDepartment.length > 0 && !loadingDepartment"
         v-model:selected="selectedDepartment"
         :nodes="treeDepartment"
         :filter="searchDepartment"
@@ -120,11 +122,12 @@ watch(
         </template>
       </q-tree>
       <div v-show="treeDepartment.length == 0 && !loadingDepartment" class="q-pa-md full-width">
-        <q-banner dense inline-actions class="text-white bg-red" rounded>
-          Não há departamentos registrados. Por favor, adicione um novo departamento.
-        </q-banner>
+        <Banner
+          text="Não há departamentos registrados. Por favor, adicione um novo departamento."
+        />
       </div>
     </div>
+    <Loading :show="loadingDepartment" />
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
