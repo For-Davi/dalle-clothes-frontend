@@ -19,7 +19,7 @@ export const useDepartmentStore = defineStore('department', {
         const map = new Map<string, IDepartmentNode>();
 
         for (const department of departments) {
-          map.set(department.id, {
+          map.set(department.id.toString(), {
             id: department.id,
             label: department.name,
             children: [],
@@ -30,8 +30,10 @@ export const useDepartmentStore = defineStore('department', {
         const tree: IDepartmentNode[] = [];
 
         for (const department of departments) {
-          const node = map.get(department.id);
-          const parent = department.parent_id ? map.get(department.parent_id) : undefined;
+          const node = map.get(department.id.toString());
+          const parent = department.parent_id
+            ? map.get(department.parent_id.toString())
+            : undefined;
 
           if (node) {
             if (parent) {
@@ -81,13 +83,12 @@ export const useDepartmentStore = defineStore('department', {
         this.setLoading(false);
       }
     },
-    async createDepartment(name: string, parentId: string | null) {
+    async createDepartment(name: string, parentId: number | null) {
       this.setLoading(true);
       try {
         const response = await createDepartmentService(name, parentId);
         if (response.status === 201) {
           this.clearListDepartment();
-          this.setListDepartment(response.data.departments);
           createSuccess(response.data.message);
         }
 
@@ -99,7 +100,7 @@ export const useDepartmentStore = defineStore('department', {
         this.setLoading(false);
       }
     },
-    async updateDepartment(id: string, name: string, parentId: string | null) {
+    async updateDepartment(id: number, name: string, parentId: number | null) {
       this.setLoading(true);
       try {
         const response = await updateDepartmentService(id, name, parentId);
@@ -117,7 +118,7 @@ export const useDepartmentStore = defineStore('department', {
         this.setLoading(false);
       }
     },
-    async deleteDepartment(departmentId: string) {
+    async deleteDepartment(departmentId: number) {
       this.setLoading(true);
       try {
         const response = await deleteDepartmentService(departmentId);

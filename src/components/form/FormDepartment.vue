@@ -15,8 +15,8 @@ defineOptions({
 
 const props = defineProps<{
   mode: 'form' | 'list';
-  keyRoot: string | null;
-  departmentEdit: IDepartment | { id: string; label: string } | null;
+  keyRoot: number | null;
+  departmentEdit: IDepartment | { id: number; label: string } | null;
 }>();
 const emit = defineEmits<{
   'update:back-list': [void];
@@ -27,8 +27,8 @@ const { loadingDepartment, treeDepartment } = storeToRefs(useDepartmentStore());
 const selectedBank = ref<string | null>(null);
 const showDepartmentChoose = ref<boolean>(false);
 const dataDepartment = reactive<IDataDepartment>({
-  name: '',
-  parent: null,
+  name: '' as string,
+  parent: null as number | null,
   parentName: null,
 });
 
@@ -57,7 +57,7 @@ const save = async () => {
 };
 const update = async (): Promise<void> => {
   const response = await useDepartmentStore().updateDepartment(
-    props.departmentEdit?.id ?? '',
+    props.departmentEdit?.id ?? 0,
     dataDepartment.name,
     dataDepartment.parent ?? null,
   );
@@ -69,7 +69,7 @@ const update = async (): Promise<void> => {
 };
 const findItemById = (
   array: any[],
-  id: string,
+  id: number,
   parent: any = null,
 ): { item: any | null; parent: any | null } => {
   for (const item of array) {
@@ -87,7 +87,7 @@ const findItemById = (
 };
 const checkEditDepartment = () => {
   if (props.departmentEdit != null) {
-    const { item, parent } = findItemById(treeDepartment.value, props.departmentEdit.id ?? '');
+    const { item, parent } = findItemById(treeDepartment.value, props.departmentEdit.id ?? 0);
 
     Object.assign(dataDepartment, {
       name: item.label,
@@ -111,7 +111,7 @@ const openDepartmentChoose = (): void => {
 const closeDepartmentChoose = (): void => {
   showDepartmentChoose.value = false;
 };
-const handleChooseDepartment = (tree: { id: string; label: string } | null): void => {
+const handleChooseDepartment = (tree: { id: number; label: string } | null): void => {
   dataDepartment.parent = tree === null ? null : tree.id;
   dataDepartment.parentName = tree === null ? null : tree.label;
   closeDepartmentChoose();
@@ -120,7 +120,7 @@ const handleChooseDepartment = (tree: { id: string; label: string } | null): voi
 watch(
   () => props.mode,
   (mode) => {
-    if (mode === 'list') {
+    if (mode === 'form') {
       clear();
       checkCreateWithDepartment();
       checkEditDepartment();
@@ -131,6 +131,9 @@ watch(
 </script>
 <template>
   <q-card class="bg-grey-2" flat bordered>
+    departmentEdit
+
+    {{ departmentEdit }}
     <q-card-section class="q-pa-none">
       <TitleAuth
         :title="

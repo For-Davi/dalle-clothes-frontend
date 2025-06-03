@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
-  'update:chooseDepartment': [{ id: string; label: string } | null];
+  'update:chooseDepartment': [{ id: number; label: string } | null];
 }>();
 
 const { treeDepartment, loadingDepartment } = storeToRefs(useDepartmentStore());
@@ -28,7 +28,7 @@ const closeShowModal = (): void => {
 const choseDepartmentRoot = (): void => {
   emit('update:chooseDepartment', null);
 };
-const selectTree = (tree: { id: string; label: string }): void => {
+const selectTree = (tree: { id: number; label: string }): void => {
   emit('update:chooseDepartment', tree);
 };
 

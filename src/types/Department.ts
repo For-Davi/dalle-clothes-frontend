@@ -1,31 +1,31 @@
 export interface DataDepartment {
   name: string;
-  parent: string | null;
+  parent: number | null;
   parentName: string | null;
 }
 
 export interface Department {
-  id: string;
+  id: number;
   name: string;
-  enterprise_id: string;
-  parent_id: string;
+  enterprise_id: number;
+  parent_id: number;
 }
 
 export interface TransformedDepartment {
-  id: string;
+  id: number;
   label: string;
   icon: string;
   children: TransformedDepartment[];
 }
 
 export interface DepartmentNode {
-  id: string;
+  id: number;
   label: string;
   icon: string;
   children: TransformedDepartment[];
 }
 
 export interface DepartmentRoot {
-  id: string;
+  id: number;
   name: string;
 }

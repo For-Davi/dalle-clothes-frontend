@@ -1,10 +1,9 @@
-import type {
-  Router} from 'vue-router';
+import type { Router } from 'vue-router';
 import {
   createMemoryHistory,
   createRouter,
   createWebHashHistory,
-  createWebHistory
+  createWebHistory,
 } from 'vue-router';
 import { useAuthStore } from 'src/stores/auth-store';
 import routes from './routes';
@@ -24,7 +23,7 @@ const router: Router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!authStore.token) {
       next({ name: 'auth' });
     } else {

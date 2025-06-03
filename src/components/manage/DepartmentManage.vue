@@ -17,18 +17,18 @@ const emit = defineEmits<{
 
 const tab = ref<'list' | 'form'>('list');
 const searchDepartment = ref<string>('');
-const clickRootCreate = ref<string | null>(null);
+const clickRootCreate = ref<number | null>(null);
 const departmentEdit = ref<IDepartment | null>(null);
-const dataExcludeId = ref<string | null>(null);
+const dataExcludeId = ref<number | null>(null);
 
 const clear = () => {
-  clickRootCreate.value = '';
+  clickRootCreate.value = null;
   departmentEdit.value = null;
   searchDepartment.value = '';
   dataExcludeId.value = null;
 };
 
-const makeForm = (rootCreate: string | null, dataEdit: IDepartment | null) => {
+const makeForm = (rootCreate: number | null, dataEdit: IDepartment | null) => {
   clickRootCreate.value = rootCreate;
   departmentEdit.value = dataEdit;
   tab.value = 'form';

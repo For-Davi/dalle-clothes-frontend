@@ -11,19 +11,18 @@ export const getDepartmentsService = (): Promise<{
 
 export const createDepartmentService = (
   name: string,
-  parentId: string | null,
+  parentId: number | null,
 ): Promise<{
   status: number;
   data: {
-    departments: IDepartment[];
     message: string;
   };
 }> => api.post(`${baseUrl}/`, { name, parentId });
 
 export const updateDepartmentService = (
-  id: string,
+  id: number,
   name: string,
-  parentId: string | null,
+  parentId: number | null,
 ): Promise<{
   status: number;
   data: {
@@ -38,7 +37,7 @@ export const updateDepartmentService = (
   });
 
 export const deleteDepartmentService = (
-  id: string,
+  id: number,
 ): Promise<{
   status: number;
   data: {
