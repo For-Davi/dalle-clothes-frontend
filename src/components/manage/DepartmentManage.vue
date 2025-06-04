@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, onMounted, ref } from 'vue';
-import TableDepartment from '../table/TableDepartment.vue';
+import TreeDepartment from '../tree/TreeDepartment.vue';
 import FormDepartment from '../form/FormDepartment.vue';
 
 defineOptions({
@@ -32,6 +32,10 @@ const makeForm = (rootCreate: number | null, dataEdit: IDepartment | null) => {
   clickRootCreate.value = rootCreate;
   departmentEdit.value = dataEdit;
   tab.value = 'form';
+};
+const reset = (): void => {
+  clear();
+  tab.value = 'list';
 };
 
 const open = computed({
@@ -69,13 +73,14 @@ onMounted(() => {
           </q-tabs>
           <q-tab-panels v-model="tab" animated class="q-pa-none">
             <q-tab-panel name="list" class="q-px-none q-py-sm border-top-grey-light bg-grey-2">
-              <TableDepartment :mode="tab" @open:form-department="makeForm" />
+              <TreeDepartment :mode="tab" @open:form-department="makeForm" />
             </q-tab-panel>
             <q-tab-panel name="form" class="q-px-none q-py-sm border-top-grey-light bg-grey-2">
               <FormDepartment
                 :mode="tab"
                 :department-edit="departmentEdit"
                 :key-root="clickRootCreate"
+                @update:back-list="reset"
               />
             </q-tab-panel>
           </q-tab-panels>

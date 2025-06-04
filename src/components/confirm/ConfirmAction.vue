@@ -42,7 +42,7 @@ watch(open, () => {
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 form-basic">
+    <q-card class="bg-grey-2 form-basic" style="min-width: 90vw">
       <q-card-section class="q-pa-none">
         <TitlePage :title="props.title" icon="warning" />
       </q-card-section>

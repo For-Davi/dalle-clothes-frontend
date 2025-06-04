@@ -131,9 +131,6 @@ watch(
 </script>
 <template>
   <q-card class="bg-grey-2" flat bordered>
-    departmentEdit
-
-    {{ departmentEdit }}
     <q-card-section class="q-pa-none">
       <TitleAuth
         :title="
@@ -165,7 +162,6 @@ watch(
           type="text"
           label="Escolher hierarquia"
           readonly
-          disable
           clearable
         >
           <template v-slot:append>
@@ -204,4 +200,9 @@ watch(
       </div>
     </q-card-actions>
   </q-card>
+  <DepartmentChoose
+    :open="showDepartmentChoose"
+    @update:open="closeDepartmentChoose"
+    @update:choose-department="handleChooseDepartment"
+  />
 </template>

@@ -26,7 +26,6 @@ export const updateDepartmentService = (
 ): Promise<{
   status: number;
   data: {
-    departments: IDepartment[];
     message: string;
   };
 }> =>

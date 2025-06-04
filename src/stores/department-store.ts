@@ -105,8 +105,6 @@ export const useDepartmentStore = defineStore('department', {
       try {
         const response = await updateDepartmentService(id, name, parentId);
         if (response.status === 200) {
-          this.clearListDepartment();
-          this.setListDepartment(response.data.departments);
           createSuccess(response.data.message);
         }
 
