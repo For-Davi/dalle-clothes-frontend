@@ -9,12 +9,11 @@ defineOptions({
 });
 
 const { loadingUser, listUserSystem } = storeToRefs(useUserStore());
-const { getUsers, deleteUser } = useUserStore();
 
 const filterUser = ref<string>('');
 
 const fetchUsers = async (): Promise<void> => {
-  await getUsers();
+  await useUserStore().getUsers();
 };
 
 onMounted(async () => {
@@ -62,8 +61,8 @@ onMounted(async () => {
           />
         </q-td>
         <q-td key="action" :props="props">
-          <q-btn :disable="false" size="sm" flat round color="black" icon="edit" />
-          <q-btn :disable="false" size="sm" flat round color="red" icon="delete" />
+          <q-btn :disable="loadingUser" size="sm" flat round color="black" icon="edit" />
+          <q-btn :disable="loadingUser" size="sm" flat round color="red" icon="delete" />
         </q-td>
       </q-tr>
     </template>
