@@ -76,7 +76,7 @@ watch(
           >
             <template v-slot:default-header="prop">
               <div class="fit">
-                <q-icon name="groups" color="black" size="22px" />
+                <q-icon name="groups" color="black" size="16px" class="q-mr-sm"/>
                 <q-btn
                   size="sm"
                   color="black"
