@@ -24,4 +24,5 @@ declare global {
   type IQuasarSelect<T = any> = QuasarSelect<T>;
   type IQuasarTable = QuasarTable;
   type IUser = User;
+  type IUserSystem = UserSystem;
 }

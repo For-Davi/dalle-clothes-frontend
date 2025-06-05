@@ -1,39 +1,18 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { ref } from 'vue';
-import { columnsUser } from 'src/utils/columns';
 import DepartmentManage from 'src/components/manage/DepartmentManage.vue';
+import TableUserSystem from 'src/components/table/TableUserSystem.vue';
 
 defineOptions({
   name: 'User',
 });
 
 const filterUser = ref<string>('');
-const showInformation = ref<number>(0);
 const showManageDepartment = ref<boolean>(false);
-
-const rows = [
-  {
-    name: 'Carlos Davi',
-    email: 'carlos@gmail.com',
-    position: 'Gerente',
-    department: 'Financeiro',
-    active: 1,
-  },
-  {
-    name: 'Ellen Maria',
-    email: 'ellen@gmail.com',
-    position: 'Administrador',
-    department: 'Não definido',
-    active: 0,
-  },
-];
 
 const changeShowDepartmentManage = (): void => {
   showManageDepartment.value = !showManageDepartment.value;
-};
-const setShowInformation = (index: number) => {
-  showInformation.value = showInformation.value === index + 1 ? 0 : index + 1;
 };
 </script>
 <template>
@@ -86,108 +65,9 @@ const setShowInformation = (index: number) => {
           <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
             <q-badge floating color="red" rounded />
           </q-btn>
-          <!-- <q-select
-            outlined
-            v-model="selectedActive"
-            dense
-            :options="optionsActive"
-            style="width: 200px"
-            class="bg-white rounded-borders"
-          >
-            <template v-slot:prepend>
-              <q-icon
-                :name="
-                  selectedActive.value == 1
-                    ? 'check_circle'
-                    : selectedActive.value == 2
-                      ? 'done_all'
-                      : 'close'
-                "
-                size="20px"
-                :color="
-                  selectedActive.value == 1 ? 'green' : selectedActive.value == 2 ? 'blue' : 'red'
-                "
-              />
-            </template>
-          </q-select> -->
         </div>
       </q-banner>
-      <q-table
-        :rows="rows"
-        :columns="columnsUser"
-        :filter="filterUser"
-        :loading="false"
-        title="Lista de usuários"
-        row-key="index"
-        no-data-label="Nenhum usuário para mostrar"
-        virtual-scroll
-        :rows-per-page-options="[10]"
-      >
-        <template v-slot:header="props">
-          <q-tr :props="props">
-            <q-th v-for="col in props.cols" :key="col.name" :props="props" class="text-h5">
-              <span class="text-body2 text-bold">{{ col.label }}</span>
-            </q-th>
-          </q-tr>
-        </template>
-        <template v-slot:body="props">
-          <q-tr :props="props" class="cursor-pointer">
-            <q-td
-              key="name"
-              :props="props"
-              class="text-left"
-              @click="setShowInformation(props.rowIndex)"
-            >
-              {{ props.row.name }}
-            </q-td>
-            <q-td
-              key="email"
-              :props="props"
-              class="text-left"
-              @click="setShowInformation(props.rowIndex)"
-            >
-              {{ props.row.email }}
-            </q-td>
-            <q-td
-              key="position"
-              :props="props"
-              class="text-left"
-              @click="setShowInformation(props.rowIndex)"
-            >
-              {{ props.row.position }}
-            </q-td>
-            <q-td
-              key="department"
-              :props="props"
-              class="text-left"
-              @click="setShowInformation(props.rowIndex)"
-            >
-              {{ props.row.department }}
-            </q-td>
-            <q-td
-              key="active"
-              :props="props"
-              class="text-left"
-              @click="setShowInformation(props.rowIndex)"
-            >
-              <q-icon
-                :name="props.row.active === 1 ? 'check_circle' : 'close'"
-                :color="props.row.active === 1 ? 'green' : 'red'"
-                size="17px"
-              />
-            </q-td>
-            <q-td key="action" :props="props">
-              <q-btn :disable="false" size="sm" flat round color="black" icon="edit" />
-              <q-btn :disable="false" size="sm" flat round color="red" icon="delete" />
-            </q-td>
-          </q-tr>
-          <q-tr v-show="showInformation == props.rowIndex + 1" :props="props">
-            <q-td colspan="100%" class="bg-grey-3">
-              <div class="text-left">This is expand slot for row above: {{ props.row.name }}.</div>
-            </q-td>
-          </q-tr>
-        </template>
-      </q-table>
+      <TableUserSystem />
     </section>
     <DepartmentManage :open="showManageDepartment" @update:open="changeShowDepartmentManage" />
   </main>

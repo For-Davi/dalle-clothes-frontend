@@ -78,15 +78,15 @@ export const columnsUser: IQuasarTable[] = [
     align: 'left',
   },
   {
-    name: 'position',
+    name: 'role_name',
     label: 'Permissão',
-    field: 'position',
+    field: 'role_name',
     align: 'left',
   },
   {
-    name: 'department',
+    name: 'department_name',
     label: 'Departamento',
-    field: 'department',
+    field: 'department_name',
     align: 'left',
   },
   {
