@@ -4,6 +4,7 @@ import {
   createUserService,
   deleteUserService,
   getUsersService,
+  showUserService,
   updateUserService,
 } from 'src/services/user-service';
 
@@ -21,6 +22,16 @@ export const useUserStore = defineStore('user', {
     },
     setListUserSystem(users: IUserSystem[]) {
       users.map((item) => this.listUserSystem.push(item));
+    },
+    async showUser(userId: number) {
+      try {
+        this.setLoading(true);
+        return await showUserService(userId);
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
     },
     async getUsers() {
       try {
@@ -40,8 +51,8 @@ export const useUserStore = defineStore('user', {
       name: string,
       password: string,
       email: string,
-      roleId: string,
-      departmentId: string | null,
+      roleId: number,
+      departmentId: number | null,
     ) {
       this.setLoading(true);
       try {
@@ -61,11 +72,11 @@ export const useUserStore = defineStore('user', {
       }
     },
     async updateUser(
-      id: string,
+      id: number,
       name: string,
       email: string,
-      roleId: string,
-      departmentId: string | null,
+      roleId: number,
+      departmentId: number | null,
       active: number,
     ) {
       this.setLoading(true);

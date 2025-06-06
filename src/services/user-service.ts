@@ -9,12 +9,21 @@ export const getUsersService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const showUserService = (
+  userId: number,
+): Promise<{
+  status: number;
+  data: {
+    user: IUser;
+  };
+}> => api.get(`${baseUrl}/${userId}`);
+
 export const createUserService = (
   name: string,
   password: string,
   email: string,
-  roleId: string,
-  departmentId: string | null,
+  roleId: number,
+  departmentId: number | null,
 ): Promise<{
   status: number;
   data: {
@@ -24,11 +33,11 @@ export const createUserService = (
 }> => api.post(`${baseUrl}/`, { name, password, email, roleId, departmentId });
 
 export const updateUserService = (
-  id: string,
+  id: number,
   name: string,
   email: string,
-  roleId: string,
-  departmentId: string | null,
+  roleId: number,
+  departmentId: number | null,
   active: number,
 ): Promise<{
   status: number;

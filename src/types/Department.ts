@@ -29,3 +29,8 @@ export interface DepartmentRoot {
   id: number;
   name: string;
 }
+
+export interface DepartmentSelect {
+  id: number;
+  name: string;
+}

@@ -1,13 +1,14 @@
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
+  active: number;
   role_id: string;
   enterprise_id: string;
 }
 
 export interface UserSystem {
-  id: string;
+  id: number;
   name: string;
   email: string;
   active: number;

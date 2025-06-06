@@ -8,6 +8,7 @@ import type {
   DepartmentRoot,
 } from './Department';
 import type { QuasarSelect, QuasarTable } from './Quasar';
+import type { RoleSelect } from './Role';
 import type { User } from './User';
 
 export {};
@@ -20,9 +21,12 @@ declare global {
   type IDepartmentNode = DepartmentNode;
   type ITransformedDepartment = TransformedDepartment;
   type IDepartmentRoot = DepartmentRoot;
+  type IDepartmentSelect = DepartmentSelect;
 
   type IQuasarSelect<T = any> = QuasarSelect<T>;
   type IQuasarTable = QuasarTable;
   type IUser = User;
   type IUserSystem = UserSystem;
+
+  type IRoleSelect = RoleSelect;
 }
