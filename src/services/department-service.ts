@@ -9,13 +9,6 @@ export const getDepartmentsService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
-export const getDepartmentsSelectService = (): Promise<{
-  status: number;
-  data: {
-    departments: IDepartmentSelect[];
-  };
-}> => api.get(`${baseUrl}/list-select`);
-
 export const createDepartmentService = (
   name: string,
   parentId: number | null,

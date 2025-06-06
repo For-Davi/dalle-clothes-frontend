@@ -6,22 +6,26 @@ import { useRoleStore } from 'src/stores/role-store';
 import { useDepartmentStore } from 'src/stores/department-store';
 import { storeToRefs } from 'pinia';
 import { checkDataUserSystem } from 'src/composables/CheckData';
-import { createSuccess } from 'src/composables/CreateNotify';
+import { createErrorData } from 'src/composables/CreateNotify';
+import Loading from '../shared/Loading.vue';
+import DepartmentChoose from '../shared/DepartmentChoose.vue';
 
 defineOptions({
   name: 'FormUser',
 });
 
 const props = defineProps<{
-  open: boolean;
-  userId: number | null;
+  data: {
+    open: boolean;
+    userId: number | null;
+  };
 }>();
 const emit = defineEmits<{
   'update:open': [void];
 }>();
 
 const { loadingUser } = storeToRefs(useUserStore());
-const { loadingDepartment, listDepartmentSelect } = storeToRefs(useDepartmentStore());
+const { loadingDepartment, listDepartment } = storeToRefs(useDepartmentStore());
 const { loadingRole, listRoleSelect } = storeToRefs(useRoleStore());
 
 const loading = ref<boolean>(false);
@@ -36,7 +40,8 @@ const dataUser = reactive({
   password: '' as string,
   confirmPassword: '' as string,
 });
-const dataDeparment = reactive({
+const dataDepartment = reactive({
+  id: null as number | null,
   name: '' as string,
 });
 const selectedDepartment = ref<IQuasarSelect<number | null>>({
@@ -49,7 +54,7 @@ const selectedRole = ref<IQuasarSelect<number>>({
 });
 
 const open = computed({
-  get: () => props.open,
+  get: () => props.data.open,
   set: () => emit('update:open'),
 });
 
@@ -58,12 +63,19 @@ const clear = (): void => {
     name: '',
     email: '',
     active: 1,
+    password: '',
+    confirmPassword: '',
+  });
+
+  Object.assign(dataDepartment, {
+    id: null,
+    name: '',
   });
 
   userEdit.value = null;
 
   selectedDepartment.value = {
-    label: 'Sem departamento',
+    label: '',
     value: null,
   };
   selectedRole.value = {
@@ -79,25 +91,25 @@ const save = async () => {
       dataUser.password,
       dataUser.email,
       selectedRole.value.value,
-      selectedDepartment.value.value,
+      dataDepartment.id,
     );
     if (response?.status === 201) {
       clear();
       emit('update:open');
     }
   } else {
-    createSuccess(check.message || 'Erro ao processar dados do usuário');
+    createErrorData(check.message || 'Erro ao processar dados do usuário');
   }
 };
 const update = async () => {
   const check = checkDataUserSystem(dataUser);
   if (check.status) {
     const response = await useUserStore().updateUser(
-      props.userId ?? 0,
+      userId.value ?? 0,
       dataUser.name,
       dataUser.email,
       selectedRole.value.value,
-      selectedDepartment.value.value,
+      dataDepartment.id,
       dataUser.active,
     );
     if (response?.status === 200) {
@@ -105,12 +117,12 @@ const update = async () => {
       emit('update:open');
     }
   } else {
-    createSuccess(check.message || 'Erro ao processar dados do usuário');
+    createErrorData(check.message || 'Erro ao processar dados do usuário');
   }
 };
 const checkDataEdit = async () => {
-  if (props.userId !== null) {
-    const response = await useUserStore().showUser(props.userId);
+  if (userId.value !== null) {
+    const response = await useUserStore().showUser(userId.value);
     if (response?.status === 200) {
       const user = response.data.user;
 
@@ -120,30 +132,37 @@ const checkDataEdit = async () => {
         active: user.active,
       });
 
-      const selectedRoleItem = listRoleSelect.value.find((item) => item.id === props.userId);
+      const selectedRoleItem = listRoleSelect.value.find((item) => item.id === userId.value);
       selectedRole.value = selectedRoleItem
         ? { label: selectedRoleItem?.name, value: selectedRoleItem?.id }
         : { label: '', value: 0 };
 
-      const selectedDepartmentItem = listDepartmentSelect.value.find(
-        (item) => item.id === props.userId,
-      );
+      const selectedDepartmentItem = listDepartment.value.find((item) => item.id === userId.value);
       selectedDepartment.value = selectedDepartmentItem
         ? { label: selectedDepartmentItem?.name, value: selectedDepartmentItem?.id }
-        : { label: 'Sem departamento', value: null };
+        : { label: '', value: null };
     }
   }
 };
 const changeViewDepartmentChoose = (): void => {
   showDepartmentChoose.value = !showDepartmentChoose.value;
 };
-const handleChooseDepartment = (tree: { id: string; label: string } | null): void => {
-  dataUser.department = tree === null ? null : tree.id;
-  dataUser.departmentName = tree === null ? null : tree.label;
-  closeDepartmentChoose();
+const handleChooseDepartment = (tree: { id: number; label: string } | null): void => {
+  selectedDepartment.value = {
+    label: tree === null ? '' : tree.label,
+    value: tree === null ? null : tree.id,
+  };
+  dataDepartment.id = tree === null ? null : tree.id;
+  dataDepartment.name = tree === null ? '' : tree.label;
+  changeViewDepartmentChoose();
 };
 const fetchRoles = async () => {
   await useRoleStore().getRolesSelect();
+  const selectedItem = listRoleSelect.value.find((item) => item.name.toLowerCase() === 'master');
+  selectedRole.value = {
+    label: selectedItem?.name ?? '',
+    value: selectedItem?.id ?? 0,
+  };
 };
 const fetchDepartments = async () => {
   await useDepartmentStore().getDepartments();
@@ -158,11 +177,10 @@ const optionsRoles = computed(() => {
     value: item.id,
   }));
 });
-const optionsDepartments = computed(() => {
-  return listDepartmentSelect.value.map((item) => ({
-    label: item.name,
-    value: item.id,
-  }));
+
+const userId = computed(() => props.data.userId);
+const isLoading = computed((): boolean => {
+  return loading.value || loadingDepartment.value || loadingUser.value || loadingRole.value;
 });
 
 watch(open, async () => {
@@ -178,15 +196,16 @@ watch(open, async () => {
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 form-basic">
+    <q-card class="bg-grey-2 form-basic column justify-between">
       <q-card-section class="q-pa-none">
         <TitlePage
-          :title="props.userId ? 'Atualização de usuário' : 'Cadastro de usuário'"
+          :title="userId ? 'Atualização de usuário' : 'Cadastro de usuário'"
           icon="person"
         />
       </q-card-section>
       <q-card-section class="q-pa-sm">
-        <q-form class="q-gutter-y-sm">
+        <Loading :show="isLoading" />
+        <q-form v-show="!isLoading" class="q-gutter-y-sm">
           <q-input
             v-model="dataUser.name"
             bg-color="white"
@@ -205,9 +224,10 @@ watch(open, async () => {
             bg-color="white"
             label-color="black"
             filled
-            label="Digite o e-mail do usuário"
+            label="E-mail do usuário"
             dense
             input-class="text-black"
+            autocomplete="new-email"
           >
             <template v-slot:prepend>
               <q-icon name="mail" color="black" size="20px" />
@@ -229,24 +249,8 @@ watch(open, async () => {
               <q-icon name="supervisor_account" color="black" size="20px" />
             </template>
           </q-select>
-          <q-select
-            filled
-            v-model="selectedDepartment"
-            label="Selecione o departamento"
-            :options="optionsDepartments"
-            bg-color="white"
-            dense
-            options-dense
-            map-options
-            label-color="black"
-            class="full-width"
-          >
-            <template v-slot:prepend>
-              <q-icon name="supervisor_account" color="black" size="20px" />
-            </template>
-          </q-select>
           <q-input
-            v-model="dataDeparment.name"
+            v-model="dataDepartment.name"
             bg-color="white"
             label-color="black"
             filled
@@ -269,7 +273,7 @@ watch(open, async () => {
             @update:choose-department="handleChooseDepartment"
           />
           <q-input
-            v-show="props.userId === null"
+            v-show="userId === null"
             v-model="dataUser.password"
             bg-color="white"
             label-color="black"
@@ -278,6 +282,7 @@ watch(open, async () => {
             dense
             input-class="text-black"
             :type="isPwd ? 'password' : 'text'"
+            autocomplete="new-password"
           >
             <template v-slot:append>
               <q-icon
@@ -292,7 +297,7 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-input
-            v-show="props.userId === null"
+            v-show="userId === null"
             v-model="dataUser.confirmPassword"
             bg-color="white"
             label-color="black"
@@ -301,6 +306,7 @@ watch(open, async () => {
             dense
             input-class="text-black"
             :type="isPwd2 ? 'password' : 'text'"
+            autocomplete="new-password"
           >
             <template v-slot:append>
               <q-icon
@@ -316,7 +322,6 @@ watch(open, async () => {
           </q-input>
         </q-form>
       </q-card-section>
-
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
           <q-btn
@@ -325,25 +330,26 @@ watch(open, async () => {
             size="md"
             flat
             @click="open = false"
-            :disable="false"
             unelevated
             no-caps
           />
           <q-btn
+            v-if="userId === null"
             @click="save"
             color="primary"
             label="Salvar"
             size="md"
-            :loading="loadingDepartment || loadingRole || loading"
+            :loading="isLoading"
             unelevated
             no-caps
           />
           <q-btn
+            v-else
             @click="update"
             color="primary"
             label="Atualizar"
             size="md"
-            :loading="loadingDepartment || loadingRole || loading"
+            :loading="isLoading"
             unelevated
             no-caps
           />

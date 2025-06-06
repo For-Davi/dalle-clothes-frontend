@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import DepartmentManage from 'src/components/manage/DepartmentManage.vue';
 import TableUserSystem from 'src/components/table/TableUserSystem.vue';
+import FormUser from 'src/components/form/FormUser.vue';
 
 defineOptions({
   name: 'User',
@@ -10,9 +11,20 @@ defineOptions({
 
 const filterUser = ref<string>('');
 const showManageDepartment = ref<boolean>(false);
+const showFormUser = reactive<{
+  open: boolean;
+  userId: number | null;
+}>({
+  open: false,
+  userId: null,
+});
 
 const changeShowDepartmentManage = (): void => {
   showManageDepartment.value = !showManageDepartment.value;
+};
+const changeShowFormUser = (show: boolean, userId = null): void => {
+  showFormUser.userId = userId;
+  showFormUser.open = show;
 };
 </script>
 <template>
@@ -38,6 +50,7 @@ const changeShowDepartmentManage = (): void => {
           class="q-mr-sm"
         />
         <q-btn
+          @click="changeShowFormUser(true)"
           color="white"
           text-color="black"
           label="Novo usuário"
@@ -67,8 +80,9 @@ const changeShowDepartmentManage = (): void => {
           </q-btn>
         </div>
       </q-banner>
-      <TableUserSystem />
+      <TableUserSystem :filter="filterUser" />
     </section>
     <DepartmentManage :open="showManageDepartment" @update:open="changeShowDepartmentManage" />
+    <FormUser :data="showFormUser" @update:open="changeShowFormUser(false)" />
   </main>
 </template>

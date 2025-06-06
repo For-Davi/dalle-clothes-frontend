@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { columnsUser } from 'src/utils/columns';
 import { storeToRefs } from 'pinia';
 import { useUserStore } from 'src/stores/user-store';
@@ -7,10 +7,16 @@ import { useUserStore } from 'src/stores/user-store';
 defineOptions({
   name: 'TableUserSystem',
 });
+const props = withDefaults(
+  defineProps<{
+    filter?: string;
+  }>(),
+  {
+    filter: '',
+  },
+);
 
 const { loadingUser, listUserSystem } = storeToRefs(useUserStore());
-
-const filterUser = ref<string>('');
 
 const fetchUsers = async (): Promise<void> => {
   await useUserStore().getUsers();
@@ -24,7 +30,7 @@ onMounted(async () => {
   <q-table
     :rows="listUserSystem"
     :columns="columnsUser"
-    :filter="filterUser"
+    :filter="props.filter"
     :loading="loadingUser"
     title="Lista de usuários"
     row-key="index"
@@ -40,7 +46,7 @@ onMounted(async () => {
       </q-tr>
     </template>
     <template v-slot:body="props">
-      <q-tr :props="props" class="cursor-pointer">
+      <q-tr :props="props">
         <q-td key="name" :props="props" class="text-left">
           {{ props.row.name }}
         </q-td>

@@ -3,7 +3,6 @@ import { createError, createSuccess } from 'src/composables/CreateNotify';
 import {
   createDepartmentService,
   deleteDepartmentService,
-  getDepartmentsSelectService,
   getDepartmentsService,
   updateDepartmentService,
 } from 'src/services/department-service';
@@ -13,7 +12,6 @@ export const useDepartmentStore = defineStore('department', {
     filledData: true as boolean,
     loadingDepartment: false as boolean,
     listDepartment: [] as IDepartment[],
-    listDepartmentSelect: [] as IDepartmentSelect[],
   }),
   getters: {
     treeDepartment: (state) => {
@@ -65,17 +63,11 @@ export const useDepartmentStore = defineStore('department', {
     clearListDepartment() {
       this.listDepartment.splice(0, this.listDepartment.length);
     },
-    clearListDepartmentSelect() {
-      this.listDepartmentSelect.splice(0, this.listDepartmentSelect.length);
-    },
     setLoading(loading: boolean) {
       this.loadingDepartment = loading;
     },
     setListDepartment(departments: IDepartment[]) {
       departments.map((item) => this.listDepartment.push(item));
-    },
-    setListDepartmentSelect(departments: IDepartmentSelect[]) {
-      departments.map((item) => this.listDepartmentSelect.push(item));
     },
     async getDepartments() {
       this.setLoading(true);
@@ -84,20 +76,6 @@ export const useDepartmentStore = defineStore('department', {
         if (response.status === 200) {
           this.clearListDepartment();
           this.setListDepartment(response.data.departments);
-        }
-      } catch (error) {
-        createError(error);
-      } finally {
-        this.setLoading(false);
-      }
-    },
-    async getDepartmentsSelect() {
-      this.setLoading(true);
-      try {
-        const response = await getDepartmentsSelectService();
-        if (response.status === 200) {
-          this.clearListDepartmentSelect();
-          this.setListDepartmentSelect(response.data.departments);
         }
       } catch (error) {
         createError(error);
