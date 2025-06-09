@@ -3,6 +3,7 @@ import { createError, createSuccess } from 'src/composables/CreateNotify';
 import {
   createUserService,
   deleteUserService,
+  getUsersFilterService,
   getUsersService,
   showUserService,
   updateUserService,
@@ -33,10 +34,15 @@ export const useUserStore = defineStore('user', {
         this.setLoading(false);
       }
     },
-    async getUsers() {
+    async getUsers(filter: IFilterUser | null = null) {
       try {
         this.setLoading(true);
-        const response = await getUsersService();
+        let response = null;
+        if (filter) {
+          response = await getUsersFilterService(filter);
+        } else {
+          response = await getUsersService();
+        }
         if (response.status === 200) {
           this.clearListUserSystem();
           this.setListUserSystem(response.data.users);

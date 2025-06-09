@@ -195,13 +195,13 @@ const optionsStatus = computed(() => {
   return [
     {
       label: 'Ativo',
-      value: 1
+      value: 1,
     },
     {
       label: 'Inativo',
-      value: 0
+      value: 0,
     },
-  ]
+  ];
 });
 
 const userId = computed(() => props.data.userId);

@@ -1,16 +1,26 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import DepartmentManage from 'src/components/manage/DepartmentManage.vue';
 import TableUserSystem from 'src/components/table/TableUserSystem.vue';
 import FormUser from 'src/components/form/FormUser.vue';
+import FilterUser from 'src/components/filter/FilterUser.vue';
+import { useUserStore } from 'src/stores/user-store';
 
 defineOptions({
   name: 'User',
 });
 
-const filterUser = ref<string>('');
+const search = ref<string>('');
+const filter = reactive<IFilterUser>({
+  name: '',
+  email: '',
+  role: null as number | null,
+  department: null as number | null,
+  active: null as number | null,
+});
 const showManageDepartment = ref<boolean>(false);
+const showFilterUser = ref<boolean>(false);
 const showFormUser = reactive<{
   open: boolean;
   userId: number | null;
@@ -22,6 +32,9 @@ const showFormUser = reactive<{
 const changeShowDepartmentManage = (): void => {
   showManageDepartment.value = !showManageDepartment.value;
 };
+const changeShowFilterUser = (): void => {
+  showFilterUser.value = !showFilterUser.value;
+};
 const changeShowFormUser = (show: boolean, userId: number | null = null): void => {
   showFormUser.userId = userId;
   showFormUser.open = show;
@@ -29,6 +42,30 @@ const changeShowFormUser = (show: boolean, userId: number | null = null): void =
 const startEditUser = (id: number): void => {
   changeShowFormUser(true, id);
 };
+const actionFilter = async (data: 'close' | IFilterUser): Promise<void> => {
+  changeShowFilterUser();
+
+  if (data !== 'close') {
+    Object.assign(filter, {
+      name: data.name,
+      email: data.email,
+      role: data.role,
+      department: data.department,
+      active: data.active,
+    });
+    await useUserStore().getUsers(filter);
+  }
+};
+
+const hasFilter = computed(() => {
+  return (
+    filter.name !== '' ||
+    filter.email != '' ||
+    filter.department !== null ||
+    filter.role !== null ||
+    filter.active !== null
+  );
+});
 </script>
 <template>
   <main class="q-pa-lg">
@@ -69,7 +106,7 @@ const startEditUser = (id: number): void => {
           <q-input
             label="Pesquise"
             outlined
-            v-model="filterUser"
+            v-model="search"
             dense
             style="width: 200px"
             class="bg-white rounded-borders"
@@ -78,14 +115,22 @@ const startEditUser = (id: number): void => {
               <q-icon name="search" size="20px" color="black" />
             </template>
           </q-input>
-          <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
-            <q-badge floating color="red" rounded />
+          <q-btn
+            @click="changeShowFilterUser"
+            round
+            color="primary"
+            icon="filter_alt"
+            unelevated
+            size="13px"
+          >
+            <q-badge v-show="hasFilter" floating color="red" rounded />
           </q-btn>
         </div>
       </q-banner>
-      <TableUserSystem :filter="filterUser" @show:show-form-user="startEditUser" />
+      <TableUserSystem :filter="search" @show:show-form-user="startEditUser" />
     </section>
     <DepartmentManage :open="showManageDepartment" @update:open="changeShowDepartmentManage" />
     <FormUser :data="showFormUser" @update:open="changeShowFormUser(false)" />
+    <FilterUser :open="showFilterUser" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>

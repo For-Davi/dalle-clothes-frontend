@@ -9,7 +9,7 @@ import type {
 } from './Department';
 import type { QuasarSelect, QuasarTable } from './Quasar';
 import type { RoleSelect } from './Role';
-import type { User } from './User';
+import type { FilterUser, User } from './User';
 
 export {};
 
@@ -25,8 +25,10 @@ declare global {
 
   type IQuasarSelect<T = any> = QuasarSelect<T>;
   type IQuasarTable = QuasarTable;
+
   type IUser = User;
   type IUserSystem = UserSystem;
+  type IFilterUser = FilterUser;
 
   type IRoleSelect = RoleSelect;
 }

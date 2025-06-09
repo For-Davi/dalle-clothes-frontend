@@ -9,6 +9,15 @@ export const getUsersService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const getUsersFilterService = (
+  filter: IFilterUser,
+): Promise<{
+  status: number;
+  data: {
+    users: IUserSystem[];
+  };
+}> => api.post(`${baseUrl}/filter`, filter);
+
 export const showUserService = (
   userId: number,
 ): Promise<{

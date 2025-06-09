@@ -16,3 +16,11 @@ export interface UserSystem {
   department_name: string;
   role_name: string;
 }
+
+export interface FilterUser {
+  name: string;
+  email: string;
+  role: number | null;
+  department: number | null;
+  active: number | null;
+}
