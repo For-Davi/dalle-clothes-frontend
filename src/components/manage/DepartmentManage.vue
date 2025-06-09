@@ -54,7 +54,7 @@ onMounted(() => {
         <TitlePage title="Gerenciamento de departamentos" icon="group_work" />
       </q-card-section>
       <q-card-section>
-        <q-scroll-area style="height: 500px">
+        <q-scroll-area style="height: 400px">
           <q-tabs v-model="tab" dense align="left" inline-label :breakpoint="0" no-caps>
             <q-tab
               label="Departamentos"
