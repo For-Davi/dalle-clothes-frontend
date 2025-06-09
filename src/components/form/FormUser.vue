@@ -84,7 +84,7 @@ const clear = (): void => {
   };
 };
 const save = async () => {
-  const check = checkDataUserSystem(dataUser);
+  const check = checkDataUserSystem(dataUser, 'create');
   if (check.status) {
     const response = await useUserStore().createUser(
       dataUser.name,
@@ -102,7 +102,7 @@ const save = async () => {
   }
 };
 const update = async () => {
-  const check = checkDataUserSystem(dataUser);
+  const check = checkDataUserSystem(dataUser, 'update');
   if (check.status) {
     const response = await useUserStore().updateUser(
       userId.value ?? 0,
@@ -137,10 +137,17 @@ const checkDataEdit = async () => {
         ? { label: selectedRoleItem?.name, value: selectedRoleItem?.id }
         : { label: '', value: 0 };
 
-      const selectedDepartmentItem = listDepartment.value.find((item) => item.id === userId.value);
+      const selectedDepartmentItem = listDepartment.value.find(
+        (item) => item.id === user.department_id,
+      );
       selectedDepartment.value = selectedDepartmentItem
         ? { label: selectedDepartmentItem?.name, value: selectedDepartmentItem?.id }
         : { label: '', value: null };
+
+      Object.assign(dataDepartment, {
+        id: selectedDepartment.value.value,
+        name: selectedDepartment.value.label,
+      });
     }
   }
 };

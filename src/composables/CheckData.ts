@@ -106,12 +106,15 @@ export const checkDataDepartment = (data: {
   return { status: true };
 };
 
-export const checkDataUserSystem = (data: {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}): { status: boolean; message?: string } => {
+export const checkDataUserSystem = (
+  data: {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  },
+  mode: 'create' | 'update',
+): { status: boolean; message?: string } => {
   if (data.name.trim() === '') {
     return { status: false, message: 'Deve ser informado o nome do usuário' };
   }
@@ -127,20 +130,22 @@ export const checkDataUserSystem = (data: {
   if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email.trim())) {
     return { status: false, message: 'Informe um e-mail válido' };
   }
-  if (data.password.trim() === '') {
-    return {
-      status: false,
-      message: 'Deve ser informado a senha do usuário',
-    };
-  }
-  if (data.password.trim().length < 7) {
-    return {
-      status: false,
-      message: 'A senha deve conter mais de 7 caracteres',
-    };
-  }
-  if (data.password.trim() !== (data.confirmPassword && data.confirmPassword.trim())) {
-    return { status: false, message: 'As senhas não coincidem' };
+  if (mode === 'create') {
+    if (data.password.trim() === '') {
+      return {
+        status: false,
+        message: 'Deve ser informado a senha do usuário',
+      };
+    }
+    if (data.password.trim().length < 7) {
+      return {
+        status: false,
+        message: 'A senha deve conter mais de 7 caracteres',
+      };
+    }
+    if (data.password.trim() !== (data.confirmPassword && data.confirmPassword.trim())) {
+      return { status: false, message: 'As senhas não coincidem' };
+    }
   }
   return { status: true };
 };

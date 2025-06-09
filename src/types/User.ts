@@ -3,8 +3,9 @@ export interface User {
   name: string;
   email: string;
   active: number;
-  role_id: string;
-  enterprise_id: string;
+  role_id: number;
+  enterprise_id: number;
+  department_id: number;
 }
 
 export interface UserSystem {

@@ -16,15 +16,18 @@ const props = withDefaults(
     filter: '',
   },
 );
+const emit = defineEmits<{
+  'show:showFormUser': [number];
+}>();
 
 const { loadingUser, listUserSystem } = storeToRefs(useUserStore());
 
-const showConfirmAction = ref<boolean>(false)
-const userMonitoring = ref<number | null>(null)
+const showConfirmAction = ref<boolean>(false);
+const userMonitoring = ref<number | null>(null);
 
-const clear = ():void => {
-  userMonitoring.value = null
-}
+const clear = (): void => {
+  userMonitoring.value = null;
+};
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
   await useUserStore().deleteUser(userMonitoring.value ?? 0);
@@ -38,9 +41,12 @@ const openConfirmAction = (id: number): void => {
   userMonitoring.value = id;
   showConfirmAction.value = true;
 };
+const startEdit = (id: number) => {
+  emit('show:showFormUser', id);
+};
 const startExclude = (id: number) => {
   openConfirmAction(id);
-}
+};
 const fetchUsers = async (): Promise<void> => {
   await useUserStore().getUsers();
 };
@@ -91,8 +97,24 @@ onMounted(async () => {
             />
           </q-td>
           <q-td key="action" :props="props">
-            <q-btn :disable="userMonitoring === props.row.id" size="sm" flat round color="black" icon="edit" />
-            <q-btn @click="startExclude(props.row.id)" :disable="userMonitoring === props.row.id" size="sm" flat round color="red" icon="delete" />
+            <q-btn
+              @click="startEdit(props.row.id)"
+              :disable="userMonitoring === props.row.id"
+              size="sm"
+              flat
+              round
+              color="black"
+              icon="edit"
+            />
+            <q-btn
+              @click="startExclude(props.row.id)"
+              :disable="userMonitoring === props.row.id"
+              size="sm"
+              flat
+              round
+              color="red"
+              icon="delete"
+            />
           </q-td>
         </q-tr>
       </template>

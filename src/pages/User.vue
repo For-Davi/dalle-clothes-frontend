@@ -22,9 +22,12 @@ const showFormUser = reactive<{
 const changeShowDepartmentManage = (): void => {
   showManageDepartment.value = !showManageDepartment.value;
 };
-const changeShowFormUser = (show: boolean, userId = null): void => {
+const changeShowFormUser = (show: boolean, userId: number | null = null): void => {
   showFormUser.userId = userId;
   showFormUser.open = show;
+};
+const startEditUser = (id: number): void => {
+  changeShowFormUser(true, id);
 };
 </script>
 <template>
@@ -80,7 +83,7 @@ const changeShowFormUser = (show: boolean, userId = null): void => {
           </q-btn>
         </div>
       </q-banner>
-      <TableUserSystem :filter="filterUser" />
+      <TableUserSystem :filter="filterUser" @show:show-form-user="startEditUser" />
     </section>
     <DepartmentManage :open="showManageDepartment" @update:open="changeShowDepartmentManage" />
     <FormUser :data="showFormUser" @update:open="changeShowFormUser(false)" />
