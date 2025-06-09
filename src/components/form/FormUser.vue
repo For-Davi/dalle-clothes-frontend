@@ -36,7 +36,6 @@ const showDepartmentChoose = ref<boolean>(false);
 const dataUser = reactive({
   name: '' as string,
   email: '' as string,
-  active: 1 as number,
   password: '' as string,
   confirmPassword: '' as string,
 });
@@ -51,6 +50,10 @@ const selectedDepartment = ref<IQuasarSelect<number | null>>({
 const selectedRole = ref<IQuasarSelect<number>>({
   label: '',
   value: 0,
+});
+const selectedStatus = ref<IQuasarSelect<number>>({
+  label: 'Ativo',
+  value: 1,
 });
 
 const open = computed({
@@ -82,6 +85,10 @@ const clear = (): void => {
     label: '',
     value: 0,
   };
+  selectedStatus.value = {
+    label: 'Ativo',
+    value: 1,
+  };
 };
 const save = async () => {
   const check = checkDataUserSystem(dataUser, 'create');
@@ -110,7 +117,7 @@ const update = async () => {
       dataUser.email,
       selectedRole.value.value,
       dataDepartment.id,
-      dataUser.active,
+      selectedStatus.value.value,
     );
     if (response?.status === 200) {
       clear();
@@ -183,6 +190,18 @@ const optionsRoles = computed(() => {
     label: item.name,
     value: item.id,
   }));
+});
+const optionsStatus = computed(() => {
+  return [
+    {
+      label: 'Ativo',
+      value: 1
+    },
+    {
+      label: 'Inativo',
+      value: 0
+    },
+  ]
 });
 
 const userId = computed(() => props.data.userId);
@@ -327,6 +346,23 @@ watch(open, async () => {
               <q-icon name="lock" color="black" size="20px" />
             </template>
           </q-input>
+          <q-select
+            v-show="userId !== null"
+            filled
+            v-model="selectedStatus"
+            label="Status do usuário"
+            :options="optionsStatus"
+            bg-color="white"
+            dense
+            options-dense
+            map-options
+            label-color="black"
+            class="full-width"
+          >
+            <template v-slot:prepend>
+              <q-icon name="check" color="black" size="20px" />
+            </template>
+          </q-select>
         </q-form>
       </q-card-section>
       <q-card-actions align="right">
