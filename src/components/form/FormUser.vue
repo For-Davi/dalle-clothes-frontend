@@ -132,7 +132,7 @@ const checkDataEdit = async () => {
         active: user.active,
       });
 
-      const selectedRoleItem = listRoleSelect.value.find((item) => item.id === userId.value);
+      const selectedRoleItem = listRoleSelect.value.find((item) => item.id === user.role_id);
       selectedRole.value = selectedRoleItem
         ? { label: selectedRoleItem?.name, value: selectedRoleItem?.id }
         : { label: '', value: 0 };
