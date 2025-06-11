@@ -102,3 +102,18 @@ export const columnsUser: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsCategorySupplier: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];

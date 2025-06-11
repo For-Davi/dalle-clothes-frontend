@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, onMounted, ref, watch } from 'vue';
-import TreeDepartment from '../tree/TreeDepartment.vue';
-import FormDepartment from '../form/FormDepartment.vue';
+import FormCategorySupplier from '../form/FormCategorySupplier.vue';
+import TableCategorySupplier from '../table/TableCategorySupplier.vue';
 
 defineOptions({
   name: 'DepartmentManage',
@@ -16,21 +16,17 @@ const emit = defineEmits<{
 }>();
 
 const tab = ref<'list' | 'form'>('list');
-const searchDepartment = ref<string>('');
-const clickRootCreate = ref<number | null>(null);
-const departmentEdit = ref<IDepartment | null>(null);
+const dataEdit = ref<ICategorySupplier | null>(null);
 const dataExcludeId = ref<number | null>(null);
 
 const clear = () => {
-  clickRootCreate.value = null;
-  departmentEdit.value = null;
-  searchDepartment.value = '';
+  dataEdit.value = null;
   dataExcludeId.value = null;
 };
 
-const makeForm = (rootCreate: number | null, dataEdit: IDepartment | null) => {
-  clickRootCreate.value = rootCreate;
-  departmentEdit.value = dataEdit;
+const makeForm = (data: ICategorySupplier) => {
+  console.log('data ', data);
+  dataEdit.value = data;
   tab.value = 'form';
 };
 const reset = (): void => {
@@ -55,15 +51,15 @@ onMounted(() => {
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 sub-page">
+    <q-card class="bg-grey-2 sub-page" style="width: 98vw; max-width: 800px">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Gerenciamento de departamentos" icon="group_work" />
+        <TitlePage title="Gerenciamento de categorias" icon="group_work" />
       </q-card-section>
       <q-card-section>
         <q-scroll-area style="height: 400px">
           <q-tabs v-model="tab" dense align="left" inline-label :breakpoint="0" no-caps>
             <q-tab
-              label="Departamentos"
+              label="Categorias"
               name="list"
               :class="tab == 'list' ? 'text-primary' : 'text-grey'"
               icon="list"
@@ -79,15 +75,10 @@ onMounted(() => {
           </q-tabs>
           <q-tab-panels v-model="tab" animated class="q-pa-none">
             <q-tab-panel name="list" class="q-px-none q-py-sm border-top-grey-light bg-grey-2">
-              <TreeDepartment :mode="tab" @open:form-department="makeForm" />
+              <TableCategorySupplier :mode="tab" @show:show-form-category="makeForm" />
             </q-tab-panel>
             <q-tab-panel name="form" class="q-px-none q-py-sm border-top-grey-light bg-grey-2">
-              <FormDepartment
-                :mode="tab"
-                :department-edit="departmentEdit"
-                :key-root="clickRootCreate"
-                @update:back-list="reset"
-              />
+              <FormCategorySupplier :mode="tab" :data-edit="dataEdit" @update:back-list="reset" />
             </q-tab-panel>
           </q-tab-panels>
         </q-scroll-area>

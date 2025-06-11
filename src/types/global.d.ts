@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { CategorySupplier } from './Category';
 import type { RenderAuth } from './Auth';
 import type {
   DataDepartment,
@@ -29,6 +30,8 @@ declare global {
   type IUser = User;
   type IUserSystem = UserSystem;
   type IFilterUser = FilterUser;
+
+  type ICategorySupplier = CategorySupplier;
 
   type IRoleSelect = RoleSelect;
 }

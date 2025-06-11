@@ -106,6 +106,18 @@ export const checkDataDepartment = (data: {
   return { status: true };
 };
 
+export const checkDataCategorySupplier = (data: {
+  name: string;
+}): { status: boolean; message?: string } => {
+  if (data.name?.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado o nome da categoria',
+    };
+  }
+  return { status: true };
+};
+
 export const checkDataUserSystem = (
   data: {
     name: string;

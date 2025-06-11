@@ -1,30 +1,15 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, ref } from 'vue';
+import CategorySupplierManage from 'src/components/manage/CategorySupplierManage.vue';
+
 defineOptions({
   name: 'Supplier',
 });
 
 const filterSupplier = ref<string>('');
-// const selectedActive = ref<QuasarSelect<number>>({
-//   label: 'Todos',
-//   value: 2,
-// });
 const showInformation = ref<number>(0);
-// const optionsActive = reactive<QuasarSelect<number>[]>([
-//   {
-//     label: 'Todos',
-//     value: 2,
-//   },
-//   {
-//     label: 'Ativos',
-//     value: 1,
-//   },
-//   {
-//     label: 'Inativos',
-//     value: 0,
-//   },
-// ]);
+const showCategorySupplierManage = ref<boolean>(false);
 const columnsSupplier = reactive<IQuasarTable[]>([
   {
     name: 'name',
@@ -83,6 +68,9 @@ const rows = [
 const setShowInformation = (index: number) => {
   showInformation.value = showInformation.value === index + 1 ? 0 : index + 1;
 };
+const changeShowCategorySupplierManage = (): void => {
+  showCategorySupplierManage.value = !showCategorySupplierManage.value;
+};
 </script>
 <template>
   <main class="q-pa-lg">
@@ -90,6 +78,7 @@ const setShowInformation = (index: number) => {
       <TitlePage class="col-7" title="Fornecedores" icon="list_alt" />
       <div>
         <q-btn
+          @click="changeShowCategorySupplierManage"
           color="white"
           text-color="black"
           label="Categorias"
@@ -133,30 +122,6 @@ const setShowInformation = (index: number) => {
           <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
             <q-badge floating color="red" rounded />
           </q-btn>
-          <!-- <q-select
-            outlined
-            v-model="selectedActive"
-            dense
-            :options="optionsActive"
-            style="width: 200px"
-            class="bg-white rounded-borders"
-          >
-            <template v-slot:prepend>
-              <q-icon
-                :name="
-                  selectedActive.value == 1
-                    ? 'check_circle'
-                    : selectedActive.value == 2
-                      ? 'done_all'
-                      : 'close'
-                "
-                size="20px"
-                :color="
-                  selectedActive.value == 1 ? 'green' : selectedActive.value == 2 ? 'blue' : 'red'
-                "
-              />
-            </template>
-          </q-select> -->
         </div>
       </q-banner>
       <q-table
@@ -236,5 +201,9 @@ const setShowInformation = (index: number) => {
         </template>
       </q-table>
     </section>
+    <CategorySupplierManage
+      :open="showCategorySupplierManage"
+      @update:open="changeShowCategorySupplierManage"
+    />
   </main>
 </template>
