@@ -68,7 +68,7 @@ watch(
 );
 </script>
 <template>
-  <main style="min-height: 400px">
+  <main style="min-height: 300px">
     <div class="row items-center justify-center">
       <div
         v-show="treeDepartment.length > 0 && !loadingDepartment"

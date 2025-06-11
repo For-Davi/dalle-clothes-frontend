@@ -9,14 +9,7 @@ import Loading from '../shared/Loading.vue';
 defineOptions({
   name: 'TableCategorySupplier',
 });
-const props = withDefaults(
-  defineProps<{
-    filter?: string;
-  }>(),
-  {
-    filter: '',
-  },
-);
+
 const emit = defineEmits<{
   'show:showFormCategory': [ICategorySupplier];
 }>();
