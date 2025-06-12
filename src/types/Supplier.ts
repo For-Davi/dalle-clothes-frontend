@@ -1,0 +1,23 @@
+export interface Supplier {
+  id: number;
+  name: string;
+  email: string | null;
+  cpf: string | null;
+  cnpj: string | null;
+  state_registration: string | null;
+  municipal_registration: string | null;
+  phone: string | null;
+  site: string | null;
+  country: string | null;
+  state: string | null;
+  city: string | null;
+  cep: number | null;
+  neighborhood: string | null;
+  address: string | null;
+  number: number | null;
+  active: number;
+  categore_supplier_id: number | null;
+  enterprise_id: number | null;
+  description: string | null;
+  created_at: string;
+}

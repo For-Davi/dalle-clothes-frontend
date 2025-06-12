@@ -161,3 +161,25 @@ export const checkDataUserSystem = (
   }
   return { status: true };
 };
+
+export const checkDataSupplier = (data: {
+  name: string;
+  email: string;
+}): { status: boolean; message?: string } => {
+  if (data.name.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome do fornecedor' };
+  }
+  if (data.name.trim().length < 2) {
+    return {
+      status: false,
+      message: 'Nome de fornecedor deve ter mais de 2 caracteres',
+    };
+  }
+  if (data.email.trim() !== '') {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email.trim())) {
+      return { status: false, message: 'Informe um e-mail válido' };
+    }
+  }
+
+  return { status: true };
+};

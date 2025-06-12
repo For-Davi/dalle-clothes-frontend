@@ -33,5 +33,7 @@ declare global {
 
   type ICategorySupplier = CategorySupplier;
 
+  type ISupplier = Supplier;
+
   type IRoleSelect = RoleSelect;
 }

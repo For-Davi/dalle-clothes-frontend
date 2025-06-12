@@ -2,6 +2,7 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, ref } from 'vue';
 import CategorySupplierManage from 'src/components/manage/CategorySupplierManage.vue';
+import FormSupplier from 'src/components/form/FormSupplier.vue';
 
 defineOptions({
   name: 'Supplier',
@@ -10,6 +11,10 @@ defineOptions({
 const filterSupplier = ref<string>('');
 const showInformation = ref<number>(0);
 const showCategorySupplierManage = ref<boolean>(false);
+const showFormSupplier = reactive({
+  open: false as boolean,
+  supplierId: null as number | null,
+});
 const columnsSupplier = reactive<IQuasarTable[]>([
   {
     name: 'name',
@@ -71,6 +76,12 @@ const setShowInformation = (index: number) => {
 const changeShowCategorySupplierManage = (): void => {
   showCategorySupplierManage.value = !showCategorySupplierManage.value;
 };
+const changeShowFormSupplier = (open: boolean, supplierId: number | null = null): void => {
+  Object.assign(showFormSupplier, {
+    open,
+    supplierId,
+  });
+};
 </script>
 <template>
   <main class="q-pa-lg">
@@ -95,6 +106,7 @@ const changeShowCategorySupplierManage = (): void => {
           class="q-mr-sm"
         />
         <q-btn
+          @click="changeShowFormSupplier(true)"
           color="white"
           text-color="black"
           label="Novo fornecedor"
@@ -189,6 +201,9 @@ const changeShowCategorySupplierManage = (): void => {
               />
             </q-td>
             <q-td key="action" :props="props">
+              <q-btn :disable="false" size="sm" flat round color="primary" icon="storefront">
+                <q-tooltip>Catálogo</q-tooltip>
+              </q-btn>
               <q-btn :disable="false" size="sm" flat round color="black" icon="edit" />
               <q-btn :disable="false" size="sm" flat round color="red" icon="delete" />
             </q-td>
@@ -205,5 +220,6 @@ const changeShowCategorySupplierManage = (): void => {
       :open="showCategorySupplierManage"
       @update:open="changeShowCategorySupplierManage"
     />
+    <FormSupplier :data="showFormSupplier" @update:open="changeShowFormSupplier(false)" />
   </main>
 </template>
