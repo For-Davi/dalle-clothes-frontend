@@ -51,7 +51,7 @@ onMounted(() => {
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 sub-page" style="width: 98vw; max-width: 800px">
+    <q-card class="bg-grey-2 sub-page">
       <q-card-section class="q-pa-none">
         <TitlePage title="Gerenciamento de categorias" icon="group_work" />
       </q-card-section>
