@@ -93,13 +93,13 @@ const mountFilter = () => {
 };
 const search = () => {
   const data = {
-    name: props.filters.name,
-    email: props.filters.email,
-    cpf: props.filters.cpf,
-    cnpj: props.filters.cnpj,
-    country: props.filters.country,
-    state: props.filters.state,
-    city: props.filters.city,
+    name: dataSupplier.name,
+    email: dataSupplier.email,
+    cpf: dataSupplier.cpf,
+    cnpj: dataSupplier.cnpj,
+    country: dataSupplier.country,
+    state: dataSupplier.state,
+    city: dataSupplier.city,
     active: selectedStatus.value.value,
     category: selectedCategory.value.value,
   };
