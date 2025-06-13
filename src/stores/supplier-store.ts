@@ -38,15 +38,15 @@ export const useSupplierStore = defineStore('supplier', {
       }
     },
     async showSupplier(supplierId: number) {
-          try {
-            this.setLoading(true);
-            return await showSupplierService(supplierId);
-          } catch (error) {
-            createError(error);
-          } finally {
-            this.setLoading(false);
-          }
-        },
+      try {
+        this.setLoading(true);
+        return await showSupplierService(supplierId);
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
     async createSupplier(
       name: string,
       email: string | null,
@@ -68,7 +68,6 @@ export const useSupplierStore = defineStore('supplier', {
       categorySupplierId: number | null,
     ) {
       this.setLoading(true);
-      console.log('store cxateogyr', categorySupplierId);
       try {
         const response = await createSupplierService(
           name,
@@ -117,13 +116,14 @@ export const useSupplierStore = defineStore('supplier', {
       country: string | null,
       state: string | null,
       city: string | null,
-      cep: string | null,
+      cep: number | null,
       neighborhood: string | null,
       address: string | null,
-      number: string | null,
+      number: number | null,
       complement: string | null,
       description: string | null,
       categorySupplierId: number | null,
+      active: number,
     ) {
       this.setLoading(true);
       try {
@@ -147,6 +147,7 @@ export const useSupplierStore = defineStore('supplier', {
           complement,
           description,
           categorySupplierId,
+          active,
         );
         if (response.status === 200) {
           this.clearListSupplier();

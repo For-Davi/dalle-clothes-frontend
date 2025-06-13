@@ -27,7 +27,6 @@ const { loadingCategorySupplier, listCategorySupplier } = storeToRefs(useCategor
 const { loadingSupplier } = storeToRefs(useSupplierStore());
 
 const loading = ref<boolean>(false);
-const supplierEdit = ref<IUser | null>(null);
 const dataSupplier = reactive({
   name: '' as string,
   email: '' as string,
@@ -51,10 +50,12 @@ const selectedCategory = ref<IQuasarSelect<number | null>>({
   label: 'Sem categoria',
   value: null,
 });
+const selectedStatus = ref<IQuasarSelect<number>>({
+  label: 'Ativo',
+  value: 1,
+});
 const selectedIdentifier = ref<string>('CNPJ');
 const optionsIdentifier = reactive<string[]>(['CNPJ', 'CPF']);
-
-
 
 const clear = (): void => {
   Object.assign(dataSupplier, {
@@ -77,17 +78,18 @@ const clear = (): void => {
     description: '',
   });
 
-  supplierEdit.value = null;
-
   selectedCategory.value = {
     label: 'Sem categoria',
     value: null,
+  };
+  selectedStatus.value = {
+    label: 'Ativo',
+    value: 1,
   };
 };
 const save = async () => {
   const check = checkDataSupplier(dataSupplier);
   if (check.status) {
-    console.log('selectedCategory.value.value', selectedCategory.value.value);
     const response = await useSupplierStore().createSupplier(
       dataSupplier.name,
       dataSupplier.email.trim() !== '' ? dataSupplier.email : null,
@@ -116,25 +118,39 @@ const save = async () => {
     createErrorData(check.message || 'Erro ao processar dados do forncedor');
   }
 };
-// const update = async () => {
-//   const check = checkDataUserSystem(dataUser, 'update');
-//   if (check.status) {
-//     const response = await useUserStore().updateUser(
-//       userId.value ?? 0,
-//       dataUser.name,
-//       dataUser.email,
-//       selectedRole.value.value,
-//       dataDepartment.id,
-//       selectedStatus.value.value,
-//     );
-//     if (response?.status === 200) {
-//       clear();
-//       emit('update:open');
-//     }
-//   } else {
-//     createErrorData(check.message || 'Erro ao processar dados do fornecedor');
-//   }
-// };
+const update = async () => {
+  const check = checkDataSupplier(dataSupplier);
+  if (check.status) {
+    const response = await useSupplierStore().updateSupplier(
+      supplierId.value ?? 0,
+      dataSupplier.name,
+      dataSupplier.email.trim() !== '' ? dataSupplier.email : null,
+      dataSupplier.phone.trim() !== '' ? dataSupplier.phone : null,
+      dataSupplier.cpf.trim() !== '' ? Number(dataSupplier.cpf) : null,
+      dataSupplier.cnpj.trim() !== '' ? Number(dataSupplier.cnpj) : null,
+      dataSupplier.stateRegistration.trim() !== '' ? dataSupplier.stateRegistration : null,
+      dataSupplier.municipalRegistration.trim() !== '' ? dataSupplier.municipalRegistration : null,
+      dataSupplier.site.trim() !== '' ? dataSupplier.site : null,
+      dataSupplier.country.trim() !== '' ? dataSupplier.country : null,
+      dataSupplier.state.trim() !== '' ? dataSupplier.state : null,
+      dataSupplier.city.trim() !== '' ? dataSupplier.city : null,
+      dataSupplier.cep.trim() !== '' ? Number(dataSupplier.cep) : null,
+      dataSupplier.neighborhood.trim() !== '' ? dataSupplier.neighborhood : null,
+      dataSupplier.address.trim() !== '' ? dataSupplier.address : null,
+      dataSupplier.number.trim() !== '' ? Number(dataSupplier.number) : null,
+      dataSupplier.complement.trim() !== '' ? dataSupplier.complement : null,
+      dataSupplier.description.trim() !== '' ? dataSupplier.description : null,
+      selectedCategory.value.value,
+      selectedStatus.value.value,
+    );
+    if (response?.status === 200) {
+      clear();
+      emit('update:open');
+    }
+  } else {
+    createErrorData(check.message || 'Erro ao processar dados do forncedor');
+  }
+};
 const checkDataEdit = async () => {
   if (supplierId.value) {
     const response = await useSupplierStore().showSupplier(supplierId.value);
@@ -161,7 +177,9 @@ const checkDataEdit = async () => {
         description: supplier.description ?? '',
       });
 
-      const selectedCategoryItem = listCategorySupplier.value.find((item) => item.id === supplier.category_supplier_id);
+      const selectedCategoryItem = listCategorySupplier.value.find(
+        (item) => item.id === supplier.category_supplier_id,
+      );
       selectedCategory.value = selectedCategoryItem
         ? { label: selectedCategoryItem?.name, value: selectedCategoryItem?.id }
         : { label: 'Sem categoria', value: null };
@@ -206,6 +224,18 @@ const formattedPhone = computed({
 
     dataSupplier.phone = digits;
   },
+});
+const optionsStatus = computed(() => {
+  return [
+    {
+      label: 'Ativo',
+      value: 1,
+    },
+    {
+      label: 'Inativo',
+      value: 0,
+    },
+  ];
 });
 const open = computed({
   get: () => props.data.open,
@@ -324,6 +354,23 @@ watch(open, async () => {
               <q-icon name="link" color="black" size="20px" />
             </template>
           </q-input>
+          <q-select
+            v-show="supplierId !== null"
+            filled
+            v-model="selectedStatus"
+            label="Status do fornecedor"
+            :options="optionsStatus"
+            bg-color="white"
+            dense
+            options-dense
+            map-options
+            label-color="black"
+            class="full-width"
+          >
+            <template v-slot:prepend>
+              <q-icon name="check" color="black" size="20px" />
+            </template>
+          </q-select>
           <q-select
             filled
             v-model="selectedCategory"
@@ -590,6 +637,7 @@ watch(open, async () => {
           />
           <q-btn
             v-else
+            @click="update"
             color="primary"
             label="Atualizar"
             size="md"

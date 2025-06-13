@@ -26,8 +26,8 @@ const changeShowFormSupplier = (open: boolean, supplierId: number | null = null)
   });
 };
 const makeEdit = (id: number): void => {
-  changeShowFormSupplier(true, id)
-}
+  changeShowFormSupplier(true, id);
+};
 </script>
 <template>
   <main class="q-pa-lg">
@@ -82,7 +82,7 @@ const makeEdit = (id: number): void => {
           </q-btn>
         </div>
       </q-banner>
-      <TableSupplier :filter="filterSupplier" @show:show-form-supplier="makeEdit"/>
+      <TableSupplier :filter="filterSupplier" @show:show-form-supplier="makeEdit" />
     </section>
     <CategorySupplierManage
       :open="showCategorySupplierManage"

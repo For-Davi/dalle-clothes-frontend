@@ -9,7 +9,6 @@ export const createError = (error: any) => {
   } else if (error instanceof Error) {
     message = error.message;
   }
-  console.log('message', message);
   Notify.create({
     message,
     type: 'negative',

@@ -36,7 +36,6 @@ const openFormDepartment = (key = null): void => {
   if (key) {
     clickRootCreate.value = key;
   }
-  console.log(clickRootCreate.value, departmentEdit.value);
   emit('open:form-department', clickRootCreate.value, departmentEdit.value);
 };
 const handleEdit = (department: IDepartment) => {

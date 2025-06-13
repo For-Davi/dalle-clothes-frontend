@@ -25,7 +25,6 @@ const clear = () => {
 };
 
 const makeForm = (data: ICategorySupplier) => {
-  console.log('data ', data);
   dataEdit.value = data;
   tab.value = 'form';
 };

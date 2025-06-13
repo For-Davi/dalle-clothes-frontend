@@ -78,13 +78,14 @@ export const updateSupplierService = (
   country: string | null,
   state: string | null,
   city: string | null,
-  cep: string | null,
+  cep: number | null,
   neighborhood: string | null,
   address: string | null,
-  number: string | null,
+  number: number | null,
   complement: string | null,
   description: string | null,
   categorySupplierId: number | null,
+  active: number,
 ): Promise<{
   status: number;
   data: {
@@ -112,6 +113,7 @@ export const updateSupplierService = (
     complement,
     description,
     categorySupplierId,
+    active,
   });
 
 export const deleteSupplierService = (
