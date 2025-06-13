@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import CategorySupplierManage from 'src/components/manage/CategorySupplierManage.vue';
 import FormSupplier from 'src/components/form/FormSupplier.vue';
 import TableSupplier from 'src/components/table/TableSupplier.vue';
+import { useSupplierStore } from 'src/stores/supplier-store';
+import FilterSupplier from 'src/components/filter/FilterSupplier.vue';
 
 defineOptions({
   name: 'Supplier',
@@ -11,9 +13,21 @@ defineOptions({
 
 const filterSupplier = ref<string>('');
 const showCategorySupplierManage = ref<boolean>(false);
+const showFilterSupplier = ref<boolean>(false);
 const showFormSupplier = reactive({
   open: false as boolean,
   supplierId: null as number | null,
+});
+const filter = reactive<IFilterSupplier>({
+  name: '',
+  email: '',
+  cpf: '',
+  cnpj: '',
+  country: '',
+  state: '',
+  city: '',
+  active: null,
+  category: null,
 });
 
 const changeShowCategorySupplierManage = (): void => {
@@ -25,9 +39,44 @@ const changeShowFormSupplier = (open: boolean, supplierId: number | null = null)
     supplierId,
   });
 };
+const changeShowFilterSupplier = (): void => {
+  showFilterSupplier.value = !showFilterSupplier.value;
+};
+const actionFilter = async (data: 'close' | IFilterSupplier): Promise<void> => {
+  changeShowFilterSupplier();
+
+  if (data !== 'close') {
+    Object.assign(filter, {
+      name: data.name,
+      email: data.email,
+      cpf: data.cpf,
+      cnpj: data.cnpj,
+      country: data.country,
+      state: data.state,
+      city: data.city,
+      active: data.active,
+      category: data.category,
+    });
+    await useSupplierStore().getSuppliers(filter);
+  }
+};
 const makeEdit = (id: number): void => {
   changeShowFormSupplier(true, id);
 };
+
+const hasFilter = computed(() => {
+  return (
+    filter.name !== '' ||
+    filter.email != '' ||
+    filter.cpf != '' ||
+    filter.cnpj != '' ||
+    filter.country != '' ||
+    filter.state != '' ||
+    filter.city != '' ||
+    filter.active !== null ||
+    filter.category !== null
+  );
+});
 </script>
 <template>
   <main class="q-pa-lg">
@@ -77,8 +126,15 @@ const makeEdit = (id: number): void => {
               <q-icon name="search" size="20px" color="black" />
             </template>
           </q-input>
-          <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
-            <q-badge floating color="red" rounded />
+          <q-btn
+            @click="changeShowFilterSupplier"
+            round
+            color="primary"
+            icon="filter_alt"
+            unelevated
+            size="13px"
+          >
+            <q-badge v-show="hasFilter" floating color="red" rounded />
           </q-btn>
         </div>
       </q-banner>
@@ -89,5 +145,6 @@ const makeEdit = (id: number): void => {
       @update:open="changeShowCategorySupplierManage"
     />
     <FormSupplier :data="showFormSupplier" @update:open="changeShowFormSupplier(false)" />
+    <FilterSupplier :open="showFilterSupplier" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>

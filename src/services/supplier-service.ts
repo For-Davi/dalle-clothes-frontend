@@ -9,6 +9,15 @@ export const getSuppliersService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const getSuppliersFilterService = (
+  filter: IFilterSupplier,
+): Promise<{
+  status: number;
+  data: {
+    suppliers: ISupplier[];
+  };
+}> => api.post(`${baseUrl}/filter`, filter);
+
 export const showSupplierService = (
   supplierId: number,
 ): Promise<{

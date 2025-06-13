@@ -21,3 +21,15 @@ export interface Supplier {
   description: string | null;
   created_at: string;
 }
+
+export interface FilterSupplier {
+  name: string;
+  email: string;
+  cpf: string | null;
+  cnpj: string | null;
+  active: number | null;
+  category: number | null;
+  country: string;
+  state: string;
+  city: string;
+}

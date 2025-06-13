@@ -1,6 +1,7 @@
 import {
   createSupplierService,
   deleteSupplierService,
+  getSuppliersFilterService,
   getSuppliersService,
   showSupplierService,
   updateSupplierService,
@@ -23,10 +24,16 @@ export const useSupplierStore = defineStore('supplier', {
     setListSupplier(categories: ISupplier[]) {
       categories.map((item) => this.listSupplier.push(item));
     },
-    async getSuppliers() {
-      this.setLoading(true);
+    async getSuppliers(filter: IFilterSupplier | null = null) {
       try {
-        const response = await getSuppliersService();
+        this.setLoading(true);
+        let response = null;
+        if (filter) {
+          response = await getSuppliersFilterService(filter);
+        } else {
+          response = await getSuppliersService();
+        }
+
         if (response.status === 200) {
           this.clearListSupplier();
           this.setListSupplier(response.data.suppliers);

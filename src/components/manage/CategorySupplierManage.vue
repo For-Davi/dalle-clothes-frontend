@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import FormCategorySupplier from '../form/FormCategorySupplier.vue';
 import TableCategorySupplier from '../table/TableCategorySupplier.vue';
 
@@ -40,17 +40,14 @@ const open = computed({
 
 watch(open, () => {
   if (open.value) {
-    tab.value = 'list'
+    tab.value = 'list';
+    clear();
   }
 });
 watch(tab, () => {
   if (tab.value === 'list') {
     clear();
   }
-});
-
-onMounted(() => {
-  clear();
 });
 </script>
 <template>
@@ -89,7 +86,15 @@ onMounted(() => {
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
-          <q-btn color="red" label="Fechar" size="md" @click="open = false" unelevated no-caps :outline="tab === 'form'" />
+          <q-btn
+            color="red"
+            label="Fechar"
+            size="md"
+            @click="open = false"
+            unelevated
+            no-caps
+            :outline="tab === 'form'"
+          />
         </div>
       </q-card-actions>
     </q-card>
