@@ -13,8 +13,8 @@ export const createSupplierService = (
   name: string,
   email: string | null,
   phone: string | null,
-  cpf: string | null,
-  cnpj: string | null,
+  cpf: number | null,
+  cnpj: number | null,
   stateRegistration: string | null,
   municipalRegistration: string | null,
   site: string | null,
@@ -27,6 +27,7 @@ export const createSupplierService = (
   number: number | null,
   complement: string | null,
   description: string | null,
+  categorySupplierId: number | null,
 ): Promise<{
   status: number;
   data: {
@@ -52,6 +53,7 @@ export const createSupplierService = (
     number,
     complement,
     description,
+    categorySupplierId,
   });
 
 export const updateSupplierService = (
@@ -59,8 +61,8 @@ export const updateSupplierService = (
   name: string,
   email: string | null,
   phone: string | null,
-  cpf: string | null,
-  cnpj: string | null,
+  cpf: number | null,
+  cnpj: number | null,
   stateRegistration: string | null,
   municipalRegistration: string | null,
   site: string | null,
@@ -73,6 +75,7 @@ export const updateSupplierService = (
   number: string | null,
   complement: string | null,
   description: string | null,
+  categorySupplierId: number | null,
 ): Promise<{
   status: number;
   data: {
@@ -99,6 +102,7 @@ export const updateSupplierService = (
     number,
     complement,
     description,
+    categorySupplierId,
   });
 
 export const deleteSupplierService = (

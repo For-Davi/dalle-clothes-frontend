@@ -2,8 +2,8 @@ export interface Supplier {
   id: number;
   name: string;
   email: string | null;
-  cpf: string | null;
-  cnpj: string | null;
+  cpf: number | null;
+  cnpj: number | null;
   state_registration: string | null;
   municipal_registration: string | null;
   phone: string | null;

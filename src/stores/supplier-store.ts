@@ -40,8 +40,8 @@ export const useSupplierStore = defineStore('supplier', {
       name: string,
       email: string | null,
       phone: string | null,
-      cpf: string | null,
-      cnpj: string | null,
+      cpf: number | null,
+      cnpj: number | null,
       stateRegistration: string | null,
       municipalRegistration: string | null,
       site: string | null,
@@ -54,8 +54,10 @@ export const useSupplierStore = defineStore('supplier', {
       number: number | null,
       complement: string | null,
       description: string | null,
+      categorySupplierId: number | null,
     ) {
       this.setLoading(true);
+      console.log('store cxateogyr', categorySupplierId);
       try {
         const response = await createSupplierService(
           name,
@@ -75,6 +77,7 @@ export const useSupplierStore = defineStore('supplier', {
           number,
           complement,
           description,
+          categorySupplierId,
         );
         if (response.status === 201) {
           this.clearListSupplier();
@@ -95,8 +98,8 @@ export const useSupplierStore = defineStore('supplier', {
       name: string,
       email: string | null,
       phone: string | null,
-      cpf: string | null,
-      cnpj: string | null,
+      cpf: number | null,
+      cnpj: number | null,
       stateRegistration: string | null,
       municipalRegistration: string | null,
       site: string | null,
@@ -109,6 +112,7 @@ export const useSupplierStore = defineStore('supplier', {
       number: string | null,
       complement: string | null,
       description: string | null,
+      categorySupplierId: number | null,
     ) {
       this.setLoading(true);
       try {
@@ -131,6 +135,7 @@ export const useSupplierStore = defineStore('supplier', {
           number,
           complement,
           description,
+          categorySupplierId,
         );
         if (response.status === 200) {
           this.clearListSupplier();

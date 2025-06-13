@@ -90,12 +90,13 @@ const clear = (): void => {
 const save = async () => {
   const check = checkDataSupplier(dataSupplier);
   if (check.status) {
+    console.log('selectedCategory.value.value', selectedCategory.value.value);
     const response = await useSupplierStore().createSupplier(
       dataSupplier.name,
       dataSupplier.email.trim() !== '' ? dataSupplier.email : null,
       dataSupplier.phone.trim() !== '' ? dataSupplier.phone : null,
-      dataSupplier.cpf.trim() !== '' ? dataSupplier.cpf : null,
-      dataSupplier.cnpj.trim() !== '' ? dataSupplier.cnpj : null,
+      dataSupplier.cpf.trim() !== '' ? Number(dataSupplier.cpf) : null,
+      dataSupplier.cnpj.trim() !== '' ? Number(dataSupplier.cnpj) : null,
       dataSupplier.stateRegistration.trim() !== '' ? dataSupplier.stateRegistration : null,
       dataSupplier.municipalRegistration.trim() !== '' ? dataSupplier.municipalRegistration : null,
       dataSupplier.site.trim() !== '' ? dataSupplier.site : null,
@@ -108,6 +109,7 @@ const save = async () => {
       dataSupplier.number.trim() !== '' ? Number(dataSupplier.number) : null,
       dataSupplier.complement.trim() !== '' ? dataSupplier.complement : null,
       dataSupplier.description.trim() !== '' ? dataSupplier.description : null,
+      selectedCategory.value.value,
     );
     if (response?.status === 201) {
       clear();
@@ -303,6 +305,20 @@ watch(open, async () => {
           >
             <template v-slot:prepend>
               <q-icon name="mail" color="black" size="20px" />
+            </template>
+          </q-input>
+          <q-input
+            v-model="dataSupplier.site"
+            bg-color="white"
+            label-color="black"
+            filled
+            label="Site do fornecedor"
+            dense
+            input-class="text-black"
+            autocomplete="new-email"
+          >
+            <template v-slot:prepend>
+              <q-icon name="link" color="black" size="20px" />
             </template>
           </q-input>
           <q-select
