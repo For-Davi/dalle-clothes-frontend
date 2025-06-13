@@ -38,6 +38,11 @@ const open = computed({
   set: () => emit('update:open'),
 });
 
+watch(open, () => {
+  if (open.value) {
+    tab.value = 'list'
+  }
+});
 watch(tab, () => {
   if (tab.value === 'list') {
     clear();
@@ -84,7 +89,7 @@ onMounted(() => {
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
-          <q-btn color="red" label="Fechar" size="md" @click="open = false" unelevated no-caps />
+          <q-btn color="red" label="Fechar" size="md" @click="open = false" unelevated no-caps :outline="tab === 'form'" />
         </div>
       </q-card-actions>
     </q-card>
