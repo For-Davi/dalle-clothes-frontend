@@ -2,6 +2,7 @@ import {
   createSupplierService,
   deleteSupplierService,
   getSuppliersService,
+  showSupplierService,
   updateSupplierService,
 } from 'src/services/supplier-service';
 import { defineStore } from 'pinia';
@@ -36,6 +37,16 @@ export const useSupplierStore = defineStore('supplier', {
         this.setLoading(false);
       }
     },
+    async showSupplier(supplierId: number) {
+          try {
+            this.setLoading(true);
+            return await showSupplierService(supplierId);
+          } catch (error) {
+            createError(error);
+          } finally {
+            this.setLoading(false);
+          }
+        },
     async createSupplier(
       name: string,
       email: string | null,

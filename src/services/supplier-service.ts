@@ -9,6 +9,15 @@ export const getSuppliersService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const showSupplierService = (
+  supplierId: number,
+): Promise<{
+  status: number;
+  data: {
+    supplier: ISupplier;
+  };
+}> => api.get(`${baseUrl}/${supplierId}`);
+
 export const createSupplierService = (
   name: string,
   email: string | null,

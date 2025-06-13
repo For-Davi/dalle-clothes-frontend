@@ -54,10 +54,7 @@ const selectedCategory = ref<IQuasarSelect<number | null>>({
 const selectedIdentifier = ref<string>('CNPJ');
 const optionsIdentifier = reactive<string[]>(['CNPJ', 'CPF']);
 
-const open = computed({
-  get: () => props.data.open,
-  set: () => emit('update:open'),
-});
+
 
 const clear = (): void => {
   Object.assign(dataSupplier, {
@@ -138,37 +135,39 @@ const save = async () => {
 //     createErrorData(check.message || 'Erro ao processar dados do fornecedor');
 //   }
 // };
-// const checkDataEdit = async () => {
-//   if (userId.value !== null) {
-//     const response = await useUserStore().showUser(userId.value);
-//     if (response?.status === 200) {
-//       const user = response.data.user;
+const checkDataEdit = async () => {
+  if (supplierId.value) {
+    const response = await useSupplierStore().showSupplier(supplierId.value);
+    if (response?.status === 200) {
+      const supplier = response.data.supplier;
 
-//       Object.assign(dataUser, {
-//         name: user.name,
-//         email: user.email,
-//         active: user.active,
-//       });
+      Object.assign(dataSupplier, {
+        name: supplier.name ?? '',
+        email: supplier.email ?? '',
+        phone: supplier.phone ?? '',
+        cpf: supplier.cpf ? String(supplier.cpf) : '',
+        cnpj: supplier.cnpj ? String(supplier.cnpj) : '',
+        stateRegistration: supplier.state_registration ?? '',
+        municipalRegistration: supplier.municipal_registration ?? '',
+        site: supplier.site ?? '',
+        country: supplier.country ?? '',
+        state: supplier.state ?? '',
+        city: supplier.city ?? '',
+        cep: supplier.cep ? String(supplier.cep) : '',
+        neighborhood: supplier.neighborhood ?? '',
+        address: supplier.address ?? '',
+        number: supplier.number ? String(supplier.number) : '',
+        complement: supplier.complement ?? '',
+        description: supplier.description ?? '',
+      });
 
-//       const selectedRoleItem = listRoleSelect.value.find((item) => item.id === user.role_id);
-//       selectedRole.value = selectedRoleItem
-//         ? { label: selectedRoleItem?.name, value: selectedRoleItem?.id }
-//         : { label: '', value: 0 };
-
-//       const selectedDepartmentItem = listDepartment.value.find(
-//         (item) => item.id === user.department_id,
-//       );
-//       selectedDepartment.value = selectedDepartmentItem
-//         ? { label: selectedDepartmentItem?.name, value: selectedDepartmentItem?.id }
-//         : { label: '', value: null };
-
-//       Object.assign(dataDepartment, {
-//         id: selectedDepartment.value.value,
-//         name: selectedDepartment.value.label,
-//       });
-//     }
-//   }
-// };
+      const selectedCategoryItem = listCategorySupplier.value.find((item) => item.id === supplier.category_supplier_id);
+      selectedCategory.value = selectedCategoryItem
+        ? { label: selectedCategoryItem?.name, value: selectedCategoryItem?.id }
+        : { label: 'Sem categoria', value: null };
+    }
+  }
+};
 const fetchCategories = async (): Promise<void> => {
   await useCategorySupplierStore().getCategoriesSupplier();
 };
@@ -207,6 +206,10 @@ const formattedPhone = computed({
 
     dataSupplier.phone = digits;
   },
+});
+const open = computed({
+  get: () => props.data.open,
+  set: () => emit('update:open'),
 });
 
 watch(
@@ -264,7 +267,7 @@ watch(open, async () => {
   if (open.value) {
     clear();
     await fetchCategories();
-    // await checkDataEdit();
+    await checkDataEdit();
   }
 });
 </script>
