@@ -619,9 +619,8 @@ watch(open, async () => {
             filled
             label="Descrição"
             dense
-            input-class="text-black"
+            input-class="text-black no-resize"
             type="textarea"
-            class="no-resize"
           >
             <template v-slot:prepend>
               <q-icon name="description" color="black" size="20px" />
