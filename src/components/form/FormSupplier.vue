@@ -56,7 +56,7 @@ const selectedStatus = ref<IQuasarSelect<number>>({
 });
 const selectedIdentifier = ref<string>('CNPJ');
 const optionsIdentifier = reactive<string[]>(['CNPJ', 'CPF']);
-const allowSearchCep = ref<boolean>(false)
+const allowSearchCep = ref<boolean>(false);
 
 const clear = (): void => {
   Object.assign(dataSupplier, {
@@ -88,7 +88,7 @@ const clear = (): void => {
     value: 1,
   };
 
-  allowSearchCep.value = false
+  allowSearchCep.value = false;
 };
 const save = async () => {
   const check = checkDataSupplier(dataSupplier);
@@ -187,13 +187,16 @@ const checkDataEdit = async () => {
         ? { label: selectedCategoryItem?.name, value: selectedCategoryItem?.id }
         : { label: 'Sem categoria', value: null };
 
-      selectedStatus.value = supplier.active === 0 ? {
-        label: 'Inativo',
-        value: 0,
-      } : {
-        label: 'Ativo',
-        value: 1,
-      }
+      selectedStatus.value =
+        supplier.active === 0
+          ? {
+              label: 'Inativo',
+              value: 0,
+            }
+          : {
+              label: 'Ativo',
+              value: 1,
+            };
     }
   }
 };
@@ -257,7 +260,7 @@ watch(
   () => dataSupplier.cep,
   async (cep: string) => {
     dataSupplier.cep = dataSupplier.cep.replace(/\D/g, '');
-    if(allowSearchCep.value) {
+    if (allowSearchCep.value) {
       if (cep.trim().length === 8) {
         loading.value = true;
         const response = await searchCep(cep);
@@ -274,7 +277,7 @@ watch(
         dataSupplier.address = '';
       }
     } else {
-      allowSearchCep.value = true
+      allowSearchCep.value = true;
     }
     loading.value = false;
   },
