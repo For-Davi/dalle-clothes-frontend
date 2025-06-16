@@ -123,3 +123,36 @@ export const columnsSupplier: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsClient: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'email',
+    label: 'E-mail',
+    field: 'email',
+    align: 'left',
+  },
+  {
+    name: 'phone',
+    label: 'Telefone',
+    field: 'phone',
+    align: 'left',
+  },
+  {
+    name: 'date_birthday',
+    label: 'Aniversário',
+    field: 'date_birthday',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];

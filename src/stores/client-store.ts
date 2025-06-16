@@ -71,6 +71,7 @@ export const useClientStore = defineStore('client', {
       number: number | null,
       complement: string | null,
       description: string | null,
+      sex: string,
     ) {
       this.setLoading(true);
       try {
@@ -92,6 +93,7 @@ export const useClientStore = defineStore('client', {
           number,
           complement,
           description,
+          sex,
         );
         if (response.status === 201) {
           this.clearListClient();
@@ -126,6 +128,7 @@ export const useClientStore = defineStore('client', {
       number: number | null,
       complement: string | null,
       description: string | null,
+      sex: string,
     ) {
       this.setLoading(true);
       try {
@@ -148,6 +151,7 @@ export const useClientStore = defineStore('client', {
           number,
           complement,
           description,
+          sex,
         );
         if (response.status === 200) {
           this.clearListClient();

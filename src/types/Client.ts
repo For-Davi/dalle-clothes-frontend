@@ -18,6 +18,7 @@ export interface Client {
   complement: string | null;
   enterprise_id: number | null;
   description: string | null;
+  sex: string;
   created_at: string;
 }
 

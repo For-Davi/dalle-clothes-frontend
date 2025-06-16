@@ -45,6 +45,7 @@ export const createClientService = (
   number: number | null,
   complement: string | null,
   description: string | null,
+  sex: string,
 ): Promise<{
   status: number;
   data: {
@@ -70,6 +71,7 @@ export const createClientService = (
     number,
     complement,
     description,
+    sex,
   });
 
 export const updateClientService = (
@@ -91,6 +93,7 @@ export const updateClientService = (
   number: number | null,
   complement: string | null,
   description: string | null,
+  sex: string,
 ): Promise<{
   status: number;
   data: {
@@ -117,6 +120,7 @@ export const updateClientService = (
     number,
     complement,
     description,
+    sex,
   });
 
 export const deleteClientService = (
