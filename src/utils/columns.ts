@@ -93,12 +93,6 @@ export const columnsSupplier: IQuasarTable[] = [
     align: 'left',
   },
   {
-    name: 'category',
-    label: 'Categoria',
-    field: 'category',
-    align: 'left',
-  },
-  {
     name: 'email',
     label: 'E-mail',
     field: 'email',

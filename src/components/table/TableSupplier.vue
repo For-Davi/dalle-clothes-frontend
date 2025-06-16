@@ -91,14 +91,6 @@ onMounted(async () => {
             {{ props.row.name }}
           </q-td>
           <q-td
-            key="category"
-            :props="props"
-            class="text-left"
-            @click="setShowInformation(props.rowIndex)"
-          >
-            {{ props.row.category }}
-          </q-td>
-          <q-td
             key="email"
             :props="props"
             class="text-left"
