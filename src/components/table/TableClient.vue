@@ -77,7 +77,7 @@ onMounted(async () => {
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer">
+        <q-tr :props="props">
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
           </q-td>

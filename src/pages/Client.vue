@@ -4,6 +4,7 @@ import { computed, reactive, ref } from 'vue';
 import { useClientStore } from 'src/stores/client-store';
 import TableClient from 'src/components/table/TableClient.vue';
 import FormClient from 'src/components/form/FormClient.vue';
+import FilterClient from 'src/components/filter/FilterClient.vue';
 
 defineOptions({
   name: 'Client',
