@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
 import type { FilterSupplier } from './Supplier';
 import type { CategorySupplier } from './Category';
 import type { RenderAuth } from './Auth';
@@ -40,6 +41,10 @@ declare global {
 
   type IClient = Client;
   type IFilterClient = FilterClient;
+
+  type IEmployee = Employee;
+  type IEmployeeTable = EmployeeTable;
+  type IFilterEmployee = FilterEmployee;
 
   type IRoleSelect = RoleSelect;
 }

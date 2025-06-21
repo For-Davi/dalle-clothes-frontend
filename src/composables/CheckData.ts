@@ -212,3 +212,54 @@ export const checkDataClient = (data: {
 
   return { status: true };
 };
+
+export const checkDataEmployee = (
+  data: {
+    name: string;
+    email: string;
+    dateBirthday: string;
+    password: string;
+    confirmPassword: string;
+  },
+  hasAccessLogin: boolean,
+): { status: boolean; message?: string } => {
+  if (data.name.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome do fornecedor' };
+  }
+  if (data.name.trim().length < 2) {
+    return {
+      status: false,
+      message: 'Nome de fornecedor deve ter mais de 2 caracteres',
+    };
+  }
+  if (data.email.trim() !== '') {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email.trim())) {
+      return { status: false, message: 'Informe um e-mail válido' };
+    }
+  }
+  if (data.dateBirthday.trim() !== '') {
+    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[0-2])[/](19|20)\d\d$/;
+    if (!dateRegex.test(data.dateBirthday.trim())) {
+      return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
+    }
+  }
+  if (hasAccessLogin) {
+    if (data.password.trim() === '') {
+      return {
+        status: false,
+        message: 'Deve ser informado a senha do usuário',
+      };
+    }
+    if (data.password.trim().length < 7) {
+      return {
+        status: false,
+        message: 'A senha deve conter mais de 7 caracteres',
+      };
+    }
+    if (data.password.trim() !== (data.confirmPassword && data.confirmPassword.trim())) {
+      return { status: false, message: 'As senhas não coincidem' };
+    }
+  }
+
+  return { status: true };
+};
