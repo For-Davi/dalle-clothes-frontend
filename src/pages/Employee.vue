@@ -4,6 +4,7 @@ import DepartmentManage from 'src/components/manage/DepartmentManage.vue';
 import { computed, reactive, ref } from 'vue';
 import { useEmployeeStore } from 'src/stores/employee-store';
 import FormEmployee from 'src/components/form/FormEmployee.vue';
+import TableEmployee from 'src/components/table/TableEmployee.vue';
 
 defineOptions({
   name: 'Employee',
@@ -81,8 +82,8 @@ const hasFilter = computed(() => {
         <q-btn
           color="white"
           text-color="black"
-          label="Cargos"
-          icon-right="supervisor_account"
+          label="Permissões"
+          icon-right="rule"
           no-caps
           class="q-mr-sm"
         />
@@ -96,6 +97,7 @@ const hasFilter = computed(() => {
           class="q-mr-sm"
         />
         <q-btn
+          @click="changeShowFormEmployee(true)"
           color="white"
           text-color="black"
           label="Novo funcionário"

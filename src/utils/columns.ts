@@ -150,3 +150,36 @@ export const columnsClient: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsEmployee: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'email',
+    label: 'E-mail',
+    field: 'email',
+    align: 'left',
+  },
+  {
+    name: 'department_name',
+    label: 'Departamento',
+    field: 'department_name',
+    align: 'left',
+  },
+  {
+    name: 'has_login_access',
+    label: 'Acesso ao sistema',
+    field: 'has_login_access',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];

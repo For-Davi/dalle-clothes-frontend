@@ -75,6 +75,8 @@ export const useEmployeeStore = defineStore('employee', {
       description: string | null,
       departmentId: number | null,
       hasAccessLogin: number,
+      password: string | null,
+      roleId: number | null,
     ) {
       this.setLoading(true);
       try {
@@ -99,6 +101,8 @@ export const useEmployeeStore = defineStore('employee', {
           description,
           departmentId,
           hasAccessLogin,
+          password,
+          roleId,
         );
         if (response.status === 201) {
           this.clearListEmployee();
@@ -135,7 +139,7 @@ export const useEmployeeStore = defineStore('employee', {
       complement: string | null,
       description: string | null,
       departmentId: number | null,
-      hasAccessLogin: number,
+      hasLoginAccess: number,
     ) {
       this.setLoading(true);
       try {
@@ -160,7 +164,7 @@ export const useEmployeeStore = defineStore('employee', {
           complement,
           description,
           departmentId,
-          hasAccessLogin,
+          hasLoginAccess,
         );
         if (response.status === 200) {
           this.clearListEmployee();

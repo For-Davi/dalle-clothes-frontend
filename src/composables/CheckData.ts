@@ -244,6 +244,15 @@ export const checkDataEmployee = (
     }
   }
   if (hasAccessLogin) {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email.trim())) {
+      return { status: false, message: 'Informe um e-mail válido' };
+    }
+    if (data.dateBirthday.trim() !== '') {
+      const dateRegex = /^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[0-2])[/](19|20)\d\d$/;
+      if (!dateRegex.test(data.dateBirthday.trim())) {
+        return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
+      }
+    }
     if (data.password.trim() === '') {
       return {
         status: false,

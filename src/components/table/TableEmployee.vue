@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { columnsUser } from 'src/utils/columns';
+import { columnsEmployee } from 'src/utils/columns';
 import { storeToRefs } from 'pinia';
-import { useUserStore } from 'src/stores/user-store';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
+import { useEmployeeStore } from 'src/stores/employee-store';
 
 defineOptions({
   name: 'TableUserSystem',
@@ -20,17 +20,17 @@ const emit = defineEmits<{
   'show:showFormUser': [number];
 }>();
 
-const { loadingUser, listUserSystem } = storeToRefs(useUserStore());
+const { loadingEmployee, listEmployee } = storeToRefs(useEmployeeStore());
 
 const showConfirmAction = ref<boolean>(false);
-const userMonitoring = ref<number | null>(null);
+const employeeMonitoring = ref<number | null>(null);
 
 const clear = (): void => {
-  userMonitoring.value = null;
+  employeeMonitoring.value = null;
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  await useUserStore().deleteUser(userMonitoring.value ?? 0);
+  await useEmployeeStore().deleteEmployee(employeeMonitoring.value ?? 0);
   clear();
 };
 const closeConfirmAction = (): void => {
@@ -38,7 +38,7 @@ const closeConfirmAction = (): void => {
   clear();
 };
 const openConfirmAction = (id: number): void => {
-  userMonitoring.value = id;
+  employeeMonitoring.value = id;
   showConfirmAction.value = true;
 };
 const startEdit = (id: number) => {
@@ -47,22 +47,22 @@ const startEdit = (id: number) => {
 const startExclude = (id: number) => {
   openConfirmAction(id);
 };
-const fetchUsers = async (): Promise<void> => {
-  await useUserStore().getUsers();
+const fetchEmployees = async (): Promise<void> => {
+  await useEmployeeStore().getEmployees();
 };
 
 onMounted(async () => {
-  await fetchUsers();
+  await fetchEmployees();
 });
 </script>
 <template>
   <section>
     <q-table
       class="q-mt-sm"
-      :rows="rows"
-      :columns="columnsSupplier"
-      :filter="filterSupplier"
-      :loading="false"
+      :rows="loadingEmployee ? [] : listEmployee"
+      :columns="columnsEmployee"
+      :filter="props.filter"
+      :loading="loadingEmployee"
       title="Lista de funcionários"
       row-key="index"
       no-data-label="Nenhum fornecedor para mostrar"
@@ -77,30 +77,42 @@ onMounted(async () => {
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer">
+        <q-tr :props="props">
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
           </q-td>
-          <q-td key="department" :props="props" class="text-left">
-            {{ props.row.department }}
+          <q-td key="email" :props="props" class="text-left">
+            {{ props.row.email }}
           </q-td>
-          <q-td key="position" :props="props" class="text-left">
-            {{ props.row.position }}
+          <q-td key="department_name" :props="props" class="text-left">
+            {{ props.row.department_name }}
           </q-td>
-          <q-td key="date_birthday" :props="props" class="text-left">
-            {{ props.row.date_birthday }}
-          </q-td>
-          <q-td key="active" :props="props" class="text-left">
+          <q-td key="has_login_access" :props="props" class="text-left">
             <q-icon
-              :name="props.row.active === 1 ? 'check_circle' : 'close'"
-              :color="props.row.active === 1 ? 'green' : 'red'"
+              :name="props.row.has_login_access === 1 ? 'check_circle' : 'close'"
+              :color="props.row.has_login_access === 1 ? 'green' : 'red'"
               size="17px"
             />
           </q-td>
           <q-td key="action" :props="props">
-            <q-btn :disable="false" size="sm" flat round color="blue" icon="visibility" />
-            <q-btn :disable="false" size="sm" flat round color="black" icon="edit" />
-            <q-btn :disable="false" size="sm" flat round color="red" icon="delete" />
+            <q-btn
+              @click="startEdit(props.row.id)"
+              :disable="employeeMonitoring === props.row.id"
+              size="sm"
+              flat
+              round
+              color="black"
+              icon="edit"
+            />
+            <q-btn
+              @click="startExclude(props.row.id)"
+              :disable="employeeMonitoring === props.row.id"
+              size="sm"
+              flat
+              round
+              color="red"
+              icon="delete"
+            />
           </q-td>
         </q-tr>
       </template>
@@ -108,8 +120,8 @@ onMounted(async () => {
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
-      title="Confirmação de exclusão de usuário"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o usuário permanentemente."
+      title="Confirmação de exclusão de funcionário"
+      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o funcionário permanentemente."
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />

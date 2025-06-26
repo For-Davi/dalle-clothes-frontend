@@ -9,6 +9,7 @@ import Loading from '../shared/Loading.vue';
 import DepartmentChoose from '../shared/DepartmentChoose.vue';
 import { checkDataEmployee } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
+import { useRoleStore } from 'src/stores/role-store';
 
 defineOptions({
   name: 'FormEmployee',
@@ -26,10 +27,13 @@ const emit = defineEmits<{
 
 const { loadingDepartment, listDepartment } = storeToRefs(useDepartmentStore());
 const { loadingEmployee } = storeToRefs(useEmployeeStore());
+const { loadingRole, listRoleSelect } = storeToRefs(useRoleStore());
 
+const isPwd = ref<boolean>(true);
+const isPwd2 = ref<boolean>(true);
 const loading = ref<boolean>(false);
 const showDepartmentChoose = ref<boolean>(false);
-const hasAccessLogin = ref<boolean>(false);
+const hasLoginAccess = ref<boolean>(false);
 const dataEmployee = reactive({
   name: '' as string,
   email: '' as string,
@@ -61,6 +65,10 @@ const selectedDepartment = ref<IQuasarSelect<number | null>>({
 const selectedSex = ref<IQuasarSelect<string | null>>({
   label: 'Não selecionado',
   value: null,
+});
+const selectedRole = ref<IQuasarSelect<number>>({
+  label: '',
+  value: 0,
 });
 const dataDepartment = reactive({
   id: null as number | null,
@@ -113,11 +121,20 @@ const clear = (): void => {
     label: 'Não selecionado',
     value: null,
   };
+  selectedRole.value = {
+    label: '',
+    value: 0,
+  };
+
+  Object.assign(dataDepartment, {
+    id: null,
+    name: '',
+  });
 
   allowSearchCep.value = false;
 };
 const save = async () => {
-  const check = checkDataEmployee(dataEmployee, hasAccessLogin.value);
+  const check = checkDataEmployee(dataEmployee, hasLoginAccess.value);
   if (check.status) {
     const response = await useEmployeeStore().createEmployee(
       dataEmployee.name,
@@ -139,7 +156,9 @@ const save = async () => {
       dataEmployee.complement.trim() !== '' ? dataEmployee.complement : null,
       dataEmployee.description.trim() !== '' ? dataEmployee.description : null,
       selectedDepartment.value.value,
-      hasAccessLogin.value ? 1 : 0,
+      hasLoginAccess.value ? 1 : 0,
+      hasLoginAccess.value ? dataEmployee.password : null,
+      hasLoginAccess.value ? selectedRole.value.value : null,
     );
     if (response?.status === 201) {
       clear();
@@ -150,7 +169,7 @@ const save = async () => {
   }
 };
 const update = async () => {
-  const check = checkDataEmployee(dataEmployee, hasAccessLogin.value);
+  const check = checkDataEmployee(dataEmployee, hasLoginAccess.value);
   if (check.status) {
     const response = await useEmployeeStore().updateEmployee(
       employeeId.value ?? 0,
@@ -173,7 +192,7 @@ const update = async () => {
       dataEmployee.complement.trim() !== '' ? dataEmployee.complement : null,
       dataEmployee.description.trim() !== '' ? dataEmployee.description : null,
       selectedDepartment.value.value,
-      hasAccessLogin.value ? 1 : 0,
+      hasLoginAccess.value ? 1 : 0,
     );
     if (response?.status === 200) {
       clear();
@@ -223,9 +242,15 @@ const checkDataEdit = async () => {
     }
   }
 };
-const isLoading = computed((): boolean => {
-  return loadingEmployee.value || loadingDepartment.value;
-});
+const fetchRoles = async () => {
+  await useRoleStore().getRolesSelect();
+  const selectedItem = listRoleSelect.value.find((item) => item.name.toLowerCase() === 'master');
+  selectedRole.value = {
+    label: selectedItem?.name ?? '',
+    value: selectedItem?.id ?? 0,
+  };
+};
+
 const employeeId = computed(() => props.data.employeeId);
 const formattedPhone = computed({
   get() {
@@ -269,7 +294,17 @@ const optionsSex = computed(() => {
     },
   ];
 });
+const optionsRoles = computed(() => {
+  return listRoleSelect.value.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+});
 
+watch(hasLoginAccess, () => {
+  dataEmployee.password = '';
+  dataEmployee.confirmPassword = '';
+});
 watch(
   () => dataEmployee.cep,
   async (cep: string) => {
@@ -329,22 +364,23 @@ watch(open, async () => {
   clear();
   if (open.value) {
     await fetchDepartments();
+    await fetchRoles();
     await checkDataEdit();
   }
 });
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 form-basic column justify-between">
+    <q-card class="bg-grey-2 form-basic">
       <q-card-section class="q-pa-none">
         <TitlePage
           :title="employeeId ? 'Atualização de funcionário' : 'Cadastro de funcionário'"
           icon="person"
         />
       </q-card-section>
+      <Loading :show="loadingDepartment || loadingRole" />
       <q-card-section class="q-pa-sm">
-        <Loading :show="isLoading" />
-        <q-form v-show="!isLoading" class="q-gutter-y-sm">
+        <q-form v-show="!loadingDepartment && !loadingRole" class="q-gutter-y-sm">
           <q-input
             v-model="dataEmployee.name"
             bg-color="white"
@@ -652,6 +688,72 @@ watch(open, async () => {
               <q-icon name="description" color="black" size="20px" />
             </template>
           </q-input>
+          <q-toggle v-model="hasLoginAccess" label="Criar acesso ao sistema" />
+          <q-select
+            v-show="employeeId === null && hasLoginAccess"
+            filled
+            v-model="selectedRole"
+            label="Selecione a permissão"
+            :options="optionsRoles"
+            bg-color="white"
+            dense
+            options-dense
+            map-options
+            label-color="black"
+            class="full-width"
+          >
+            <template v-slot:prepend>
+              <q-icon name="supervisor_account" color="black" size="20px" />
+            </template>
+          </q-select>
+          <q-input
+            v-show="employeeId === null && hasLoginAccess"
+            v-model="dataEmployee.password"
+            bg-color="white"
+            label-color="black"
+            filled
+            label="Senha do usuário"
+            dense
+            input-class="text-black"
+            :type="isPwd ? 'password' : 'text'"
+            autocomplete="new-password"
+          >
+            <template v-slot:append>
+              <q-icon
+                @click="isPwd = !isPwd"
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                size="20px"
+              />
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="lock" color="black" size="20px" />
+            </template>
+          </q-input>
+          <q-input
+            v-show="employeeId === null && hasLoginAccess"
+            v-model="dataEmployee.confirmPassword"
+            bg-color="white"
+            label-color="black"
+            filled
+            label="Confirme a senha"
+            dense
+            input-class="text-black"
+            :type="isPwd2 ? 'password' : 'text'"
+            autocomplete="new-password"
+          >
+            <template v-slot:append>
+              <q-icon
+                @click="isPwd2 = !isPwd2"
+                :name="isPwd2 ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                size="20px"
+              />
+            </template>
+            <template v-slot:prepend>
+              <q-icon name="lock" color="black" size="20px" />
+            </template>
+          </q-input>
         </q-form>
         <DepartmentChoose
           :open="showDepartmentChoose"
@@ -659,7 +761,7 @@ watch(open, async () => {
           @update:choose-department="handleChooseDepartment"
         />
       </q-card-section>
-      <q-card-actions align="right">
+      <q-card-actions align="right" v-show="!loadingDepartment && !loadingRole">
         <div class="row justify-end items-center q-gutter-x-sm">
           <q-btn
             color="red"
@@ -676,7 +778,7 @@ watch(open, async () => {
             color="primary"
             label="Salvar"
             size="md"
-            :loading="isLoading"
+            :loading="loadingEmployee"
             unelevated
             no-caps
           />
@@ -686,7 +788,7 @@ watch(open, async () => {
             color="primary"
             label="Atualizar"
             size="md"
-            :loading="isLoading"
+            :loading="loadingEmployee"
             unelevated
             no-caps
           />

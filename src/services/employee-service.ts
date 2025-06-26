@@ -47,7 +47,9 @@ export const createEmployeeService = (
   complement: string | null,
   description: string | null,
   departmentId: number | null,
-  hasAccessLogin: number,
+  hasLoginAccess: number,
+  password: string | null,
+  roleId: number | null,
 ): Promise<{
   status: number;
   data: {
@@ -75,7 +77,9 @@ export const createEmployeeService = (
     description,
     sex,
     departmentId,
-    hasAccessLogin,
+    hasLoginAccess,
+    password,
+    roleId,
   });
 
 export const updateEmployeeService = (
@@ -99,7 +103,7 @@ export const updateEmployeeService = (
   complement: string | null,
   description: string | null,
   departmentId: number | null,
-  hasAccessLogin: number,
+  hasLoginAccess: number,
 ): Promise<{
   status: number;
   data: {
@@ -128,7 +132,7 @@ export const updateEmployeeService = (
     description,
     sex,
     departmentId,
-    hasAccessLogin,
+    hasLoginAccess,
   });
 
 export const deleteEmployeeService = (
