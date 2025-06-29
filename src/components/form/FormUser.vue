@@ -207,7 +207,6 @@ const optionsStatus = computed(() => {
     },
   ];
 });
-
 const userId = computed(() => props.data.userId);
 const isLoading = computed((): boolean => {
   return loading.value || loadingDepartment.value || loadingUser.value || loadingRole.value;
@@ -368,7 +367,7 @@ watch(open, async () => {
             </template>
           </q-select>
           <q-checkbox
-            v-if="createEmployee"
+            v-if="userId === null"
             v-model="createEmployee"
             size="sm"
             label="Cadastrar usuário na lista de funcionários"

@@ -6,6 +6,7 @@ import { useEmployeeStore } from 'src/stores/employee-store';
 import FormEmployee from 'src/components/form/FormEmployee.vue';
 import TableEmployee from 'src/components/table/TableEmployee.vue';
 import FormAccessLogin from 'src/components/form/FormAccessLogin.vue';
+import FilterEmployee from 'src/components/filter/FilterEmployee.vue';
 
 defineOptions({
   name: 'Employee',
@@ -23,14 +24,14 @@ const showFormAccessLogin = reactive({
   employeeId: null as number | null,
 });
 const filter = reactive<IFilterEmployee>({
-  name: null,
-  email: null,
-  cpf: null,
-  cnpj: null,
+  name: '',
+  email: '',
+  cpf: '',
+  cnpj: '',
   sex: null,
   active: null,
-  hasAccessLogin: null,
-  departmentId: null,
+  hasLoginAccess: null,
+  department: null,
 });
 
 const changeShowFormAccessLogin = (open: boolean, employeeId: number | null = null): void => {
@@ -59,8 +60,8 @@ const actionFilter = async (data: 'close' | IFilterEmployee): Promise<void> => {
       cnpj: data.cnpj,
       sex: data.sex,
       active: data.active,
-      hasAccessLogin: data.hasAccessLogin,
-      departmentId: data.departmentId,
+      hasLoginAccess: data.hasLoginAccess,
+      department: data.department,
     });
     await useEmployeeStore().getEmployees(filter);
   }
@@ -83,8 +84,8 @@ const hasFilter = computed(() => {
     filter.cnpj != '' ||
     filter.sex !== null ||
     filter.active !== null ||
-    filter.hasAccessLogin !== null ||
-    filter.hasAccessLogin !== null
+    filter.hasLoginAccess !== null ||
+    filter.department !== null
   );
 });
 </script>

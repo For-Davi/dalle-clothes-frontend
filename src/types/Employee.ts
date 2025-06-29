@@ -39,6 +39,6 @@ export interface FilterEmployee {
   cnpj: string | null;
   sex: string | null;
   active: number | null;
-  departmentId: number | null;
-  hasAccessLogin: number | null;
+  department: number | null;
+  hasLoginAccess: number | null;
 }
