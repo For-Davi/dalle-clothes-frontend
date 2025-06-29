@@ -59,10 +59,18 @@ export const useUserStore = defineStore('user', {
       email: string,
       roleId: number,
       departmentId: number | null,
+      createEmployee: boolean,
     ) {
       this.setLoading(true);
       try {
-        const response = await createUserService(name, password, email, roleId, departmentId);
+        const response = await createUserService(
+          name,
+          password,
+          email,
+          roleId,
+          departmentId,
+          createEmployee,
+        );
         if (response.status === 201) {
           this.clearListUserSystem();
           this.setListUserSystem(response.data.users);

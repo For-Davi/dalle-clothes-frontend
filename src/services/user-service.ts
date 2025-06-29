@@ -33,13 +33,14 @@ export const createUserService = (
   email: string,
   roleId: number,
   departmentId: number | null,
+  createEmployee: boolean,
 ): Promise<{
   status: number;
   data: {
     users: IUserSystem[];
     message: string;
   };
-}> => api.post(`${baseUrl}/`, { name, password, email, roleId, departmentId });
+}> => api.post(`${baseUrl}/`, { name, password, email, roleId, departmentId, createEmployee });
 
 export const updateUserService = (
   id: number,

@@ -33,6 +33,7 @@ const userEdit = ref<IUser | null>(null);
 const isPwd = ref<boolean>(true);
 const isPwd2 = ref<boolean>(true);
 const showDepartmentChoose = ref<boolean>(false);
+const createEmployee = ref<boolean>(false);
 const dataUser = reactive({
   name: '' as string,
   email: '' as string,
@@ -89,6 +90,8 @@ const clear = (): void => {
     label: 'Ativo',
     value: 1,
   };
+
+  createEmployee.value = true;
 };
 const save = async () => {
   const check = checkDataUserSystem(dataUser, 'create');
@@ -99,6 +102,7 @@ const save = async () => {
       dataUser.email,
       selectedRole.value.value,
       dataDepartment.id,
+      createEmployee.value,
     );
     if (response?.status === 201) {
       clear();
@@ -363,6 +367,12 @@ watch(open, async () => {
               <q-icon name="check" color="black" size="20px" />
             </template>
           </q-select>
+          <q-checkbox
+            v-if="createEmployee"
+            v-model="createEmployee"
+            size="sm"
+            label="Cadastrar usuário na lista de funcionários"
+          />
         </q-form>
       </q-card-section>
       <q-card-actions align="right">
