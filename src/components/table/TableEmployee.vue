@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { columnsEmployee } from 'src/utils/columns';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { useEmployeeStore } from 'src/stores/employee-store';
 
 defineOptions({
-  name: 'TableUserSystem',
+  name: 'TableEmployee',
 });
 const props = withDefaults(
   defineProps<{
@@ -17,20 +17,38 @@ const props = withDefaults(
   },
 );
 const emit = defineEmits<{
-  'show:showFormUser': [number];
+  'show:showFormEmployee': [number];
+  'show:showFormAccessLogin': [number];
 }>();
 
 const { loadingEmployee, listEmployee } = storeToRefs(useEmployeeStore());
 
 const showConfirmAction = ref<boolean>(false);
 const employeeMonitoring = ref<number | null>(null);
+const dataConfirmAction = reactive({
+  labelAction: '' as string,
+  title: '' as string,
+  message: '' as string,
+  mode: null as string | null,
+});
 
 const clear = (): void => {
   employeeMonitoring.value = null;
+  Object.assign(dataConfirmAction, {
+    labelAction: '',
+    title: '',
+    message: '',
+    mode: null,
+  });
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  await useEmployeeStore().deleteEmployee(employeeMonitoring.value ?? 0);
+  if (dataConfirmAction.mode === 'excludeUser') {
+    await useEmployeeStore().deleteEmployee(employeeMonitoring.value ?? 0);
+  }
+  if (dataConfirmAction.mode === 'removeAccessLogin') {
+    await useEmployeeStore().removeAccessLogin(employeeMonitoring.value ?? 0);
+  }
   clear();
 };
 const closeConfirmAction = (): void => {
@@ -41,10 +59,30 @@ const openConfirmAction = (id: number): void => {
   employeeMonitoring.value = id;
   showConfirmAction.value = true;
 };
+const openFormCreateAccessLogin = (id: number): void => {
+  emit('show:showFormAccessLogin', id);
+};
 const startEdit = (id: number) => {
-  emit('show:showFormUser', id);
+  emit('show:showFormEmployee', id);
+};
+const startRemoveAccessLogin = (id: number) => {
+  Object.assign(dataConfirmAction, {
+    labelAction: 'Continuar',
+    title: 'Confirmação de remoção de acesso ao sistema',
+    message:
+      "Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o acesso do funcionário ao sistema.",
+    mode: 'removeAccessLogin',
+  });
+  openConfirmAction(id);
 };
 const startExclude = (id: number) => {
+  Object.assign(dataConfirmAction, {
+    labelAction: 'Continuar',
+    title: 'Confirmação de exclusão de funcionário',
+    message:
+      "Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o funcionário permanentemente.",
+    mode: 'excludeUser',
+  });
   openConfirmAction(id);
 };
 const fetchEmployees = async (): Promise<void> => {
@@ -96,6 +134,30 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
+              v-if="props.row.has_login_access === 1"
+              @click="startRemoveAccessLogin(props.row.id)"
+              :disable="employeeMonitoring === props.row.id"
+              size="sm"
+              flat
+              round
+              color="red"
+              icon="key_off"
+            >
+              <q-tooltip>Remover acesso do sistema</q-tooltip>
+            </q-btn>
+            <q-btn
+              v-else
+              @click="openFormCreateAccessLogin(props.row.id)"
+              :disable="employeeMonitoring === props.row.id"
+              size="sm"
+              flat
+              round
+              color="green"
+              icon="key"
+            >
+              <q-tooltip>Criar acesso do sistema</q-tooltip>
+            </q-btn>
+            <q-btn
               @click="startEdit(props.row.id)"
               :disable="employeeMonitoring === props.row.id"
               size="sm"
@@ -119,9 +181,9 @@ onMounted(async () => {
     </q-table>
     <ConfirmAction
       :open="showConfirmAction"
-      label-action="Continuar"
-      title="Confirmação de exclusão de funcionário"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o funcionário permanentemente."
+      :label-action="dataConfirmAction.labelAction"
+      :title="dataConfirmAction.title"
+      :message="dataConfirmAction.message"
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />

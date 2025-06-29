@@ -1,8 +1,10 @@
 import {
+  createAccessLoginService,
   createEmployeeService,
   deleteEmployeeService,
   getEmployeesFilterService,
   getEmployeesService,
+  removeAccessLoginService,
   showEmployeeService,
   updateEmployeeService,
 } from 'src/services/employee-service';
@@ -50,6 +52,40 @@ export const useEmployeeStore = defineStore('employee', {
         return await showEmployeeService(employeeId);
       } catch (error) {
         createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async removeAccessLogin(employeeId: number) {
+      try {
+        this.setLoading(true);
+        const response = await removeAccessLoginService(employeeId);
+        if (response.status === 200) {
+          this.clearListEmployee();
+          this.setListEmployee(response.data.employees);
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async createAccessLogin(employeeId: number, password: string, roleId: number | null) {
+      try {
+        this.setLoading(true);
+        const response = await createAccessLoginService(employeeId, password, roleId);
+        if (response.status === 201) {
+          this.clearListEmployee();
+          this.setListEmployee(response.data.employees);
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
       } finally {
         this.setLoading(false);
       }
@@ -139,7 +175,6 @@ export const useEmployeeStore = defineStore('employee', {
       complement: string | null,
       description: string | null,
       departmentId: number | null,
-      hasLoginAccess: number,
     ) {
       this.setLoading(true);
       try {
@@ -164,7 +199,6 @@ export const useEmployeeStore = defineStore('employee', {
           complement,
           description,
           departmentId,
-          hasLoginAccess,
         );
         if (response.status === 200) {
           this.clearListEmployee();

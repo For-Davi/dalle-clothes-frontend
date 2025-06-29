@@ -27,6 +27,28 @@ export const showEmployeeService = (
   };
 }> => api.get(`${baseUrl}/${employeeId}`);
 
+export const removeAccessLoginService = (
+  employeeId: number,
+): Promise<{
+  status: number;
+  data: {
+    employees: IEmployeeTable[];
+    message: string;
+  };
+}> => api.post(`${baseUrl}/action/remove-access-login`, { employeeId });
+
+export const createAccessLoginService = (
+  employeeId: number,
+  password: string,
+  roleId: number | null,
+): Promise<{
+  status: number;
+  data: {
+    employees: IEmployeeTable[];
+    message: string;
+  };
+}> => api.post(`${baseUrl}/action/create-access-login`, { employeeId, password, roleId });
+
 export const createEmployeeService = (
   name: string,
   email: string | null,
@@ -103,7 +125,6 @@ export const updateEmployeeService = (
   complement: string | null,
   description: string | null,
   departmentId: number | null,
-  hasLoginAccess: number,
 ): Promise<{
   status: number;
   data: {
@@ -132,7 +153,6 @@ export const updateEmployeeService = (
     description,
     sex,
     departmentId,
-    hasLoginAccess,
   });
 
 export const deleteEmployeeService = (

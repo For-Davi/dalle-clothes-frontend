@@ -213,6 +213,29 @@ export const checkDataClient = (data: {
   return { status: true };
 };
 
+export const checkDataAccessLogin = (data: {
+  password: string;
+  confirmPassword: string;
+}): { status: boolean; message?: string } => {
+  if (data.password.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado a senha do usuário',
+    };
+  }
+  if (data.password.trim().length < 7) {
+    return {
+      status: false,
+      message: 'A senha deve conter mais de 7 caracteres',
+    };
+  }
+  if (data.password.trim() !== (data.confirmPassword && data.confirmPassword.trim())) {
+    return { status: false, message: 'As senhas não coincidem' };
+  }
+
+  return { status: true };
+};
+
 export const checkDataEmployee = (
   data: {
     name: string;

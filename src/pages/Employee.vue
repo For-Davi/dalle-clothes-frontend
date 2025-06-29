@@ -5,6 +5,7 @@ import { computed, reactive, ref } from 'vue';
 import { useEmployeeStore } from 'src/stores/employee-store';
 import FormEmployee from 'src/components/form/FormEmployee.vue';
 import TableEmployee from 'src/components/table/TableEmployee.vue';
+import FormAccessLogin from 'src/components/form/FormAccessLogin.vue';
 
 defineOptions({
   name: 'Employee',
@@ -14,6 +15,10 @@ const filterEmployee = ref<string>('');
 const showDepartmentManage = ref<boolean>(false);
 const showFilterEmployee = ref<boolean>(false);
 const showFormEmployee = reactive({
+  open: false as boolean,
+  employeeId: null as number | null,
+});
+const showFormAccessLogin = reactive({
   open: false as boolean,
   employeeId: null as number | null,
 });
@@ -28,6 +33,12 @@ const filter = reactive<IFilterEmployee>({
   departmentId: null,
 });
 
+const changeShowFormAccessLogin = (open: boolean, employeeId: number | null = null): void => {
+  Object.assign(showFormAccessLogin, {
+    open,
+    employeeId,
+  });
+};
 const changeShowFormEmployee = (open: boolean, employeeId: number | null = null): void => {
   Object.assign(showFormEmployee, {
     open,
@@ -56,6 +67,9 @@ const actionFilter = async (data: 'close' | IFilterEmployee): Promise<void> => {
 };
 const makeEdit = (id: number): void => {
   changeShowFormEmployee(true, id);
+};
+const makeCreateAccessLogin = (id: number): void => {
+  changeShowFormAccessLogin(true, id);
 };
 const changeShowDepartmentManage = (): void => {
   showDepartmentManage.value = !showDepartmentManage.value;
@@ -134,10 +148,17 @@ const hasFilter = computed(() => {
           </q-btn>
         </div>
       </q-banner>
-      <TableEmployee :filter="filterEmployee" @show:show-form-employee="makeEdit" />
+      <TableEmployee
+        :filter="filterEmployee"
+        @show:show-form-employee="makeEdit"
+        @show:show-form-access-login="makeCreateAccessLogin"
+      />
     </section>
+
+    <!-- Modals -->
     <DepartmentManage :open="showDepartmentManage" @update:open="changeShowDepartmentManage" />
     <FormEmployee :data="showFormEmployee" @update:open="changeShowFormEmployee(false)" />
+    <FormAccessLogin :data="showFormAccessLogin" @update:open="changeShowFormAccessLogin(false)" />
     <FilterEmployee :open="showFilterEmployee" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>

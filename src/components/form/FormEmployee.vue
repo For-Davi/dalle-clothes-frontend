@@ -192,7 +192,6 @@ const update = async () => {
       dataEmployee.complement.trim() !== '' ? dataEmployee.complement : null,
       dataEmployee.description.trim() !== '' ? dataEmployee.description : null,
       selectedDepartment.value.value,
-      hasLoginAccess.value ? 1 : 0,
     );
     if (response?.status === 200) {
       clear();
@@ -228,9 +227,17 @@ const checkDataEdit = async () => {
         dateBirthday: employee.date_birthday ?? '',
       });
 
+      selectedSex.value = employee.sex
+        ? {
+            label: employee.sex === 'F' ? 'Feminino' : 'Masculino',
+            value: employee.sex === 'F' ? 'F' : 'M',
+          }
+        : { label: 'Não selecionado', value: null };
+
       const selectedDepartmentItem = listDepartment.value.find(
         (item) => item.id === employee.department_id,
       );
+
       selectedDepartment.value = selectedDepartmentItem
         ? { label: selectedDepartmentItem?.name, value: selectedDepartmentItem?.id }
         : { label: '', value: null };
@@ -688,7 +695,11 @@ watch(open, async () => {
               <q-icon name="description" color="black" size="20px" />
             </template>
           </q-input>
-          <q-toggle v-model="hasLoginAccess" label="Criar acesso ao sistema" />
+          <q-toggle
+            v-show="employeeId === null"
+            v-model="hasLoginAccess"
+            label="Criar acesso ao sistema"
+          />
           <q-select
             v-show="employeeId === null && hasLoginAccess"
             filled
