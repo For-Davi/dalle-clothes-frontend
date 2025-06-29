@@ -175,6 +175,7 @@ export const useEmployeeStore = defineStore('employee', {
       complement: string | null,
       description: string | null,
       departmentId: number | null,
+      active: number,
     ) {
       this.setLoading(true);
       try {
@@ -199,6 +200,7 @@ export const useEmployeeStore = defineStore('employee', {
           complement,
           description,
           departmentId,
+          active,
         );
         if (response.status === 200) {
           this.clearListEmployee();

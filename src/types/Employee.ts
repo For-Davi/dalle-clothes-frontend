@@ -16,6 +16,7 @@ export interface Employee {
   phone: string | null;
   cpf: number | null;
   cnpj: number | null;
+  active: number;
   state_registration: string | null;
   municipal_registration: string | null;
   date_birthday: string | null;

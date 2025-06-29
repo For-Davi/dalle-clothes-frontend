@@ -125,6 +125,7 @@ export const updateEmployeeService = (
   complement: string | null,
   description: string | null,
   departmentId: number | null,
+  active: number,
 ): Promise<{
   status: number;
   data: {
@@ -153,6 +154,7 @@ export const updateEmployeeService = (
     description,
     sex,
     departmentId,
+    active,
   });
 
 export const deleteEmployeeService = (

@@ -70,6 +70,10 @@ const selectedRole = ref<IQuasarSelect<number>>({
   label: '',
   value: 0,
 });
+const selectedStatus = ref<IQuasarSelect<number>>({
+  label: 'Ativo',
+  value: 1,
+});
 const dataDepartment = reactive({
   id: null as number | null,
   name: '' as string,
@@ -124,6 +128,10 @@ const clear = (): void => {
   selectedRole.value = {
     label: '',
     value: 0,
+  };
+  selectedStatus.value = {
+    label: 'Ativo',
+    value: 1,
   };
 
   Object.assign(dataDepartment, {
@@ -192,6 +200,7 @@ const update = async () => {
       dataEmployee.complement.trim() !== '' ? dataEmployee.complement : null,
       dataEmployee.description.trim() !== '' ? dataEmployee.description : null,
       selectedDepartment.value.value,
+      selectedStatus.value.value,
     );
     if (response?.status === 200) {
       clear();
@@ -233,6 +242,10 @@ const checkDataEdit = async () => {
             value: employee.sex === 'F' ? 'F' : 'M',
           }
         : { label: 'Não selecionado', value: null };
+      selectedStatus.value = {
+        label: employee.active === 1 ? 'Ativo' : 'Inativo',
+        value: employee.active,
+      };
 
       const selectedDepartmentItem = listDepartment.value.find(
         (item) => item.id === employee.department_id,
@@ -306,6 +319,18 @@ const optionsRoles = computed(() => {
     label: item.name,
     value: item.id,
   }));
+});
+const optionsStatus = computed(() => {
+  return [
+    {
+      label: 'Ativo',
+      value: 1,
+    },
+    {
+      label: 'Inativo',
+      value: 0,
+    },
+  ];
 });
 
 watch(hasLoginAccess, () => {
@@ -695,6 +720,23 @@ watch(open, async () => {
               <q-icon name="description" color="black" size="20px" />
             </template>
           </q-input>
+          <q-select
+            v-show="employeeId !== null"
+            filled
+            v-model="selectedStatus"
+            label="Status do usuário"
+            :options="optionsStatus"
+            bg-color="white"
+            dense
+            options-dense
+            map-options
+            label-color="black"
+            class="full-width"
+          >
+            <template v-slot:prepend>
+              <q-icon name="check" color="black" size="20px" />
+            </template>
+          </q-select>
           <q-toggle
             v-show="employeeId === null"
             v-model="hasLoginAccess"
