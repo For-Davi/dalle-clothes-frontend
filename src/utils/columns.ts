@@ -183,3 +183,30 @@ export const columnsEmployee: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsColor: IQuasarTable[] = [
+  {
+    name: 'hexColorMode',
+    label: 'Prévia',
+    field: 'hexColorMode',
+    align: 'left',
+  },
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'active',
+    label: 'Ativo',
+    field: 'active',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];

@@ -51,7 +51,7 @@ onMounted(() => {
 <template>
   <q-form class="form-auth rounded-borders bg-grey-3">
     <div class="row justify-center items-center q-pa-md">
-      <q-img src="/images/logo.png" spinner-color="white" width="300px" height="170px"/>
+      <q-img src="/images/logo.png" spinner-color="white" width="300px" height="170px" />
     </div>
     <div class="q-px-md">
       <TitleAuth title="Faça seu login" />

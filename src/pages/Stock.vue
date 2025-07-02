@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, ref } from 'vue';
+import ColorManage from 'src/components/manage/ColorManage.vue';
+
 defineOptions({
   name: 'Stock',
 });
 
 const filterStock = ref<string>('');
+const showColorManage = ref<boolean>(false);
 const columnsStock = reactive<IQuasarTable[]>([
   {
     name: 'code',
@@ -78,11 +81,15 @@ const rows = [
     price_average_cost: 22.6,
   },
 ];
+
+const changeColorManage = (): void => {
+  showColorManage.value = !showColorManage.value;
+};
 </script>
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Estoque" icon="inventory" />
+      <TitlePage class="col" title="Estoque" icon="inventory" />
       <div>
         <q-btn
           color="white"
@@ -109,13 +116,15 @@ const rows = [
           class="q-mr-sm"
         />
         <q-btn
+          @click="changeColorManage"
           color="white"
           text-color="black"
-          label="Entrada/Saída"
-          icon-right="repeat"
+          label="Cores"
+          icon-right="colorize"
           no-caps
           class="q-mr-sm"
         />
+        <q-btn color="white" text-color="black" label="Entrada/Saída" icon-right="repeat" no-caps />
       </div>
     </section>
     <section class="q-mt-sm">
@@ -212,5 +221,8 @@ const rows = [
         </template>
       </q-table>
     </section>
+
+    <!-- Modals -->
+    <ColorManage :open="showColorManage" @update:open="changeColorManage" />
   </main>
 </template>

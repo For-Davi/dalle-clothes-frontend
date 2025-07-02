@@ -236,6 +236,31 @@ export const checkDataAccessLogin = (data: {
   return { status: true };
 };
 
+export const checkDataColor = (data: {
+  name: string;
+  hexColorCode: string;
+}): { status: boolean; message?: string } => {
+  if (data.name.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome da cor' };
+  }
+  if (data.name.trim().length < 2) {
+    return {
+      status: false,
+      message: 'Nome da cor deve ter mais de 1 caractére',
+    };
+  }
+  if (data.hexColorCode.trim() !== '') {
+    if (data.hexColorCode.trim().length !== 6) {
+      return {
+        status: false,
+        message: 'O código hexadecimal deve ter 6 caractéres',
+      };
+    }
+  }
+
+  return { status: true };
+};
+
 export const checkDataEmployee = (
   data: {
     name: string;

@@ -14,6 +14,7 @@ import type { QuasarSelect, QuasarTable } from './Quasar';
 import type { RoleSelect } from './Role';
 import type { FilterUser, User } from './User';
 import type { FilterClient, Client } from './Client';
+import type { Color } from './Color';
 
 export {};
 
@@ -47,4 +48,6 @@ declare global {
   type IFilterEmployee = FilterEmployee;
 
   type IRoleSelect = RoleSelect;
+
+  type IColor = Color;
 }
