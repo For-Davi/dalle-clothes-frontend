@@ -186,9 +186,9 @@ export const columnsEmployee: IQuasarTable[] = [
 
 export const columnsColor: IQuasarTable[] = [
   {
-    name: 'hexColorMode',
+    name: 'hex_color_code',
     label: 'Prévia',
-    field: 'hexColorMode',
+    field: 'hex_color_code',
     align: 'left',
   },
   {

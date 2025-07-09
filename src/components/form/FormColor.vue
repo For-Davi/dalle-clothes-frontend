@@ -68,6 +68,15 @@ const update = async () => {
     createErrorData(check.message || 'Erro ao processar dados da cor');
   }
 };
+const checkDataEdit = () => {
+  if (props.data.color) {
+    Object.assign(dataColor, {
+      name: props.data.color.name,
+      hexColorCode: props.data.color.hex_color_code,
+      active: props.data.color.active === 1 ? true : false,
+    });
+  }
+};
 
 const colorID = computed(() => props.data.color?.id);
 const open = computed({
@@ -75,15 +84,25 @@ const open = computed({
   set: () => emit('update:open'),
 });
 
+watch(
+  () => dataColor.name,
+  () => {
+    if (dataColor.name.trim().length > 0) {
+      dataColor.name = dataColor.name.toUpperCase();
+    }
+  },
+);
+
 watch(open, () => {
   if (open.value) {
     clear();
+    checkDataEdit();
   }
 });
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2" style="width: 350px">
+    <q-card class="bg-grey-2 column justify-between" style="width: 350px; min-height: 350px">
       <q-card-section class="q-pa-none">
         <TitlePage :title="colorID ? 'Atualização de cor' : 'Cadastro de cor'" icon="list_alt" />
       </q-card-section>
@@ -127,6 +146,7 @@ watch(open, () => {
             bordered
           />
           <q-toggle
+            v-show="colorID"
             v-model="dataColor.active"
             checked-icon="check"
             color="green"

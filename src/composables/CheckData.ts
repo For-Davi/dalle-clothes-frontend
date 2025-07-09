@@ -250,10 +250,10 @@ export const checkDataColor = (data: {
     };
   }
   if (data.hexColorCode.trim() !== '') {
-    if (data.hexColorCode.trim().length !== 6) {
+    if (data.hexColorCode.trim().length !== 7) {
       return {
         status: false,
-        message: 'O código hexadecimal deve ter 6 caractéres',
+        message: 'O código hexadecimal deve ter 7 caractéres',
       };
     }
   }

@@ -45,6 +45,16 @@ const startExclude = (id: number) => {
 const fetchColors = async (): Promise<void> => {
   await useColorStore().getColors();
 };
+const getColorStyle = (hexColor: string) => {
+  return {
+    backgroundColor: hexColor,
+    width: '30px',
+    height: '20px',
+    padding: '4px',
+    border: '1px solid grey',
+    borderRadius: '5px',
+  };
+};
 
 onMounted(async () => {
   await fetchColors();
@@ -62,7 +72,8 @@ onMounted(async () => {
       row-key="index"
       no-data-label="Nenhuma cor para mostrar"
       virtual-scroll
-      :rows-per-page-options="[10]"
+      :rows-per-page-options="[6]"
+      style="height: 460px"
       bordered
       flat
     >
@@ -93,14 +104,20 @@ onMounted(async () => {
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="hexColorMode" :props="props" class="text-left">
-            {{ props.row.name }}
+          <q-td key="hex_color_code" :props="props" class="text-left">
+            <div class="cursor-pointer" :style="getColorStyle(props.row.hex_color_code)">
+              <q-tooltip>{{ props.row.hex_color_code }}</q-tooltip>
+            </div>
           </q-td>
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
           </q-td>
           <q-td key="active" :props="props" class="text-left">
-            {{ props.row.active }}
+            <q-icon
+              :name="props.row.active === 1 ? 'check_circle' : 'close'"
+              :color="props.row.active === 1 ? 'green' : 'red'"
+              size="17px"
+            />
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
