@@ -210,3 +210,24 @@ export const columnsColor: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsMountGrid: IQuasarTable[] = [
+  {
+    name: 'order',
+    label: 'Ordem',
+    field: 'order',
+    align: 'left',
+  },
+  {
+    name: 'size',
+    label: 'Tamanho',
+    field: 'size',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];

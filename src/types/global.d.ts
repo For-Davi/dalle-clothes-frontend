@@ -15,6 +15,8 @@ import type { RoleSelect } from './Role';
 import type { FilterUser, User } from './User';
 import type { FilterClient, Client } from './Client';
 import type { Color } from './Color';
+import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
+import type { CreateGrid, UpdateGrid } from './Payload';
 
 export {};
 
@@ -50,4 +52,11 @@ declare global {
   type IRoleSelect = RoleSelect;
 
   type IColor = Color;
+
+  type IGrid = Grid;
+  type IGridGroup = GridGroup;
+  type IGridItem = GridItem;
+  type ICreateGrid = CreateGrid;
+  type IUpdateGrid = UpdateGrid;
+  type IGridItemCreate = GridItemCreate;
 }

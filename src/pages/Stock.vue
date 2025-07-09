@@ -2,6 +2,7 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, ref } from 'vue';
 import ColorManage from 'src/components/manage/ColorManage.vue';
+import GridManage from 'src/components/manage/GridManage.vue';
 
 defineOptions({
   name: 'Stock',
@@ -9,6 +10,7 @@ defineOptions({
 
 const filterStock = ref<string>('');
 const showColorManage = ref<boolean>(false);
+const showGridManage = ref<boolean>(false);
 const columnsStock = reactive<IQuasarTable[]>([
   {
     name: 'code',
@@ -85,6 +87,9 @@ const rows = [
 const changeColorManage = (): void => {
   showColorManage.value = !showColorManage.value;
 };
+const changeGridManage = (): void => {
+  showGridManage.value = !showGridManage.value;
+};
 </script>
 <template>
   <main class="q-pa-lg">
@@ -108,6 +113,7 @@ const changeColorManage = (): void => {
           class="q-mr-sm"
         />
         <q-btn
+          @click="changeGridManage"
           color="white"
           text-color="black"
           label="Grade"
@@ -224,5 +230,6 @@ const changeColorManage = (): void => {
 
     <!-- Modals -->
     <ColorManage :open="showColorManage" @update:open="changeColorManage" />
+    <GridManage :open="showGridManage" @update:open="changeGridManage" />
   </main>
 </template>
