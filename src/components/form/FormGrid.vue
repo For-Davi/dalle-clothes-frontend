@@ -169,6 +169,7 @@ watch(open, () => {
           </q-input>
           <q-btn
             @click="addSize"
+            :disable="dataGrid.size.trim().length <= 0"
             color="green-9"
             label="Adicionar tamanho"
             class="full-width"
