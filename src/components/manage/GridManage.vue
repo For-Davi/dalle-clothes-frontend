@@ -35,6 +35,7 @@ const clear = () => {
     open: false,
     grid: null,
   });
+  filter.value = ''
 };
 
 const startEdit = (data: IGrid) => {
