@@ -1,5 +1,6 @@
 export interface CreateGrid {
-  grid: {
+  gridName: string;
+  items: {
     size: string;
     order: number;
   }[];
@@ -7,8 +8,11 @@ export interface CreateGrid {
 
 export interface UpdateGrid {
   id: number;
-  grid: {
+  gridName: string;
+  active: number;
+  items: {
     size: string;
     order: number;
+    active: number;
   }[];
 }

@@ -231,3 +231,51 @@ export const columnsMountGrid: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsMountGridUpdate: IQuasarTable[] = [
+  {
+    name: 'order',
+    label: 'Ordem',
+    field: 'order',
+    align: 'left',
+  },
+  {
+    name: 'size',
+    label: 'Tamanho',
+    field: 'size',
+    align: 'left',
+  },
+  {
+    name: 'active',
+    label: 'Ativo',
+    field: 'active',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsCarouselGrid: IQuasarTable[] = [
+  {
+    name: 'order',
+    label: 'Ordem',
+    field: 'order',
+    align: 'left',
+  },
+  {
+    name: 'size',
+    label: 'Tamanho',
+    field: 'size',
+    align: 'left',
+  },
+  {
+    name: 'active',
+    label: 'Ativo',
+    field: 'active',
+    align: 'left',
+  },
+];

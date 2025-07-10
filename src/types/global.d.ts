@@ -59,4 +59,5 @@ declare global {
   type ICreateGrid = CreateGrid;
   type IUpdateGrid = UpdateGrid;
   type IGridItemCreate = GridItemCreate;
+  type IGridItemUpdate = GridItemUpdate;
 }

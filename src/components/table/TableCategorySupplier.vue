@@ -120,6 +120,8 @@ onMounted(async () => {
       </template>
     </q-table>
     <Loading :show="loadingCategorySupplier" />
+
+    <!-- Modals -->
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"

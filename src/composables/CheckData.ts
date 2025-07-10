@@ -261,6 +261,43 @@ export const checkDataColor = (data: {
   return { status: true };
 };
 
+export const checkDataGrid = (
+  data: {
+    gridName: string;
+    itemsCreate: IGridItemCreate[];
+    itemsUpdate: IGridItemUpdate[];
+  },
+  mode: 'create' | 'update',
+): { status: boolean; message?: string } => {
+  if (data.gridName.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome da grade' };
+  }
+  if (data.gridName.trim().length < 2) {
+    return {
+      status: false,
+      message: 'Nome da grade deve ter mais de 1 caractére',
+    };
+  }
+  if (mode === 'create') {
+    if (data.itemsCreate.length < 1) {
+      return {
+        status: false,
+        message: 'Deve conter tamanhos dentro da grade',
+      };
+    }
+  }
+  if (mode === 'update') {
+    if (data.itemsUpdate.length < 1) {
+      return {
+        status: false,
+        message: 'Deve conter tamanhos dentro da grade',
+      };
+    }
+  }
+
+  return { status: true };
+};
+
 export const checkDataEmployee = (
   data: {
     name: string;

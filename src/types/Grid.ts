@@ -3,7 +3,7 @@ export interface Grid {
   name: string;
   active: number;
   enterprise_id: number;
-  itens: GridItem[];
+  items: GridItem[];
 }
 export interface GridGroup {
   id: number;
@@ -24,4 +24,10 @@ export interface GridItem {
 export interface GridItemCreate {
   order: number;
   size: string;
+}
+
+export interface GridItemUpdate {
+  order: number;
+  size: string;
+  active: number;
 }

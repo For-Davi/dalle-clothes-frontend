@@ -36,7 +36,7 @@ export const useGridStore = defineStore('grid', {
         this.setLoading(false);
       }
     },
-    async createGrid(grid: IUpdateGrid) {
+    async createGrid(grid: ICreateGrid) {
       this.setLoading(true);
       try {
         const response = await createGridService(grid);

@@ -3,9 +3,10 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
 import { createErrorData } from 'src/composables/CreateNotify';
-import { useColorStore } from 'src/stores/color-store';
 import { computed, reactive, watch } from 'vue';
 import TableMountGrid from '../table/TableMountGrid.vue';
+import { checkDataGrid } from 'src/composables/CheckData';
+import { useGridStore } from 'src/stores/grid-store';
 
 defineOptions({
   name: 'FormGrid',
@@ -21,97 +22,138 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { loadingColor } = storeToRefs(useColorStore());
+const { loadingGrid } = storeToRefs(useGridStore());
 
 const dataGrid = reactive({
   gridName: '' as string,
+  active: 1 as number,
   size: '' as string,
-  items: [] as IGridItemCreate[],
+  itemsCreate: [] as IGridItemCreate[],
+  itemsUpdate: [] as IGridItemUpdate[],
 });
 
 const clear = (): void => {
   Object.assign(dataGrid, {
     gridName: '',
     size: '',
-    items: [],
+    itemsCreate: [],
+    itemsUpdate: [],
+    active: 1,
   });
 };
 const addSize = (): void => {
-  dataGrid.items.push({
-    size: dataGrid.size,
-    order: dataGrid.items.length + 1,
-  });
+  if (props.data.grid) {
+    dataGrid.itemsUpdate.push({
+      size: dataGrid.size,
+      order: dataGrid.itemsUpdate.length + 1,
+      active: 1,
+    });
+  } else {
+    dataGrid.itemsCreate.push({
+      size: dataGrid.size,
+      order: dataGrid.itemsCreate.length + 1,
+    });
+  }
 
   Object.assign(dataGrid, {
     size: '',
   });
 };
 const setNewOrder = (order: number, action: 'up' | 'bellow'): void => {
-  const currentIndex = dataGrid.items.findIndex((item) => item.order === order);
+  if (props.data.grid) {
+    const currentIndex = dataGrid.itemsUpdate.findIndex(
+      (item: IGridItemUpdate) => item.order === order,
+    );
 
-  if (currentIndex === -1) return;
+    if (currentIndex === -1) return;
 
-  const newIndex = action === 'up' ? currentIndex - 1 : currentIndex + 1;
+    const newIndex = action === 'up' ? currentIndex - 1 : currentIndex + 1;
 
-  if (newIndex < 0 || newIndex >= dataGrid.items.length) return;
+    if (newIndex < 0 || newIndex >= dataGrid.itemsUpdate.length) return;
 
-  const tempOrder = dataGrid.items[currentIndex].order;
-  dataGrid.items[currentIndex].order = dataGrid.items[newIndex].order;
-  dataGrid.items[newIndex].order = tempOrder;
+    const tempOrder = dataGrid.itemsUpdate[currentIndex].order;
+    dataGrid.itemsUpdate[currentIndex].order = dataGrid.itemsUpdate[newIndex].order;
+    dataGrid.itemsUpdate[newIndex].order = tempOrder;
 
-  dataGrid.items.sort((a, b) => a.order - b.order);
+    dataGrid.itemsUpdate.sort((a: IGridItemUpdate, b: IGridItemUpdate) => a.order - b.order);
+  } else {
+    const currentIndex = dataGrid.itemsCreate.findIndex((item) => item.order === order);
+
+    if (currentIndex === -1) return;
+
+    const newIndex = action === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+    if (newIndex < 0 || newIndex >= dataGrid.itemsCreate.length) return;
+
+    const tempOrder = dataGrid.itemsCreate[currentIndex].order;
+    dataGrid.itemsCreate[currentIndex].order = dataGrid.itemsCreate[newIndex].order;
+    dataGrid.itemsCreate[newIndex].order = tempOrder;
+
+    dataGrid.itemsCreate.sort((a, b) => a.order - b.order);
+  }
 };
 const deleteItem = (order: number): void => {
-  const index = dataGrid.items.findIndex((item) => item.order === order);
-  if (index !== -1) {
-    dataGrid.items.splice(index, 1);
-  }
+  if (props.data.grid) {
+    const index = dataGrid.itemsUpdate.findIndex((item: IGridItemUpdate) => item.order === order);
+    if (index !== -1) {
+      dataGrid.itemsUpdate.splice(index, 1);
+    }
 
-  dataGrid.items.forEach((item, i) => {
-    item.order = i + 1;
-  });
+    dataGrid.itemsUpdate.forEach((item: IGridItemUpdate, i: number) => {
+      item.order = i + 1;
+    });
+  } else {
+    const index = dataGrid.itemsCreate.findIndex((item) => item.order === order);
+    if (index !== -1) {
+      dataGrid.itemsCreate.splice(index, 1);
+    }
+
+    dataGrid.itemsCreate.forEach((item, i) => {
+      item.order = i + 1;
+    });
+  }
 };
-// const save = async () => {
-//   const check = checkDataColor(dataColor);
-//   if (check.status) {
-//     const response = await useColorStore().createColor(
-//       dataColor.name,
-//       dataColor.hexColorCode.trim() === '' ? null : dataColor.hexColorCode,
-//     );
-//     if (response?.status === 201) {
-//       clear();
-//       emit('update:open');
-//     }
-//   } else {
-//     createErrorData(check.message || 'Erro ao processar dados da cor');
-//   }
-// };
-// const update = async () => {
-//   const check = checkDataColor(dataColor);
-//   if (check.status) {
-//     const response = await useColorStore().updateColor(
-//       colorID.value ?? 0,
-//       dataColor.name,
-//       dataColor.active === true ? 1 : 0,
-//       dataColor.hexColorCode.trim() === '' ? null : dataColor.hexColorCode,
-//     );
-//     if (response?.status === 200) {
-//       clear();
-//       emit('update:open');
-//     }
-//   } else {
-//     createErrorData(check.message || 'Erro ao processar dados da cor');
-//   }
-// };
-// const checkDataEdit = () => {
-//   if (props.data.color) {
-//     Object.assign(dataColor, {
-//       name: props.data.color.name,
-//       hexColorCode: props.data.color.hex_color_code,
-//       active: props.data.color.active === 1 ? true : false,
-//     });
-//   }
-// };
+const save = async () => {
+  const check = checkDataGrid(dataGrid, 'create');
+  if (check.status) {
+    const response = await useGridStore().createGrid({
+      gridName: dataGrid.gridName,
+      items: dataGrid.itemsCreate,
+    });
+    if (response?.status === 201) {
+      clear();
+      emit('update:open');
+    }
+  } else {
+    createErrorData(check.message || 'Erro ao processar dados da grade');
+  }
+};
+const update = async () => {
+  const check = checkDataGrid(dataGrid, 'update');
+  if (check.status) {
+    const response = await useGridStore().updateGrid({
+      id: gridID.value ?? 0,
+      gridName: dataGrid.gridName,
+      active: dataGrid.active,
+      items: dataGrid.itemsUpdate,
+    });
+    if (response?.status === 200) {
+      clear();
+      emit('update:open');
+    }
+  } else {
+    createErrorData(check.message || 'Erro ao processar dados da cor');
+  }
+};
+const checkDataEdit = () => {
+  if (props.data.grid) {
+    Object.assign(dataGrid, {
+      gridName: props.data.grid.name,
+      active: props.data.grid.active,
+      itemsUpdate: props.data.grid.items,
+    });
+  }
+};
 
 const gridID = computed(() => props.data.grid?.id);
 const open = computed({
@@ -122,7 +164,7 @@ const open = computed({
 watch(open, () => {
   if (open.value) {
     clear();
-    // checkDataEdit();
+    checkDataEdit();
   }
 });
 </script>
@@ -133,8 +175,8 @@ watch(open, () => {
         <q-card-section class="q-pa-none">
           <TitlePage :title="gridID ? 'Atualização de grade' : 'Cadastro de grade'" icon="pin" />
         </q-card-section>
-        <Loading :show="loadingColor" />
-        <q-card-section class="q-pa-sm column q-gutter-y-sm" v-show="!loadingColor">
+        <Loading :show="loadingGrid" />
+        <q-card-section class="q-pa-sm column q-gutter-y-sm" v-show="!loadingGrid">
           <q-input
             v-model="dataGrid.gridName"
             bg-color="white"
@@ -147,6 +189,20 @@ watch(open, () => {
               <q-icon name="assignment" color="black" size="20px" />
             </template>
           </q-input>
+          <q-toggle
+            v-model="dataGrid.active"
+            :label="
+              dataGrid.active === 1
+                ? 'Sua grade de tamanhos está ativa'
+                : 'Sua grade de tamanhos está inativa'
+            "
+            class="text-body1"
+            checked-icon="check"
+            color="green"
+            unchecked-icon="clear"
+            :true-value="1"
+            :false-value="0"
+          />
           <q-separator class="q-mt-sm" />
           <div class="row justify-center q-mb-sm">
             <span
@@ -178,13 +234,14 @@ watch(open, () => {
             no-caps
           />
           <TableMountGrid
-            :items="dataGrid.items"
+            :mode="props.data.grid ? 'update' : 'create'"
+            :items="props.data.grid ? dataGrid.itemsUpdate : dataGrid.itemsCreate"
             @set-new-order="setNewOrder"
             @delete-item="deleteItem"
           />
         </q-card-section>
       </div>
-      <q-card-actions align="right" v-show="!loadingColor">
+      <q-card-actions align="right" v-show="!loadingGrid">
         <div class="row justify-end items-center q-gutter-x-sm">
           <q-btn
             color="red"
@@ -197,19 +254,21 @@ watch(open, () => {
           />
           <q-btn
             v-if="!gridID"
+            @click="save"
             color="primary"
             label="Salvar"
             size="md"
-            :loading="loadingColor"
+            :loading="loadingGrid"
             unelevated
             no-caps
           />
           <q-btn
             v-else
+            @click="update"
             color="primary"
             label="Atualizar"
             size="md"
-            :loading="loadingColor"
+            :loading="loadingGrid"
             unelevated
             no-caps
           />
