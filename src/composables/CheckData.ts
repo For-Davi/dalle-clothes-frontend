@@ -278,6 +278,12 @@ export const checkDataGrid = (
       message: 'Nome da grade deve ter mais de 1 caractére',
     };
   }
+  if (data.gridName.trim().length > 15) {
+    return {
+      status: false,
+      message: 'Nome da grade não deve ter mais de 15 caractéres',
+    };
+  }
   if (mode === 'create') {
     if (data.itemsCreate.length < 1) {
       return {

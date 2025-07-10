@@ -146,7 +146,6 @@ watch(open, () => {
             style="width: 300px"
             flat
             bordered
-            
           />
           <q-toggle
             v-show="colorID"

@@ -51,9 +51,16 @@ const startExclude = (id: number) => {
 const startEdit = (data: IGrid) => {
   emit('show:showFormGrid', data);
 };
+const resetSlide = (): void => {
+  slide.value = 0;
+};
+const isActive = (active: number): boolean => {
+  return active === 1;
+};
 
 const list = computed(() => {
   if (props.filter.length > 0) {
+    resetSlide();
     return listGrid.value.filter((item) =>
       item.name.toLowerCase().includes(props.filter.toLowerCase()),
     );
@@ -108,7 +115,18 @@ const list = computed(() => {
           </template>
           <template v-slot:top>
             <div class="row justify-between items-center full-width">
-              <span class="text-body1">{{ grid.name }}</span>
+              <span class="text-body1 q-mr-sm">{{ grid.name }}</span>
+              <q-icon
+                :name="isActive(grid.active) ? 'check_circle' : 'close'"
+                :color="isActive(grid.active) ? 'green' : 'red'"
+                size="17px"
+              >
+                <q-tooltip
+                  class="bg-grey-2 text-bold"
+                  :class="isActive(grid.active) ? 'text-green' : 'text-red'"
+                  >{{ isActive(grid.active) ? 'Grade ativa' : 'Grade inativa' }}</q-tooltip
+                >
+              </q-icon>
               <q-space />
               <div class="q-gutter-x-sm">
                 <q-btn
@@ -140,8 +158,8 @@ const list = computed(() => {
               </q-td>
               <q-td key="active" :props="props" class="text-left">
                 <q-icon
-                  :name="props.row.active === 1 ? 'check_circle' : 'close'"
-                  :color="props.row.active === 1 ? 'green' : 'red'"
+                  :name="isActive(grid.active) ? 'check_circle' : 'close'"
+                  :color="isActive(grid.active) ? 'green' : 'red'"
                   size="17px"
                 />
               </q-td>

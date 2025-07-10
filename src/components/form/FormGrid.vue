@@ -190,6 +190,7 @@ watch(open, () => {
             </template>
           </q-input>
           <q-toggle
+            v-show="gridID"
             v-model="dataGrid.active"
             :label="
               dataGrid.active === 1
