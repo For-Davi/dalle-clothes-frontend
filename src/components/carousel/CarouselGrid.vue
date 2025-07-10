@@ -74,6 +74,7 @@ const list = computed(() => {
       control-color="green"
       control-type="unelevated"
       padding
+      infinite
       arrows
       height="500px"
       class="bg-grey-2 rounded-borders"
