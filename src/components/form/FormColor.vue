@@ -108,7 +108,7 @@ watch(open, () => {
       </q-card-section>
       <Loading :show="loadingColor" />
       <q-card-section class="q-pa-sm" v-show="!loadingColor">
-        <q-form class="q-gutter-y-sm">
+        <q-form class="q-gutter-y-sm column items-center">
           <q-input
             v-model="dataColor.name"
             bg-color="white"
@@ -117,6 +117,7 @@ watch(open, () => {
             label="Nome da cor"
             dense
             input-class="text-black"
+            class="full-width"
           >
             <template v-slot:prepend>
               <q-icon name="colorize" color="black" size="20px" />
@@ -131,6 +132,7 @@ watch(open, () => {
             label="Código da cor"
             dense
             input-class="text-black"
+            class="full-width"
           >
             <template v-slot:prepend>
               <q-icon name="tag" color="black" size="20px" />
@@ -144,6 +146,7 @@ watch(open, () => {
             style="width: 300px"
             flat
             bordered
+            
           />
           <q-toggle
             v-show="colorID"
