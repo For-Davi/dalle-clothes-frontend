@@ -108,7 +108,7 @@ watch(open, () => {
       </q-card-section>
       <Loading :show="loadingColor" />
       <q-card-section class="q-pa-sm" v-show="!loadingColor">
-        <q-form class="q-gutter-y-sm column items-center">
+        <q-form class="q-gutter-y-sm column">
           <q-input
             v-model="dataColor.name"
             bg-color="white"

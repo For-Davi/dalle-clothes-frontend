@@ -3,6 +3,10 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, watch } from 'vue';
 import TableColor from '../table/TableColor.vue';
 import FormColor from '../form/FormColor.vue';
+import Loading from '../shared/Loading.vue';
+import Empty from '../info/Empty.vue';
+import { useColorStore } from 'src/stores/color-store';
+import { storeToRefs } from 'pinia';
 
 defineOptions({
   name: 'ColorManage',
@@ -14,6 +18,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:open': [void];
 }>();
+
+const { loadingColor, listColor } = storeToRefs(useColorStore());
 
 const showFormColor = reactive<{
   open: boolean;
@@ -53,12 +59,16 @@ watch(open, () => {
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 sub-page">
+    <q-card class="bg-grey-2 sub-page column justify-between">
       <q-card-section class="q-pa-none">
         <TitlePage title="Gerenciamento de cores" icon="colorize" />
       </q-card-section>
       <q-card-section>
-        <TableColor @show:show-form-color="startEdit" />
+        <div v-show="!loadingColor">
+          <TableColor v-show="listColor.length > 0" @show:show-form-color="startEdit" />
+          <Empty v-show="listColor.length <= 0" message="Sem cores cadastradas" color="bg-red-3" />
+        </div>
+        <Loading v-show="loadingColor" :show="loadingColor" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
