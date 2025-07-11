@@ -3,6 +3,7 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, ref } from 'vue';
 import ColorManage from 'src/components/manage/ColorManage.vue';
 import GridManage from 'src/components/manage/GridManage.vue';
+import { actionsStock } from 'src/utils/actions';
 
 defineOptions({
   name: 'Stock',
@@ -90,47 +91,52 @@ const changeColorManage = (): void => {
 const changeGridManage = (): void => {
   showGridManage.value = !showGridManage.value;
 };
+const openAction = (type: IActionStock): void => {
+  switch (type) {
+    case 'export':
+      console.log('Exportando...');
+      break;
+    case 'history':
+      console.log('Exibindo histórico...');
+      break;
+    case 'grid':
+      changeGridManage()
+      break;
+    case 'color':
+      changeColorManage()
+      break;
+    case 'transaction':
+      console.log('Mostrando transações...');
+      break;
+    default:
+      console.warn(`Ação desconhecida: ${type}`);
+      break;
+  }
+};
+
 </script>
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
       <TitlePage class="col" title="Estoque" icon="inventory" />
       <div>
-        <q-btn
-          color="white"
-          text-color="black"
-          label="Exportar"
-          icon-right="download"
+        <q-btn-dropdown
+          class="q-pa-none q-px-md q-mr-sm "
+          label="Ações"
           no-caps
-          class="q-mr-sm"
-        />
-        <q-btn
-          color="white"
-          text-color="black"
-          label="Histórico"
-          icon-right="history"
-          no-caps
-          class="q-mr-sm"
-        />
-        <q-btn
-          @click="changeGridManage"
-          color="white"
-          text-color="black"
-          label="Grade"
-          icon-right="pin"
-          no-caps
-          class="q-mr-sm"
-        />
-        <q-btn
-          @click="changeColorManage"
-          color="white"
-          text-color="black"
-          label="Cores"
-          icon-right="colorize"
-          no-caps
-          class="q-mr-sm"
-        />
-        <q-btn color="white" text-color="black" label="Entrada/Saída" icon-right="repeat" no-caps />
+          auto-close
+        >
+          <q-list dense>
+            <q-item clickable v-ripple v-for="(item, index) in actionsStock" :key="index" @click="openAction(item.type)">
+              <q-item-section avatar>
+                <q-avatar>
+                  <q-icon :name="item.icon" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>{{ item.label }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </div>
     </section>
     <section class="q-mt-sm">

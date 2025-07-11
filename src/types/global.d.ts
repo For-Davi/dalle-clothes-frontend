@@ -17,6 +17,7 @@ import type { FilterClient, Client } from './Client';
 import type { Color } from './Color';
 import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
+import type { ActionStock } from 'src/utils/actions';
 
 export {};
 
@@ -60,4 +61,6 @@ declare global {
   type IUpdateGrid = UpdateGrid;
   type IGridItemCreate = GridItemCreate;
   type IGridItemUpdate = GridItemUpdate;
+
+  type IActionStock = ActionStock;
 }
