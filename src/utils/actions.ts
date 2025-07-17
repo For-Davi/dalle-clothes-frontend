@@ -1,4 +1,4 @@
-export const actionsStock: {label: string, icon: string, type: IActionStock}[] = [
+export const actionsStock: { label: string; icon: string; type: IActionStock }[] = [
   {
     label: 'Exportar',
     icon: 'download',
@@ -18,6 +18,11 @@ export const actionsStock: {label: string, icon: string, type: IActionStock}[] =
     label: 'Cores',
     icon: 'colorize',
     type: 'color',
+  },
+  {
+    label: 'Tags',
+    icon: 'tag',
+    type: 'tag',
   },
   {
     label: 'Entrada/Saída',

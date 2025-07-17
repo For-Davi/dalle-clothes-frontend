@@ -1,1 +1,1 @@
-export type ActionStock = 'export' | 'history' | 'grid' | 'color' | 'transaction'
+export type ActionStock = 'export' | 'history' | 'grid' | 'color' | 'transaction' | 'tag';

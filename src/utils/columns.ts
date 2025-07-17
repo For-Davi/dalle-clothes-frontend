@@ -211,6 +211,27 @@ export const columnsColor: IQuasarTable[] = [
   },
 ];
 
+export const columnsTag: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'active',
+    label: 'Ativo',
+    field: 'active',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
 export const columnsMountGrid: IQuasarTable[] = [
   {
     name: 'order',

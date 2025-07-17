@@ -3,6 +3,7 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, ref } from 'vue';
 import ColorManage from 'src/components/manage/ColorManage.vue';
 import GridManage from 'src/components/manage/GridManage.vue';
+import TagManage from 'src/components/manage/TagManage.vue';
 import { actionsStock } from 'src/utils/actions';
 
 defineOptions({
@@ -12,6 +13,7 @@ defineOptions({
 const filterStock = ref<string>('');
 const showColorManage = ref<boolean>(false);
 const showGridManage = ref<boolean>(false);
+const showTagManage = ref<boolean>(false);
 const columnsStock = reactive<IQuasarTable[]>([
   {
     name: 'code',
@@ -91,6 +93,9 @@ const changeColorManage = (): void => {
 const changeGridManage = (): void => {
   showGridManage.value = !showGridManage.value;
 };
+const changeTagManage = (): void => {
+  showTagManage.value = !showTagManage.value;
+};
 const openAction = (type: IActionStock): void => {
   switch (type) {
     case 'export':
@@ -100,34 +105,37 @@ const openAction = (type: IActionStock): void => {
       console.log('Exibindo histórico...');
       break;
     case 'grid':
-      changeGridManage()
+      changeGridManage();
       break;
     case 'color':
-      changeColorManage()
+      changeColorManage();
       break;
     case 'transaction':
       console.log('Mostrando transações...');
+      break;
+    case 'tag':
+      changeTagManage();
       break;
     default:
       console.warn(`Ação desconhecida: ${type}`);
       break;
   }
 };
-
 </script>
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
       <TitlePage class="col" title="Estoque" icon="inventory" />
       <div>
-        <q-btn-dropdown
-          class="q-pa-none q-px-md q-mr-sm "
-          label="Ações"
-          no-caps
-          auto-close
-        >
+        <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
           <q-list dense>
-            <q-item clickable v-ripple v-for="(item, index) in actionsStock" :key="index" @click="openAction(item.type)">
+            <q-item
+              clickable
+              v-ripple
+              v-for="(item, index) in actionsStock"
+              :key="index"
+              @click="openAction(item.type)"
+            >
               <q-item-section avatar>
                 <q-avatar>
                   <q-icon :name="item.icon" />
@@ -237,5 +245,6 @@ const openAction = (type: IActionStock): void => {
     <!-- Modals -->
     <ColorManage :open="showColorManage" @update:open="changeColorManage" />
     <GridManage :open="showGridManage" @update:open="changeGridManage" />
+    <TagManage :open="showTagManage" @update:open="changeTagManage" />
   </main>
 </template>

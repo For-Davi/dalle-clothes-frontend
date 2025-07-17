@@ -18,6 +18,7 @@ import type { Color } from './Color';
 import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
 import type { ActionStock } from 'src/utils/actions';
+import type { Tag } from './Tag';
 
 export {};
 
@@ -63,4 +64,6 @@ declare global {
   type IGridItemUpdate = GridItemUpdate;
 
   type IActionStock = ActionStock;
+
+  type ITag = Tag;
 }
