@@ -25,6 +25,11 @@ export const actionsStock: { label: string; icon: string; type: IActionStock }[]
     type: 'tag',
   },
   {
+    label: 'Categorias',
+    icon: 'category',
+    type: 'category',
+  },
+  {
     label: 'Entrada/Saída',
     icon: 'repeat',
     type: 'transaction',

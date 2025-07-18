@@ -54,7 +54,7 @@ watch(tab, () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 sub-page">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Gerenciamento de categorias" icon="group_work" />
+        <TitlePage title="Categorias de fornecedores" icon="group_work" />
       </q-card-section>
       <q-card-section>
         <q-scroll-area style="height: 400px">

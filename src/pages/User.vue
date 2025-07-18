@@ -129,6 +129,8 @@ const hasFilter = computed(() => {
       </q-banner>
       <TableUserSystem :filter="search" @show:show-form-user="startEditUser" />
     </section>
+
+    <!-- Modals -->
     <DepartmentManage :open="showManageDepartment" @update:open="changeShowDepartmentManage" />
     <FormUser :data="showFormUser" @update:open="changeShowFormUser(false)" />
     <FilterUser :open="showFilterUser" :filters="filter" @update:open="actionFilter" />

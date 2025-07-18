@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
 import type { FilterSupplier } from './Supplier';
-import type { CategorySupplier } from './Category';
+import type { CategorySupplier, CategoryProduct } from './Category';
 import type { RenderAuth } from './Auth';
 import type {
   DataDepartment,
@@ -40,6 +40,7 @@ declare global {
   type IFilterUser = FilterUser;
 
   type ICategorySupplier = CategorySupplier;
+  type ICategoryProduct = CategoryProduct;
 
   type ISupplier = Supplier;
   type IFilterSupplier = FilterSupplier;

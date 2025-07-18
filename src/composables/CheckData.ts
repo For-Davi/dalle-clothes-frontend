@@ -265,11 +265,15 @@ export const checkDataTag = (data: { name: string }): { status: boolean; message
   if (data.name.trim() === '') {
     return { status: false, message: 'Deve ser informado o nome da tag' };
   }
-  if (data.name.trim().length < 1) {
-    return {
-      status: false,
-      message: 'Nome da tag deve pelo menos 1 caractére',
-    };
+
+  return { status: true };
+};
+
+export const checkDataCategoryProduct = (data: {
+  name: string;
+}): { status: boolean; message?: string } => {
+  if (data.name.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome da categoria' };
   }
 
   return { status: true };

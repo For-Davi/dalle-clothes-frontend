@@ -4,6 +4,7 @@ import { reactive, ref } from 'vue';
 import ColorManage from 'src/components/manage/ColorManage.vue';
 import GridManage from 'src/components/manage/GridManage.vue';
 import TagManage from 'src/components/manage/TagManage.vue';
+import CategoryProductManage from 'src/components/manage/CategoryProductManage.vue';
 import { actionsStock } from 'src/utils/actions';
 
 defineOptions({
@@ -14,6 +15,14 @@ const filterStock = ref<string>('');
 const showColorManage = ref<boolean>(false);
 const showGridManage = ref<boolean>(false);
 const showTagManage = ref<boolean>(false);
+const showCategoryProductManage = ref<boolean>(false);
+const showFormProduct = reactive<{
+  open: boolean;
+  productID: number | null;
+}>({
+  open: false,
+  productID: null,
+});
 const columnsStock = reactive<IQuasarTable[]>([
   {
     name: 'code',
@@ -87,6 +96,10 @@ const rows = [
   },
 ];
 
+const changeShowFormProduct = (show: boolean, productID: number | null = null): void => {
+  showFormProduct.productID = productID;
+  showFormProduct.open = show;
+};
 const changeColorManage = (): void => {
   showColorManage.value = !showColorManage.value;
 };
@@ -95,6 +108,9 @@ const changeGridManage = (): void => {
 };
 const changeTagManage = (): void => {
   showTagManage.value = !showTagManage.value;
+};
+const changeCategoryProductManage = (): void => {
+  showCategoryProductManage.value = !showCategoryProductManage.value;
 };
 const openAction = (type: IActionStock): void => {
   switch (type) {
@@ -116,6 +132,9 @@ const openAction = (type: IActionStock): void => {
     case 'tag':
       changeTagManage();
       break;
+    case 'category':
+      changeCategoryProductManage();
+      break;
     default:
       console.warn(`Ação desconhecida: ${type}`);
       break;
@@ -127,6 +146,15 @@ const openAction = (type: IActionStock): void => {
     <section class="row items-center justify-between">
       <TitlePage class="col" title="Estoque" icon="inventory" />
       <div>
+        <q-btn
+          @click="changeShowFormProduct(true)"
+          color="white"
+          text-color="black"
+          label="Novo produto"
+          icon-right="add"
+          no-caps
+          class="q-mr-sm"
+        />
         <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
           <q-list dense>
             <q-item
@@ -246,5 +274,10 @@ const openAction = (type: IActionStock): void => {
     <ColorManage :open="showColorManage" @update:open="changeColorManage" />
     <GridManage :open="showGridManage" @update:open="changeGridManage" />
     <TagManage :open="showTagManage" @update:open="changeTagManage" />
+    <CategoryProductManage
+      :open="showCategoryProductManage"
+      @update:open="changeCategoryProductManage"
+    />
+    <FormProduct :data="showFormProduct" @update:open="changeShowFormProduct(false)" />
   </main>
 </template>

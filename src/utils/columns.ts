@@ -232,6 +232,21 @@ export const columnsTag: IQuasarTable[] = [
   },
 ];
 
+export const columnsCategoryProduct: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
 export const columnsMountGrid: IQuasarTable[] = [
   {
     name: 'order',
