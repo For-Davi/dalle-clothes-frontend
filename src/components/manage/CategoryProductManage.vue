@@ -67,7 +67,10 @@ watch(open, () => {
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingCategoryProduct">
-          <TableCategoryProduct v-show="listCategoryProduct.length > 0" @show:show-form-category-product="startEdit" />
+          <TableCategoryProduct
+            v-show="listCategoryProduct.length > 0"
+            @show:show-form-category-product="startEdit"
+          />
           <Empty
             v-show="listCategoryProduct.length <= 0"
             message="Sem categorias cadastradas"

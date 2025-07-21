@@ -6,6 +6,7 @@ import GridManage from 'src/components/manage/GridManage.vue';
 import TagManage from 'src/components/manage/TagManage.vue';
 import CategoryProductManage from 'src/components/manage/CategoryProductManage.vue';
 import { actionsStock } from 'src/utils/actions';
+import FormProduct from 'src/components/form/FormProduct.vue';
 
 defineOptions({
   name: 'Stock',

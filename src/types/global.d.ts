@@ -19,6 +19,8 @@ import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
 import type { ActionStock } from 'src/utils/actions';
 import type { Tag } from './Tag';
+import type { ProductModalTabs } from './Product';
+import type { VModelProductBasic, ProductVariant } from './Product';
 
 export {};
 
@@ -67,4 +69,10 @@ declare global {
   type IActionStock = ActionStock;
 
   type ITag = Tag;
+
+  type IProductModalTabs = ProductModalTabs;
+
+  type IVModelProductBasic = VModelProductBasic;
+  type IVModelProductVariant = VModelProductVariant;
+  type IProductVariant = ProductVariant;
 }

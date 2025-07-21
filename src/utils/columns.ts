@@ -268,6 +268,33 @@ export const columnsMountGrid: IQuasarTable[] = [
   },
 ];
 
+export const columnsProductVariant: IQuasarTable[] = [
+  {
+    name: 'size',
+    label: 'Tamanho',
+    field: (row) => row.gridItem?.size || '',
+    align: 'left',
+  },
+  {
+    name: 'colors',
+    label: 'Cores',
+    field: 'colors',
+    align: 'left',
+  },
+  {
+    name: 'active',
+    label: 'Ativo',
+    field: 'active',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
 export const columnsMountGridUpdate: IQuasarTable[] = [
   {
     name: 'order',
