@@ -56,7 +56,7 @@ const optionsCategory = computed((): QuasarSelect<number | null>[] => {
           bg-color="white"
           label-color="black"
           outlined
-          label="Nome da cor"
+          :label="model.type.value === 'product' ? 'Nome do produto' : 'Nome do serviço'"
           dense
           input-class="text-black"
           class="full-width"

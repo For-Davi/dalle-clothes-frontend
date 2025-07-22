@@ -10,6 +10,7 @@ import { useColorStore } from 'src/stores/color-store';
 import ProductBasic from '../fragments/product/ProductBasic.vue';
 import ProductVariant from '../fragments/product/ProductVariant.vue';
 import ProductMedia from '../fragments/product/ProductMedia.vue';
+import ProductTag from '../fragments/product/ProductTag.vue';
 
 defineOptions({
   name: 'FormProduct',
@@ -30,6 +31,7 @@ const { loadingTag } = storeToRefs(useTagStore());
 const tab = ref<IProductModalTabs>('basic');
 const dataVariant = ref<IVModelProductVariant[]>([]);
 const dataMedia = ref<File[]>([]);
+const dataTags = ref<ITag[]>([]);
 const dataBasic = reactive<IVModelProductBasic>({
   name: '',
   type: { label: 'Produto', value: 'product' },
@@ -163,8 +165,9 @@ watch(open, async () => {
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="tag">
-            <div class="text-h6">Tag</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
+              <ProductTag v-model:listTag="dataTags" :loading="false" />
+            </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="advanced">
             <div class="text-h6">Avançado</div>
