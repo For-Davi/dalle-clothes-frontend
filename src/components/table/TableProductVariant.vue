@@ -12,7 +12,7 @@ const props = defineProps<{
   loading: boolean;
 }>();
 const emit = defineEmits<{
-  'show:showFormVariant': [IProductVariant];
+  'show:showConfigVariant': [void];
 }>();
 
 const listVariants = defineModel<IVModelProductVariant[]>('listVariants', { required: true });
@@ -44,8 +44,8 @@ const startExclude = (id: number) => {
 const getTextColors = (colors: number): string => {
   return colors <= 0 ? 'Sem cor' : colors === 1 ? '1 cor' : `${colors} cores`;
 };
-const startEdit = (data: IProductVariant) => {
-  emit('show:showFormVariant', data);
+const showConfigVariant = () => {
+  emit('show:showConfigVariant');
 };
 </script>
 <template>
@@ -74,7 +74,15 @@ const startEdit = (data: IProductVariant) => {
         <div class="row justify-between items-center full-width">
           <span class="text-body1">Lista de variantes</span>
           <q-space />
-          <q-btn icon="edit_note" label="Edição" color="secondary" size="md" unelevated no-caps />
+          <q-btn
+            @click="showConfigVariant"
+            icon="edit_note"
+            label="Edição"
+            color="secondary"
+            size="md"
+            unelevated
+            no-caps
+          />
         </div>
       </template>
       <template v-slot:body="props">

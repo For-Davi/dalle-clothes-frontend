@@ -342,3 +342,30 @@ export const columnsCarouselGrid: IQuasarTable[] = [
     align: 'left',
   },
 ];
+
+export const columnsMedia: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'size',
+    label: 'Tamanho',
+    field: 'size',
+    align: 'left',
+  },
+  {
+    name: 'image',
+    label: 'Imagem',
+    field: 'image',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'left',
+  },
+];

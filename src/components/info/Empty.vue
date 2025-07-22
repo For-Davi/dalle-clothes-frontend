@@ -3,10 +3,27 @@ defineOptions({
   name: 'Empty',
 });
 
-const props = defineProps<{
-  message: string;
-  color: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    message: string;
+    color: string;
+    typeImg?: 'box' | 'file';
+  }>(),
+  {
+    typeImg: 'box',
+  },
+);
+
+const getUrlImg = (): string => {
+  switch (props.typeImg) {
+    case 'box':
+      return '/icons/empty.png';
+    case 'file':
+      return '/icons/file-empty.png';
+    default:
+      return '';
+  }
+};
 </script>
 
 <template>
@@ -14,6 +31,6 @@ const props = defineProps<{
     <p class="text-h6 text-white q-px-sm rounded-borders" :class="color">
       {{ props.message }}
     </p>
-    <q-img src="/icons/empty.png" width="150px" />
+    <q-img :src="getUrlImg()" width="150px" />
   </main>
 </template>

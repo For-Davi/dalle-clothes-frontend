@@ -21,6 +21,7 @@ import type { ActionStock } from 'src/utils/actions';
 import type { Tag } from './Tag';
 import type { ProductModalTabs } from './Product';
 import type { VModelProductBasic, ProductVariant } from './Product';
+import type { CustomFile } from './File';
 
 export {};
 
@@ -74,5 +75,8 @@ declare global {
 
   type IVModelProductBasic = VModelProductBasic;
   type IVModelProductVariant = VModelProductVariant;
+  type IVModelProductMedia = VModelProductMedia;
   type IProductVariant = ProductVariant;
+
+  type ICustomFile = CustomFile;
 }

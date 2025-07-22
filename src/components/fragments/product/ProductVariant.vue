@@ -6,7 +6,7 @@ import TableProductVariant from 'src/components/table/TableProductVariant.vue';
 import { useGridStore } from 'src/stores/grid-store';
 import { computed, reactive, ref } from 'vue';
 import ConfirmAction from 'src/components/confirm/ConfirmAction.vue';
-import FormVariant from 'src/components/form/FormVariant.vue';
+import ConfigVariant from './ConfigVariant.vue';
 
 defineOptions({
   name: 'ProductVariant',
@@ -24,12 +24,12 @@ const { listGrid } = storeToRefs(useGridStore());
 
 const showConfirmAction = ref<boolean>(false);
 const lastGridSelection = ref<IQuasarSelect<number | null> | null>(null);
-const showFormVariant = reactive<{
+const showConfigVariant = reactive<{
   open: boolean;
-  variant: IProductVariant | null;
+  variants: IProductVariant[];
 }>({
   open: false,
-  variant: null,
+  variants: [],
 });
 
 const generateVariants = (): void => {
@@ -76,14 +76,14 @@ const handleGridUpdate = (newVal: IQuasarSelect<number | null>) => {
   }
   lastGridSelection.value = newVal;
 };
-const changeShowFormVariant = (show: boolean, data: IProductVariant | null = null): void => {
-  Object.assign(showFormVariant, {
+const changeShowConfigVariant = (show: boolean): void => {
+  Object.assign(showConfigVariant, {
     open: show,
-    variant: data,
+    variants: listVariants.value,
   });
 };
-const makeFormVariant = (data: IProductVariant) => {
-  changeShowFormVariant(true, data);
+const makeConfigVariant = (): void => {
+  changeShowConfigVariant(!showConfigVariant.open);
 };
 
 const listGridSelect = computed((): IQuasarSelect<number | null>[] => {
@@ -130,12 +130,16 @@ const listGridSelect = computed((): IQuasarSelect<number | null>[] => {
       <TableProductVariant
         :loading="false"
         v-model:listVariants="listVariants"
-        @show:show-form-variant="makeFormVariant"
+        @show:show-config-variant="makeConfigVariant"
       />
     </q-card-section>
 
     <!-- Modals -->
-    <FormVariant :data="showFormVariant" />
+    <ConfigVariant
+      :open="showConfigVariant.open"
+      v-model:listVariants="showConfigVariant.variants"
+      @update:open="makeConfigVariant"
+    />
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
