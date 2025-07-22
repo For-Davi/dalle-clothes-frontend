@@ -369,3 +369,42 @@ export const columnsMedia: IQuasarTable[] = [
     align: 'left',
   },
 ];
+
+export const columnsProductLog: IQuasarTable[] = [
+  {
+    name: 'date',
+    label: 'Data',
+    field: 'date',
+    align: 'left',
+  },
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'email',
+    label: 'E-mail',
+    field: 'email',
+    align: 'left',
+  },
+  {
+    name: 'axecution',
+    label: 'Execução',
+    field: 'axecution',
+    align: 'left',
+  },
+  {
+    name: 'target',
+    label: 'Alvo',
+    field: 'target',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: '',
+    align: 'left',
+  },
+];

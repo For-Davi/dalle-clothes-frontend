@@ -11,6 +11,7 @@ import ProductBasic from '../fragments/product/ProductBasic.vue';
 import ProductVariant from '../fragments/product/ProductVariant.vue';
 import ProductMedia from '../fragments/product/ProductMedia.vue';
 import ProductTag from '../fragments/product/ProductTag.vue';
+import ProductLog from '../fragments/product/ProductLog.vue';
 
 defineOptions({
   name: 'FormProduct',
@@ -32,6 +33,7 @@ const tab = ref<IProductModalTabs>('basic');
 const dataVariant = ref<IVModelProductVariant[]>([]);
 const dataMedia = ref<File[]>([]);
 const dataTags = ref<ITag[]>([]);
+const dataLog = ref<[]>([]);
 const dataBasic = reactive<IVModelProductBasic>({
   name: '',
   type: { label: 'Produto', value: 'product' },
@@ -174,8 +176,9 @@ watch(open, async () => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
           </q-tab-panel>
           <q-tab-panel name="log">
-            <div class="text-h6">Log</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
+              <ProductLog :loading="false" :list-logs="dataLog"/>
+            </q-scroll-area>
           </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
