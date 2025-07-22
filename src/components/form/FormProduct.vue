@@ -108,7 +108,7 @@ const fetchColors = async () => {
 //   }
 // };
 
-const tagID = computed(() => props.data.product?.id);
+const productID = computed(() => props.data.product?.id);
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
@@ -132,7 +132,7 @@ watch(open, async () => {
     >
       <q-card-section class="q-pa-none">
         <TitlePage
-          :title="tagID ? 'Atualização de produto' : 'Cadastro de produto'"
+          :title="productID ? 'Atualização de produto' : 'Cadastro de produto'"
           icon="list_alt"
         />
       </q-card-section>
@@ -143,7 +143,7 @@ watch(open, async () => {
           <q-tab name="media" icon="perm_media" label="Galeria" no-caps />
           <q-tab name="tag" icon="tag" label="Tags" no-caps />
           <q-tab name="advanced" icon="settings" label="Avançado" no-caps />
-          <q-tab name="log" icon="history" label="Logs" no-caps />
+          <q-tab name="log" icon="history" label="Logs" no-caps :disable="!productID"/>
         </q-tabs>
         <q-tab-panels v-model="tab" animated class="bg-grey-2">
           <q-tab-panel name="basic" class="q-px-none">
@@ -195,7 +195,7 @@ watch(open, async () => {
           />
           <!-- @click="save" -->
           <q-btn
-            v-if="tagID"
+            v-if="productID"
             color="primary"
             label="Salvar"
             size="md"
