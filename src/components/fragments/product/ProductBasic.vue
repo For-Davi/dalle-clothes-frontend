@@ -62,7 +62,7 @@ const optionsCategory = computed((): QuasarSelect<number | null>[] => {
           class="full-width"
         >
           <template v-slot:prepend>
-            <q-icon name="colorize" color="black" size="20px" />
+            <q-icon name="fa-solid fa-box" color="black" size="20px" />
           </template>
         </q-input>
         <div class="row justify-between">
@@ -78,7 +78,7 @@ const optionsCategory = computed((): QuasarSelect<number | null>[] => {
             class="input-divider"
           >
             <template v-slot:prepend>
-              <q-icon name="info" color="black" size="20px" />
+              <q-icon name="check" color="black" size="20px" />
             </template>
           </q-select>
           <q-select
@@ -93,7 +93,7 @@ const optionsCategory = computed((): QuasarSelect<number | null>[] => {
             class="input-divider"
           >
             <template v-slot:prepend>
-              <q-icon name="info" color="black" size="20px" />
+              <q-icon name="check" color="black" size="20px" />
             </template>
           </q-select>
         </div>
