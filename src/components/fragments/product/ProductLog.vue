@@ -8,7 +8,7 @@ defineOptions({
 
 const props = defineProps<{
   loading: boolean;
-  listLogs: []
+  listLogs: [];
 }>();
 </script>
 <template>
@@ -18,7 +18,7 @@ const props = defineProps<{
     </q-card-section>
     <Loading :show="props.loading" />
     <q-card-section class="q-pa-sm" v-show="!props.loading">
-      <TableProductLog :list-log="props.listLogs" :loading="props.loading"/>
+      <TableProductLog :list-log="props.listLogs" :loading="props.loading" />
     </q-card-section>
   </q-card>
 </template>

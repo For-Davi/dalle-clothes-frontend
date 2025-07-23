@@ -7,7 +7,7 @@ defineOptions({
 
 const props = defineProps<{
   loading: boolean;
-  listLog: []
+  listLog: [];
 }>();
 // const emit = defineEmits<{
 //   'show:showDetailsLog': [number];
@@ -59,14 +59,8 @@ const props = defineProps<{
             {{ props.row.target }}
           </q-td>
           <q-td key="action" :props="props">
-            <q-btn
-              size="sm"
-              flat
-              round
-              color="black"
-              icon="visibility"
-            >
-                <q-tooltip>Detalhes</q-tooltip>
+            <q-btn size="sm" flat round color="black" icon="visibility">
+              <q-tooltip>Detalhes</q-tooltip>
             </q-btn>
           </q-td>
         </q-tr>

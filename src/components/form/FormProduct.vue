@@ -12,6 +12,7 @@ import ProductVariant from '../fragments/product/ProductVariant.vue';
 import ProductMedia from '../fragments/product/ProductMedia.vue';
 import ProductTag from '../fragments/product/ProductTag.vue';
 import ProductLog from '../fragments/product/ProductLog.vue';
+import ProductAdvanced from '../fragments/product/ProductAdvanced.vue';
 
 defineOptions({
   name: 'FormProduct',
@@ -38,6 +39,12 @@ const dataBasic = reactive<IVModelProductBasic>({
   name: '',
   type: { label: 'Produto', value: 'product' },
   category: { label: 'Nenhuma selecionada', value: null },
+});
+const dataAdvanced = reactive<IVModelProductAdvanced>({
+  active: 1,
+  allowCoupon: 1,
+  allowDiscount: 1,
+  discountMaxPercentage: '0',
 });
 const selectedGrid = ref<IQuasarSelect<number | null>>({
   label: 'Nenhuma grade selecionada',
@@ -143,7 +150,7 @@ watch(open, async () => {
           <q-tab name="media" icon="perm_media" label="Galeria" no-caps />
           <q-tab name="tag" icon="tag" label="Tags" no-caps />
           <q-tab name="advanced" icon="settings" label="Avançado" no-caps />
-          <q-tab name="log" icon="history" label="Logs" no-caps :disable="!productID"/>
+          <q-tab name="log" icon="history" label="Logs" no-caps :disable="!productID" />
         </q-tabs>
         <q-tab-panels v-model="tab" animated class="bg-grey-2">
           <q-tab-panel name="basic" class="q-px-none">
@@ -172,12 +179,11 @@ watch(open, async () => {
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="advanced">
-            <div class="text-h6">Avançado</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <ProductAdvanced v-model:dataAdvanced="dataAdvanced" :loading="false" />
           </q-tab-panel>
           <q-tab-panel name="log">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <ProductLog :loading="false" :list-logs="dataLog"/>
+              <ProductLog :loading="false" :list-logs="dataLog" />
             </q-scroll-area>
           </q-tab-panel>
         </q-tab-panels>

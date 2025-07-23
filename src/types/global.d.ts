@@ -20,7 +20,7 @@ import type { CreateGrid, UpdateGrid } from './Payload';
 import type { ActionStock } from 'src/utils/actions';
 import type { Tag } from './Tag';
 import type { ProductModalTabs } from './Product';
-import type { VModelProductBasic, ProductVariant } from './Product';
+import type { VModelProductBasic, ProductVariant, VModelProductAdvanced } from './Product';
 import type { CustomFile } from './File';
 
 export {};
@@ -74,6 +74,7 @@ declare global {
   type IProductModalTabs = ProductModalTabs;
 
   type IVModelProductBasic = VModelProductBasic;
+  type IVModelProductAdvanced = VModelProductAdvanced;
   type IVModelProductVariant = VModelProductVariant;
   type IVModelProductMedia = VModelProductMedia;
   type IProductVariant = ProductVariant;

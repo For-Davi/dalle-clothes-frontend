@@ -30,6 +30,7 @@ export interface VModelProductVariant {
   sku: string;
   active: number;
   description: string;
+  location: string;
   gridItem: {
     id: number;
     size: string;
@@ -41,4 +42,11 @@ export interface VModelProductBasic {
   name: string;
   type: QuasarSelect<string>;
   category: QuasarSelect<number | null>;
+}
+
+export interface VModelProductAdvanced {
+  active: number;
+  allowCoupon: number;
+  allowDiscount: number;
+  discountMaxPercentage: string;
 }
