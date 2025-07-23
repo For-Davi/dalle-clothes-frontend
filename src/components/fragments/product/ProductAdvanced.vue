@@ -13,15 +13,27 @@ const advanced = defineModel<IVModelProductAdvanced>('dataAdvanced', { required:
 
 watch(
   () => advanced.value.discountMaxPercentage,
-  (discount) => {
-    if (discount.trim() !== '') {
-      advanced.value.discountMaxPercentage = discount.replace(/^0+/, '');
+  (newDiscount) => {
+    if (newDiscount.trim() !== '') {
+      advanced.value.discountMaxPercentage = newDiscount.replace(/^0+/, '');
     }
-    if (Number(discount) > 100) {
+    if (Number(newDiscount) > 100) {
       advanced.value.discountMaxPercentage = '100';
     }
   },
-  { immediate: true },
+  { immediate: true }
+);
+watch(
+  () => advanced.value.commissionPercentage,
+  (newCommission) => {
+    if (newCommission.trim() !== '') {
+      advanced.value.commissionPercentage = newCommission.replace(/^0+/, '');
+    }
+    if (Number(newCommission) > 100) {
+      advanced.value.commissionPercentage = '100';
+    }
+  },
+  { immediate: true }
 );
 </script>
 <template>
@@ -94,11 +106,36 @@ watch(
           style="width: 200px"
           class="q-ml-md"
           mask="###"
+        />
+        <q-separator inset />
+        <q-toggle
+          v-model="advanced.hasCommission"
+          checked-icon="check"
+          color="green"
+          unchecked-icon="clear"
+          :true-value="1"
+          :false-value="0"
         >
-          <template v-slot:prepend>
-            <q-icon name="percent" color="black" size="20px" />
-          </template>
-        </q-input>
+          <div class="column">
+            <span class="text-bold text-body2">Comissão de venda</span>
+            <span>
+              Habilita a geração de comissão para este produto nas vendas.
+            </span>
+          </div>
+        </q-toggle>
+        <q-input
+          v-model="advanced.commissionPercentage"
+          bg-color="white"
+          label-color="black"
+          :disable="advanced.hasCommission === 0"
+          outlined
+          label="Comissão %"
+          dense
+          input-class="text-black"
+          style="width: 200px"
+          class="q-ml-md"
+          mask="###"
+        />
       </q-form>
     </q-card-section>
   </q-card>

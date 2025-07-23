@@ -25,6 +25,7 @@ export interface ProductVariant {
 export interface VModelProductVariant {
   price: string;
   cost: string;
+  offer: string;
   stockQuantity: string;
   minStockAlert: string;
   sku: string;
@@ -49,4 +50,6 @@ export interface VModelProductAdvanced {
   allowCoupon: number;
   allowDiscount: number;
   discountMaxPercentage: string;
+  hasCommission: number;
+  commissionPercentage: string;
 }

@@ -44,7 +44,9 @@ const dataAdvanced = reactive<IVModelProductAdvanced>({
   active: 1,
   allowCoupon: 1,
   allowDiscount: 1,
-  discountMaxPercentage: '0',
+  hasCommission: 1,
+  commissionPercentage: '5',
+  discountMaxPercentage: '10',
 });
 const selectedGrid = ref<IQuasarSelect<number | null>>({
   label: 'Nenhuma grade selecionada',
