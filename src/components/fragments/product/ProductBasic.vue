@@ -97,6 +97,20 @@ const optionsCategory = computed((): QuasarSelect<number | null>[] => {
             </template>
           </q-select>
         </div>
+        <q-input
+          v-model="model.description"
+          bg-color="white"
+          label-color="black"
+          outlined
+          label="Descrição"
+          dense
+          input-class="text-black no-resize"
+          type="textarea"
+        >
+          <template v-slot:prepend>
+            <q-icon name="description" color="black" size="20px" />
+          </template>
+        </q-input>
       </q-form>
     </q-card-section>
   </q-card>

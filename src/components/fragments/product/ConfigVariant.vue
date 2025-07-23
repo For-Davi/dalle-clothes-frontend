@@ -152,19 +152,19 @@ const open = computed({
                     </template>
                   </q-input>
                   <q-input
-                   v-model="item.location"
-                   bg-color="white"
-                   label-color="black"
-                   outlined
-                   label="Localização"
-                   dense
-                   input-class="text-black"
-                   class="input-divider"
-                 >
-                   <template v-slot:prepend>
-                     <q-icon name="location_on" color="black" size="20px" />
-                   </template>
-                 </q-input>
+                    v-model="item.location"
+                    bg-color="white"
+                    label-color="black"
+                    outlined
+                    label="Localização"
+                    dense
+                    input-class="text-black"
+                    class="input-divider"
+                  >
+                    <template v-slot:prepend>
+                      <q-icon name="location_on" color="black" size="20px" />
+                    </template>
+                  </q-input>
                 </div>
                 <q-input
                   v-model="item.sku"

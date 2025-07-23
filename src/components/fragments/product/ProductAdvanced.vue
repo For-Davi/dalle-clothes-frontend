@@ -21,7 +21,7 @@ watch(
       advanced.value.discountMaxPercentage = '100';
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 watch(
   () => advanced.value.commissionPercentage,
@@ -33,7 +33,7 @@ watch(
       advanced.value.commissionPercentage = '100';
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 <template>
@@ -118,9 +118,7 @@ watch(
         >
           <div class="column">
             <span class="text-bold text-body2">Comissão de venda</span>
-            <span>
-              Habilita a geração de comissão para este produto nas vendas.
-            </span>
+            <span> Habilita a geração de comissão para este produto nas vendas. </span>
           </div>
         </q-toggle>
         <q-input

@@ -41,6 +41,7 @@ export interface VModelProductVariant {
 
 export interface VModelProductBasic {
   name: string;
+  description: string;
   type: QuasarSelect<string>;
   category: QuasarSelect<number | null>;
 }
