@@ -100,7 +100,7 @@ watch(open, () => {
             v-model="dataCategory.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Nome da categoria"
             dense
             input-class="text-black"

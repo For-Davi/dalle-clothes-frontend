@@ -417,7 +417,7 @@ watch(open, async () => {
             v-model="dataEmployee.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Nome do funcionário"
             dense
             input-class="text-black"
@@ -430,7 +430,7 @@ watch(open, async () => {
             v-model="dataEmployee.email"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="E-mail do funcionário"
             dense
             input-class="text-black"
@@ -444,7 +444,7 @@ watch(open, async () => {
             v-model="selectedSex"
             :options="optionsSex"
             label="Selecione o gênero"
-            filled
+            outlined
             dense
             options-dense
             bg-color="white"
@@ -468,7 +468,7 @@ watch(open, async () => {
             v-model="dataEmployee.dateBirthday"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Data de nascimento"
             dense
             input-class="text-black"
@@ -482,7 +482,7 @@ watch(open, async () => {
             v-model="formattedPhone"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Telefone do funcionário"
             dense
             input-class="text-black"
@@ -495,7 +495,7 @@ watch(open, async () => {
             v-model="dataDepartment.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             type="text"
             label="Escolha o departamento"
             readonly
@@ -514,7 +514,7 @@ watch(open, async () => {
               v-model="selectedIdentifier"
               :options="optionsIdentifier"
               label="Selecione o documento"
-              filled
+              outlined
               dense
               options-dense
               bg-color="white"
@@ -530,7 +530,7 @@ watch(open, async () => {
               v-model="dataEmployee.cnpj"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Digite o CNPJ"
               dense
               input-class="text-black"
@@ -546,7 +546,7 @@ watch(open, async () => {
               v-model="dataEmployee.cpf"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Digite o CPF"
               dense
               input-class="text-black"
@@ -563,7 +563,7 @@ watch(open, async () => {
               v-model="dataEmployee.stateRegistration"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Inscrição estadual"
               dense
               input-class="text-black"
@@ -578,7 +578,7 @@ watch(open, async () => {
               v-model="dataEmployee.municipalRegistration"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Inscrição municipal"
               dense
               input-class="text-black"
@@ -594,7 +594,7 @@ watch(open, async () => {
             v-model="dataEmployee.cep"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Digite o CEP"
             dense
             input-class="text-black"
@@ -609,7 +609,7 @@ watch(open, async () => {
             v-model="dataEmployee.country"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="País"
             dense
             input-class="text-black"
@@ -623,7 +623,7 @@ watch(open, async () => {
               v-model="dataEmployee.state"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="UF"
               dense
               input-class="text-black"
@@ -637,7 +637,7 @@ watch(open, async () => {
               v-model="dataEmployee.city"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Cidade"
               dense
               input-class="text-black"
@@ -652,7 +652,7 @@ watch(open, async () => {
             v-model="dataEmployee.neighborhood"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Bairro"
             dense
             input-class="text-black"
@@ -665,7 +665,7 @@ watch(open, async () => {
             v-model="dataEmployee.address"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Logradouro"
             dense
             input-class="text-black"
@@ -679,7 +679,7 @@ watch(open, async () => {
               v-model="dataEmployee.number"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Número"
               dense
               input-class="text-black"
@@ -695,7 +695,7 @@ watch(open, async () => {
               v-model="dataEmployee.complement"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Complemento"
               dense
               input-class="text-black"
@@ -710,7 +710,7 @@ watch(open, async () => {
             v-model="dataEmployee.description"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Descrição"
             dense
             input-class="text-black no-resize"
@@ -722,7 +722,7 @@ watch(open, async () => {
           </q-input>
           <q-select
             v-show="employeeId !== null"
-            filled
+            outlined
             v-model="selectedStatus"
             label="Status do usuário"
             :options="optionsStatus"
@@ -744,7 +744,7 @@ watch(open, async () => {
           />
           <q-select
             v-show="employeeId === null && hasLoginAccess"
-            filled
+            outlined
             v-model="selectedRole"
             label="Selecione a permissão"
             :options="optionsRoles"
@@ -764,7 +764,7 @@ watch(open, async () => {
             v-model="dataEmployee.password"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Senha do usuário"
             dense
             input-class="text-black"
@@ -788,7 +788,7 @@ watch(open, async () => {
             v-model="dataEmployee.confirmPassword"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Confirme a senha"
             dense
             input-class="text-black"

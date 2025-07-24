@@ -96,7 +96,7 @@ onMounted(() => {
         v-model="dataReset.email"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Digite seu e-mail"
         dense
         input-class="text-black"
@@ -111,7 +111,7 @@ onMounted(() => {
         v-model="dataReset.code"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Digite o código enviado para o e-mail "
         dense
         input-class="text-black"
@@ -125,7 +125,7 @@ onMounted(() => {
           v-model="dataReset.password"
           bg-color="white"
           label-color="black"
-          filled
+          outlined
           label="Digite sua senha"
           autocomplete="new-password"
           dense
@@ -148,7 +148,7 @@ onMounted(() => {
           v-model="dataReset.passwordConfirm"
           bg-color="white"
           label-color="black"
-          filled
+          outlined
           label="Confirme sua senha"
           autocomplete="new-password"
           dense

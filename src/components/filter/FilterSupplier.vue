@@ -185,7 +185,7 @@ watch(open, async () => {
             v-model="dataSupplier.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por nome"
             dense
             input-class="text-black"
@@ -198,7 +198,7 @@ watch(open, async () => {
             v-model="dataSupplier.email"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por e-mail"
             dense
             input-class="text-black"
@@ -213,7 +213,7 @@ watch(open, async () => {
               v-model="selectedIdentifier"
               :options="optionsIdentifier"
               label="Selecione o documento"
-              filled
+              outlined
               dense
               options-dense
               bg-color="white"
@@ -229,7 +229,7 @@ watch(open, async () => {
               v-model="dataSupplier.cnpj"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Filtre por CNPJ"
               dense
               input-class="text-black"
@@ -245,7 +245,7 @@ watch(open, async () => {
               v-model="dataSupplier.cpf"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Filtre por CPF"
               dense
               input-class="text-black"
@@ -261,7 +261,7 @@ watch(open, async () => {
             v-model="dataSupplier.country"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por país"
             dense
             input-class="text-black"
@@ -275,7 +275,7 @@ watch(open, async () => {
             v-model="dataSupplier.state"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por estado"
             dense
             input-class="text-black"
@@ -289,7 +289,7 @@ watch(open, async () => {
             v-model="dataSupplier.city"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por cidade"
             dense
             input-class="text-black"
@@ -300,7 +300,7 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-select
-            filled
+            outlined
             v-model="selectedCategory"
             label="Filtre por categoria"
             :options="optionsCategories"
@@ -316,7 +316,7 @@ watch(open, async () => {
             </template>
           </q-select>
           <q-select
-            filled
+            outlined
             v-model="selectedStatus"
             label="Filtre por status"
             :options="optionsStatus"

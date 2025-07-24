@@ -113,7 +113,7 @@ watch(open, () => {
             v-model="dataColor.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Nome da cor"
             dense
             input-class="text-black"
@@ -123,12 +123,11 @@ watch(open, () => {
               <q-icon name="colorize" color="black" size="20px" />
             </template>
           </q-input>
-
           <q-input
             v-model="dataColor.hexColorCode"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Código da cor"
             dense
             input-class="text-black"

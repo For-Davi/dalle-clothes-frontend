@@ -67,7 +67,7 @@ onMounted(() => {
         v-model="dataRegister.name"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Nome de usuário"
         dense
         input-class="text-black"
@@ -80,7 +80,7 @@ onMounted(() => {
         v-model="dataRegister.email"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Seu e-mail"
         autocomplete="new-email"
         dense
@@ -94,7 +94,7 @@ onMounted(() => {
         v-model="dataRegister.nameEnterprise"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Nome de sua organização"
         dense
         input-class="text-black"
@@ -107,7 +107,7 @@ onMounted(() => {
         v-model="dataRegister.password"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Sua senha"
         autocomplete="new-password"
         dense
@@ -130,7 +130,7 @@ onMounted(() => {
         v-model="dataRegister.confirmPassword"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Confirme sua senha"
         autocomplete="new-password"
         dense

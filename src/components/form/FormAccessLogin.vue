@@ -126,7 +126,7 @@ watch(open, async () => {
             v-model="dataAccessLogin.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Nome do funcionário"
             disable
             dense
@@ -140,7 +140,7 @@ watch(open, async () => {
             v-model="dataAccessLogin.email"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="E-mail do funcionário"
             dense
             input-class="text-black"
@@ -152,7 +152,7 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-select
-            filled
+            outlined
             v-model="selectedRole"
             label="Selecione a permissão"
             :options="optionsRoles"
@@ -171,7 +171,7 @@ watch(open, async () => {
             v-model="dataAccessLogin.password"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Senha do usuário"
             dense
             input-class="text-black"
@@ -194,7 +194,7 @@ watch(open, async () => {
             v-model="dataAccessLogin.confirmPassword"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Confirme a senha"
             dense
             input-class="text-black"

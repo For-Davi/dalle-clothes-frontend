@@ -61,7 +61,7 @@ onMounted(() => {
         v-model="dataLogin.email"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Digite seu e-mail"
         autocomplete="new-email"
         dense
@@ -75,7 +75,7 @@ onMounted(() => {
         v-model="dataLogin.password"
         bg-color="white"
         label-color="black"
-        filled
+        outlined
         label="Digite sua senha"
         autocomplete="new-password"
         dense

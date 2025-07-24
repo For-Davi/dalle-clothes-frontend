@@ -109,7 +109,7 @@ watch(open, () => {
             v-model="dataClient.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por nome"
             dense
             input-class="text-black"
@@ -122,7 +122,7 @@ watch(open, () => {
             v-model="dataClient.email"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por e-mail"
             dense
             input-class="text-black"
@@ -137,7 +137,7 @@ watch(open, () => {
               v-model="selectedIdentifier"
               :options="optionsIdentifier"
               label="Selecione o documento"
-              filled
+              outlined
               dense
               options-dense
               bg-color="white"
@@ -153,7 +153,7 @@ watch(open, () => {
               v-model="dataClient.cnpj"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Filtre por CNPJ"
               dense
               input-class="text-black"
@@ -169,7 +169,7 @@ watch(open, () => {
               v-model="dataClient.cpf"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Filtre por CPF"
               dense
               input-class="text-black"
@@ -185,7 +185,7 @@ watch(open, () => {
             v-model="dataClient.country"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por país"
             dense
             input-class="text-black"
@@ -199,7 +199,7 @@ watch(open, () => {
             v-model="dataClient.state"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por estado"
             dense
             input-class="text-black"
@@ -213,7 +213,7 @@ watch(open, () => {
             v-model="dataClient.city"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por cidade"
             dense
             input-class="text-black"

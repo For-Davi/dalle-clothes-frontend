@@ -192,7 +192,7 @@ watch(open, async () => {
             v-model="dataUser.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por nome"
             dense
             input-class="text-black"
@@ -205,7 +205,7 @@ watch(open, async () => {
             v-model="dataUser.email"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por e-mail"
             dense
             input-class="text-black"
@@ -216,7 +216,7 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-select
-            filled
+            outlined
             v-model="selectedRole"
             label="Filtre por permissão"
             :options="optionsRoles"
@@ -235,7 +235,7 @@ watch(open, async () => {
             v-model="dataDepartment.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             type="text"
             label="Filtre por departamento"
             readonly
@@ -255,7 +255,7 @@ watch(open, async () => {
             @update:choose-department="handleChooseDepartment"
           />
           <q-select
-            filled
+            outlined
             v-model="selectedStatus"
             label="Filtre por status"
             :options="optionsStatus"

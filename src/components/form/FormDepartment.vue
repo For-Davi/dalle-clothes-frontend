@@ -144,7 +144,7 @@ watch(
           v-model="dataDepartment.name"
           bg-color="white"
           label-color="black"
-          filled
+          outlined
           label="Digite o nome do departamento"
           dense
           input-class="text-black"
@@ -158,7 +158,7 @@ watch(
           v-model="dataDepartment.parentName"
           bg-color="white"
           label-color="black"
-          filled
+          outlined
           type="text"
           label="Escolher hierarquia"
           readonly

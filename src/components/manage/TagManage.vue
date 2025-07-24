@@ -61,7 +61,7 @@ watch(open, () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 sub-page column justify-between">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Gerenciamento de tags" icon="colorize" />
+        <TitlePage title="Gerenciamento de tags" icon="tag" />
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingTag">

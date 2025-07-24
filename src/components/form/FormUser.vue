@@ -239,7 +239,7 @@ watch(open, async () => {
             v-model="dataUser.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Nome do usuário"
             dense
             input-class="text-black"
@@ -252,7 +252,7 @@ watch(open, async () => {
             v-model="dataUser.email"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="E-mail do usuário"
             dense
             input-class="text-black"
@@ -263,7 +263,7 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-select
-            filled
+            outlined
             v-model="selectedRole"
             label="Selecione a permissão"
             :options="optionsRoles"
@@ -282,7 +282,7 @@ watch(open, async () => {
             v-model="dataDepartment.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             type="text"
             label="Escolha o departamento"
             readonly
@@ -306,7 +306,7 @@ watch(open, async () => {
             v-model="dataUser.password"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Senha do usuário"
             dense
             input-class="text-black"
@@ -330,7 +330,7 @@ watch(open, async () => {
             v-model="dataUser.confirmPassword"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Confirme a senha"
             dense
             input-class="text-black"
@@ -351,7 +351,7 @@ watch(open, async () => {
           </q-input>
           <q-select
             v-show="userId !== null"
-            filled
+            outlined
             v-model="selectedStatus"
             label="Status do usuário"
             :options="optionsStatus"

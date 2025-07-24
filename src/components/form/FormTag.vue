@@ -113,14 +113,14 @@ watch(open, () => {
             v-model="dataTag.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Nome da tag"
             dense
             input-class="text-black"
             class="full-width"
           >
             <template v-slot:prepend>
-              <q-icon name="colorize" color="black" size="20px" />
+              <q-icon name="tag" color="black" size="20px" />
             </template>
           </q-input>
           <q-toggle

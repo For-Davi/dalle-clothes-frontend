@@ -255,7 +255,7 @@ watch(open, async () => {
             v-model="dataEmployee.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por nome"
             dense
             input-class="text-black"
@@ -268,7 +268,7 @@ watch(open, async () => {
             v-model="dataEmployee.email"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Filtre por e-mail"
             dense
             input-class="text-black"
@@ -283,7 +283,7 @@ watch(open, async () => {
               v-model="selectedIdentifier"
               :options="optionsIdentifier"
               label="Selecione o documento"
-              filled
+              outlined
               dense
               options-dense
               bg-color="white"
@@ -299,7 +299,7 @@ watch(open, async () => {
               v-model="dataEmployee.cnpj"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Filtre por CNPJ"
               dense
               input-class="text-black"
@@ -315,7 +315,7 @@ watch(open, async () => {
               v-model="dataEmployee.cpf"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Filtre por CPF"
               dense
               input-class="text-black"
@@ -328,7 +328,7 @@ watch(open, async () => {
             </q-input>
           </div>
           <q-select
-            filled
+            outlined
             v-model="selectedStatus"
             label="Filtre por status"
             :options="optionsStatus"
@@ -344,7 +344,7 @@ watch(open, async () => {
             </template>
           </q-select>
           <q-select
-            filled
+            outlined
             v-model="selectedSex"
             label="Filtre por sexo"
             :options="optionsSex"
@@ -360,7 +360,7 @@ watch(open, async () => {
             </template>
           </q-select>
           <q-select
-            filled
+            outlined
             v-model="selectedLoginAccess"
             label="Filtre por acesso"
             :options="optionsLoginAccess"
@@ -379,7 +379,7 @@ watch(open, async () => {
             v-model="dataDepartment.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             type="text"
             label="Filtre por departamento"
             readonly

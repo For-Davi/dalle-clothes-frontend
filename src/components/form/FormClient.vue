@@ -274,7 +274,7 @@ watch(open, async () => {
             v-model="dataClient.name"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Nome do fornecedor"
             dense
             input-class="text-black"
@@ -287,7 +287,7 @@ watch(open, async () => {
             v-model="dataClient.sex"
             :options="['Masculino', 'Feminino']"
             label="Selecione o gênero"
-            filled
+            outlined
             dense
             options-dense
             bg-color="white"
@@ -305,7 +305,7 @@ watch(open, async () => {
             v-model="dataClient.email"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="E-mail do fornecedor"
             dense
             input-class="text-black"
@@ -319,7 +319,7 @@ watch(open, async () => {
             v-model="dataClient.dateBirthday"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Data de nascimento"
             dense
             input-class="text-black"
@@ -333,7 +333,7 @@ watch(open, async () => {
             v-model="formattedPhone"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Telefone do cliente"
             dense
             input-class="text-black"
@@ -347,7 +347,7 @@ watch(open, async () => {
               v-model="selectedIdentifier"
               :options="optionsIdentifier"
               label="Selecione o documento"
-              filled
+              outlined
               dense
               options-dense
               bg-color="white"
@@ -363,7 +363,7 @@ watch(open, async () => {
               v-model="dataClient.cnpj"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Digite o CNPJ"
               dense
               input-class="text-black"
@@ -379,7 +379,7 @@ watch(open, async () => {
               v-model="dataClient.cpf"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Digite o CPF"
               dense
               input-class="text-black"
@@ -396,7 +396,7 @@ watch(open, async () => {
               v-model="dataClient.stateRegistration"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Inscrição estadual"
               dense
               input-class="text-black"
@@ -411,7 +411,7 @@ watch(open, async () => {
               v-model="dataClient.municipalRegistration"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Inscrição municipal"
               dense
               input-class="text-black"
@@ -427,7 +427,7 @@ watch(open, async () => {
             v-model="dataClient.cep"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Digite o CEP"
             dense
             input-class="text-black"
@@ -442,7 +442,7 @@ watch(open, async () => {
             v-model="dataClient.country"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="País"
             dense
             input-class="text-black"
@@ -456,7 +456,7 @@ watch(open, async () => {
               v-model="dataClient.state"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="UF"
               dense
               input-class="text-black"
@@ -470,7 +470,7 @@ watch(open, async () => {
               v-model="dataClient.city"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Cidade"
               dense
               input-class="text-black"
@@ -485,7 +485,7 @@ watch(open, async () => {
             v-model="dataClient.neighborhood"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Bairro"
             dense
             input-class="text-black"
@@ -498,7 +498,7 @@ watch(open, async () => {
             v-model="dataClient.address"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Logradouro"
             dense
             input-class="text-black"
@@ -512,7 +512,7 @@ watch(open, async () => {
               v-model="dataClient.number"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Número"
               dense
               input-class="text-black"
@@ -528,7 +528,7 @@ watch(open, async () => {
               v-model="dataClient.complement"
               bg-color="white"
               label-color="black"
-              filled
+              outlined
               label="Complemento"
               dense
               input-class="text-black"
@@ -543,7 +543,7 @@ watch(open, async () => {
             v-model="dataClient.description"
             bg-color="white"
             label-color="black"
-            filled
+            outlined
             label="Descrição"
             dense
             input-class="text-black no-resize"
