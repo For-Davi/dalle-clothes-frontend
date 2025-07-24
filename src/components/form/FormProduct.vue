@@ -21,7 +21,7 @@ defineOptions({
 const props = defineProps<{
   data: {
     open: boolean;
-    product: ITag | null;
+    productID: number | null;
   };
 }>();
 const emit = defineEmits<{
@@ -37,6 +37,7 @@ const dataTags = ref<ITag[]>([]);
 const dataLog = ref<[]>([]);
 const dataBasic = reactive<IVModelProductBasic>({
   name: '',
+  description: '',
   type: { label: 'Produto', value: 'product' },
   category: { label: 'Nenhuma selecionada', value: null },
 });
@@ -117,7 +118,7 @@ const fetchColors = async () => {
 //   }
 // };
 
-const productID = computed(() => props.data.product?.id);
+const productID = computed(() => props.data.productID);
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
