@@ -41,7 +41,6 @@ watch(
     <q-card-section class="q-pa-none">
       <TitlePage title="Configurações do produto" icon="list_alt" />
     </q-card-section>
-    <Loading :show="props.loading" />
     <q-card-section class="q-pa-sm" v-show="!props.loading">
       <q-form class="q-gutter-y-sm column">
         <q-toggle

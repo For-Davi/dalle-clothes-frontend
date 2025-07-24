@@ -48,7 +48,6 @@ const optionsCategory = computed((): QuasarSelect<number | null>[] => {
     <q-card-section class="q-pa-none">
       <TitlePage title="Dados básicos" icon="list_alt" />
     </q-card-section>
-    <Loading :show="props.loading" />
     <q-card-section class="q-pa-sm" v-show="!props.loading">
       <q-form class="q-gutter-y-sm column">
         <q-input

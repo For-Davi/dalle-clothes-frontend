@@ -19,7 +19,6 @@ const { listTag } = storeToRefs(useTagStore());
     <q-card-section class="q-pa-none">
       <TitlePage title="Seleção de tags" icon="list_alt" />
     </q-card-section>
-    <Loading :show="props.loading" />
     <q-card-section class="q-pa-sm" v-show="!props.loading">
       <q-form class="q-gutter-y-sm column">
         <q-select
@@ -31,6 +30,7 @@ const { listTag } = storeToRefs(useTagStore());
           :options="listTag"
           option-label="name"
           option-value="id"
+          options-dense
           label="Tags"
           dense
           options-selected-class="bg-green-1 text-black"

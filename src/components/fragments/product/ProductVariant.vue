@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
-import Loading from 'src/components/shared/Loading.vue';
 import TableProductVariant from 'src/components/table/TableProductVariant.vue';
 import { useGridStore } from 'src/stores/grid-store';
 import { computed, reactive, ref } from 'vue';
@@ -96,16 +95,16 @@ const listGridSelect = computed((): IQuasarSelect<number | null>[] => {
 });
 </script>
 <template>
-  <q-card class="bg-grey-2" bordered flat style="max-width: 98vw; min-height: 350px">
+  <q-card class="bg-grey-2 column justify-between" bordered flat>
     <q-card-section class="q-pa-none">
       <TitlePage title="Variantes" icon="pin" />
     </q-card-section>
-    <Loading :show="props.loading" />
     <q-card-section class="q-pa-sm column q-gutter-y-sm" v-show="!props.loading">
       <q-select
         outlined
         v-model="gridModel"
         map-options
+        options-dense
         :options="listGridSelect"
         label="Selecione a grade"
         bg-color="white"

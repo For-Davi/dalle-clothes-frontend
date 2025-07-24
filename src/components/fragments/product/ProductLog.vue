@@ -16,7 +16,6 @@ const props = defineProps<{
     <q-card-section class="q-pa-none">
       <TitlePage title="Registro de logs" icon="list_alt" />
     </q-card-section>
-    <Loading :show="props.loading" />
     <q-card-section class="q-pa-sm" v-show="!props.loading">
       <TableProductLog :list-log="props.listLogs" :loading="props.loading" />
     </q-card-section>

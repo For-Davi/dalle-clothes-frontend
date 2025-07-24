@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import Loading from 'src/components/shared/Loading.vue';
 import MediaUpload from 'src/components/shared/MediaUpload.vue';
 import TableProductMedia from 'src/components/table/TableProductMedia.vue';
 import { ref } from 'vue';
@@ -30,11 +29,10 @@ const pushMediaInList = () => {
 };
 </script>
 <template>
-  <q-card class="bg-grey-2" bordered flat style="max-width: 98vw; min-height: 350px">
+  <q-card class="bg-grey-2 column justify-between" bordered flat>
     <q-card-section class="q-pa-none">
       <TitlePage title="Galeria de imagens" icon="pin" />
     </q-card-section>
-    <Loading :show="props.loading" />
     <q-card-section class="q-pa-sm column q-gutter-y-sm" v-show="!props.loading">
       <div v-if="listMedia.length < 3">
         <MediaUpload
@@ -55,7 +53,7 @@ const pushMediaInList = () => {
           no-caps
         />
       </div>
-      <TableProductMedia :loading="false" v-model:listMedia="listMedia" />
+      <TableProductMedia :loading="loading" v-model:listMedia="listMedia" />
     </q-card-section>
   </q-card>
 </template>

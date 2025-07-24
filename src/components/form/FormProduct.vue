@@ -13,6 +13,7 @@ import ProductMedia from '../fragments/product/ProductMedia.vue';
 import ProductTag from '../fragments/product/ProductTag.vue';
 import ProductLog from '../fragments/product/ProductLog.vue';
 import ProductAdvanced from '../fragments/product/ProductAdvanced.vue';
+import Loading from '../shared/Loading.vue';
 
 defineOptions({
   name: 'FormProduct',
@@ -30,6 +31,7 @@ const emit = defineEmits<{
 
 const { loadingTag } = storeToRefs(useTagStore());
 
+const loading = ref<boolean>(false);
 const tab = ref<IProductModalTabs>('basic');
 const dataVariant = ref<IVModelProductVariant[]>([]);
 const dataMedia = ref<File[]>([]);
@@ -75,6 +77,9 @@ const fetchTags = async () => {
 };
 const fetchColors = async () => {
   await useColorStore().getColors();
+};
+const changeLoading = (value: boolean): void => {
+  loading.value = value;
 };
 // const save = async () => {
 //   const check = checkDataTag(dataTag);
@@ -126,10 +131,12 @@ const open = computed({
 
 watch(open, async () => {
   if (open.value) {
-    clear();
+    // clear();
+    changeLoading(true);
     await fetchGrids();
     await fetchTags();
     await fetchColors();
+    changeLoading(false);
   }
 });
 </script>
@@ -158,40 +165,48 @@ watch(open, async () => {
         <q-tab-panels v-model="tab" animated class="bg-grey-2">
           <q-tab-panel name="basic" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <ProductBasic v-model="dataBasic" :loading="false" />
+              <Loading :show="loading" />
+              <ProductBasic v-model="dataBasic" :loading="loading" />
             </q-scroll-area>
           </q-tab-panel>
-          <q-tab-panel name="variant">
+          <q-tab-panel name="variant" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
+              <Loading :show="loading" />
               <ProductVariant
                 v-model:listVariants="dataVariant"
                 v-model:gridModel="selectedGrid"
-                :loading="false"
+                :loading="loading"
                 :gridGroupId="selectedGrid.value"
               />
             </q-scroll-area>
           </q-tab-panel>
-          <q-tab-panel name="media">
+          <q-tab-panel name="media" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <ProductMedia v-model:listMedia="dataMedia" :loading="false" />
+              <Loading :show="loading" />
+              <ProductMedia v-model:listMedia="dataMedia" :loading="loading" />
             </q-scroll-area>
           </q-tab-panel>
-          <q-tab-panel name="tag">
+          <q-tab-panel name="tag" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <ProductTag v-model:listTag="dataTags" :loading="false" />
+              <Loading :show="loading" />
+              <ProductTag v-model:listTag="dataTags" :loading="loading" />
             </q-scroll-area>
           </q-tab-panel>
-          <q-tab-panel name="advanced">
-            <ProductAdvanced v-model:dataAdvanced="dataAdvanced" :loading="false" />
-          </q-tab-panel>
-          <q-tab-panel name="log">
+          <q-tab-panel name="advanced" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <ProductLog :loading="false" :list-logs="dataLog" />
+              <Loading :show="loading" />
+              <ProductAdvanced v-model:dataAdvanced="dataAdvanced" :loading="loading" />
+            </q-scroll-area>
+          </q-tab-panel>
+          <q-tab-panel name="log" class="q-px-none">
+            <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
+              <Loading :show="loading" />
+              <ProductLog :loading="loading" :list-logs="dataLog" />
             </q-scroll-area>
           </q-tab-panel>
         </q-tab-panels>
       </q-card-section>
-      <q-card-actions align="right" v-show="!loadingTag">
+      <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
           <q-btn
             color="red"
@@ -208,7 +223,7 @@ watch(open, async () => {
             color="primary"
             label="Salvar"
             size="md"
-            :loading="loadingTag"
+            :disable="loading"
             unelevated
             no-caps
           />
@@ -218,7 +233,7 @@ watch(open, async () => {
             color="primary"
             label="Atualizar"
             size="md"
-            :loading="loadingTag"
+            :disable="loading"
             unelevated
             no-caps
           />
