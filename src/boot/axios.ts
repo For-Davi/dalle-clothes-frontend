@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
 import { boot } from 'quasar/wrappers';
 import type { AxiosInstance } from 'axios';
 import axios from 'axios';
@@ -30,7 +31,7 @@ export default boot(({ app, router }) => {
       }
       return config;
     },
-    (error) => Promise.reject(new Error(error.message || 'Erro desconhecido')),
+    (error) => Promise.reject(error || 'Erro desconhecido'),
   );
 
   api.interceptors.response.use(
@@ -39,7 +40,7 @@ export default boot(({ app, router }) => {
       if (error.response?.status === 401 && error.response.data?.message === 'Unauthenticated.') {
         await logout();
       }
-      return Promise.reject(new Error(error.message || 'Erro desconhecido'));
+      return Promise.reject(error || 'Erro desconhecido');
     },
   );
 
