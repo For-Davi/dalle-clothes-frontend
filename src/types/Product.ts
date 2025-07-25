@@ -54,3 +54,32 @@ export interface VModelProductAdvanced {
   hasCommission: number;
   commissionPercentage: string;
 }
+export interface DataCreateProduct {
+  basic: {
+    name: string;
+    description: string | null;
+    type: string;
+    category: number | null;
+  };
+  variants: {
+    price: number;
+    cost: number;
+    stockQuantity: number;
+    minStockQuantity: number;
+    sku: string | null;
+    active: number;
+    description: string | null;
+    gridItemID: number | null;
+    colors: { id: number }[];
+  }[];
+  images: File[];
+  tags: { id: number }[];
+  advanced: {
+    active: number;
+    allowCoupon: number;
+    allowDiscount: number;
+    discountMaxPercentage: number;
+    hasCommission: number;
+    commissionPercentage: number;
+  };
+}

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { storeToRefs } from 'pinia';
-// import { createErrorData } from 'src/composables/CreateNotify';
-// import { checkDataTag } from 'src/composables/CheckData';
+import { createErrorData } from 'src/composables/CreateNotify';
+import { checkDataProduct } from 'src/composables/CheckData';
 import { useTagStore } from 'src/stores/tag-store';
 import { useGridStore } from 'src/stores/grid-store';
 import { useColorStore } from 'src/stores/color-store';
+import { useProductStore } from 'src/stores/product-store';
 import ProductBasic from '../fragments/product/ProductBasic.vue';
 import ProductVariant from '../fragments/product/ProductVariant.vue';
 import ProductMedia from '../fragments/product/ProductMedia.vue';
@@ -28,8 +28,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:open': [void];
 }>();
-
-const { loadingTag } = storeToRefs(useTagStore());
 
 const loading = ref<boolean>(false);
 const tab = ref<IProductModalTabs>('basic');
@@ -81,18 +79,69 @@ const fetchColors = async () => {
 const changeLoading = (value: boolean): void => {
   loading.value = value;
 };
-// const save = async () => {
-//   const check = checkDataTag(dataTag);
-//   if (check.status) {
-//     const response = await useTagStore().createTag(dataTag.name);
-//     if (response?.status === 201) {
-//       clear();
-//       emit('update:open');
-//     }
-//   } else {
-//     createErrorData(check.message || 'Erro ao processar dados da tag');
-//   }
-// };
+const mountCreateDataProduct = (): IDataCreateProduct => {
+  const basic = {
+    name: dataBasic.name,
+    description: dataBasic.description.trim().length === 0 ? null : dataBasic.description,
+    type: dataBasic.type.value,
+    category: dataBasic.category.value,
+  };
+
+  const variants = dataVariant.value.map((item: IVModelProductVariant) => {
+    return {
+      price: parseFloat(item.price),
+      cost: parseFloat(item.cost),
+      stockQuantity: Number(item.stockQuantity),
+      minStockQuantity: Number(item.stockQuantity),
+      sku: item.sku.trim().length === 0 ? null : item.sku,
+      active: Number(item.active),
+      description: item.description.trim().length === 0 ? null : item.description,
+      gridItemID: item.gridItem.id,
+      colors: item.colors.map((color: IColor) => {
+        return {
+          id: color.id,
+        };
+      }),
+    };
+  });
+
+  const images = dataMedia.value;
+
+  const tags = dataTags.value.map((item) => {
+    return {
+      id: item.id,
+    };
+  });
+
+  const advanced = {
+    active: Number(dataAdvanced.active),
+    allowCoupon: Number(dataAdvanced.allowCoupon),
+    allowDiscount: Number(dataAdvanced.allowDiscount),
+    hasCommission: Number(dataAdvanced.hasCommission),
+    commissionPercentage: Number(dataAdvanced.commissionPercentage),
+    discountMaxPercentage: Number(dataAdvanced.discountMaxPercentage),
+  };
+
+  return {
+    basic,
+    variants,
+    images,
+    tags,
+    advanced,
+  };
+};
+const save = async () => {
+  const check = checkDataProduct(dataBasic, selectedGrid.value.value);
+  if (check.status) {
+    const response = await useProductStore().createProduct(mountCreateDataProduct());
+    if (response?.status === 201) {
+      clear();
+      emit('update:open');
+    }
+  } else {
+    createErrorData(check.message || 'Erro ao processar dados do produto');
+  }
+};
 // const update = async () => {
 //   const check = checkDataTag(dataTag);
 //   if (check.status) {
@@ -131,7 +180,7 @@ const open = computed({
 
 watch(open, async () => {
   if (open.value) {
-    // clear();
+    clear();
     changeLoading(true);
     await fetchGrids();
     await fetchTags();
@@ -145,7 +194,7 @@ watch(open, async () => {
     <q-card
       class="bg-grey-2 column justify-between"
       style="width: 900px; max-width: 98vw"
-      :style="loadingTag ? 'min-height: 350px' : ''"
+      :style="loading ? 'min-height: 350px' : ''"
     >
       <q-card-section class="q-pa-none">
         <TitlePage
@@ -221,17 +270,17 @@ watch(open, async () => {
           <q-btn
             v-if="productID"
             color="primary"
-            label="Salvar"
+            label="Atualizar"
             size="md"
             :disable="loading"
             unelevated
             no-caps
           />
-          <!-- @click="update" -->
           <q-btn
             v-else
+            @click="save"
             color="primary"
-            label="Atualizar"
+            label="Salvar"
             size="md"
             :disable="loading"
             unelevated

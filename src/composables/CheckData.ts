@@ -279,6 +279,33 @@ export const checkDataCategoryProduct = (data: {
   return { status: true };
 };
 
+export const checkDataProduct = (
+  basic: {
+    name: string;
+    description: string;
+  },
+  selectedGrid: number | null,
+): { status: boolean; message?: string } => {
+  // Dados básicos
+  if (basic.name.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome do produto' };
+  }
+  if (basic.name.trim().length > 100) {
+    return { status: false, message: 'O nome do produto não pode ultrapassar 100 caractéres' };
+  }
+  if (basic.description.trim() !== '') {
+    if (basic.description.trim().length > 500)
+      return { status: false, message: 'A descrição do produto deve ter no máximo 500 caractéres' };
+  }
+
+  // Grade / Variante
+  if (selectedGrid === null) {
+    return { status: false, message: 'Deve ser selecionado uma grade para o produto' };
+  }
+
+  return { status: true };
+};
+
 export const checkDataGrid = (
   data: {
     gridName: string;
