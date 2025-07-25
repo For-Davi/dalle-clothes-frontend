@@ -283,8 +283,7 @@ export const checkDataProduct = (
   basic: {
     name: string;
     description: string;
-  },
-  selectedGrid: number | null,
+  }
 ): { status: boolean; message?: string } => {
   // Dados básicos
   if (basic.name.trim() === '') {
@@ -296,11 +295,6 @@ export const checkDataProduct = (
   if (basic.description.trim() !== '') {
     if (basic.description.trim().length > 500)
       return { status: false, message: 'A descrição do produto deve ter no máximo 500 caractéres' };
-  }
-
-  // Grade / Variante
-  if (selectedGrid === null) {
-    return { status: false, message: 'Deve ser selecionado uma grade para o produto' };
   }
 
   return { status: true };

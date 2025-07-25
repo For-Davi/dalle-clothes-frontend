@@ -84,19 +84,20 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
     name: dataBasic.name,
     description: dataBasic.description.trim().length === 0 ? null : dataBasic.description,
     type: dataBasic.type.value,
-    category: dataBasic.category.value,
+    categoryID: dataBasic.category.value,
   };
 
   const variants = dataVariant.value.map((item: IVModelProductVariant) => {
     return {
       price: parseFloat(item.price),
       cost: parseFloat(item.cost),
-      stockQuantity: Number(item.stockQuantity),
-      minStockQuantity: Number(item.stockQuantity),
+      stockQuantity: parseFloat(item.stockQuantity),
+      minStockQuantity: parseFloat(item.stockQuantity),
       sku: item.sku.trim().length === 0 ? null : item.sku,
       active: Number(item.active),
       description: item.description.trim().length === 0 ? null : item.description,
       gridItemID: item.gridItem.id,
+      location: item.location,
       colors: item.colors.map((color: IColor) => {
         return {
           id: color.id,
@@ -131,7 +132,7 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
   };
 };
 const save = async () => {
-  const check = checkDataProduct(dataBasic, selectedGrid.value.value);
+  const check = checkDataProduct(dataBasic);
   if (check.status) {
     const response = await useProductStore().createProduct(mountCreateDataProduct());
     if (response?.status === 201) {

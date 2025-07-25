@@ -59,7 +59,7 @@ export interface DataCreateProduct {
     name: string;
     description: string | null;
     type: string;
-    category: number | null;
+    categoryID: number | null;
   };
   variants: {
     price: number;
@@ -69,6 +69,7 @@ export interface DataCreateProduct {
     sku: string | null;
     active: number;
     description: string | null;
+    location: string | null;
     gridItemID: number | null;
     colors: { id: number }[];
   }[];
