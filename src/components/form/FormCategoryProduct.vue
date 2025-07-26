@@ -107,7 +107,7 @@ watch(open, () => {
             class="full-width"
           >
             <template v-slot:prepend>
-              <q-icon name="colorize" color="black" size="20px" />
+              <q-icon name="category" color="black" size="20px" />
             </template>
           </q-input>
         </q-form>

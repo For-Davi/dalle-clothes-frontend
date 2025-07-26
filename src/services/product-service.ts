@@ -17,7 +17,41 @@ export const createProductService = (
     products: unknown[];
     message: string;
   };
-}> => api.post(`${baseUrl}/`, data);
+}> => {
+  const formData = new FormData();
+
+  formData.append('basic[name]', data.basic.name);
+  formData.append('basic[description]', data.basic.description || '');
+  formData.append('basic[type]', data.basic.type);
+  formData.append('basic[categoryID]', String(data.basic.categoryID || ''));
+
+  data.variants.forEach((variant) => {
+    formData.append('variants[]', JSON.stringify(variant));
+  });
+
+  data.images.forEach((image) => {
+    if (image instanceof File) {
+      formData.append(`images[]`, image);
+    }
+  });
+
+  data.tags.forEach((tag) => {
+    formData.append('tags[]', JSON.stringify(tag));
+  });
+
+  formData.append('advanced[active]', String(data.advanced.active));
+  formData.append('advanced[allowCoupon]', String(data.advanced.allowCoupon));
+  formData.append('advanced[allowDiscount]', String(data.advanced.allowDiscount));
+  formData.append('advanced[discountMaxPercentage]', String(data.advanced.discountMaxPercentage));
+  formData.append('advanced[hasCommission]', String(data.advanced.hasCommission));
+  formData.append('advanced[commissionPercentage]', String(data.advanced.commissionPercentage));
+
+  return api.post(`${baseUrl}/`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
 
 // export const updateColorService = (
 //   id: number,

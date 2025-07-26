@@ -45,6 +45,7 @@ const generateVariants = (): void => {
     sku: '',
     active: 1,
     description: '',
+    location: '',
     gridItem: {
       id: item.id,
       size: item.size,

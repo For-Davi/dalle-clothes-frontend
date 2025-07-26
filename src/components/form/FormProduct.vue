@@ -7,6 +7,7 @@ import { useTagStore } from 'src/stores/tag-store';
 import { useGridStore } from 'src/stores/grid-store';
 import { useColorStore } from 'src/stores/color-store';
 import { useProductStore } from 'src/stores/product-store';
+import { useCategoryProductStore } from 'src/stores/category-product-store';
 import ProductBasic from '../fragments/product/ProductBasic.vue';
 import ProductVariant from '../fragments/product/ProductVariant.vue';
 import ProductMedia from '../fragments/product/ProductMedia.vue';
@@ -76,6 +77,9 @@ const fetchTags = async () => {
 const fetchColors = async () => {
   await useColorStore().getColors();
 };
+const fetchCategories = async () => {
+  await useCategoryProductStore().getCategoriesProduct();
+};
 const changeLoading = (value: boolean): void => {
   loading.value = value;
 };
@@ -87,32 +91,34 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
     categoryID: dataBasic.category.value,
   };
 
-  const variants = dataVariant.value.map((item: IVModelProductVariant) => {
-    return {
-      price: parseFloat(item.price),
-      cost: parseFloat(item.cost),
-      stockQuantity: parseFloat(item.stockQuantity),
-      minStockQuantity: parseFloat(item.stockQuantity),
-      sku: item.sku.trim().length === 0 ? null : item.sku,
-      active: Number(item.active),
-      description: item.description.trim().length === 0 ? null : item.description,
-      gridItemID: item.gridItem.id,
-      location: item.location,
-      colors: item.colors.map((color: IColor) => {
-        return {
-          id: color.id,
-        };
-      }),
-    };
-  });
+  const variants =
+    dataVariant.value?.map((item: IVModelProductVariant) => {
+      return {
+        price: parseFloat(item.price),
+        cost: parseFloat(item.cost),
+        stockQuantity: parseFloat(item.stockQuantity),
+        minStockQuantity: parseFloat(item.stockQuantity),
+        sku: item.sku.trim().length === 0 ? null : item.sku,
+        active: Number(item.active),
+        description: item.description.trim().length === 0 ? null : item.description,
+        gridItemID: item.gridItem.id,
+        location: item.description.trim().length === 0 ? null : item.description,
+        colors: item.colors.map((color: IColor) => {
+          return {
+            id: color.id,
+          };
+        }),
+      };
+    }) || [];
+
+  const tags =
+    dataTags.value?.map((item) => {
+      return {
+        id: item.id,
+      };
+    }) || [];
 
   const images = dataMedia.value;
-
-  const tags = dataTags.value.map((item) => {
-    return {
-      id: item.id,
-    };
-  });
 
   const advanced = {
     active: Number(dataAdvanced.active),
@@ -186,6 +192,7 @@ watch(open, async () => {
     await fetchGrids();
     await fetchTags();
     await fetchColors();
+    await fetchCategories();
     changeLoading(false);
   }
 });

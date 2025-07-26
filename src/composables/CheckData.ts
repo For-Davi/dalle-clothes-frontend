@@ -279,12 +279,10 @@ export const checkDataCategoryProduct = (data: {
   return { status: true };
 };
 
-export const checkDataProduct = (
-  basic: {
-    name: string;
-    description: string;
-  }
-): { status: boolean; message?: string } => {
+export const checkDataProduct = (basic: {
+  name: string;
+  description: string;
+}): { status: boolean; message?: string } => {
   // Dados básicos
   if (basic.name.trim() === '') {
     return { status: false, message: 'Deve ser informado o nome do produto' };
