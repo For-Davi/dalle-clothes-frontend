@@ -168,6 +168,7 @@ const open = computed({
                 </div>
                 <q-input
                   v-model="item.sku"
+                  @update:model-value="(val) => (item.sku = String(val).toUpperCase())"
                   bg-color="white"
                   label-color="black"
                   outlined

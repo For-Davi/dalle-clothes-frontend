@@ -65,7 +65,7 @@ export interface DataCreateProduct {
     price: number;
     cost: number;
     stockQuantity: number;
-    minStockQuantity: number;
+    minStockAlert: number;
     sku: string | null;
     active: number;
     description: string | null;
@@ -83,4 +83,24 @@ export interface DataCreateProduct {
     hasCommission: number;
     commissionPercentage: number;
   };
+}
+
+export interface Product {
+  product_variant_id: number;
+  price: number;
+  stock_quantity: number;
+  sku: string;
+  variant_active: number;
+  color: {
+    name: string;
+    hex_color_code: string;
+  } | null;
+}
+
+export interface FilterProduct {
+  name: string | null;
+  sku: string | null;
+  active: number | null;
+  category: number | null;
+  stockCritical: number | null;
 }

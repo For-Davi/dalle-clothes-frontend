@@ -5,16 +5,25 @@ const baseUrl = 'product';
 export const getProductsService = (): Promise<{
   status: number;
   data: {
-    products: unknown[];
+    products: IProduct[];
   };
 }> => api.get(`${baseUrl}`);
+
+export const getProductsFilterService = (
+  filter: IFilterProduct,
+): Promise<{
+  status: number;
+  data: {
+    products: IProduct[];
+  };
+}> => api.post(`${baseUrl}/filter`, filter);
 
 export const createProductService = (
   data: IDataCreateProduct,
 ): Promise<{
   status: number;
   data: {
-    products: unknown[];
+    products: IProduct[];
     message: string;
   };
 }> => {
@@ -72,12 +81,12 @@ export const createProductService = (
 //     hexColorCode,
 //   });
 
-export const deleteColorService = (
+export const deleteProductService = (
   id: number,
 ): Promise<{
   status: number;
   data: {
+    products: IProduct[];
     message: string;
-    colors: IColor[];
   };
 }> => api.delete(`${baseUrl}/${id}`);

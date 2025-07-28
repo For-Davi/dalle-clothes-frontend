@@ -97,12 +97,12 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
         price: parseFloat(item.price),
         cost: parseFloat(item.cost),
         stockQuantity: parseFloat(item.stockQuantity),
-        minStockQuantity: parseFloat(item.stockQuantity),
+        minStockAlert: parseFloat(item.minStockAlert),
         sku: item.sku.trim().length === 0 ? null : item.sku,
         active: Number(item.active),
         description: item.description.trim().length === 0 ? null : item.description,
         gridItemID: item.gridItem.id,
-        location: item.description.trim().length === 0 ? null : item.description,
+        location: item.location.trim().length === 0 ? null : item.location,
         colors: item.colors.map((color: IColor) => {
           return {
             id: color.id,

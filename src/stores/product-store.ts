@@ -1,11 +1,16 @@
-import { createProductService } from 'src/services/product-service';
+import {
+  createProductService,
+  deleteProductService,
+  getProductsFilterService,
+  getProductsService,
+} from 'src/services/product-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
 
 export const useProductStore = defineStore('product', {
   state: () => ({
     loadingProduct: false as boolean,
-    listProduct: [] as unknown[],
+    listProduct: [] as IProduct[],
   }),
   actions: {
     clearListProduct() {
@@ -14,29 +19,29 @@ export const useProductStore = defineStore('product', {
     setLoading(loading: boolean) {
       this.loadingProduct = loading;
     },
-    setListProduct(products: unknown[]) {
+    setListProduct(products: IProduct[]) {
       products.map((item) => this.listProduct.push(item));
     },
-    // async getEmployees(filter: IFilterEmployee | null = null) {
-    //   try {
-    //     this.setLoading(true);
-    //     let response = null;
-    //     if (filter) {
-    //       response = await getEmployeesFilterService(filter);
-    //     } else {
-    //       response = await getEmployeesService();
-    //     }
+    async getProducts(filter: IFilterProduct | null = null) {
+      try {
+        this.setLoading(true);
+        let response = null;
+        if (filter) {
+          response = await getProductsFilterService(filter);
+        } else {
+          response = await getProductsService();
+        }
 
-    //     if (response.status === 200) {
-    //       this.clearListEmployee();
-    //       this.setListEmployee(response.data.employees);
-    //     }
-    //   } catch (error) {
-    //     createError(error);
-    //   } finally {
-    //     this.setLoading(false);
-    //   }
-    // },
+        if (response.status === 200) {
+          this.clearListProduct();
+          this.setListProduct(response.data.products);
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
     // async showEmployee(employeeId: number) {
     //   try {
     //     this.setLoading(true);
@@ -127,22 +132,22 @@ export const useProductStore = defineStore('product', {
     //     this.setLoading(false);
     //   }
     // },
-    // async deleteEmployee(id: number) {
-    //   this.setLoading(true);
-    //   try {
-    //     const response = await deleteEmployeeService(id);
-    //     if (response.status === 200) {
-    //       this.clearListEmployee();
-    //       this.setListEmployee(response.data.employees);
-    //       createSuccess(response.data.message);
-    //     }
-    //     return response;
-    //   } catch (error) {
-    //     createError(error);
-    //     return undefined;
-    //   } finally {
-    //     this.setLoading(false);
-    //   }
-    // },
+    async deleteProduct(id: number) {
+      this.setLoading(true);
+      try {
+        const response = await deleteProductService(id);
+        if (response.status === 200) {
+          this.clearListProduct();
+          this.setListProduct(response.data.products);
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
   },
 });
