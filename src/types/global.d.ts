@@ -19,8 +19,16 @@ import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
 import type { ActionStock } from 'src/utils/actions';
 import type { Tag } from './Tag';
-import type { ProductModalTabs, DataCreateProduct, Product, FilterProduct } from './Product';
-import type { VModelProductBasic, ProductVariant, VModelProductAdvanced } from './Product';
+import type {
+  VModelProductBasic,
+  ProductVariant,
+  VModelProductAdvanced,
+  Variant,
+  ProductModalTabs,
+  DataCreateProduct,
+  Product,
+  FilterProduct,
+} from './Product';
 import type { CustomFile } from './File';
 
 export {};
@@ -80,6 +88,7 @@ declare global {
   type IVModelProductMedia = VModelProductMedia;
   type IProductVariant = ProductVariant;
   type IProduct = Product;
+  type IVariant = Variant;
   type IFilterProduct = FilterProduct;
 
   type ICustomFile = CustomFile;

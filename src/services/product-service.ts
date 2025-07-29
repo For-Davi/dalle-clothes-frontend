@@ -2,6 +2,15 @@ import { api } from 'boot/axios';
 
 const baseUrl = 'product';
 
+export const getProductVariantService = (
+  id: number,
+): Promise<{
+  status: number;
+  data: {
+    variant: IVariant;
+  };
+}> => api.get(`${baseUrl}/variant/${id}`);
+
 export const getProductsService = (): Promise<{
   status: number;
   data: {

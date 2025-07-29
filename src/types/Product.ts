@@ -104,3 +104,18 @@ export interface FilterProduct {
   category: number | null;
   stockCritical: number | null;
 }
+
+export interface Variant {
+  id: number;
+  price: number;
+  cost: number | null;
+  offer: number | null;
+  stock_quantity: number;
+  min_stock_quantity: number;
+  sku: string | null;
+  active: number;
+  color_id: number | null;
+  enterprise_id: number;
+  description: string | null;
+  location: string | null;
+}

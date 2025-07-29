@@ -10,6 +10,7 @@ import FormProduct from 'src/components/form/FormProduct.vue';
 import { useProductStore } from 'src/stores/product-store';
 import FilterProduct from 'src/components/filter/FilterProduct.vue';
 import TableProduct from 'src/components/table/TableProduct.vue';
+import FormVariant from 'src/components/form/FormVariant.vue';
 
 defineOptions({
   name: 'Stock',
@@ -28,6 +29,13 @@ const showFormProduct = reactive<{
   open: false,
   productID: null,
 });
+const showFormVariant = reactive<{
+  open: boolean;
+  variantID: number | null;
+}>({
+  open: false,
+  variantID: null,
+});
 const filter = reactive<IFilterProduct>({
   name: '',
   sku: '',
@@ -36,9 +44,12 @@ const filter = reactive<IFilterProduct>({
   stockCritical: null,
 });
 
-const changeShowFormProduct = (show: boolean, productID: number | null = null): void => {
-  showFormProduct.productID = productID;
+const changeShowFormProduct = (show: boolean): void => {
   showFormProduct.open = show;
+};
+const changeShowFormVariant = (show: boolean, variantID: number | null = null): void => {
+  showFormVariant.variantID = variantID;
+  showFormVariant.open = show;
 };
 const changeColorManage = (): void => {
   showColorManage.value = !showColorManage.value;
@@ -98,7 +109,7 @@ const actionFilter = async (data: 'close' | IFilterProduct): Promise<void> => {
   }
 };
 const makeEdit = (id: number): void => {
-  changeShowFormProduct(true, id);
+  changeShowFormVariant(true, id);
 };
 const clearFilter = (): void => {
   Object.assign(filter, {
@@ -108,6 +119,8 @@ const clearFilter = (): void => {
     category: null,
     stockCritical: null,
   });
+
+  filterStock.value = '';
 };
 
 const hasFilter = computed(() => {
@@ -183,7 +196,7 @@ const hasFilter = computed(() => {
       </q-banner>
       <TableProduct
         :filter="filterStock"
-        @show:show-form-supplier="makeEdit"
+        @show:show-form-variant="makeEdit"
         @clear-filter="clearFilter"
       />
     </section>
@@ -197,6 +210,7 @@ const hasFilter = computed(() => {
     <GridManage :open="showGridManage" @update:open="changeGridManage" />
     <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <FormProduct :data="showFormProduct" @update:open="changeShowFormProduct(false)" />
+    <FormVariant :data="showFormVariant" @update:open="changeShowFormProduct(false)" />
     <FilterProduct :open="showFilterProduct" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>

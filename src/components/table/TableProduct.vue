@@ -19,7 +19,7 @@ const props = withDefaults(
   },
 );
 const emit = defineEmits<{
-  'show:showFormProduct': [number];
+  'show:showFormVariant': [number];
   clearFilter: [void];
 }>();
 
@@ -46,7 +46,7 @@ const openConfirmAction = (id: number): void => {
   showConfirmAction.value = true;
 };
 const startEdit = (id: number) => {
-  emit('show:showFormProduct', id);
+  emit('show:showFormVariant', id);
 };
 const startExclude = (id: number) => {
   openConfirmAction(id);

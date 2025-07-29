@@ -4,6 +4,7 @@ import {
   deleteProductVariantService,
   getProductsFilterService,
   getProductsService,
+  getProductVariantService,
 } from 'src/services/product-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -39,6 +40,17 @@ export const useProductStore = defineStore('product', {
         }
       } catch (error) {
         createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async getProductVariant(id: number) {
+      this.setLoading(true);
+      try {
+        return await getProductVariantService(id);
+      } catch (error) {
+        createError(error);
+        return undefined;
       } finally {
         this.setLoading(false);
       }
