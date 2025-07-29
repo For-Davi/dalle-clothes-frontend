@@ -98,6 +98,7 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
         cost: parseFloat(item.cost),
         stockQuantity: Number(item.stockQuantity),
         minStockAlert: Number(item.minStockAlert),
+        offer: parseFloat(item.cost),
         sku: item.sku.trim().length === 0 ? null : item.sku,
         active: Number(item.active),
         description: item.description.trim().length === 0 ? null : item.description,
