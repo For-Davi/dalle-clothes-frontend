@@ -104,7 +104,7 @@ watch(open, async () => {
       style="width: 800px; max-width: 98vw"
     >
       <q-card-section class="q-pa-none">
-        <TitlePage title="Configuração de variantes" icon="settings" />
+        <TitlePage title="Atualização de variante" icon="settings" />
       </q-card-section>
       <q-card-section class="q-pa-sm">
         <Loading :show="isLoading" />
