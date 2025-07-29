@@ -366,7 +366,7 @@ export const columnsMedia: IQuasarTable[] = [
     name: 'action',
     label: 'Ação',
     field: 'action',
-    align: 'left',
+    align: 'right',
   },
 ];
 
@@ -405,7 +405,7 @@ export const columnsProduct: IQuasarTable[] = [
     name: 'action',
     label: 'Ação',
     field: 'action',
-    align: 'left',
+    align: 'right',
   },
 ];
 
@@ -444,6 +444,6 @@ export const columnsProductLog: IQuasarTable[] = [
     name: 'action',
     label: 'Ação',
     field: '',
-    align: 'left',
+    align: 'right',
   },
 ];

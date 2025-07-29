@@ -90,3 +90,13 @@ export const deleteProductService = (
     message: string;
   };
 }> => api.delete(`${baseUrl}/${id}`);
+
+export const deleteProductVariantService = (
+  id: number,
+): Promise<{
+  status: number;
+  data: {
+    products: IProduct[];
+    message: string;
+  };
+}> => api.delete(`${baseUrl}/variant/${id}`);

@@ -100,6 +100,15 @@ const actionFilter = async (data: 'close' | IFilterProduct): Promise<void> => {
 const makeEdit = (id: number): void => {
   changeShowFormProduct(true, id);
 };
+const clearFilter = (): void => {
+  Object.assign(filter, {
+    name: '',
+    sku: '',
+    active: null,
+    category: null,
+    stockCritical: null,
+  });
+};
 
 const hasFilter = computed(() => {
   return (
@@ -172,7 +181,11 @@ const hasFilter = computed(() => {
           </q-btn>
         </div>
       </q-banner>
-      <TableProduct :filter="filterStock" @show:show-form-supplier="makeEdit" />
+      <TableProduct
+        :filter="filterStock"
+        @show:show-form-supplier="makeEdit"
+        @clear-filter="clearFilter"
+      />
     </section>
 
     <!-- Modals -->

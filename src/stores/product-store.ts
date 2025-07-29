@@ -1,6 +1,7 @@
 import {
   createProductService,
   deleteProductService,
+  deleteProductVariantService,
   getProductsFilterService,
   getProductsService,
 } from 'src/services/product-service';
@@ -136,6 +137,23 @@ export const useProductStore = defineStore('product', {
       this.setLoading(true);
       try {
         const response = await deleteProductService(id);
+        if (response.status === 200) {
+          this.clearListProduct();
+          this.setListProduct(response.data.products);
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async deleteVariant(id: number) {
+      this.setLoading(true);
+      try {
+        const response = await deleteProductVariantService(id);
         if (response.status === 200) {
           this.clearListProduct();
           this.setListProduct(response.data.products);

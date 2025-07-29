@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { columnsProduct } from 'src/utils/columns';
 import { useProductStore } from 'src/stores/product-store';
+import { formatToReal } from 'src/composables/Money';
 
 defineOptions({
   name: 'TableProduct',
@@ -19,6 +20,7 @@ const props = withDefaults(
 );
 const emit = defineEmits<{
   'show:showFormProduct': [number];
+  clearFilter: [void];
 }>();
 
 const { loadingProduct, listProduct } = storeToRefs(useProductStore());
@@ -31,8 +33,9 @@ const clear = (): void => {
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  await useProductStore().deleteProduct(productMonitoring.value ?? 0);
+  await useProductStore().deleteVariant(productMonitoring.value ?? 0);
   clear();
+  emit('clearFilter');
 };
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;
@@ -91,7 +94,7 @@ onMounted(async () => {
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" class="cursor-pointer">
+        <q-tr :props="props">
           <q-td key="name" :props="props" class="text-left">
             <q-icon
               :name="props.row.variant_active === 1 ? 'check_circle' : 'close'"
@@ -108,7 +111,7 @@ onMounted(async () => {
             {{ props.row.sku }}
           </q-td>
           <q-td key="price" :props="props" class="text-left">
-            {{ props.row.price }}
+            {{ formatToReal(props.row.price) }}
           </q-td>
           <q-td
             key="stock_quantity"
@@ -132,8 +135,8 @@ onMounted(async () => {
 
           <q-td key="action" :props="props">
             <q-btn
-              @click="startEdit(props.row.id)"
-              :disable="productMonitoring === props.row.id"
+              @click="startEdit(props.row.product_variant_id)"
+              :disable="productMonitoring === props.row.product_variant_id"
               size="sm"
               flat
               round
@@ -141,8 +144,8 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
-              @click="startExclude(props.row.id)"
-              :disable="productMonitoring === props.row.id"
+              @click="startExclude(props.row.product_variant_id)"
+              :disable="productMonitoring === props.row.product_variant_id"
               size="sm"
               flat
               round
@@ -156,8 +159,8 @@ onMounted(async () => {
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
-      title="Confirmação de exclusão de produto"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o produto permanentemente."
+      title="Confirmação de exclusão de variante"
+      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a variante do produto permanentemente."
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />
