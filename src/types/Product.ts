@@ -107,11 +107,11 @@ export interface FilterProduct {
 
 export interface Variant {
   id: number;
-  price: number;
-  cost: number | null;
-  offer: number | null;
+  price: string;
+  cost: string;
+  offer: string;
   stock_quantity: number;
-  min_stock_quantity: number;
+  min_stock_alert: number;
   sku: string | null;
   active: number;
   color_id: number | null;

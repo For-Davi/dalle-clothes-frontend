@@ -210,7 +210,7 @@ const hasFilter = computed(() => {
     <GridManage :open="showGridManage" @update:open="changeGridManage" />
     <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <FormProduct :data="showFormProduct" @update:open="changeShowFormProduct(false)" />
-    <FormVariant :data="showFormVariant" @update:open="changeShowFormProduct(false)" />
+    <FormVariant :data="showFormVariant" @update:open="changeShowFormVariant(false)" />
     <FilterProduct :open="showFilterProduct" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>

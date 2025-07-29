@@ -4,6 +4,7 @@ import { computed, reactive, ref, watch } from 'vue';
 import { useColorStore } from 'src/stores/color-store';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from 'src/stores/product-store';
+import Loading from '../shared/Loading.vue';
 
 defineOptions({
   name: 'FormVariant',
@@ -24,6 +25,7 @@ const { loadingProduct } = storeToRefs(useProductStore());
 
 const dataVariant = reactive({
   price: '',
+  offer: '',
   cost: '',
   stockQuantity: '',
   minStockAlert: '',
@@ -32,27 +34,29 @@ const dataVariant = reactive({
   description: '',
   location: '',
 });
-const selectedColor = ref<IQuasarSelect<number | null>>({
-  label: 'Nenhuma cor',
-  value: null,
-});
+const selectedColor = ref<IColor | null>(null);
 
-const getColorStyle = (hexColor: string) => {
-  return {
-    backgroundColor: hexColor || 'transparent',
-    width: '24px',
-    height: '24px',
-    border: '1px solid #ddd',
-    borderRadius: '50%',
-    display: 'inline-block',
-    verticalAlign: 'middle',
-  };
+const clear = (): void => {
+  Object.assign(dataVariant, {
+    price: '',
+    offer: '',
+    cost: '',
+    stockQuantity: '',
+    minStockAlert: '',
+    sku: '',
+    active: 1,
+    description: '',
+    location: '',
+  });
+
+  selectedColor.value = null;
 };
 const fetchColors = async () => {
   await useColorStore().getColors();
 };
 const mountData = async () => {
   const response = await useProductStore().getProductVariant(props.data.variantID!);
+  console.log('response', response);
   if (response?.status === 200) {
     const variant = response.data.variant;
 
@@ -61,18 +65,15 @@ const mountData = async () => {
       active: variant.active,
       price: variant.price,
       cost: variant.cost,
-      stockQuantity: variant.stock_quantity,
-      minStockAlert: variant.min_stock_quantity,
+      stockQuantity: String(variant.stock_quantity),
+      minStockAlert: String(variant.min_stock_alert),
       description: variant.description ?? '',
       location: variant.location ?? '',
     });
 
     if (variant.color_id) {
       const selectedItem = listColor.value.find((item) => item.id === variant.color_id);
-      selectedColor.value = {
-        label: selectedItem?.name ?? 'Nenhuma cor',
-        value: selectedItem?.id ?? null,
-      };
+      selectedColor.value = selectedItem ?? null;
     }
   }
 };
@@ -84,9 +85,13 @@ const open = computed({
 const isLoading = computed(() => {
   return loadingProduct.value || loadingColor.value;
 });
+const getlabelColor = computed((): string => {
+  return selectedColor.value !== null ? 'Cor' : 'Sem cor definida';
+});
 
 watch(open, async () => {
   if (open.value) {
+    clear();
     await fetchColors();
     await mountData();
   }
@@ -94,12 +99,16 @@ watch(open, async () => {
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2" style="width: 800px; max-width: 98vw">
+    <q-card
+      class="bg-grey-2 form-basic column justify-between"
+      style="width: 800px; max-width: 98vw"
+    >
       <q-card-section class="q-pa-none">
-        <TitlePage title="Configuração de variantes" icon="arrow_split" />
+        <TitlePage title="Configuração de variantes" icon="settings" />
       </q-card-section>
       <q-card-section class="q-pa-sm">
-        <q-form class="q-gutter-y-sm column full-width">
+        <Loading :show="isLoading" />
+        <q-form class="q-gutter-y-sm column full-width" v-show="!isLoading">
           <div class="row justify-between items-center">
             <q-input
               v-model="dataVariant.cost"
@@ -223,30 +232,14 @@ watch(open, async () => {
             outlined
             bg-color="white"
             label-color="black"
-            multiple
-            :options="listColor"
+            :options="[]"
             option-label="name"
             option-value="id"
-            label="Cores"
+            :label="getlabelColor"
+            disable
             dense
             options-selected-class="bg-green-1 text-black"
           >
-            <template v-slot:option="scope">
-              <q-item v-bind="scope.itemProps">
-                <q-item-section avatar>
-                  <q-icon :name="scope.opt.icon" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label class="row items-center q-gutter-x-sm">
-                    <div
-                      class="cursor-pointer"
-                      :style="getColorStyle(scope.opt.hex_color_code)"
-                    ></div>
-                    <div>{{ scope.opt.name }}</div>
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
           </q-select>
           <q-input
             v-model="dataVariant.description"
