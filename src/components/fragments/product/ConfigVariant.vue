@@ -21,12 +21,13 @@ const { listColor } = storeToRefs(useColorStore());
 
 const getColorStyle = (hexColor: string) => {
   return {
-    backgroundColor: hexColor,
-    width: '30px',
-    height: '20px',
-    padding: '4px',
-    border: '1px solid grey',
-    borderRadius: '5px',
+    backgroundColor: hexColor || 'transparent',
+    width: '24px',
+    height: '24px',
+    border: '1px solid #ddd',
+    borderRadius: '50%',
+    display: 'inline-block',
+    verticalAlign: 'middle',
   };
 };
 

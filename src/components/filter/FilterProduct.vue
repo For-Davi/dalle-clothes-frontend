@@ -65,8 +65,8 @@ const clear = (): void => {
 };
 const mountFilter = () => {
   Object.assign(dataProduct, {
-    name: props.filters.name,
-    sku: props.filters.sku,
+    name: props.filters.name ?? '',
+    sku: props.filters.sku ?? '',
   });
 
   const selectedCategoryItem = listCategoryProduct.value.find(
@@ -99,8 +99,8 @@ const mountFilter = () => {
 };
 const search = () => {
   const data = {
-    name: dataProduct.name,
-    sku: dataProduct.sku,
+    name: dataProduct.name.trim() !== '' ? dataProduct.name : null,
+    sku: dataProduct.sku.trim() !== '' ? dataProduct.sku : null,
     stockCritical: selectedStockCritical.value.value,
     active: selectedStatus.value.value,
     category: selectedCategory.value.value,
@@ -141,6 +141,22 @@ const optionsStatus = computed(() => {
     },
   ];
 });
+const optionsStockCritical = computed(() => {
+  return [
+    {
+      label: 'Todos',
+      value: null,
+    },
+    {
+      label: 'Apenas com estoque crítico',
+      value: 1,
+    },
+    {
+      label: 'Apenas com estoque regular',
+      value: 0,
+    },
+  ];
+});
 const isLoading = computed((): boolean => {
   return loadingCategoryProduct.value || loading.value;
 });
@@ -159,7 +175,7 @@ watch(open, async () => {
   <q-dialog v-model="open" persistent>
     <q-card class="bg-grey-2 form-basic column justify-between">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Filtro de produtos" icon="person" />
+        <TitlePage title="Filtro de produtos" icon="inventory" />
       </q-card-section>
       <q-card-section class="q-pa-sm">
         <Loading :show="isLoading" />
@@ -174,7 +190,7 @@ watch(open, async () => {
             input-class="text-black"
           >
             <template v-slot:prepend>
-              <q-icon name="person" color="black" size="20px" />
+              <q-icon name="fa-solid fa-box" color="black" size="20px" />
             </template>
           </q-input>
           <q-input
@@ -226,7 +242,7 @@ watch(open, async () => {
             outlined
             v-model="selectedStockCritical"
             label="Filtre por estoque"
-            :options="optionsStatus"
+            :options="optionsStockCritical"
             bg-color="white"
             dense
             options-dense
@@ -251,8 +267,24 @@ watch(open, async () => {
             unelevated
             no-caps
           />
-          <q-btn v-show="!isLoading" @click="clear" color="secondary" label="Limpar" size="md" unelevated no-caps />
-          <q-btn v-show="!isLoading" @click="search" color="primary" label="Filtrar" size="md" unelevated no-caps />
+          <q-btn
+            v-show="!isLoading"
+            @click="clear"
+            color="secondary"
+            label="Limpar"
+            size="md"
+            unelevated
+            no-caps
+          />
+          <q-btn
+            v-show="!isLoading"
+            @click="search"
+            color="primary"
+            label="Filtrar"
+            size="md"
+            unelevated
+            no-caps
+          />
         </div>
       </q-card-actions>
     </q-card>

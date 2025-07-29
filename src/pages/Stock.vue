@@ -103,8 +103,8 @@ const makeEdit = (id: number): void => {
 
 const hasFilter = computed(() => {
   return (
-    filter.name !== '' ||
-    filter.sku != '' ||
+    (filter.name !== '' && filter.name !== null) ||
+    (filter.sku !== '' && filter.sku !== null) ||
     filter.category != null ||
     filter.active != null ||
     filter.stockCritical != null
@@ -176,13 +176,13 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
-    <ColorManage :open="showColorManage" @update:open="changeColorManage" />
-    <GridManage :open="showGridManage" @update:open="changeGridManage" />
-    <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <CategoryProductManage
       :open="showCategoryProductManage"
       @update:open="changeCategoryProductManage"
     />
+    <ColorManage :open="showColorManage" @update:open="changeColorManage" />
+    <GridManage :open="showGridManage" @update:open="changeGridManage" />
+    <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <FormProduct :data="showFormProduct" @update:open="changeShowFormProduct(false)" />
     <FilterProduct :open="showFilterProduct" :filters="filter" @update:open="actionFilter" />
   </main>

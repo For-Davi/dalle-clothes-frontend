@@ -59,12 +59,12 @@ const getColorStyle = (hexColor: string) => {
     border: '1px solid #ddd',
     borderRadius: '50%',
     display: 'inline-block',
-    verticalAlign: 'middle'
+    verticalAlign: 'middle',
   };
 };
-const isStockCritical = (stock: number | string) : boolean => {
+const isStockCritical = (stock: number | string): boolean => {
   return Number(stock) === 0;
-}
+};
 
 onMounted(async () => {
   await fetchProducts();
@@ -98,7 +98,9 @@ onMounted(async () => {
               :color="props.row.variant_active === 1 ? 'green' : 'red'"
               size="17px"
             >
-               <q-tooltip class="bg-grey-3 text-bold text-black">{{ props.row.variant_active === 1 ? 'Ativo' : 'Inativo' }}</q-tooltip>  
+              <q-tooltip class="bg-grey-3 text-bold text-black">{{
+                props.row.variant_active === 1 ? 'Ativo' : 'Inativo'
+              }}</q-tooltip>
             </q-icon>
             {{ props.row.name }}
           </q-td>
@@ -108,7 +110,12 @@ onMounted(async () => {
           <q-td key="price" :props="props" class="text-left">
             {{ props.row.price }}
           </q-td>
-          <q-td key="stock_quantity" :props="props" class="text-left" :class="isStockCritical(props.row.stock_quantity) ? 'text-red' : ''">
+          <q-td
+            key="stock_quantity"
+            :props="props"
+            class="text-left"
+            :class="isStockCritical(props.row.stock_quantity) ? 'text-red' : ''"
+          >
             {{ props.row.stock_quantity }}
           </q-td>
           <q-td key="color" :props="props" class="text-left">
@@ -117,10 +124,12 @@ onMounted(async () => {
               class="cursor-pointer"
               :style="getColorStyle(props.row.color.hex_color_code)"
             >
-            <q-tooltip class="bg-grey-3 text-bold text-black">{{ props.row.color.name }}</q-tooltip>  
-          </div>
+              <q-tooltip class="bg-grey-3 text-bold text-black">{{
+                props.row.color.name
+              }}</q-tooltip>
+            </div>
           </q-td>
-          
+
           <q-td key="action" :props="props">
             <q-btn
               @click="startEdit(props.row.id)"
