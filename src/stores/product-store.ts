@@ -5,6 +5,7 @@ import {
   getProductsFilterService,
   getProductsService,
   getProductVariantService,
+  updateVariantService,
 } from 'src/services/product-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -69,6 +70,24 @@ export const useProductStore = defineStore('product', {
       this.setLoading(true);
       try {
         const response = await createProductService(data);
+        if (response.status === 201) {
+          this.clearListProduct();
+          this.setListProduct(response.data.products);
+          createSuccess(response.data.message);
+        }
+
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async updateVariant(data: IDataUpdateVariant) {
+      this.setLoading(true);
+      try {
+        const response = await updateVariantService(data);
         if (response.status === 201) {
           this.clearListProduct();
           this.setListProduct(response.data.products);

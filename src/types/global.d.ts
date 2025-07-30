@@ -26,6 +26,7 @@ import type {
   Variant,
   ProductModalTabs,
   DataCreateProduct,
+  DataUpdateVariant,
   Product,
   FilterProduct,
 } from './Product';
@@ -81,6 +82,7 @@ declare global {
 
   type IProductModalTabs = ProductModalTabs;
   type IDataCreateProduct = DataCreateProduct;
+  type IDataUpdateVariant = DataUpdateVariant;
 
   type IVModelProductBasic = VModelProductBasic;
   type IVModelProductAdvanced = VModelProductAdvanced;

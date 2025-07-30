@@ -84,6 +84,19 @@ export interface DataCreateProduct {
     commissionPercentage: number;
   };
 }
+export interface DataUpdateVariant {
+  id: number;
+  price: number;
+  offer: number;
+  cost: number;
+  stockQuantity: number;
+  minStockAlert: number;
+  sku: string | null;
+  active: number;
+  description: string | null;
+  location: string | null;
+  colorID: number | null;
+}
 
 export interface Product {
   product_variant_id: number;

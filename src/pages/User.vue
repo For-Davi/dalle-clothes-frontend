@@ -57,7 +57,7 @@ const actionFilter = async (data: 'close' | IFilterUser): Promise<void> => {
   }
 };
 
-const hasFilter = computed(() => {
+const hasFilter = computed((): boolean => {
   return (
     filter.name !== '' ||
     filter.email != '' ||

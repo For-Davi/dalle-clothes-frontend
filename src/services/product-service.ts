@@ -90,6 +90,16 @@ export const createProductService = (
 //     hexColorCode,
 //   });
 
+export const updateVariantService = (
+  data: IDataUpdateVariant,
+): Promise<{
+  status: number;
+  data: {
+    products: IProduct[];
+    message: string;
+  };
+}> => api.put(`${baseUrl}/variant/`, data);
+
 export const deleteProductService = (
   id: number,
 ): Promise<{

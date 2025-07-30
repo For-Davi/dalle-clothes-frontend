@@ -77,6 +77,25 @@ const mountData = async () => {
     }
   }
 };
+const update = async (): Promise<void> => {
+  const response = await useProductStore().updateVariant({
+    id: variantID.value ?? 0,
+    price: parseFloat(dataVariant.price),
+    cost: parseFloat(dataVariant.cost),
+    stockQuantity: Number(dataVariant.stockQuantity),
+    minStockAlert: Number(dataVariant.minStockAlert),
+    offer: parseFloat(dataVariant.cost),
+    sku: dataVariant.sku.trim().length === 0 ? null : dataVariant.sku,
+    active: Number(dataVariant.active),
+    description: dataVariant.description.trim().length === 0 ? null : dataVariant.description,
+    location: dataVariant.location.trim().length === 0 ? null : dataVariant.location,
+    colorID: selectedColor.value?.id ?? null,
+  });
+  if (response?.status === 200) {
+    clear();
+    emit('update:open');
+  }
+};
 
 const open = computed({
   get: () => props.data.open,
@@ -88,6 +107,7 @@ const isLoading = computed(() => {
 const getlabelColor = computed((): string => {
   return selectedColor.value !== null ? 'Cor' : 'Sem cor definida';
 });
+const variantID = computed(() => props.data.variantID);
 
 watch(open, async () => {
   if (open.value) {
@@ -280,6 +300,7 @@ watch(open, async () => {
               no-caps
             />
             <q-btn
+              @click="update"
               color="primary"
               label="Atualizar"
               size="md"

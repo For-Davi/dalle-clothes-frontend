@@ -140,6 +140,8 @@ const hasFilter = computed(() => {
       </q-banner>
       <TableSupplier :filter="filterSupplier" @show:show-form-supplier="makeEdit" />
     </section>
+
+    <!-- Modals -->
     <CategorySupplierManage
       :open="showCategorySupplierManage"
       @update:open="changeShowCategorySupplierManage"
