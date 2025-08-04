@@ -44,8 +44,12 @@ const filter = reactive<IFilterProduct>({
   stockCritical: null,
 });
 
-const changeShowFormProduct = (show: boolean): void => {
+const changeShowFormProduct = (show: boolean, productID: number | null = null): void => {
   showFormProduct.open = show;
+  showFormProduct.productID = productID;
+};
+const makeProductEdit = (productID: number) => {
+  changeShowFormProduct(true, productID);
 };
 const changeShowFormVariant = (show: boolean, variantID: number | null = null): void => {
   showFormVariant.variantID = variantID;
@@ -210,7 +214,11 @@ const hasFilter = computed(() => {
     <GridManage :open="showGridManage" @update:open="changeGridManage" />
     <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <FormProduct :data="showFormProduct" @update:open="changeShowFormProduct(false)" />
-    <FormVariant :data="showFormVariant" @update:open="changeShowFormVariant(false)" />
     <FilterProduct :open="showFilterProduct" :filters="filter" @update:open="actionFilter" />
+    <FormVariant
+      :data="showFormVariant"
+      @update:open="changeShowFormVariant(false)"
+      @update:open-form-product="makeProductEdit"
+    />
   </main>
 </template>

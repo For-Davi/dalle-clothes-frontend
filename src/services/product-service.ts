@@ -18,6 +18,15 @@ export const getProductsService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const showProductService = (
+  productID: number,
+): Promise<{
+  status: number;
+  data: {
+    product: IShowProdut;
+  };
+}> => api.get(`${baseUrl}/${productID}}`);
+
 export const getProductsFilterService = (
   filter: IFilterProduct,
 ): Promise<{

@@ -29,6 +29,7 @@ import type {
   DataUpdateVariant,
   Product,
   FilterProduct,
+  ShowProduct,
 } from './Product';
 import type { CustomFile } from './File';
 
@@ -90,6 +91,7 @@ declare global {
   type IVModelProductMedia = VModelProductMedia;
   type IProductVariant = ProductVariant;
   type IProduct = Product;
+  type IShowProdut = ShowProduct;
   type IVariant = Variant;
   type IFilterProduct = FilterProduct;
 

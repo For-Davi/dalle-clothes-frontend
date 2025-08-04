@@ -75,14 +75,15 @@ export interface DataCreateProduct {
   }[];
   images: File[];
   tags: { id: number }[];
-  advanced: {
-    active: number;
-    allowCoupon: number;
-    allowDiscount: number;
-    discountMaxPercentage: number;
-    hasCommission: number;
-    commissionPercentage: number;
-  };
+  advanced: ProductAdvanced;
+}
+export interface ProductAdvanced {
+  active: number;
+  allowCoupon: number;
+  allowDiscount: number;
+  discountMaxPercentage: number;
+  hasCommission: number;
+  commissionPercentage: number;
 }
 export interface DataUpdateVariant {
   id: number;
@@ -110,6 +111,27 @@ export interface Product {
   } | null;
 }
 
+export interface ShowProduct {
+  id: number;
+  name: string;
+  type: string;
+  active: number;
+  enterprise_id: number;
+  product_category_id: number | null;
+  description: string | null;
+  variants: Variant[];
+  tags: ITag[];
+  advanced: {
+    active: number;
+    allow_coupon: number;
+    allow_discount: number;
+    discount_max_percentage: number;
+    has_commission: number;
+    commission_percentage: number;
+  };
+  category: ICategoryProduct | null;
+}
+
 export interface FilterProduct {
   name: string | null;
   sku: string | null;
@@ -128,7 +150,9 @@ export interface Variant {
   sku: string | null;
   active: number;
   color_id: number | null;
+  color: IColor | null;
   enterprise_id: number;
   description: string | null;
   location: string | null;
+  product_id: number | null;
 }

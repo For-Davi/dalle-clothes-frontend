@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, ref, watch } from 'vue';
-import { useColorStore } from 'src/stores/color-store';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from 'src/stores/product-store';
 import Loading from '../shared/Loading.vue';
@@ -18,11 +17,12 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  'update:openFormProduct': [number];
 }>();
 
-const { listColor, loadingColor } = storeToRefs(useColorStore());
 const { loadingProduct } = storeToRefs(useProductStore());
 
+const productID = ref<number | null>(null);
 const dataVariant = reactive({
   price: '',
   offer: '',
@@ -49,14 +49,11 @@ const clear = (): void => {
     location: '',
   });
 
+  productID.value = null;
   selectedColor.value = null;
-};
-const fetchColors = async () => {
-  await useColorStore().getColors();
 };
 const mountData = async () => {
   const response = await useProductStore().getProductVariant(props.data.variantID!);
-  console.log('response', response);
   if (response?.status === 200) {
     const variant = response.data.variant;
 
@@ -72,10 +69,8 @@ const mountData = async () => {
       location: variant.location ?? '',
     });
 
-    if (variant.color_id) {
-      const selectedItem = listColor.value.find((item) => item.id === variant.color_id);
-      selectedColor.value = selectedItem ?? null;
-    }
+    selectedColor.value = variant.color_id ? variant.color : null;
+    productID.value = variant.product_id;
   }
 };
 const update = async (): Promise<void> => {
@@ -97,13 +92,17 @@ const update = async (): Promise<void> => {
     emit('update:open');
   }
 };
+const goFormProduct = (): void => {
+  emit('update:openFormProduct', productID.value ?? 0);
+  emit('update:open');
+};
 
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
 });
 const isLoading = computed(() => {
-  return loadingProduct.value || loadingColor.value;
+  return loadingProduct.value;
 });
 const getlabelColor = computed((): string => {
   return selectedColor.value !== null ? 'Cor' : 'Sem cor definida';
@@ -113,7 +112,6 @@ const variantID = computed(() => props.data.variantID);
 watch(open, async () => {
   if (open.value) {
     clear();
-    await fetchColors();
     await mountData();
   }
 });
@@ -282,6 +280,7 @@ watch(open, async () => {
         <div class="row justify-between items-center full-width">
           <div>
             <q-btn
+              @click="goFormProduct"
               color="secondary"
               label="Ir ao produto"
               size="md"

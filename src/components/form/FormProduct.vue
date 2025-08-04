@@ -59,10 +59,22 @@ const clear = (): void => {
   tab.value = 'basic';
   Object.assign(dataBasic, {
     name: '',
+    description: '',
     type: { label: 'Produto', value: 'product' },
     category: { label: 'Nenhuma selecionada', value: null },
   });
+  Object.assign(dataAdvanced, {
+    active: 1,
+    allowCoupon: 1,
+    allowDiscount: 1,
+    hasCommission: 1,
+    commissionPercentage: '5',
+    discountMaxPercentage: '10',
+  });
+  dataTags.value = [];
   dataVariant.value = [];
+  dataLog.value = [];
+  dataMedia.value = [];
   selectedGrid.value = {
     label: 'Nenhuma grade selecionada',
     value: null,
@@ -150,6 +162,39 @@ const save = async () => {
     createErrorData(check.message || 'Erro ao processar dados do produto');
   }
 };
+const mountData = async () => {
+  if (props.data.productID) {
+    const response = await useProductStore().showProduct(props.data.productID);
+    if (response?.status === 200) {
+      const product = response.data.product;
+
+      Object.assign(dataBasic, {
+        name: product.name,
+        description: product.description ?? '',
+        type: {
+          label: product.type === 'product' ? 'Produto' : 'Serviço',
+          value: product.type,
+        },
+        category: {
+          label: product.category?.name ?? 'Nenhuma selecionada',
+          value: product.category?.id ?? null,
+        },
+      });
+
+      dataTags.value = product.tags;
+      dataVariant.value = product.variants;
+
+      Object.assign(dataAdvanced, {
+        active: product.advanced.active,
+        allowCoupon: product.advanced.allow_coupon,
+        allowDiscount: product.advanced.allow_discount,
+        hasCommission: product.advanced.has_commission,
+        commissionPercentage: String(product.advanced.commission_percentage),
+        discountMaxPercentage: String(product.advanced.discount_max_percentage),
+      });
+    }
+  }
+};
 // const update = async () => {
 //   const check = checkDataTag(dataTag);
 //   if (check.status) {
@@ -194,6 +239,7 @@ watch(open, async () => {
     await fetchTags();
     await fetchColors();
     await fetchCategories();
+    await mountData();
     changeLoading(false);
   }
 });
