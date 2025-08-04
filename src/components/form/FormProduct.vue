@@ -311,36 +311,48 @@ watch(open, async () => {
         </q-tab-panels>
       </q-card-section>
       <q-card-actions align="right">
-        <div class="row justify-end items-center q-gutter-x-sm">
-          <q-btn
-            color="red"
-            label="Fechar"
-            size="md"
-            flat
-            @click="open = false"
-            unelevated
-            no-caps
-          />
-          <!-- @click="save" -->
-          <q-btn
-            v-if="productID"
-            color="primary"
-            label="Atualizar"
-            size="md"
-            :disable="loading"
-            unelevated
-            no-caps
-          />
-          <q-btn
-            v-else
-            @click="save"
-            color="primary"
-            label="Salvar"
-            size="md"
-            :disable="loading"
-            unelevated
-            no-caps
-          />
+        <div class="row justify-between items-center full-width q-gutter-x-sm">
+          <div>
+            <q-btn
+              v-if="productID"
+              color="red"
+              label="Excluir tudo"
+              size="md"
+              :disable="loading"
+              unelevated
+              no-caps
+            />
+          </div>
+          <div>
+            <q-btn
+              color="red"
+              label="Fechar"
+              size="md"
+              flat
+              @click="open = false"
+              unelevated
+              no-caps
+            />
+            <q-btn
+              v-if="productID"
+              color="primary"
+              label="Atualizar"
+              size="md"
+              :disable="loading"
+              unelevated
+              no-caps
+            />
+            <q-btn
+              v-else
+              @click="save"
+              color="primary"
+              label="Salvar"
+              size="md"
+              :disable="loading"
+              unelevated
+              no-caps
+            />
+          </div>
         </div>
       </q-card-actions>
     </q-card>
