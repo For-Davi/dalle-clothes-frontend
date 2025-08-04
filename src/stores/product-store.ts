@@ -88,7 +88,7 @@ export const useProductStore = defineStore('product', {
       this.setLoading(true);
       try {
         const response = await updateVariantService(data);
-        if (response.status === 201) {
+        if (response.status === 200) {
           this.clearListProduct();
           this.setListProduct(response.data.products);
           createSuccess(response.data.message);
