@@ -6,7 +6,7 @@ import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
 import { useCategoryTransactionStore } from 'src/stores/category-transaction-store';
 import FormCategoryTransaction from '../form/FormCategoryTransaction.vue';
-import TableCategoryProduct from '../table/TableCategoryProduct.vue';
+import TableCategoryTransaction from '../table/TableCategoryTransaction.vue';
 
 defineOptions({
   name: 'CategoryTransactionsManage',
@@ -69,7 +69,7 @@ watch(open, () => {
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingCategoryTransaction">
-          <TableCategoryProduct
+          <TableCategoryTransaction
             v-show="listCategoryTransaction.length > 0"
             @show:show-form-category-transaction="startEdit"
           />

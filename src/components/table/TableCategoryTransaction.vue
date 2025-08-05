@@ -99,7 +99,7 @@ onMounted(async () => {
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
           </q-td>
-          <q-td key="action" :props="props">
+          <q-td key="actions" :props="props">
             <q-btn
               @click="startEdit(props.row)"
               :disable="categoryMonitoring === props.row.id"
