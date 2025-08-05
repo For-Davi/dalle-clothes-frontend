@@ -447,3 +447,18 @@ export const columnsProductLog: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsCategoryTransaction: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: 'Ações',
+    field: 'actions',
+    align: 'left',
+  },
+];

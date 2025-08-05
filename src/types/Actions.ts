@@ -6,3 +6,5 @@ export type ActionStock =
   | 'transaction'
   | 'tag'
   | 'category';
+
+export type ActionsTransaction = 'history' | 'category' | 'export';

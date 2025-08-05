@@ -400,3 +400,16 @@ export const checkDataEmployee = (
 
   return { status: true };
 };
+
+export const checkDataCategoryTransaction = (data: {
+  name: string;
+}): { status: boolean; message?: string } => {
+  if (data.name.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado o nome da categoria',
+    };
+  }
+
+  return { status: true };
+};

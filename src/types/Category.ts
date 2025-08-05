@@ -9,3 +9,9 @@ export interface CategoryProduct {
   name: string;
   enterprise_id: string;
 }
+
+export interface CategoryTransaction {
+  id: number;
+  name: string;
+  enterprise_id: number;
+}

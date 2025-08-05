@@ -35,3 +35,21 @@ export const actionsStock: { label: string; icon: string; type: IActionStock }[]
     type: 'transaction',
   },
 ];
+
+export const actionsTransaction: { label: string; icon: string; type: IActionTransaction }[] = [
+  {
+    label: 'Exportar',
+    icon: 'download',
+    type: 'export',
+  },
+  {
+    label: 'Histórico',
+    icon: 'history',
+    type: 'history',
+  },
+  {
+    label: 'Categorias',
+    icon: 'category',
+    type: 'category',
+  },
+];

@@ -1,7 +1,13 @@
+import type { ActionsTransaction } from './Actions';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
 import type { FilterSupplier } from './Supplier';
-import type { CategorySupplier, CategoryProduct } from './Category';
+import type {
+  CategorySupplier,
+  CategoryProduct,
+  CategoryTransaction,
+  CategoryTransaction,
+} from './Category';
 import type { RenderAuth } from './Auth';
 import type {
   DataDepartment,
@@ -17,7 +23,7 @@ import type { FilterClient, Client } from './Client';
 import type { Color } from './Color';
 import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
-import type { ActionStock } from 'src/utils/actions';
+import type { ActionStock, ActionsTransaction } from 'src/utils/actions';
 import type { Tag } from './Tag';
 import type {
   VModelProductBasic,
@@ -54,6 +60,7 @@ declare global {
 
   type ICategorySupplier = CategorySupplier;
   type ICategoryProduct = CategoryProduct;
+  type ICategoryTransaction = CategoryTransaction;
 
   type ISupplier = Supplier;
   type IFilterSupplier = FilterSupplier;
@@ -78,6 +85,7 @@ declare global {
   type IGridItemUpdate = GridItemUpdate;
 
   type IActionStock = ActionStock;
+  type IActionTransaction = ActionsTransaction;
 
   type ITag = Tag;
 

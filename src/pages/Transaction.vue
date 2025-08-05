@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, ref, watch } from 'vue';
+import CategoryTransactionsManage from 'src/components/manage/CategoryTransactionsManage.vue';
+import { actionsTransaction } from 'src/utils/actions';
 defineOptions({
   name: 'Transaction',
 });
 
 const showInformationMovement = ref<number>(0);
 const showInformationSchedule = ref<number>(0);
+const showCategoryTransactionManage = ref<boolean>(false);
 const tab = ref<'movement' | 'schedule'>('movement');
 // const selectedDate = ref<string>('02/04/2025');
 const filterMovement = ref<string>('');
@@ -99,11 +102,31 @@ const rows = reactive([
   },
 ]);
 
+const openAction = (type: IActionStock): void => {
+  switch (type) {
+    case 'export':
+      console.log('Exportando...');
+      break;
+    case 'category':
+      changeShowCategoryTransactionManage();
+      break;
+    case 'history':
+      console.log('Exibindo histórico...');
+      break;
+    default:
+      console.warn(`Ação desconhecida: ${type}`);
+      break;
+  }
+};
+
 const setShowInformationMovement = (index: number) => {
   showInformationMovement.value = showInformationMovement.value === index + 1 ? 0 : index + 1;
 };
 const setShowInformationSchedule = (index: number) => {
   showInformationSchedule.value = showInformationSchedule.value === index + 1 ? 0 : index + 1;
+};
+const changeShowCategoryTransactionManage = () => {
+  showCategoryTransactionManage.value = !showCategoryTransactionManage.value;
 };
 
 watch(tab, () => {
@@ -123,27 +146,30 @@ watch(tab, () => {
           <q-btn
             color="white"
             text-color="black"
-            label="Exportar"
-            icon-right="download"
-            no-caps
-            class="q-mr-sm"
-          />
-          <q-btn
-            color="white"
-            text-color="black"
-            label="Categorias"
-            icon-right="category"
-            no-caps
-            class="q-mr-sm"
-          />
-          <q-btn
-            color="white"
-            text-color="black"
             label="Nova movimentação"
             icon-right="add"
             no-caps
             class="q-mr-sm"
           />
+
+          <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
+            <q-list dense>
+              <q-item
+                clickable
+                v-ripple
+                v-for="(item, index) in actionsTransaction"
+                :key="index"
+                @click="openAction(item.type)"
+              >
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon :name="item.icon" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>{{ item.label }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </div>
         <div v-else class="q-px-md">
           <q-btn
@@ -399,5 +425,12 @@ watch(tab, () => {
         </q-tab-panel>
       </q-tab-panels>
     </section>
+
+    <!-- modals -->
+
+    <CategoryTransactionsManage
+      :open="showCategoryTransactionManage"
+      @update:open="changeShowCategoryTransactionManage"
+    />
   </main>
 </template>
