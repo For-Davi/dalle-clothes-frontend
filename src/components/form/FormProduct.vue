@@ -29,6 +29,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  'show:showFormVariant': [number];
 }>();
 
 const loading = ref<boolean>(false);
@@ -216,6 +217,9 @@ const mountData = async () => {
     }
   }
 };
+const makeShowFormVariant = (id: number): void => {
+  emit('show:showFormVariant', id)
+}
 // const update = async () => {
 //   const check = checkDataTag(dataTag);
 //   if (check.status) {
@@ -309,6 +313,7 @@ watch(open, async () => {
                 v-model:listVariants="dataVariantEdit"
                 v-model:gridModel="selectedGrid"
                 :loading="loading"
+                @show:show-form-variant="makeShowFormVariant"
               />
             </q-scroll-area>
           </q-tab-panel>
