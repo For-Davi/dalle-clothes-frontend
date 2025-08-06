@@ -38,6 +38,7 @@ import type {
   ShowProduct,
 } from './Product';
 import type { CustomFile } from './File';
+import type { Log } from './Log';
 
 export {};
 
@@ -88,6 +89,8 @@ declare global {
   type IActionTransaction = ActionsTransaction;
 
   type ITag = Tag;
+
+  type ILog = Log;
 
   type IProductModalTabs = ProductModalTabs;
   type IDataCreateProduct = DataCreateProduct;

@@ -121,6 +121,7 @@ export interface ShowProduct {
   description: string | null;
   variants: Variant[];
   tags: ITag[];
+  logs: ILog[];
   advanced: {
     active: number;
     allow_coupon: number;
@@ -155,4 +156,16 @@ export interface Variant {
   description: string | null;
   location: string | null;
   product_id: number | null;
+  grid_item_id: number;
+  grid_item: {
+    id: number;
+    order: number;
+    size: string;
+    grid_group_id: number;
+    grid_group: {
+      id: number;
+      name: string;
+      active: number;
+    };
+  } | null;
 }

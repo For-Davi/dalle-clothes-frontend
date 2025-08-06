@@ -295,6 +295,33 @@ export const columnsProductVariant: IQuasarTable[] = [
   },
 ];
 
+export const columnsProductVariantEdit: IQuasarTable[] = [
+  {
+    name: 'size',
+    label: 'Tamanho',
+    field: (row) => row.grid_item?.size || '',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Ativo',
+    field: (row) => row.color || '',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
 export const columnsMountGridUpdate: IQuasarTable[] = [
   {
     name: 'order',
@@ -411,40 +438,25 @@ export const columnsProduct: IQuasarTable[] = [
 
 export const columnsProductLog: IQuasarTable[] = [
   {
-    name: 'date',
+    name: 'created_at',
     label: 'Data',
-    field: 'date',
+    field: 'created_at',
     align: 'left',
+    style: 'max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
   },
   {
-    name: 'name',
-    label: 'Nome',
-    field: 'name',
-    align: 'left',
-  },
-  {
-    name: 'email',
-    label: 'E-mail',
-    field: 'email',
-    align: 'left',
-  },
-  {
-    name: 'axecution',
+    name: 'execution',
     label: 'Execução',
     field: 'axecution',
     align: 'left',
+    style: 'max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
   },
   {
-    name: 'target',
-    label: 'Alvo',
-    field: 'target',
+    name: 'description',
+    label: 'Descrição',
+    field: 'description',
     align: 'left',
-  },
-  {
-    name: 'action',
-    label: 'Ação',
-    field: '',
-    align: 'right',
+    style: 'max-width: 100px;  text-overflow: ellipsis; white-space: wrap;',
   },
 ];
 

@@ -128,7 +128,7 @@ const listGridSelect = computed((): IQuasarSelect<number | null>[] => {
         no-caps
       />
       <TableProductVariant
-        :loading="false"
+        :loading="loading"
         v-model:listVariants="listVariants"
         @show:show-config-variant="makeConfigVariant"
       />

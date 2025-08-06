@@ -15,6 +15,7 @@ import ProductTag from '../fragments/product/ProductTag.vue';
 import ProductLog from '../fragments/product/ProductLog.vue';
 import ProductAdvanced from '../fragments/product/ProductAdvanced.vue';
 import Loading from '../shared/Loading.vue';
+import ProductVariantEdit from '../fragments/product/ProductVariantEdit.vue';
 
 defineOptions({
   name: 'FormProduct',
@@ -33,9 +34,10 @@ const emit = defineEmits<{
 const loading = ref<boolean>(false);
 const tab = ref<IProductModalTabs>('basic');
 const dataVariant = ref<IVModelProductVariant[]>([]);
+const dataVariantEdit = ref<IVariant[]>([]);
 const dataMedia = ref<File[]>([]);
 const dataTags = ref<ITag[]>([]);
-const dataLog = ref<[]>([]);
+const dataLog = ref<ILog[]>([]);
 const dataBasic = reactive<IVModelProductBasic>({
   name: '',
   description: '',
@@ -73,6 +75,7 @@ const clear = (): void => {
   });
   dataTags.value = [];
   dataVariant.value = [];
+  dataVariantEdit.value = [];
   dataLog.value = [];
   dataMedia.value = [];
   selectedGrid.value = {
@@ -168,6 +171,7 @@ const mountData = async () => {
     if (response?.status === 200) {
       const product = response.data.product;
 
+      // Dados básicos do produto
       Object.assign(dataBasic, {
         name: product.name,
         description: product.description ?? '',
@@ -181,9 +185,26 @@ const mountData = async () => {
         },
       });
 
+      // Tags do produto
       dataTags.value = product.tags;
-      dataVariant.value = product.variants;
 
+      // Variantes do produto
+      dataVariantEdit.value = product.variants;
+      selectedGrid.value =
+        product.variants.length > 0
+          ? {
+              label: product.variants[0].grid_item?.grid_group.name ?? '',
+              value: product.variants[0].grid_item?.grid_group_id ?? 0,
+            }
+          : {
+              label: 'Nenhuma grade selecionada',
+              value: null,
+            };
+
+      // Logs do produto
+      dataLog.value = product.logs;
+
+      // Configurações avançadas do produto
       Object.assign(dataAdvanced, {
         active: product.advanced.active,
         allowCoupon: product.advanced.allow_coupon,
@@ -259,12 +280,12 @@ watch(open, async () => {
       </q-card-section>
       <q-card-section class="q-pa-sm">
         <q-tabs v-model="tab" inline-label class="bg-grey-3 text-primary" align="left">
-          <q-tab name="basic" icon="fa-solid fa-box" label="Básico" no-caps />
-          <q-tab name="variant" icon="list_alt" label="Variantes" no-caps />
-          <q-tab name="media" icon="perm_media" label="Galeria" no-caps />
-          <q-tab name="tag" icon="tag" label="Tags" no-caps />
-          <q-tab name="advanced" icon="settings" label="Avançado" no-caps />
-          <q-tab name="log" icon="history" label="Logs" no-caps :disable="!productID" />
+          <q-tab name="basic" icon="fa-solid fa-box" label="Básico" no-caps :disable="loading" />
+          <q-tab name="variant" icon="list_alt" label="Variantes" no-caps :disable="loading" />
+          <q-tab name="media" icon="perm_media" label="Galeria" no-caps :disable="loading" />
+          <q-tab name="tag" icon="tag" label="Tags" no-caps :disable="loading" />
+          <q-tab name="advanced" icon="settings" label="Avançado" no-caps :disable="loading" />
+          <q-tab name="log" icon="history" label="Logs" no-caps :disable="!productID || loading" />
         </q-tabs>
         <q-tab-panels v-model="tab" animated class="bg-grey-2">
           <q-tab-panel name="basic" class="q-px-none">
@@ -277,10 +298,17 @@ watch(open, async () => {
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
               <Loading :show="loading" />
               <ProductVariant
+                v-if="!props.data.productID"
                 v-model:listVariants="dataVariant"
                 v-model:gridModel="selectedGrid"
                 :loading="loading"
                 :gridGroupId="selectedGrid.value"
+              />
+              <ProductVariantEdit
+                v-else
+                v-model:listVariants="dataVariantEdit"
+                v-model:gridModel="selectedGrid"
+                :loading="loading"
               />
             </q-scroll-area>
           </q-tab-panel>
@@ -316,7 +344,7 @@ watch(open, async () => {
             <q-btn
               v-if="productID"
               color="red"
-              label="Excluir tudo"
+              label="Excluir produto"
               size="md"
               :disable="loading"
               unelevated

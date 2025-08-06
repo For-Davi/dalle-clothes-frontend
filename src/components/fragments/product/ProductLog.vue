@@ -8,7 +8,7 @@ defineOptions({
 
 const props = defineProps<{
   loading: boolean;
-  listLogs: [];
+  listLogs: ILog[];
 }>();
 </script>
 <template>

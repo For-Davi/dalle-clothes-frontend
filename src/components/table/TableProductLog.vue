@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { columnsProductLog } from 'src/utils/columns';
+import { formatToBrazilianDate } from 'src/composables/FormatData';
 
 defineOptions({
   name: 'TableProductLog',
@@ -7,11 +8,8 @@ defineOptions({
 
 const props = defineProps<{
   loading: boolean;
-  listLog: [];
+  listLog: ILog[];
 }>();
-// const emit = defineEmits<{
-//   'show:showDetailsLog': [number];
-// }>();
 </script>
 <template>
   <section style="min-height: 300px">
@@ -24,7 +22,7 @@ const props = defineProps<{
       row-key="index"
       no-data-label="Nenhum registro para mostrar"
       virtual-scroll
-      :rows-per-page-options="[10]"
+      :rows-per-page-options="[5]"
       style="height: 460px"
       bordered
       flat
@@ -43,25 +41,14 @@ const props = defineProps<{
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="date" :props="props" class="text-left">
-            {{ props.row.date }}
+          <q-td key="created_at" :props="props" class="text-left">
+            {{ formatToBrazilianDate(props.row.created_at) }}
           </q-td>
-          <q-td key="name" :props="props" class="text-left">
-            {{ props.row.name }}
-          </q-td>
-          <q-td key="email" :props="props" class="text-left">
-            {{ props.row.email }}
-          </q-td>
-          <q-td key="execution" :props="props" class="text-left">
+          <q-td key="execution" :props="props" class="text-left capitalize">
             {{ props.row.execution }}
           </q-td>
-          <q-td key="target" :props="props" class="text-left">
-            {{ props.row.target }}
-          </q-td>
-          <q-td key="action" :props="props">
-            <q-btn size="sm" flat round color="black" icon="visibility">
-              <q-tooltip>Detalhes</q-tooltip>
-            </q-btn>
+          <q-td key="description" :props="props" class="text-left">
+            {{ props.row.description }}
           </q-td>
         </q-tr>
       </template>
