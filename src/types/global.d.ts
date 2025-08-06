@@ -39,6 +39,7 @@ import type {
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
+import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting';
 
 export {};
 
@@ -107,4 +108,8 @@ declare global {
   type IFilterProduct = FilterProduct;
 
   type ICustomFile = CustomFile;
+
+  type ISettingModalTabs = SettingModalTabs;
+  type ISettingAppearance = SettingAppearance;
+  type IAppearance = Appearance;
 }

@@ -413,3 +413,9 @@ export const checkDataCategoryTransaction = (data: {
 
   return { status: true };
 };
+
+export const checkDataAppearance = (
+  data: ISettingAppearance,
+): { status: boolean; message?: string } => {
+  return { status: true };
+};
