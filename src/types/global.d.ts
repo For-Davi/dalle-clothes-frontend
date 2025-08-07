@@ -40,6 +40,7 @@ import type {
 import type { CustomFile } from './File';
 import type { Log } from './Log';
 import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting';
+import type { ProfilePassword, ProfileData } from './Profile';
 
 export {};
 
@@ -112,4 +113,7 @@ declare global {
   type ISettingModalTabs = SettingModalTabs;
   type ISettingAppearance = SettingAppearance;
   type IAppearance = Appearance;
+
+  type IProfileData = ProfileData;
+  type IProfilePassword = ProfilePassword
 }
