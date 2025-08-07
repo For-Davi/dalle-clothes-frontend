@@ -34,7 +34,6 @@ const dataAppearance = reactive({
 
 const update = async () => {
   const check = checkDataAppearance(dataAppearance);
-
   if (check.status) {
     await useSettingsStore().updateAppearanceSetting({
       navbarColorDefault: dataAppearance.navbarColorDefault,
@@ -135,7 +134,6 @@ watch(
             style="width: 200px"
             outlined
             dense
-            :disable="dataAppearance.navbarColorDefault === 1"
             label="Código da cor"
           >
             <template v-slot:append>
@@ -158,8 +156,8 @@ watch(
             class="q-mr-sm"
           >
             <div class="column">
-              <span class="text-bold text-body2"> Ícones do navbar </span>
-              <span> Utilizar a cor padrão para ícones do navbar </span>
+              <span class="text-bold text-body2"> Ícones da navbar </span>
+              <span> Utilizar a cor padrão para ícones da navbar </span>
             </div>
           </q-toggle>
           <q-input
@@ -170,7 +168,6 @@ watch(
             style="width: 200px"
             outlined
             dense
-            :disable="dataAppearance.navbarIconColorDefault === 1"
             label="Código da cor"
           >
             <template v-slot:append>
@@ -195,7 +192,7 @@ watch(
             class="q-mr-sm"
           >
             <div class="column">
-              <span class="text-bold text-body2"> Itens não selecionados </span>
+              <span class="text-bold text-body2"> Menu lateral - Itens não selecionados </span>
               <span>
                 Utilizar a cor padrão para fundo dos itens não selecionados no menu lateral
               </span>
@@ -209,7 +206,6 @@ watch(
             style="width: 200px"
             outlined
             dense
-            :disable="dataAppearance.sideMenuColorDefaultNotSelectedItem === 1"
             label="Código da cor"
           >
             <template v-slot:append>
@@ -232,7 +228,7 @@ watch(
             class="q-mr-sm"
           >
             <div class="column">
-              <span class="text-bold text-body2"> Ícones não selecionados </span>
+              <span class="text-bold text-body2"> Menu lateral - Ícones não selecionados </span>
               <span> Utilizar a cor padrão para ícones não selecionados do menu lateral. </span>
             </div>
           </q-toggle>
@@ -244,7 +240,6 @@ watch(
             style="width: 200px"
             outlined
             dense
-            :disable="dataAppearance.sideMenuColorDefaultNotSelectedIcon === 1"
             label="Código da cor"
           >
             <template v-slot:append>
@@ -268,7 +263,7 @@ watch(
             class="q-mr-sm"
           >
             <div class="column">
-              <span class="text-bold text-body2"> Ícone selecionado </span>
+              <span class="text-bold text-body2"> Menu lateral - Ícone selecionado </span>
               <span> Utilizar a cor padrão para ícone selecionado no menu lateral </span>
             </div>
           </q-toggle>
@@ -280,7 +275,6 @@ watch(
             style="width: 200px"
             outlined
             dense
-            :disable="dataAppearance.sideMenuColorDefaultSelectedIcon === 1"
             label="Código da cor"
           >
             <template v-slot:append>
@@ -303,7 +297,7 @@ watch(
             class="q-mr-sm"
           >
             <div class="column">
-              <span class="text-bold text-body2"> Item selecionado </span>
+              <span class="text-bold text-body2"> Menu lateral - Item selecionado </span>
               <span> Utilizar a cor padrão para fundo do item selecionado no menu lateral </span>
             </div>
           </q-toggle>
@@ -315,7 +309,6 @@ watch(
             style="width: 200px"
             outlined
             dense
-            :disable="dataAppearance.sideMenuColorDefaultSelectedItem === 1"
             label="Código da cor"
           >
             <template v-slot:append>

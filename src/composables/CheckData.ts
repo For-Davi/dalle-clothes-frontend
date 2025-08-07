@@ -414,8 +414,72 @@ export const checkDataCategoryTransaction = (data: {
   return { status: true };
 };
 
-export const checkDataAppearance = (
-  data: ISettingAppearance,
-): { status: boolean; message?: string } => {
+export const checkDataAppearance = (data: {
+  navbarColorDefault: number;
+  navbarIconColorDefault: number;
+  sideMenuColorDefaultNotSelectedItem: number;
+  sideMenuColorDefaultSelectedItem: number;
+  sideMenuColorDefaultNotSelectedIcon: number;
+  sideMenuColorDefaultSelectedIcon: number;
+  navbarColorCode: string;
+  navbarIconColorCode: string;
+  sideMenuColorCodeNotSelectedItem: string;
+  sideMenuColorCodeSelectedItem: string;
+  sideMenuColorCodeNotSelectedIcon: string;
+  sideMenuColorCodeSelectedIcon: string;
+}): { status: boolean; message?: string } => {
+  if (data.navbarColorCode.trim().length > 0 && data.navbarColorCode.trim().length !== 7) {
+    return {
+      status: false,
+      message: 'O código hexadecimal deve ter 7 caractéres em fundo de navbar',
+    };
+  }
+  if (data.navbarIconColorCode.trim().length > 0 && data.navbarIconColorCode.trim().length !== 7) {
+    return {
+      status: false,
+      message: 'O código hexadecimal deve ter 7 caractéres em ícone de navbar',
+    };
+  }
+  if (
+    data.sideMenuColorCodeSelectedItem.trim().length > 0 &&
+    data.sideMenuColorCodeSelectedItem.trim().length !== 7
+  ) {
+    return {
+      status: false,
+      message:
+        'O código hexadecimal deve ter 7 caractéres em fundo de item no menu lateral selecionado',
+    };
+  }
+  if (
+    data.sideMenuColorCodeSelectedIcon.trim().length > 0 &&
+    data.sideMenuColorCodeSelectedIcon.trim().length !== 7
+  ) {
+    return {
+      status: false,
+      message:
+        'O código hexadecimal deve ter 7 caractéres em ícone de item no menu lateral selecionado',
+    };
+  }
+  if (
+    data.sideMenuColorCodeNotSelectedItem.trim().length > 0 &&
+    data.sideMenuColorCodeNotSelectedItem.trim().length !== 7
+  ) {
+    return {
+      status: false,
+      message:
+        'O código hexadecimal deve ter 7 caractéres em fundo de item no menu lateral não selecionado',
+    };
+  }
+  if (
+    data.sideMenuColorCodeNotSelectedIcon.trim().length > 0 &&
+    data.sideMenuColorCodeNotSelectedIcon.trim().length !== 7
+  ) {
+    return {
+      status: false,
+      message:
+        'O código hexadecimal deve ter 7 caractéres em ícone de item no menu lateral não selecionado',
+    };
+  }
+
   return { status: true };
 };

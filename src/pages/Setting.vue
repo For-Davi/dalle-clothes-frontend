@@ -14,7 +14,7 @@ const tab = ref<ISettingModalTabs>('appearance');
   <main class="q-pa-lg">
     <section>
       <TitlePage title="Configurações" icon="settings" />
-      <q-tabs v-model="tab" inline-label class="bg-grey-3 text-primary" align="left">
+      <q-tabs v-model="tab" inline-label class="bg-grey-2 text-primary" align="left">
         <q-tab name="appearance" icon="design_services" label="Aparência" no-caps />
         <q-tab name="system" icon="build" label="Sistema" no-caps />
       </q-tabs>
