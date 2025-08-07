@@ -15,7 +15,7 @@ const tab = ref<ISettingModalTabs>('appearance');
     <section>
       <TitlePage title="Configurações" icon="settings" />
       <q-tabs v-model="tab" inline-label class="bg-grey-3 text-primary" align="left">
-        <q-tab name="appearance" icon="colorize" label="Aparência" no-caps />
+        <q-tab name="appearance" icon="design_services" label="Aparência" no-caps />
         <q-tab name="system" icon="build" label="Sistema" no-caps />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
@@ -23,9 +23,7 @@ const tab = ref<ISettingModalTabs>('appearance');
           <SettingAppearance :tab="tab" />
         </q-tab-panel>
         <q-tab-panel name="system" class="q-px-none">
-          <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-            <SettingSystem />
-          </q-scroll-area>
+          <SettingSystem />
         </q-tab-panel>
       </q-tab-panels>
     </section>

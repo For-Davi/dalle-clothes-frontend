@@ -5,6 +5,7 @@ import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
 import { checkDataAppearance } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
+import Loading from 'src/components/shared/Loading.vue';
 
 defineOptions({
   name: 'SettingAppearance',
@@ -19,14 +20,12 @@ const { loadingSetting, appearanceSetting } = storeToRefs(useSettingsStore());
 const dataAppearance = reactive({
   navbarColorDefault: 1 as number,
   navbarIconColorDefault: 1 as number,
-  sideMenuColorDefault: 1 as number,
   sideMenuColorDefaultNotSelectedItem: 1 as number,
   sideMenuColorDefaultSelectedItem: 1 as number,
   sideMenuColorDefaultNotSelectedIcon: 1 as number,
   sideMenuColorDefaultSelectedIcon: 1 as number,
   navbarColorCode: '' as string,
   navbarIconColorCode: '' as string,
-  sideMenuColorCode: '' as string,
   sideMenuColorCodeNotSelectedItem: '' as string,
   sideMenuColorCodeSelectedItem: '' as string,
   sideMenuColorCodeNotSelectedIcon: '' as string,
@@ -40,7 +39,6 @@ const update = async () => {
     await useSettingsStore().updateAppearanceSetting({
       navbarColorDefault: dataAppearance.navbarColorDefault,
       navbarIconColorDefault: dataAppearance.navbarIconColorDefault,
-      sideMenuColorDefault: dataAppearance.sideMenuColorDefault,
       sideMenuColorDefaultNotSelectedItem: dataAppearance.sideMenuColorDefaultNotSelectedItem,
       sideMenuColorDefaultSelectedItem: dataAppearance.sideMenuColorDefaultSelectedItem,
       sideMenuColorDefaultNotSelectedIcon: dataAppearance.sideMenuColorDefaultNotSelectedIcon,
@@ -50,10 +48,6 @@ const update = async () => {
       navbarIconColorCode:
         dataAppearance.navbarIconColorCode.trim().length > 0
           ? dataAppearance.navbarIconColorCode
-          : null,
-      sideMenuColorCode:
-        dataAppearance.sideMenuColorCode.trim().length > 0
-          ? dataAppearance.sideMenuColorCode
           : null,
       sideMenuColorCodeNotSelectedItem:
         dataAppearance.sideMenuColorCodeNotSelectedItem.trim().length > 0
@@ -81,7 +75,6 @@ const mountData = () => {
   Object.assign(dataAppearance, {
     navbarColorDefault: appearanceSetting.value.navbar_color_default,
     navbarIconColorDefault: appearanceSetting.value.navbar_icon_color_default,
-    sideMenuColorDefault: appearanceSetting.value.side_menu_color_default,
     sideMenuColorDefaultNotSelectedItem:
       appearanceSetting.value.side_menu_color_default_not_selected_item,
     sideMenuColorDefaultSelectedItem: appearanceSetting.value.side_menu_color_default_selected_item,
@@ -90,7 +83,6 @@ const mountData = () => {
     sideMenuColorDefaultSelectedIcon: appearanceSetting.value.side_menu_color_default_selected_icon,
     navbarColorCode: appearanceSetting.value.navbar_color_code ?? '',
     navbarIconColorCode: appearanceSetting.value.navbar_icon_color_code ?? '',
-    sideMenuColorCode: appearanceSetting.value.side_menu_color_code ?? '',
     sideMenuColorCodeNotSelectedItem:
       appearanceSetting.value.side_menu_color_code_not_selected_item ?? '',
     sideMenuColorCodeSelectedItem: appearanceSetting.value.side_menu_color_code_selected_item ?? '',
@@ -112,12 +104,14 @@ watch(
 );
 </script>
 <template>
-  <q-card class="bg-grey-1 column justify-between" bordered flat>
+  <q-card class="bg-grey-1 column justify-between" bordered flat style="min-height: 400px">
     <q-card-section>
-      <TitlePage title="Configurações de aparência" icon="colorize" />
+      <TitlePage title="Configurações de aparência" icon="design_services" />
     </q-card-section>
-    <q-card-section>
+    <Loading :show="loadingSetting" />
+    <q-card-section v-show="!loadingSetting">
       <q-form class="q-gutter-y-sm column">
+        <!-- Navbar -->
         <div>
           <q-toggle
             v-model="dataAppearance.navbarColorDefault"
@@ -130,7 +124,7 @@ watch(
             <div class="column">
               <span class="text-bold text-body2"> Navbar </span>
 
-              <span> Utilizar a cor padrão do navbar. </span>
+              <span>Utilizar a cor padrão para fundo da navbar</span>
             </div>
           </q-toggle>
           <q-input
@@ -142,7 +136,7 @@ watch(
             outlined
             dense
             :disable="dataAppearance.navbarColorDefault === 1"
-            label="Código da cor do Navbar"
+            label="Código da cor"
           >
             <template v-slot:append>
               <q-icon name="colorize" class="cursor-pointer">
@@ -165,7 +159,7 @@ watch(
           >
             <div class="column">
               <span class="text-bold text-body2"> Ícones do navbar </span>
-              <span> Utilizar a cor padrão dos ícones do navbar. </span>
+              <span> Utilizar a cor padrão para ícones do navbar </span>
             </div>
           </q-toggle>
           <q-input
@@ -177,7 +171,7 @@ watch(
             outlined
             dense
             :disable="dataAppearance.navbarIconColorDefault === 1"
-            label="Código da cor do Navbar"
+            label="Código da cor"
           >
             <template v-slot:append>
               <q-icon name="colorize" class="cursor-pointer">
@@ -189,9 +183,10 @@ watch(
           </q-input>
         </div>
         <q-separator />
+        <!-- Menu lateral não selecionado -->
         <div class="q-mt-md">
           <q-toggle
-            v-model="dataAppearance.sideMenuColorDefault"
+            v-model="dataAppearance.sideMenuColorDefaultNotSelectedItem"
             checked-icon="check"
             color="green"
             unchecked-icon="clear"
@@ -200,25 +195,27 @@ watch(
             class="q-mr-sm"
           >
             <div class="column">
-              <span class="text-bold text-body2"> Menu lateral </span>
-              <span> Utilizar a cor padrão do menu lateral. </span>
+              <span class="text-bold text-body2"> Itens não selecionados </span>
+              <span>
+                Utilizar a cor padrão para fundo dos itens não selecionados no menu lateral
+              </span>
             </div>
           </q-toggle>
           <q-input
-            v-model="dataAppearance.sideMenuColorCode"
+            v-model="dataAppearance.sideMenuColorCodeNotSelectedItem"
             bg-color="white"
             label-color="black"
             input-class="text-black"
             style="width: 200px"
             outlined
             dense
-            :disable="dataAppearance.sideMenuColorDefault === 1"
-            label="Código da cor do Navbar"
+            :disable="dataAppearance.sideMenuColorDefaultNotSelectedItem === 1"
+            label="Código da cor"
           >
             <template v-slot:append>
               <q-icon name="colorize" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.sideMenuColorCode" no-header />
+                  <q-color v-model="dataAppearance.sideMenuColorCodeNotSelectedItem" no-header />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -236,7 +233,7 @@ watch(
           >
             <div class="column">
               <span class="text-bold text-body2"> Ícones não selecionados </span>
-              <span> Utilizar a cor padrão dos ícones do não selecionados do menu lateral. </span>
+              <span> Utilizar a cor padrão para ícones não selecionados do menu lateral. </span>
             </div>
           </q-toggle>
           <q-input
@@ -248,7 +245,7 @@ watch(
             outlined
             dense
             :disable="dataAppearance.sideMenuColorDefaultNotSelectedIcon === 1"
-            label="Código da cor do Navbar"
+            label="Código da cor"
           >
             <template v-slot:append>
               <q-icon name="colorize" class="cursor-pointer">
@@ -259,6 +256,7 @@ watch(
             </template>
           </q-input>
         </div>
+        <!-- Menu lateral selecionado -->
         <div class="q-mt-md">
           <q-toggle
             v-model="dataAppearance.sideMenuColorDefaultSelectedIcon"
@@ -270,8 +268,8 @@ watch(
             class="q-mr-sm"
           >
             <div class="column">
-              <span class="text-bold text-body2"> Ícones selecionados </span>
-              <span> Utilizar a cor padrão dos ícones selecionados do menu lateral. </span>
+              <span class="text-bold text-body2"> Ícone selecionado </span>
+              <span> Utilizar a cor padrão para ícone selecionado no menu lateral </span>
             </div>
           </q-toggle>
           <q-input
@@ -283,48 +281,12 @@ watch(
             outlined
             dense
             :disable="dataAppearance.sideMenuColorDefaultSelectedIcon === 1"
-            label="Código da cor do Navbar"
+            label="Código da cor"
           >
             <template v-slot:append>
               <q-icon name="colorize" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-color v-model="dataAppearance.sideMenuColorCodeSelectedIcon" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-        <div class="q-mt-md">
-          <q-toggle
-            v-model="dataAppearance.sideMenuColorDefaultNotSelectedItem"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-            class="q-mr-sm"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Itens não selecionados </span>
-              <span> Utilizar a cor padrão dos itens não selecionados no menu lateral. </span>
-            </div>
-          </q-toggle>
-
-          <q-input
-            v-model="dataAppearance.sideMenuColorCodeNotSelectedItem"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            :disable="dataAppearance.sideMenuColorDefaultNotSelectedItem === 1"
-            label="Código da cor do Navbar"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.sideMenuColorCodeNotSelectedItem" no-header />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -341,11 +303,10 @@ watch(
             class="q-mr-sm"
           >
             <div class="column">
-              <span class="text-bold text-body2"> Itens selecionados </span>
-              <span> Utilizar a cor padrão dos itens selecionados no menu lateral. </span>
+              <span class="text-bold text-body2"> Item selecionado </span>
+              <span> Utilizar a cor padrão para fundo do item selecionado no menu lateral </span>
             </div>
           </q-toggle>
-
           <q-input
             v-model="dataAppearance.sideMenuColorCodeSelectedItem"
             bg-color="white"
@@ -355,7 +316,7 @@ watch(
             outlined
             dense
             :disable="dataAppearance.sideMenuColorDefaultSelectedItem === 1"
-            label="Código da cor do Navbar"
+            label="Código da cor"
           >
             <template v-slot:append>
               <q-icon name="colorize" class="cursor-pointer">
@@ -368,8 +329,7 @@ watch(
         </div>
       </q-form>
     </q-card-section>
-
-    <q-card-actions align="right">
+    <q-card-actions align="right" v-show="!loadingSetting">
       <div class="row justify-end items-center q-gutter-x-sm">
         <q-btn
           @click="update"
