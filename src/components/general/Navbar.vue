@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import UserOptions from './UserOptions.vue';
-// import FormFeedback from '../forms/FormFeedback.vue';
-// import Inbox from '../general/Inbox.vue';
+import { useSettingsStore } from 'src/stores/setting-store';
+import { storeToRefs } from 'pinia';
 
 defineOptions({
   name: 'Navbar',
@@ -15,58 +15,71 @@ const emit = defineEmits<{
   'update:changeOpenMenu': [void];
 }>();
 
+const { appearanceSetting } = storeToRefs(useSettingsStore());
+
 const showFormFedback = ref<boolean>(false);
 const showInbox = ref<boolean>(false);
 
 const openFormFeedback = (): void => {
   showFormFedback.value = true;
 };
-// const closeFormFeedback = (): void => {
-//   showFormFedback.value = false;
-// };
 const openInbox = (): void => {
   showInbox.value = true;
 };
-// const closeInbox = (): void => {
-//   showInbox.value = false;
-// };
+
+const getBackgroundNavbar = computed(() => {
+  return appearanceSetting.value.navbar_color_default === 0 &&
+    appearanceSetting.value.navbar_color_code
+    ? appearanceSetting.value.navbar_color_code
+    : undefined;
+});
+const getColorIconNavbar = computed(() => {
+  return appearanceSetting.value.navbar_icon_color_default === 0 &&
+    appearanceSetting.value.navbar_icon_color_code
+    ? appearanceSetting.value.navbar_icon_color_code
+    : undefined;
+});
 </script>
 <template>
-  <nav>
+  <nav :style="getBackgroundNavbar ? { backgroundColor: getBackgroundNavbar } : undefined">
     <q-toolbar class="row items-center justify-between">
       <div class="row items-center q-gutter-x-sm">
-        <q-btn @click="emit('update:changeOpenMenu')" flat icon-right="menu" rounded />
-        <!-- <img
-          v-show="!$q.screen.lt.md"
-          @click="$router.push({ name: 'admin-feed' })"
-          class="cursor-pointer hover hidden-md"
-          src="/logo/4.png"
-          width="120px"
-        /> -->
+        <q-btn
+          :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
+          @click="emit('update:changeOpenMenu')"
+          flat
+          icon-right="menu"
+          rounded
+        />
       </div>
       <div class="row justify-end">
         <div v-if="!$q.screen.lt.md">
-          <!-- <q-btn
-            label="Carlos Davi"
-            flat
-            color="red"
-            icon-right="holiday_village"
-            rounded
-          >
-            <q-tooltip> Modo espectador ativado </q-tooltip>
-          </q-btn> -->
           <q-btn
             @click="emit('update:openEmailInfo')"
             flat
             icon-right="fa-solid fa-headset"
             rounded
+            :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
           >
             <q-tooltip> Entrar em contato </q-tooltip>
           </q-btn>
-          <q-btn @click="openFormFeedback" flat icon-right="chat" rounded>
+          <q-btn
+            @click="openFormFeedback"
+            :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
+            flat
+            icon-right="chat"
+            rounded
+          >
             <q-tooltip> Enviar sugestão </q-tooltip>
           </q-btn>
-          <q-btn @click="openInbox" flat icon-right="notifications" rounded class="q-mr-md">
+          <q-btn
+            @click="openInbox"
+            flat
+            icon-right="notifications"
+            rounded
+            class="q-mr-md"
+            :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
+          >
             <q-tooltip> Notificações </q-tooltip>
             <q-badge color="black" rounded floating :label="0" />
           </q-btn>
@@ -78,6 +91,7 @@ const openInbox = (): void => {
             class="q-pa-none q-px-md q-mr-sm text-black"
             ref="dropdown"
             dropdown-icon="info"
+            :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
           >
             <q-list>
               <q-item clickable v-ripple @click="emit('update:openEmailInfo')">
@@ -113,7 +127,5 @@ const openInbox = (): void => {
         />
       </div>
     </q-toolbar>
-    <!-- <FormFeedback :open="showFormFedback" @update:open="closeFormFeedback" />
-    <Inbox :open="showInbox" @update:open="closeInbox" /> -->
   </nav>
 </template>

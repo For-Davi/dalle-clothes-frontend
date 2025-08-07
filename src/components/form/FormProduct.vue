@@ -218,8 +218,8 @@ const mountData = async () => {
   }
 };
 const makeShowFormVariant = (id: number): void => {
-  emit('show:showFormVariant', id)
-}
+  emit('show:showFormVariant', id);
+};
 // const update = async () => {
 //   const check = checkDataTag(dataTag);
 //   if (check.status) {

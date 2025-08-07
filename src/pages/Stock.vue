@@ -126,10 +126,10 @@ const clearFilter = (): void => {
 
   filterStock.value = '';
 };
-const makeShowFormVariant = (id: number):void => {
-  changeShowFormProduct(false)
+const makeShowFormVariant = (id: number): void => {
+  changeShowFormProduct(false);
   changeShowFormVariant(true, id);
-}
+};
 
 const hasFilter = computed(() => {
   return (
@@ -217,7 +217,11 @@ const hasFilter = computed(() => {
     <ColorManage :open="showColorManage" @update:open="changeColorManage" />
     <GridManage :open="showGridManage" @update:open="changeGridManage" />
     <TagManage :open="showTagManage" @update:open="changeTagManage" />
-    <FormProduct :data="showFormProduct" @update:open="changeShowFormProduct(false)" @show:show-form-variant="makeShowFormVariant"/>
+    <FormProduct
+      :data="showFormProduct"
+      @update:open="changeShowFormProduct(false)"
+      @show:show-form-variant="makeShowFormVariant"
+    />
     <FilterProduct :open="showFilterProduct" :filters="filter" @update:open="actionFilter" />
     <FormVariant
       :data="showFormVariant"
