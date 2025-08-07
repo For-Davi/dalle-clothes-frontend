@@ -3,6 +3,7 @@ import { reactive, watch } from 'vue'
 import { checkDataUpdateProfile } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { useAuthStore } from 'src/stores/auth-store';
+import { storeToRefs } from 'pinia';
 
 const emit = defineEmits<({
   'updateForData:mode': [void];
@@ -14,18 +15,16 @@ const props = defineProps<{
   type: 'data' | 'password',
 }>()
 
+const { user } = storeToRefs(useAuthStore())
+
 const dataProfile = reactive({
   name: '' as string,
   email: '' as string
 })
 
 const mountData =  () => {
-  const user = useAuthStore().user
-
-  if(user) {
-    dataProfile.name = user.name
-    dataProfile.email = user.email
-  }
+    dataProfile.name = user.value?.name ?? ''
+    dataProfile.email = user.value?.email ?? ''
 }
 
 const update = async () => {
