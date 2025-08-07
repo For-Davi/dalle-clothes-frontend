@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
+import { useSettingsStore } from 'src/stores/setting-store';
 
 defineOptions({
   name: 'UserOptions',
@@ -14,6 +15,7 @@ const emit = defineEmits<{
 }>();
 
 const { user } = storeToRefs(useAuthStore());
+const { appearanceSetting } = storeToRefs(useSettingsStore());
 
 const router = useRouter();
 const dropdown = ref<{ hide: () => void } | null>(null);
@@ -27,21 +29,28 @@ const logout = async () => {
   useAuthStore().setUser(null);
   await router.push({ name: 'auth' });
 };
+
+const getColorIconNavbar = computed(() => {
+  return appearanceSetting.value.navbar_icon_color_default === 0 &&
+    appearanceSetting.value.navbar_icon_color_code
+    ? appearanceSetting.value.navbar_icon_color_code
+    : undefined;
+});
 </script>
 
 <template>
-  <q-btn-dropdown
-    rounded
-    flat
-    class="q-pa-none q-px-md q-mr-sm text-white"
-    :label="user?.name"
-    ref="dropdown"
-  >
+  <q-btn-dropdown rounded flat class="q-pa-none q-px-md q-mr-sm" ref="dropdown">
     <template v-slot:label>
       <div class="row items-center no-wrap q-pa-none">
         <q-avatar class="q-ml-sm">
           <q-img size="sm" src="/images/user.png" />
         </q-avatar>
+        <span
+          class="q-ml-sm"
+          :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
+        >
+          {{ user?.name }}
+        </span>
       </div>
     </template>
     <q-list>

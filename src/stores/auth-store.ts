@@ -11,6 +11,7 @@ import {
   // updateUserPasswordService,
 } from 'src/services/auth-service';
 import router from 'src/router';
+import { useSettingsStore } from './setting-store';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -41,7 +42,9 @@ export const useAuthStore = defineStore('auth', {
           this.enterpriseName = response.data.enterprise_name;
 
           await router.push({ name: 'dashboard' });
+          await useSettingsStore().getAppearanceSetting();
         }
+        return response;
       } catch (error) {
         createError(error);
       } finally {

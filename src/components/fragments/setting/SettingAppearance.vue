@@ -217,7 +217,7 @@ watch(
             </template>
           </q-input>
         </div>
-        <div class="q-mt-md">
+        <div class="q-my-md">
           <q-toggle
             v-model="dataAppearance.sideMenuColorDefaultNotSelectedIcon"
             checked-icon="check"
@@ -251,41 +251,8 @@ watch(
             </template>
           </q-input>
         </div>
+        <q-separator />
         <!-- Menu lateral selecionado -->
-        <div class="q-mt-md">
-          <q-toggle
-            v-model="dataAppearance.sideMenuColorDefaultSelectedIcon"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-            class="q-mr-sm"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Menu lateral - Ícone selecionado </span>
-              <span> Utilizar a cor padrão para ícone selecionado no menu lateral </span>
-            </div>
-          </q-toggle>
-          <q-input
-            v-model="dataAppearance.sideMenuColorCodeSelectedIcon"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            label="Código da cor"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.sideMenuColorCodeSelectedIcon" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
         <div class="q-mt-md">
           <q-toggle
             v-model="dataAppearance.sideMenuColorDefaultSelectedItem"
@@ -315,6 +282,40 @@ watch(
               <q-icon name="colorize" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-color v-model="dataAppearance.sideMenuColorCodeSelectedItem" no-header />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div class="q-mt-md">
+          <q-toggle
+            v-model="dataAppearance.sideMenuColorDefaultSelectedIcon"
+            checked-icon="check"
+            color="green"
+            unchecked-icon="clear"
+            :true-value="1"
+            :false-value="0"
+            class="q-mr-sm"
+          >
+            <div class="column">
+              <span class="text-bold text-body2"> Menu lateral - Ícone selecionado </span>
+              <span> Utilizar a cor padrão para ícone selecionado no menu lateral </span>
+            </div>
+          </q-toggle>
+          <q-input
+            v-model="dataAppearance.sideMenuColorCodeSelectedIcon"
+            bg-color="white"
+            label-color="black"
+            input-class="text-black"
+            style="width: 200px"
+            outlined
+            dense
+            label="Código da cor"
+          >
+            <template v-slot:append>
+              <q-icon name="colorize" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-color v-model="dataAppearance.sideMenuColorCodeSelectedIcon" no-header />
                 </q-popup-proxy>
               </q-icon>
             </template>
