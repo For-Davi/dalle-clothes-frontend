@@ -474,3 +474,18 @@ export const columnsCategoryTransaction: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsTypesAccount: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: 'Ações',
+    field: 'actions',
+    align: 'right',
+  },
+];

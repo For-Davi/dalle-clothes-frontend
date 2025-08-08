@@ -47,6 +47,7 @@ import type { Log } from './Log';
 import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting';
 import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
+import type { TypesAccount } from './Types';
 
 export {};
 
@@ -130,4 +131,6 @@ declare global {
 
   type IProfileData = ProfileData;
   type IProfilePassword = ProfilePassword;
+
+  type ITypesAccount = TypesAccount;
 }
