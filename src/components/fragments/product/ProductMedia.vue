@@ -12,8 +12,8 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
-const listMedia = defineModel<File[]>('listMedia', { required: true });
-const list = ref<File[]>([]);
+const listMedia = defineModel<IMediaItem[]>('listMedia', { required: true });
+const list = ref<IMediaItem[]>([]);
 const mediaUploadRef = ref<InstanceType<typeof MediaUpload>>();
 
 const clearUploader = () => {

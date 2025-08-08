@@ -12,7 +12,7 @@ const props = defineProps<{
   loading: boolean;
 }>();
 
-const listMedia = defineModel<File[]>('listMedia', { required: true });
+const listMedia = defineModel<IMediaItem[]>('listMedia', { required: true });
 
 const showConfirmAction = ref<boolean>(false);
 const mediaIndexMonitoring = ref<number | null>(null);
@@ -35,11 +35,16 @@ const openConfirmAction = (index: number): void => {
 const startExclude = (index: number) => {
   openConfirmAction(index);
 };
-const getImageUrl = (file: File | ICustomFile) => {
+const getImageUrl = (file: File | ICustomFile | IImage): string => {
+  if ('url' in file && file.url) {
+    return file.url;
+  }
+
   if (file instanceof File) {
     return URL.createObjectURL(file);
   }
-  return file.img || '';
+
+  return 'img' in file && file.img ? file.img : '';
 };
 const formatFileSize = (bytes: number): string => {
   if (bytes < 1024) return `${bytes} B`;

@@ -16,6 +16,7 @@ import ProductLog from '../fragments/product/ProductLog.vue';
 import ProductAdvanced from '../fragments/product/ProductAdvanced.vue';
 import Loading from '../shared/Loading.vue';
 import ProductVariantEdit from '../fragments/product/ProductVariantEdit.vue';
+import { storeToRefs } from 'pinia';
 
 defineOptions({
   name: 'FormProduct',
@@ -32,11 +33,13 @@ const emit = defineEmits<{
   'show:showFormVariant': [number];
 }>();
 
+const { loadingProduct } = storeToRefs(useProductStore());
+
 const loading = ref<boolean>(false);
 const tab = ref<IProductModalTabs>('basic');
 const dataVariant = ref<IVModelProductVariant[]>([]);
 const dataVariantEdit = ref<IVariant[]>([]);
-const dataMedia = ref<File[]>([]);
+const dataMedia = ref<IMediaItem[]>([]);
 const dataTags = ref<ITag[]>([]);
 const dataLog = ref<ILog[]>([]);
 const dataBasic = reactive<IVModelProductBasic>({
@@ -189,6 +192,9 @@ const mountData = async () => {
       // Tags do produto
       dataTags.value = product.tags;
 
+      // Imagens do produto
+      dataMedia.value = product.images;
+
       // Variantes do produto
       dataVariantEdit.value = product.variants;
       selectedGrid.value =
@@ -220,40 +226,58 @@ const mountData = async () => {
 const makeShowFormVariant = (id: number): void => {
   emit('show:showFormVariant', id);
 };
-// const update = async () => {
-//   const check = checkDataTag(dataTag);
-//   if (check.status) {
-//     const response = await useTagStore().updateTag(
-//       tagID.value ?? 0,
-//       dataTag.name,
-//       dataTag.active === true ? 1 : 0,
-//     );
-//     if (response?.status === 200) {
-//       clear();
-//       emit('update:open');
-//     }
-//   } else {
-//     createErrorData(check.message || 'Erro ao processar dados da tag');
-//   }
-// };
-// const checkDataEdit = () => {
-//   if (props.data.tag) {
-//     Object.assign(dataTag, {
-//       name: props.data.tag.name,
-//       active: props.data.tag.active === 1 ? true : false,
-//     });
-//   }
-// };
-// const transformUppercaseName = (): void => {
-//   if (dataTag.name.trim().length > 0) {
-//     dataTag.name = dataTag.name.toUpperCase();
-//   }
-// };
+const updateBasic = async () => {
+  const check = checkDataProduct(dataBasic);
+  if (check.status) {
+    const response = await useProductStore().updateProductBasic({
+      name: dataBasic.name,
+      description: dataBasic.description.trim().length === 0 ? null : dataBasic.description,
+      type: dataBasic.type.value,
+      category: dataBasic.category.value ?? null,
+    });
+    if (response?.status === 200) {
+      Object.assign(dataBasic, {
+        name: response.data.basic.name,
+        description: response.data.basic.description ?? '',
+        type: {
+          label: response.data.basic.type === 'product' ? 'Produto' : 'Serviço',
+          value: response.data.basic.type,
+        },
+        category: {
+          label: response.data.basic.category?.name ?? 'Nenhuma selecionada',
+          value: response.data.basic.category?.id ?? null,
+        },
+      });
+    }
+  } else {
+    createErrorData(check.message || 'Erro ao atualizar dados do produto');
+  }
+};
+const update = async (): Promise<void> => {
+  if (tab.value === 'basic') {
+    await updateBasic();
+  }
+};
 
+const getLabelBtn = computed((): string => {
+  switch (tab.value) {
+    case 'advanced':
+      return 'Atualizar dados avançados';
+    case 'basic':
+      return 'Atualizar dados básicos';
+    case 'media':
+      return 'Atualizar galeria';
+    default:
+      return '';
+  }
+});
 const productID = computed(() => props.data.productID);
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
+});
+const showBtnUpdate = computed((): boolean => {
+  return !!productID.value && tab.value !== 'variant' && tab.value !== 'log';
 });
 
 watch(open, async () => {
@@ -351,7 +375,7 @@ watch(open, async () => {
               color="red"
               label="Excluir produto"
               size="md"
-              :disable="loading"
+              :disable="loading || loadingProduct"
               unelevated
               no-caps
             />
@@ -367,21 +391,24 @@ watch(open, async () => {
               no-caps
             />
             <q-btn
-              v-if="productID"
+              @click="update"
+              v-show="showBtnUpdate"
               color="primary"
-              label="Atualizar"
+              :label="getLabelBtn"
               size="md"
               :disable="loading"
+              :loading="loadingProduct"
               unelevated
               no-caps
             />
             <q-btn
-              v-else
+              v-show="!productID"
               @click="save"
               color="primary"
               label="Salvar"
               size="md"
               :disable="loading"
+              :loading="loadingProduct"
               unelevated
               no-caps
             />

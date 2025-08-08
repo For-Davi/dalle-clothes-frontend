@@ -36,10 +36,13 @@ import type {
   Product,
   FilterProduct,
   ShowProduct,
+  ProductBasic,
+  DataProductBasic,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
 import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting';
+import type { Image, MediaItem } from './Image';
 
 export {};
 
@@ -106,8 +109,13 @@ declare global {
   type IShowProdut = ShowProduct;
   type IVariant = Variant;
   type IFilterProduct = FilterProduct;
+  type IProductBasic = ProductBasic;
+  type IDataProductBasic = DataProductBasic;
 
   type ICustomFile = CustomFile;
+
+  type IImage = Image;
+  type IMediaItem = MediaItem;
 
   type ISettingModalTabs = SettingModalTabs;
   type ISettingAppearance = SettingAppearance;

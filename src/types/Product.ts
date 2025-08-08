@@ -73,7 +73,7 @@ export interface DataCreateProduct {
     gridItemID: number | null;
     colors: { id: number }[];
   }[];
-  images: File[];
+  images: IMediaItem[];
   tags: { id: number }[];
   advanced: ProductAdvanced;
 }
@@ -122,6 +122,7 @@ export interface ShowProduct {
   variants: Variant[];
   tags: ITag[];
   logs: ILog[];
+  images: IImage[];
   advanced: {
     active: number;
     allow_coupon: number;
@@ -168,4 +169,17 @@ export interface Variant {
       active: number;
     };
   } | null;
+}
+
+export interface DataProductBasic {
+  name: string;
+  description: string | null;
+  type: string;
+  category: number | null;
+}
+export interface ProductBasic {
+  name: string;
+  description: string | null;
+  type: string;
+  category: ICategoryProduct | null;
 }

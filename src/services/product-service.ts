@@ -80,24 +80,15 @@ export const createProductService = (
   });
 };
 
-// export const updateColorService = (
-//   id: number,
-//   name: string,
-//   active: number,
-//   hexColorCode: string | null,
-// ): Promise<{
-//   status: number;
-//   data: {
-//     colors: IColor[];
-//     message: string;
-//   };
-// }> =>
-//   api.put(`${baseUrl}/`, {
-//     id,
-//     name,
-//     active,
-//     hexColorCode,
-//   });
+export const updateProductBasicService = (
+  data: IDataProductBasic,
+): Promise<{
+  status: number;
+  data: {
+    basic: IProductBasic;
+    message: string;
+  };
+}> => api.put(`${baseUrl}/basic/`, data);
 
 export const updateVariantService = (
   data: IDataUpdateVariant,

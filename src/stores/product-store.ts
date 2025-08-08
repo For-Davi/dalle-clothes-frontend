@@ -6,6 +6,7 @@ import {
   getProductsService,
   getProductVariantService,
   showProductService,
+  updateProductBasicService,
   updateVariantService,
 } from 'src/services/product-service';
 import { defineStore } from 'pinia';
@@ -92,6 +93,22 @@ export const useProductStore = defineStore('product', {
         if (response.status === 200) {
           this.clearListProduct();
           this.setListProduct(response.data.products);
+          createSuccess(response.data.message);
+        }
+
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async updateProductBasic(data: IDataProductBasic) {
+      try {
+        this.setLoading(true);
+        const response = await updateProductBasicService(data);
+        if (response.status === 200) {
           createSuccess(response.data.message);
         }
 
