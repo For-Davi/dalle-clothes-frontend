@@ -267,6 +267,8 @@ const getLabelBtn = computed((): string => {
       return 'Atualizar dados básicos';
     case 'media':
       return 'Atualizar galeria';
+    case 'tag':
+      return 'Atualizar tags';
     default:
       return '';
   }
