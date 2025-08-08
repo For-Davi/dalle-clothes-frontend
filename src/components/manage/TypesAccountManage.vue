@@ -71,7 +71,7 @@ watch(open, () => {
         <div v-show="!loadingTypesAccount">
           <TableTypesAccount
             v-show="listTypesAccount.length > 0"
-            @show:show-form-category-transaction="startEdit"
+            @show:show-form-type-account="startEdit"
           />
           <Empty
             v-show="listTypesAccount.length <= 0 && !loadingTypesAccount"
