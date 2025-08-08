@@ -10,7 +10,7 @@ defineOptions({
   name: 'UserOptions',
 });
 
-const showFormProfile = ref<boolean>(false)
+const showFormProfile = ref<boolean>(false);
 
 // const emit = defineEmits<{
 //   'update:openFormPerfil': [void];
@@ -25,12 +25,12 @@ const dropdown = ref<{ hide: () => void } | null>(null);
 
 const openPerfil = () => {
   dropdown.value?.hide();
-  changeShowFormProfile()
+  changeShowFormProfile();
 };
 
 const changeShowFormProfile = () => {
-  showFormProfile.value = !showFormProfile.value
-}
+  showFormProfile.value = !showFormProfile.value;
+};
 
 const logout = async () => {
   useAuthStore().setToken(null);
@@ -44,7 +44,6 @@ const getColorIconNavbar = computed(() => {
     ? appearanceSetting.value.navbar_icon_color_code
     : undefined;
 });
-
 </script>
 
 <template>
@@ -82,8 +81,7 @@ const getColorIconNavbar = computed(() => {
     </q-list>
   </q-btn-dropdown>
 
-
   <!-- Modals -->
 
-   <FormProfile :open="showFormProfile" @update:open="changeShowFormProfile()"/>
+  <FormProfile :open="showFormProfile" @update:open="changeShowFormProfile()" />
 </template>

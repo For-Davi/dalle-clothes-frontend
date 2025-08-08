@@ -115,5 +115,5 @@ declare global {
   type IAppearance = Appearance;
 
   type IProfileData = ProfileData;
-  type IProfilePassword = ProfilePassword
+  type IProfilePassword = ProfilePassword;
 }

@@ -1,50 +1,49 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { reactive, watch } from 'vue';
 import { checkDataUpdateProfile } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 
-const emit = defineEmits<({
-  'updateForData:mode': [void];
-  'updateForPassword:mode': [void];
+const emit = defineEmits<{
+  'updateMode': ['data'];
   'update:open': [void];
-})>()
+}>();
 
 const props = defineProps<{
-  type: 'data' | 'password',
-}>()
+  type: 'data' | 'password';
+}>();
 
-const { user, loadingAuth } = storeToRefs(useAuthStore())
+const { user, loadingAuth } = storeToRefs(useAuthStore());
 
 const dataProfile = reactive({
   name: '' as string,
-  email: '' as string
-})
+  email: '' as string,
+});
 
-const mountData =  () => {
-    dataProfile.name = user.value?.name ?? ''
-    dataProfile.email = user.value?.email ?? ''
-}
+const mountData = () => {
+  dataProfile.name = user.value?.name ?? '';
+  dataProfile.email = user.value?.email ?? '';
+};
 
 const update = async () => {
-  const check = checkDataUpdateProfile(dataProfile)
+  const check = checkDataUpdateProfile(dataProfile);
   if (check.status) {
-   const response =  await useAuthStore().updateUserData(dataProfile.name, dataProfile.email)
+    const response = await useAuthStore().updateUserData(dataProfile.name, dataProfile.email);
 
-     if(response?.status === 200) {
-        emit('update:open')
-      }
+    if (response?.status === 200) {
+      emit('update:open');
+    }
   } else {
-    createErrorData(check.message || 'Erro ao fazer atualização')
+    createErrorData(check.message || 'Erro ao fazer atualização');
   }
-}
+};
 
 watch(
   () => props.type,
-   (type) => {
+  (type) => {
     if (type === 'data') {
-       mountData();
+      mountData();
     }
   },
   { immediate: true },
@@ -93,7 +92,7 @@ watch(
         <q-btn
           color="grey-8"
           label="Alterar senha"
-          @click="emit('updateForPassword:mode')"
+          @click="emit('updateMode', 'data')"
           size="md"
           unelevated
           no-caps

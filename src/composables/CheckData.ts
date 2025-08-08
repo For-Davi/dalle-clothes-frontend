@@ -484,48 +484,44 @@ export const checkDataAppearance = (data: {
   return { status: true };
 };
 
-export const checkDataUpdateProfile = (
-  data: {
-    name: string
-    email: string,
+export const checkDataUpdateProfile = (data: {
+  name: string;
+  email: string;
+}): { status: boolean; message?: string } => {
+  if (data.name.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome do usuário' };
   }
-): { status:boolean, message?:string } => {
-  if(data.name.trim() === '') {
-    return { status:false, message:'Deve ser informado o nome do usuário'}
+  if (data.name.trim().length < 2) {
+    return { status: false, message: 'O nome de usuário deve conter pelo menos 3 caracteres' };
   }
-  if(data.name.trim().length < 2) {
-    return { status:false, message:'O nome de usuário deve conter pelo menos 3 caracteres'}
-  }
-  if(data.email.trim() === '') {
-     return { status:false, message:'Deve ser informado o email do usuário'}
+  if (data.email.trim() === '') {
+    return { status: false, message: 'Deve ser informado o email do usuário' };
   }
   if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email.trim())) {
     return { status: false, message: 'Informe um e-mail válido' };
   }
-  return { status:true }
-}
+  return { status: true };
+};
 
-export const checkPasswordUpdateProfile = (
-  data:{
-    actualPassword:string,
-    newPassword:string,
-    confirmNewPassword:string
+export const checkPasswordUpdateProfile = (data: {
+  actualPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}): { status: boolean; message?: string } => {
+  if (data.actualPassword.trim() === '') {
+    return { status: false, message: 'Deve ser informado a senha atual' };
   }
-): { status: boolean, message?:string} => {
-  if(data.actualPassword.trim() === '') {
-      return { status:false, message:'Deve ser informado a senha atual'}
+  if (data.actualPassword.trim().length < 8) {
+    return { status: false, message: 'A senha atual deve conter pelo menos 8 caracteres' };
   }
-   if(data.actualPassword.trim().length < 8) {
-      return { status:false, message:'A senha atual deve conter pelo menos 8 caracteres'}
+  if (data.newPassword.trim() === '') {
+    return { status: false, message: 'Deve ser informado a nova senha' };
   }
-  if(data.newPassword.trim() === '') {
-      return { status:false, message:'Deve ser informado a nova senha'}
+  if (data.newPassword.trim().length < 8) {
+    return { status: false, message: 'A nova senha deve conter pelo menos 8 caracteres' };
   }
-   if(data.newPassword.trim().length < 8) {
-      return { status:false, message:'A nova senha deve conter pelo menos 8 caracteres'}
+  if (data.confirmNewPassword.trim() !== data.newPassword.trim()) {
+    return { status: false, message: 'As novas senhas não coincidem' };
   }
-  if(data.confirmNewPassword.trim() !== data.newPassword.trim()) {
-      return { status:false, message:'As novas senhas não coincidem'}
-  }
-  return { status: true }
-}
+  return { status: true };
+};
