@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
+import TypesAccountManage from 'src/components/manage/TypesAccountManage.vue';
 import { reactive, ref } from 'vue';
 defineOptions({
   name: 'Account',
 });
 
+const showTypeAccountManage = ref<boolean>(false)
 const filterAccount = ref<string>('');
 const columnsAccount = reactive<IQuasarTable[]>([
   {
@@ -76,6 +78,10 @@ const rows = [
     active: 1,
   },
 ];
+
+const changeShowTypeAccountManage = () => {
+  showTypeAccountManage.value = !showTypeAccountManage.value
+}
 </script>
 <template>
   <main class="q-pa-lg">
@@ -88,7 +94,16 @@ const rows = [
           label="Nova conta"
           icon-right="add"
           no-caps
-          class="q-mr-sm"
+        />
+
+        <q-btn
+        color="white"
+        text-color="black"
+        label="Tipos"
+        no-caps
+        icon-right="credit_card "
+         class="q-ml-sm"
+         @click="changeShowTypeAccountManage"
         />
       </div>
     </section>
@@ -162,5 +177,9 @@ const rows = [
         </template>
       </q-table>
     </section>
+
+
+    <!-- Modals -->
+    <TypesAccountManage :open="showTypeAccountManage" @update:open="changeShowTypeAccountManage"/>
   </main>
 </template>
