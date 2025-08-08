@@ -230,6 +230,7 @@ const updateBasic = async () => {
   const check = checkDataProduct(dataBasic);
   if (check.status) {
     const response = await useProductStore().updateProductBasic({
+      id: productID.value ?? 0 ,
       name: dataBasic.name,
       description: dataBasic.description.trim().length === 0 ? null : dataBasic.description,
       type: dataBasic.type.value,
@@ -281,6 +282,9 @@ const open = computed({
 const showBtnUpdate = computed((): boolean => {
   return !!productID.value && tab.value !== 'variant' && tab.value !== 'log';
 });
+const isLoading = computed(():boolean => {
+  return loading.value || loadingProduct.value
+})
 
 watch(open, async () => {
   if (open.value) {
@@ -300,7 +304,7 @@ watch(open, async () => {
     <q-card
       class="bg-grey-2 column justify-between"
       style="width: 900px; max-width: 98vw"
-      :style="loading ? 'min-height: 350px' : ''"
+      :style="isLoading ? 'min-height: 350px' : ''"
     >
       <q-card-section class="q-pa-none">
         <TitlePage
@@ -310,61 +314,61 @@ watch(open, async () => {
       </q-card-section>
       <q-card-section class="q-pa-sm">
         <q-tabs v-model="tab" inline-label class="bg-grey-3 text-primary" align="left">
-          <q-tab name="basic" icon="fa-solid fa-box" label="Básico" no-caps :disable="loading" />
-          <q-tab name="variant" icon="list_alt" label="Variantes" no-caps :disable="loading" />
-          <q-tab name="media" icon="perm_media" label="Galeria" no-caps :disable="loading" />
-          <q-tab name="tag" icon="tag" label="Tags" no-caps :disable="loading" />
-          <q-tab name="advanced" icon="settings" label="Avançado" no-caps :disable="loading" />
-          <q-tab name="log" icon="history" label="Logs" no-caps :disable="!productID || loading" />
+          <q-tab name="basic" icon="fa-solid fa-box" label="Básico" no-caps :disable="isLoading" />
+          <q-tab name="variant" icon="list_alt" label="Variantes" no-caps :disable="isLoading" />
+          <q-tab name="media" icon="perm_media" label="Galeria" no-caps :disable="isLoading" />
+          <q-tab name="tag" icon="tag" label="Tags" no-caps :disable="isLoading" />
+          <q-tab name="advanced" icon="settings" label="Avançado" no-caps :disable="isLoading" />
+          <q-tab name="log" icon="history" label="Logs" no-caps :disable="!productID || isLoading" />
         </q-tabs>
         <q-tab-panels v-model="tab" animated class="bg-grey-2">
           <q-tab-panel name="basic" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <Loading :show="loading" />
-              <ProductBasic v-model="dataBasic" :loading="loading" />
+              <Loading :show="isLoading" />
+              <ProductBasic v-model="dataBasic" :loading="isLoading" />
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="variant" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <Loading :show="loading" />
+              <Loading :show="isLoading" />
               <ProductVariant
                 v-if="!props.data.productID"
                 v-model:listVariants="dataVariant"
                 v-model:gridModel="selectedGrid"
-                :loading="loading"
+                :loading="isLoading"
                 :gridGroupId="selectedGrid.value"
               />
               <ProductVariantEdit
                 v-else
                 v-model:listVariants="dataVariantEdit"
                 v-model:gridModel="selectedGrid"
-                :loading="loading"
+                :loading="isLoading"
                 @show:show-form-variant="makeShowFormVariant"
               />
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="media" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <Loading :show="loading" />
-              <ProductMedia v-model:listMedia="dataMedia" :loading="loading" />
+              <Loading :show="isLoading" />
+              <ProductMedia v-model:listMedia="dataMedia" :loading="isLoading" />
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="tag" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <Loading :show="loading" />
-              <ProductTag v-model:listTag="dataTags" :loading="loading" />
+              <Loading :show="isLoading" />
+              <ProductTag v-model:listTag="dataTags" :loading="isLoading" />
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="advanced" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <Loading :show="loading" />
-              <ProductAdvanced v-model:dataAdvanced="dataAdvanced" :loading="loading" />
+              <Loading :show="isLoading" />
+              <ProductAdvanced v-model:dataAdvanced="dataAdvanced" :loading="isLoading" />
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="log" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
-              <Loading :show="loading" />
-              <ProductLog :loading="loading" :list-logs="dataLog" />
+              <Loading :show="isLoading" />
+              <ProductLog :loading="isLoading" :list-logs="dataLog" />
             </q-scroll-area>
           </q-tab-panel>
         </q-tab-panels>
@@ -377,7 +381,7 @@ watch(open, async () => {
               color="red"
               label="Excluir produto"
               size="md"
-              :disable="loading || loadingProduct"
+              :disable="isLoading"
               unelevated
               no-caps
             />

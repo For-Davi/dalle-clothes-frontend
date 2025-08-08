@@ -172,6 +172,7 @@ export interface Variant {
 }
 
 export interface DataProductBasic {
+  id: number;
   name: string;
   description: string | null;
   type: string;
