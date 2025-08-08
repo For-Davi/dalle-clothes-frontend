@@ -7,8 +7,8 @@ import {
   doResetService,
   doVerifyService,
   setNewPasswordService,
-  // updateUserDataService,
-  // updateUserPasswordService,
+  updateUserDataService,
+  updateUserPasswordService,
 } from 'src/services/auth-service';
 import router from 'src/router';
 import { useSettingsStore } from './setting-store';
@@ -121,46 +121,38 @@ export const useAuthStore = defineStore('auth', {
         this.setLoading(false);
       }
     },
-    // async updateUserData(
-    //   name: string,
-    //   email: string,
-    //   phone: string | null,
-    //   department: string | null
-    // ) {
-    //   try {
-    //     this.setLoading(true);
-    //     const response = await updateUserDataService(
-    //       name,
-    //       email,
-    //       phone,
-    //       department
-    //     );
-    //     if (response.status === 200) {
-    //       this.setUser(response.data.user);
+    async updateUserData(name: string, email: string) {
+      try {
+        this.setLoading(true);
+        const response = await updateUserDataService(name, email);
+        if (response.status === 200) {
+          this.setUser(response.data.user);
+          createSuccess(response.data.message);
+        }
 
-    //       createSuccess(response.data.message)
-    //     }
-    //   } catch (error) {
-    //     createError(error);
-    //   } finally {
-    //     this.setLoading(false);
-    //   }
-    // },
-    // async updateUserPassword(passwordActual: string, passwordNew: string) {
-    //   try {
-    //     this.setLoading(true);
-    //     const response = await updateUserPasswordService(
-    //       passwordActual,
-    //       passwordNew
-    //     );
-    //     if (response.status === 200) {
-    //       createSuccess(response.data.message)
-    //     }
-    //   } catch (error) {
-    //     createError(error);
-    //   } finally {
-    //     this.setLoading(false);
-    //   }
-    // },
+        return response;
+      } catch (error) {
+        createError(error);
+        return null;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+
+    async updateUserPassword(passwordActual: string, passwordNew: string) {
+      try {
+        this.setLoading(true);
+        const response = await updateUserPasswordService(passwordActual, passwordNew);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return null;
+      } finally {
+        this.setLoading(false);
+      }
+    },
   },
 });

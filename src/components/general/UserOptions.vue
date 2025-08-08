@@ -3,16 +3,19 @@ import { useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
+import FormProfile from '../form/FormProfile.vue';
 import { useSettingsStore } from 'src/stores/setting-store';
 
 defineOptions({
   name: 'UserOptions',
 });
 
-const emit = defineEmits<{
-  'update:openFormPerfil': [void];
-  'update:openFormEnterprise': [void];
-}>();
+const showFormProfile = ref<boolean>(false);
+
+// const emit = defineEmits<{
+//   'update:openFormPerfil': [void];
+//   'update:openFormEnterprise': [void];
+// }>();
 
 const { user } = storeToRefs(useAuthStore());
 const { appearanceSetting } = storeToRefs(useSettingsStore());
@@ -22,8 +25,13 @@ const dropdown = ref<{ hide: () => void } | null>(null);
 
 const openPerfil = () => {
   dropdown.value?.hide();
-  emit('update:openFormPerfil');
+  changeShowFormProfile();
 };
+
+const changeShowFormProfile = () => {
+  showFormProfile.value = !showFormProfile.value;
+};
+
 const logout = async () => {
   useAuthStore().setToken(null);
   useAuthStore().setUser(null);
@@ -72,4 +80,8 @@ const getColorIconNavbar = computed(() => {
       </q-item>
     </q-list>
   </q-btn-dropdown>
+
+  <!-- Modals -->
+
+  <FormProfile :open="showFormProfile" @update:open="changeShowFormProfile()" />
 </template>

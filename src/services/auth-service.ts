@@ -1,6 +1,6 @@
 import { api } from 'src/boot/axios';
 
-// const baseUrl = 'user';
+const baseUrl = 'user';
 
 export const doLoginService = (
   email: string,
@@ -62,24 +62,27 @@ export const doRegisterService = (
     nameEnterprise,
   });
 
-// export const updateUserDataService = (
-//   name: string,
-//   email: string,
-//   department: string | null
-// ): Promise<{
-//   status: number;
-//   data: {
-//     user: User;
-//     message: string;
-//   };
-// }> => api.put(`${baseUrl}/data`, { name, email,  department });
+export const updateUserDataService = (
+  name: string,
+  email: string,
+): Promise<{
+  status: number;
+  data: {
+    user: IUser;
+    message: string;
+  };
+}> => api.put(`${baseUrl}/update-data`, { name, email });
 
-// export const updateUserPasswordService = (
-//   passwordActual: string,
-//   passwordNew: string
-// ): Promise<{
-//   status: number;
-//   data: {
-//     message: string;
-//   };
-// }> => api.put(`${baseUrl}/password`, { passwordActual, passwordNew });
+export const updateUserPasswordService = (
+  actualPassword: string,
+  newPassword: string,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+  };
+}> =>
+  api.put(`${baseUrl}/update-password`, {
+    currentPassword: actualPassword,
+    newPassword: newPassword,
+  });
