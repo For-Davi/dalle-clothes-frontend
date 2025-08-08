@@ -81,4 +81,4 @@ export const doRegisterService = (
    data: {
      message: string;
    };
- }> => api.put(`${baseUrl}/update-password`, { actualPassword, newPassword });
+ }> => api.put(`${baseUrl}/update-password`, { current_password: actualPassword, new_password: newPassword });

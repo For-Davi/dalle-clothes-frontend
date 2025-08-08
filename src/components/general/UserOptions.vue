@@ -44,6 +44,7 @@ const getColorIconNavbar = computed(() => {
     ? appearanceSetting.value.navbar_icon_color_code
     : undefined;
 });
+
 </script>
 
 <template>

@@ -135,8 +135,11 @@ export const useAuthStore = defineStore('auth', {
            this.setUser(response.data.user);
            createSuccess(response.data.message)
          }
+
+         return response
         } catch (error) {
          createError(error);
+         return null
         } finally {
          this.setLoading(false);
        }
@@ -153,8 +156,10 @@ export const useAuthStore = defineStore('auth', {
          if (response.status === 200) {
            createSuccess(response.data.message)
          }
+         return response
        } catch (error) {
          createError(error);
+         return null
        } finally {
          this.setLoading(false);
        }

@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue'
 import { checkPasswordUpdateProfile } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { useAuthStore } from 'src/stores/auth-store';
+import { storeToRefs } from 'pinia';
 
 const emit = defineEmits<({
    'updateForData:mode': [void];
@@ -20,10 +21,16 @@ const isPwd = ref<boolean>(false)
 const isPwd2 = ref<boolean>(false)
 const isPwd3 = ref<boolean>(false)
 
+const { loadingAuth } = storeToRefs(useAuthStore())
+
 const update = async () => {
     const check = checkPasswordUpdateProfile(dataPassword)
     if(check.status) {
-       await useAuthStore().updateUserPassword(dataPassword.actualPassword, dataPassword.newPassword)
+      const response = await useAuthStore().updateUserPassword(dataPassword.actualPassword, dataPassword.newPassword)
+
+      if(response?.status === 200) {
+        emit('update:open')
+      }
     } else {
         createErrorData(check.message || 'Erro ao fazer atualização')
     }
@@ -106,6 +113,7 @@ const update = async () => {
             color="primary"
             label="Salvar"
             @click="update"
+            :loading="loadingAuth"
             size="md"
             unelevated
             no-caps

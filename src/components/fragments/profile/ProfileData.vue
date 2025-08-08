@@ -15,7 +15,7 @@ const props = defineProps<{
   type: 'data' | 'password',
 }>()
 
-const { user } = storeToRefs(useAuthStore())
+const { user, loadingAuth } = storeToRefs(useAuthStore())
 
 const dataProfile = reactive({
   name: '' as string,
@@ -30,7 +30,11 @@ const mountData =  () => {
 const update = async () => {
   const check = checkDataUpdateProfile(dataProfile)
   if (check.status) {
-    await useAuthStore().updateUserData(dataProfile.name, dataProfile.email)
+   const response =  await useAuthStore().updateUserData(dataProfile.name, dataProfile.email)
+
+     if(response?.status === 200) {
+        emit('update:open')
+      }
   } else {
     createErrorData(check.message || 'Erro ao fazer atualização')
   }
@@ -98,6 +102,7 @@ watch(
           color="primary"
           label="Salvar"
           @click="update"
+          :loading="loadingAuth"
           size="md"
           unelevated
           no-caps
