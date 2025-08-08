@@ -6,7 +6,7 @@ import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 
 const emit = defineEmits<{
-  'updateMode': ['password'];
+  updateMode: ['password'];
   'update:open': [void];
 }>();
 

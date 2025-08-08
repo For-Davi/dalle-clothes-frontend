@@ -17,9 +17,9 @@ const emit = defineEmits<{
 
 const type = ref<'data' | 'password'>('data');
 
-const changeMode = (mode: 'data' | 'password') : void => {
-  type.value = mode
-}
+const changeMode = (mode: 'data' | 'password'): void => {
+  type.value = mode;
+};
 const clear = (): void => {
   type.value = 'data';
 };
@@ -49,11 +49,7 @@ watch(open, () => {
           @update:open="open = false"
           :type="type"
         />
-        <ProfilePassword
-          v-else
-          @updateMode="changeMode"
-          @update:open="open = false"
-        />
+        <ProfilePassword v-else @updateMode="changeMode" @update:open="open = false" />
       </q-card-section>
     </q-card>
   </q-dialog>

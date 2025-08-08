@@ -6,7 +6,7 @@ defineOptions({
   name: 'Account',
 });
 
-const showTypeAccountManage = ref<boolean>(false)
+const showTypeAccountManage = ref<boolean>(false);
 const filterAccount = ref<string>('');
 const columnsAccount = reactive<IQuasarTable[]>([
   {
@@ -80,30 +80,24 @@ const rows = [
 ];
 
 const changeShowTypeAccountManage = () => {
-  showTypeAccountManage.value = !showTypeAccountManage.value
-}
+  showTypeAccountManage.value = !showTypeAccountManage.value;
+};
 </script>
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
       <TitlePage class="col-7" title="Contas" icon="account_balance" />
       <div>
+        <q-btn color="white" text-color="black" label="Nova conta" icon-right="add" no-caps />
+
         <q-btn
           color="white"
           text-color="black"
-          label="Nova conta"
-          icon-right="add"
+          label="Tipos"
           no-caps
-        />
-
-        <q-btn
-        color="white"
-        text-color="black"
-        label="Tipos"
-        no-caps
-        icon-right="credit_card "
-         class="q-ml-sm"
-         @click="changeShowTypeAccountManage"
+          icon-right="credit_card "
+          class="q-ml-sm"
+          @click="changeShowTypeAccountManage"
         />
       </div>
     </section>
@@ -178,8 +172,7 @@ const changeShowTypeAccountManage = () => {
       </q-table>
     </section>
 
-
     <!-- Modals -->
-    <TypesAccountManage :open="showTypeAccountManage" @update:open="changeShowTypeAccountManage"/>
+    <TypesAccountManage :open="showTypeAccountManage" @update:open="changeShowTypeAccountManage" />
   </main>
 </template>

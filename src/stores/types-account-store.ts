@@ -1,4 +1,9 @@
-import { createTypesAccountService, getTypesAccountService, updateTypesAccountService, deleteTypesAccountService } from 'src/services/types-account-service';
+import {
+  createTypesAccountService,
+  getTypesAccountService,
+  updateTypesAccountService,
+  deleteTypesAccountService,
+} from 'src/services/types-account-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
 

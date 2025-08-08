@@ -35,9 +35,7 @@ const clear = (): void => {
 const save = async () => {
   const check = checkDataCategoryTransaction(dataType);
   if (check.status) {
-    const response = await useTypesAccountStore().createTypesAccount(
-      dataType.name,
-    );
+    const response = await useTypesAccountStore().createTypesAccount(dataType.name);
     if (response?.status === 201) {
       clear();
       emit('update:open');
@@ -90,10 +88,7 @@ watch(open, () => {
       :style="loadingTypesAccount ? 'min-height: 350px' : ''"
     >
       <q-card-section class="q-pa-none">
-        <TitlePage
-          :title="typeID ? 'Atualização de tipo' : 'Cadastro de tipo'"
-          icon="list_alt"
-        />
+        <TitlePage :title="typeID ? 'Atualização de tipo' : 'Cadastro de tipo'" icon="list_alt" />
       </q-card-section>
       <Loading :show="loadingTypesAccount" />
       <q-card-section class="q-pa-sm" v-show="!loadingTypesAccount">

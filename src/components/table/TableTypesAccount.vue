@@ -14,9 +14,7 @@ const emit = defineEmits<{
   'show:showFormTypeAccount': [ITypesAccount];
 }>();
 
-const { loadingTypesAccount, listTypesAccount } = storeToRefs(
-  useTypesAccountStore(),
-);
+const { loadingTypesAccount, listTypesAccount } = storeToRefs(useTypesAccountStore());
 
 const showConfirmAction = ref<boolean>(false);
 const typeMonitoring = ref<number | null>(null);

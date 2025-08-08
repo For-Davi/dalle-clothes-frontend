@@ -19,9 +19,7 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { loadingTypesAccount, listTypesAccount } = storeToRefs(
-  useTypesAccountStore(),
-);
+const { loadingTypesAccount, listTypesAccount } = storeToRefs(useTypesAccountStore());
 
 const showFormTypeAccount = reactive<{
   open: boolean;
