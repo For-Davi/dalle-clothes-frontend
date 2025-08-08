@@ -38,6 +38,9 @@ import type {
   ShowProduct,
   ProductBasic,
   DataProductBasic,
+  DataProductAdvanced,
+  ProductAdvanced,
+  ReturnProductAdvanced,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -111,7 +114,10 @@ declare global {
   type IVariant = Variant;
   type IFilterProduct = FilterProduct;
   type IProductBasic = ProductBasic;
+  type IProductAdvanced = ProductAdvanced;
+  type IReturnProductAdvanced = ReturnProductAdvanced;
   type IDataProductBasic = DataProductBasic;
+  type IDataProductAdvanced = DataProductAdvanced;
 
   type ICustomFile = CustomFile;
 

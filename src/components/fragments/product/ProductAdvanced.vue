@@ -13,24 +13,48 @@ const advanced = defineModel<IVModelProductAdvanced>('dataAdvanced', { required:
 
 watch(
   () => advanced.value.discountMaxPercentage,
-  (newDiscount) => {
-    if (newDiscount.trim() !== '') {
-      advanced.value.discountMaxPercentage = newDiscount.replace(/^0+/, '');
+  (newDiscount, oldDiscount) => {
+    let processedValue = newDiscount;
+
+    if (processedValue.trim() === '') {
+      processedValue = '0';
+    } else {
+      processedValue = processedValue.replace(/^0+/, '');
+      if (processedValue === '') {
+        processedValue = '0';
+      }
     }
-    if (Number(newDiscount) > 100) {
-      advanced.value.discountMaxPercentage = '100';
+
+    if (Number(processedValue) > 100) {
+      processedValue = '100';
+    }
+
+    if (processedValue !== oldDiscount) {
+      advanced.value.discountMaxPercentage = processedValue;
     }
   },
   { immediate: true },
 );
 watch(
   () => advanced.value.commissionPercentage,
-  (newCommission) => {
-    if (newCommission.trim() !== '') {
-      advanced.value.commissionPercentage = newCommission.replace(/^0+/, '');
+  (newCommission, oldCommission) => {
+    let processedValue = newCommission;
+
+    if (processedValue.trim() === '') {
+      processedValue = '0';
+    } else {
+      processedValue = processedValue.replace(/^0+/, '');
+      if (processedValue === '') {
+        processedValue = '0';
+      }
     }
-    if (Number(newCommission) > 100) {
-      advanced.value.commissionPercentage = '100';
+
+    if (Number(processedValue) > 100) {
+      processedValue = '100';
+    }
+
+    if (processedValue !== oldCommission) {
+      advanced.value.commissionPercentage = processedValue;
     }
   },
   { immediate: true },

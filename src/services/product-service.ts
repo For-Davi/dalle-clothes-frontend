@@ -90,6 +90,16 @@ export const updateProductBasicService = (
   };
 }> => api.put(`${baseUrl}/basic/`, data);
 
+export const updateProductAdvancedService = (
+  data: IDataProductAdvanced,
+): Promise<{
+  status: number;
+  data: {
+    advanced: IReturnProductAdvanced;
+    message: string;
+  };
+}> => api.put(`${baseUrl}/advanced/`, data);
+
 export const updateVariantService = (
   data: IDataUpdateVariant,
 ): Promise<{

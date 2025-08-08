@@ -6,6 +6,7 @@ import {
   getProductsService,
   getProductVariantService,
   showProductService,
+  updateProductAdvancedService,
   updateProductBasicService,
   updateVariantService,
 } from 'src/services/product-service';
@@ -108,6 +109,22 @@ export const useProductStore = defineStore('product', {
       try {
         this.setLoading(true);
         const response = await updateProductBasicService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
+
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async updateProductAdvanced(data: IDataProductAdvanced) {
+      try {
+        this.setLoading(true);
+        const response = await updateProductAdvancedService(data);
         if (response.status === 200) {
           createSuccess(response.data.message);
         }

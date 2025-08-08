@@ -171,6 +171,16 @@ export interface Variant {
   } | null;
 }
 
+export interface DataProductAdvanced {
+  id: number;
+  active: number;
+  allowCoupon: number;
+  allowDiscount: number;
+  discountMaxPercentage: number;
+  hasCommission: number;
+  commissionPercentage: number;
+}
+
 export interface DataProductBasic {
   id: number;
   name: string;
@@ -183,4 +193,13 @@ export interface ProductBasic {
   description: string | null;
   type: string;
   category: ICategoryProduct | null;
+}
+
+export interface ReturnProductAdvanced {
+  active: number;
+  allow_coupon: number;
+  allow_discount: number;
+  discount_max_percentage: number;
+  has_commission: number;
+  commission_percentage: number;
 }

@@ -230,7 +230,7 @@ const updateBasic = async () => {
   const check = checkDataProduct(dataBasic);
   if (check.status) {
     const response = await useProductStore().updateProductBasic({
-      id: productID.value ?? 0 ,
+      id: productID.value ?? 0,
       name: dataBasic.name,
       description: dataBasic.description.trim().length === 0 ? null : dataBasic.description,
       type: dataBasic.type.value,
@@ -254,9 +254,32 @@ const updateBasic = async () => {
     createErrorData(check.message || 'Erro ao atualizar dados do produto');
   }
 };
+const updateAdvanced = async () => {
+  const response = await useProductStore().updateProductAdvanced({
+    id: productID.value ?? 0,
+    active: Number(dataAdvanced.active),
+    allowCoupon: Number(dataAdvanced.allowCoupon),
+    allowDiscount: Number(dataAdvanced.allowDiscount),
+    hasCommission: Number(dataAdvanced.hasCommission),
+    commissionPercentage: Number(dataAdvanced.commissionPercentage),
+    discountMaxPercentage: Number(dataAdvanced.discountMaxPercentage),
+  });
+  if (response?.status === 200) {
+    Object.assign(dataAdvanced, {
+      active: response.data.advanced.active,
+      allowCoupon: response.data.advanced,
+      allowDiscount: response.data.advanced.allow_discount,
+      hasCommission: response.data.advanced.has_commission,
+      commissionPercentage: String(response.data.advanced.commission_percentage),
+      discountMaxPercentage: String(response.data.advanced.discount_max_percentage),
+    });
+  }
+};
 const update = async (): Promise<void> => {
   if (tab.value === 'basic') {
     await updateBasic();
+  } else if (tab.value === 'advanced') {
+    await updateAdvanced();
   }
 };
 
@@ -282,9 +305,9 @@ const open = computed({
 const showBtnUpdate = computed((): boolean => {
   return !!productID.value && tab.value !== 'variant' && tab.value !== 'log';
 });
-const isLoading = computed(():boolean => {
-  return loading.value || loadingProduct.value
-})
+const isLoading = computed((): boolean => {
+  return loading.value || loadingProduct.value;
+});
 
 watch(open, async () => {
   if (open.value) {
@@ -319,7 +342,13 @@ watch(open, async () => {
           <q-tab name="media" icon="perm_media" label="Galeria" no-caps :disable="isLoading" />
           <q-tab name="tag" icon="tag" label="Tags" no-caps :disable="isLoading" />
           <q-tab name="advanced" icon="settings" label="Avançado" no-caps :disable="isLoading" />
-          <q-tab name="log" icon="history" label="Logs" no-caps :disable="!productID || isLoading" />
+          <q-tab
+            name="log"
+            icon="history"
+            label="Logs"
+            no-caps
+            :disable="!productID || isLoading"
+          />
         </q-tabs>
         <q-tab-panels v-model="tab" animated class="bg-grey-2">
           <q-tab-panel name="basic" class="q-px-none">
