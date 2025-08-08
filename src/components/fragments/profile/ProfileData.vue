@@ -6,7 +6,7 @@ import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 
 const emit = defineEmits<{
-  'updateMode': ['data'];
+  'updateMode': ['password'];
   'update:open': [void];
 }>();
 
@@ -92,7 +92,7 @@ watch(
         <q-btn
           color="grey-8"
           label="Alterar senha"
-          @click="emit('updateMode', 'data')"
+          @click="emit('updateMode', 'password')"
           size="md"
           unelevated
           no-caps

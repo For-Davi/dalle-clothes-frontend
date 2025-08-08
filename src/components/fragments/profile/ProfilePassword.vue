@@ -6,7 +6,7 @@ import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 
 const emit = defineEmits<{
-  'updateMode': ['password'];
+  'updateMode': ['data'];
   'update:open': [void];
 }>();
 
@@ -105,7 +105,7 @@ const update = async () => {
         <q-btn
           color="grey-8"
           label="Alterar dados"
-          @click="emit('updateMode', 'password')"
+          @click="emit('updateMode', 'data')"
           size="md"
           unelevated
           no-caps
