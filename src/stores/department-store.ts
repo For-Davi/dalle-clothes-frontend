@@ -89,7 +89,7 @@ export const useDepartmentStore = defineStore('department', {
         const response = await createDepartmentService(name, parentId);
         if (response.status === 201) {
           this.clearListDepartment();
-          await this.getDepartments()
+          this.setListDepartment(response.data.departments)
           createSuccess(response.data.message);
         }
 
@@ -107,7 +107,7 @@ export const useDepartmentStore = defineStore('department', {
         const response = await updateDepartmentService(id, name, parentId);
         if (response.status === 200) {
            this.clearListDepartment();
-          await this.getDepartments();
+          this.setListDepartment(response.data.departments)
           createSuccess(response.data.message);
         }
 

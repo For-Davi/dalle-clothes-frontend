@@ -16,6 +16,7 @@ export const createDepartmentService = (
   status: number;
   data: {
     message: string;
+     departments: IDepartment[]
   };
 }> => api.post(`${baseUrl}/`, { name, parentId });
 
