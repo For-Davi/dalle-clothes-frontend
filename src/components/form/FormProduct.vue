@@ -16,6 +16,7 @@ import ProductLog from '../fragments/product/ProductLog.vue';
 import ProductAdvanced from '../fragments/product/ProductAdvanced.vue';
 import Loading from '../shared/Loading.vue';
 import ProductVariantEdit from '../fragments/product/ProductVariantEdit.vue';
+import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { storeToRefs } from 'pinia';
 
 defineOptions({
@@ -36,6 +37,7 @@ const emit = defineEmits<{
 const { loadingProduct } = storeToRefs(useProductStore());
 
 const loading = ref<boolean>(false);
+const showConfirmAction = ref<boolean>(false);
 const tab = ref<IProductModalTabs>('basic');
 const dataVariant = ref<IVModelProductVariant[]>([]);
 const dataVariantEdit = ref<IVariant[]>([]);
@@ -237,7 +239,7 @@ const updateBasic = async () => {
       category: dataBasic.category.value ?? null,
     });
     if (response?.status === 200) {
-      dataLog.value = response.data.logs
+      dataLog.value = response.data.logs;
       Object.assign(dataBasic, {
         name: response.data.basic.name,
         description: response.data.basic.description ?? '',
@@ -266,7 +268,7 @@ const updateTag = async () => {
   );
   if (response?.status === 200) {
     dataTags.value = response.data.tags;
-    dataLog.value = response.data.logs
+    dataLog.value = response.data.logs;
   }
 };
 const updateAdvanced = async () => {
@@ -288,7 +290,7 @@ const updateAdvanced = async () => {
       commissionPercentage: String(response.data.advanced.commission_percentage),
       discountMaxPercentage: String(response.data.advanced.discount_max_percentage),
     });
-    dataLog.value = response.data.logs
+    dataLog.value = response.data.logs;
   }
 };
 const update = async (): Promise<void> => {
@@ -298,6 +300,22 @@ const update = async (): Promise<void> => {
     await updateAdvanced();
   } else if (tab.value === 'tag') {
     await updateTag();
+  }
+};
+const closeConfirmActionOk = async () => {
+  showConfirmAction.value = false;
+  await exclude();
+};
+const closeConfirmAction = (): void => {
+  showConfirmAction.value = false;
+};
+const openConfirmAction = (): void => {
+  showConfirmAction.value = true;
+};
+const exclude = async (): Promise<void> => {
+  const response = await useProductStore().deleteProduct(productID.value ?? 0);
+  if (response?.status === 200) {
+    emit('update:open');
   }
 };
 
@@ -424,6 +442,7 @@ watch(open, async () => {
         <div class="row justify-between items-center full-width q-gutter-x-sm">
           <div>
             <q-btn
+              @click="openConfirmAction"
               v-if="productID"
               color="red"
               label="Excluir produto"
@@ -469,5 +488,15 @@ watch(open, async () => {
         </div>
       </q-card-actions>
     </q-card>
+
+    <!-- Modals -->
+    <ConfirmAction
+      :open="showConfirmAction"
+      label-action="Continuar"
+      title="Confirmação de exclusão do produto"
+      message="Ao confirmar, todas as informações relacionadas a este produto serão permanentemente removidas, incluindo variantes, imagens, logs e outros dados associados. Esta ação é irreversível. Se desejar manter os dados, feche esta janela para cancelar. Deseja realmente prosseguir com a exclusão?"
+      @update:open="closeConfirmAction"
+      @update:ok="closeConfirmActionOk"
+    />
   </q-dialog>
 </template>
