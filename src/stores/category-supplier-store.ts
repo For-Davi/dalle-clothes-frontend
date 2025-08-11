@@ -42,8 +42,8 @@ export const useCategorySupplierStore = defineStore('categorySupplier', {
         const response = await createCategorySupplierService(name);
         if (response.status === 201) {
           this.clearListCategorySupplier();
+            await this.getCategoriesSupplier();
           createSuccess(response.data.message);
-          await this.getCategoriesSupplier()
         }
 
         return response;

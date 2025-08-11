@@ -45,17 +45,11 @@ const changeShowCategorySupplierManage = (
     open: show,
     categoryEdit: categoryEdit,
   });
-
-  reset()
 }
 
-const startEdit = ( categoryEdit: ICategorySupplier | null) => {
+const startEdit = ( categoryEdit: ICategorySupplier) => {
    changeShowCategorySupplierManage(true, categoryEdit );
  };
-
-const reset = (): void => {
-  clear();
-};
 
 const open = computed({
   get: () => props.open,

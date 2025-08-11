@@ -53,17 +53,11 @@ const changeShowFormDepartament = (
     rootCreate: rootCreate,
     excludeId: excludeId
   });
-
-  reset()
 }
 
  const startEdit = ( rootCreate: number | null,departmentEdit: IDepartment | null,excludeId: number | null) => {
    changeShowFormDepartament(true, departmentEdit, rootCreate, excludeId );
  };
-
- const reset = (): void => {
-  clear();
-};
 
 const open = computed({
   get: () => props.open,
