@@ -8,6 +8,7 @@ import {
   showProductService,
   updateProductAdvancedService,
   updateProductBasicService,
+  updateProductTagService,
   updateVariantService,
 } from 'src/services/product-service';
 import { defineStore } from 'pinia';
@@ -109,6 +110,22 @@ export const useProductStore = defineStore('product', {
       try {
         this.setLoading(true);
         const response = await updateProductBasicService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
+
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async updateProductTag(productID: number, data: { id: number }[]) {
+      try {
+        this.setLoading(true);
+        const response = await updateProductTagService(productID, data);
         if (response.status === 200) {
           createSuccess(response.data.message);
         }

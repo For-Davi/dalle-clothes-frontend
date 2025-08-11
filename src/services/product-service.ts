@@ -100,6 +100,17 @@ export const updateProductAdvancedService = (
   };
 }> => api.put(`${baseUrl}/advanced/`, data);
 
+export const updateProductTagService = (
+  productID: number,
+  data: { id: number }[],
+): Promise<{
+  status: number;
+  data: {
+    tags: ITag[];
+    message: string;
+  };
+}> => api.put(`${baseUrl}/tag/`, { productID: productID, tags: data });
+
 export const updateVariantService = (
   data: IDataUpdateVariant,
 ): Promise<{

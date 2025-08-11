@@ -254,6 +254,19 @@ const updateBasic = async () => {
     createErrorData(check.message || 'Erro ao atualizar dados do produto');
   }
 };
+const updateTag = async () => {
+  const response = await useProductStore().updateProductTag(
+    productID.value ?? 0,
+    dataTags.value?.map((item) => {
+      return {
+        id: item.id,
+      };
+    }) || [],
+  );
+  if (response?.status === 200) {
+    dataTags.value = response.data.tags;
+  }
+};
 const updateAdvanced = async () => {
   const response = await useProductStore().updateProductAdvanced({
     id: productID.value ?? 0,
@@ -280,6 +293,8 @@ const update = async (): Promise<void> => {
     await updateBasic();
   } else if (tab.value === 'advanced') {
     await updateAdvanced();
+  } else if (tab.value === 'tag') {
+    await updateTag();
   }
 };
 
