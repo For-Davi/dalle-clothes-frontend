@@ -25,6 +25,7 @@ export const updateCategorySupplierService = (
   status: number;
   data: {
     message: string;
+    categories: ICategorySupplier[];
   };
 }> =>
   api.put(`${baseUrl}/`, {

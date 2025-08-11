@@ -4,7 +4,6 @@ import { columnsCategorySupplier } from 'src/utils/columns';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { useCategorySupplierStore } from 'src/stores/category-supplier-store';
-import Loading from '../shared/Loading.vue';
 
 defineOptions({
   name: 'TableCategorySupplier',
@@ -119,8 +118,6 @@ onMounted(async () => {
         </q-tr>
       </template>
     </q-table>
-    <Loading :show="loadingCategorySupplier" />
-
     <!-- Modals -->
     <ConfirmAction
       :open="showConfirmAction"

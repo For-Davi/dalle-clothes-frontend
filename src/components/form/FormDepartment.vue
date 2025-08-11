@@ -1,7 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-redundant-type-constituents -->
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import { watch, reactive, ref, computed } from 'vue';
 import { checkDataDepartment } from 'src/composables/CheckData';
 import { useDepartmentStore } from 'src/stores/department-store';
 import { storeToRefs } from 'pinia';
@@ -14,7 +14,7 @@ defineOptions({
 });
 
 const props = defineProps<{
-  mode: 'form' | 'list';
+  open: boolean;
   keyRoot: number | null;
   departmentEdit: IDepartment | { id: number; label: string } | null;
 }>();
@@ -117,20 +117,35 @@ const handleChooseDepartment = (tree: { id: number; label: string } | null): voi
   closeDepartmentChoose();
 };
 
+const open = computed({
+  get: () => props.open,
+  set: () => emit('update:back-list'),
+});
+
 watch(
-  () => props.mode,
-  (mode) => {
-    if (mode === 'form') {
-      clear();
-      checkCreateWithDepartment();
+  () => props.departmentEdit,
+  (newVal) => {
+    if (newVal) {
       checkEditDepartment();
+    } else {
+      clear();
     }
   },
-  { immediate: true },
+  { immediate: true }
+);
+watch(
+  () => props.keyRoot,
+  (newVal) => {
+    if (newVal) {
+      checkCreateWithDepartment();
+    }
+  },
+  { immediate: true }
 );
 </script>
 <template>
-  <q-card class="bg-grey-2" flat bordered>
+<q-dialog v-model="open">
+    <q-card class="bg-grey-2" flat bordered style="width:350px;">
     <q-card-section class="q-pa-none">
       <TitleAuth
         :title="
@@ -177,6 +192,14 @@ watch(
     </q-card-section>
     <q-card-actions align="right">
       <div class="row justify-end items-center q-gutter-x-sm">
+          <q-btn
+          @click="open = false"
+          color="red"
+          label="Fechar"
+          size="md"
+          flat
+          no-caps
+        />
         <q-btn
           v-if="props.departmentEdit === null"
           @click="save"
@@ -200,6 +223,7 @@ watch(
       </div>
     </q-card-actions>
   </q-card>
+</q-dialog>
   <DepartmentChoose
     :open="showDepartmentChoose"
     @update:open="closeDepartmentChoose"

@@ -27,6 +27,7 @@ export const updateDepartmentService = (
   status: number;
   data: {
     message: string;
+    departments: IDepartment[]
   };
 }> =>
   api.put(`${baseUrl}/`, {

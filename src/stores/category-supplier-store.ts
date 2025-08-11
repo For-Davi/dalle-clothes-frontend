@@ -43,6 +43,7 @@ export const useCategorySupplierStore = defineStore('categorySupplier', {
         if (response.status === 201) {
           this.clearListCategorySupplier();
           createSuccess(response.data.message);
+          await this.getCategoriesSupplier()
         }
 
         return response;
@@ -58,6 +59,8 @@ export const useCategorySupplierStore = defineStore('categorySupplier', {
       try {
         const response = await updateCategorySupplierService(id, name);
         if (response.status === 200) {
+            this.clearListCategorySupplier();
+             await this.getCategoriesSupplier()
           createSuccess(response.data.message);
         }
 

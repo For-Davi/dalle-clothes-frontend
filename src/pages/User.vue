@@ -31,6 +31,7 @@ const showFormUser = reactive<{
 
 const changeShowDepartmentManage = (): void => {
   showManageDepartment.value = !showManageDepartment.value;
+  console.log('chegou')
 };
 const changeShowFilterUser = (): void => {
   showFilterUser.value = !showFilterUser.value;
@@ -81,7 +82,7 @@ const hasFilter = computed((): boolean => {
           class="q-mr-sm"
         />
         <q-btn
-          @click="changeShowDepartmentManage"
+          @click="showManageDepartment = true"
           color="white"
           text-color="black"
           label="Departamentos"
