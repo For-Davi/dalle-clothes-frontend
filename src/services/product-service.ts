@@ -86,6 +86,7 @@ export const updateProductBasicService = (
   status: number;
   data: {
     basic: IProductBasic;
+    logs: ILog[];
     message: string;
   };
 }> => api.put(`${baseUrl}/basic/`, data);
@@ -96,6 +97,7 @@ export const updateProductAdvancedService = (
   status: number;
   data: {
     advanced: IReturnProductAdvanced;
+    logs: ILog[];
     message: string;
   };
 }> => api.put(`${baseUrl}/advanced/`, data);
@@ -107,6 +109,7 @@ export const updateProductTagService = (
   status: number;
   data: {
     tags: ITag[];
+    logs: ILog[];
     message: string;
   };
 }> => api.put(`${baseUrl}/tag/`, { productID: productID, tags: data });

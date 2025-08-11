@@ -237,6 +237,7 @@ const updateBasic = async () => {
       category: dataBasic.category.value ?? null,
     });
     if (response?.status === 200) {
+      dataLog.value = response.data.logs
       Object.assign(dataBasic, {
         name: response.data.basic.name,
         description: response.data.basic.description ?? '',
@@ -265,6 +266,7 @@ const updateTag = async () => {
   );
   if (response?.status === 200) {
     dataTags.value = response.data.tags;
+    dataLog.value = response.data.logs
   }
 };
 const updateAdvanced = async () => {
@@ -286,6 +288,7 @@ const updateAdvanced = async () => {
       commissionPercentage: String(response.data.advanced.commission_percentage),
       discountMaxPercentage: String(response.data.advanced.discount_max_percentage),
     });
+    dataLog.value = response.data.logs
   }
 };
 const update = async (): Promise<void> => {
