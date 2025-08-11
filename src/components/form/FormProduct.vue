@@ -267,7 +267,7 @@ const updateAdvanced = async () => {
   if (response?.status === 200) {
     Object.assign(dataAdvanced, {
       active: response.data.advanced.active,
-      allowCoupon: response.data.advanced,
+      allowCoupon: response.data.advanced.allow_coupon,
       allowDiscount: response.data.advanced.allow_discount,
       hasCommission: response.data.advanced.has_commission,
       commissionPercentage: String(response.data.advanced.commission_percentage),
