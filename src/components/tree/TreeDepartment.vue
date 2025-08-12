@@ -1,21 +1,15 @@
 <script setup lang="ts">
 import { useDepartmentStore } from 'src/stores/department-store';
 import { storeToRefs } from 'pinia';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
-import { watch } from 'vue';
-import Loading from '../shared/Loading.vue';
-import Banner from '../shared/Banner.vue';
 
 defineOptions({
   name: 'TreeDepartment',
 });
 
-const props = defineProps<{
-  mode: 'form' | 'list';
-}>();
 const emit = defineEmits<{
-  'open:form-department': [number | null, IDepartment | null];
+  'open:form-department': [number | null, IDepartment | null, number | null];
 }>();
 
 const { loadingDepartment, treeDepartment } = storeToRefs(useDepartmentStore());
@@ -36,7 +30,7 @@ const openFormDepartment = (key = null): void => {
   if (key) {
     clickRootCreate.value = key;
   }
-  emit('open:form-department', clickRootCreate.value, departmentEdit.value);
+  emit('open:form-department', clickRootCreate.value, departmentEdit.value, dataExcludeId.value);
 };
 const handleEdit = (department: IDepartment) => {
   departmentEdit.value = department;
@@ -56,15 +50,9 @@ const openConfirmAction = (id: number): void => {
   showConfirmAction.value = true;
 };
 
-watch(
-  () => props.mode,
-  async (mode) => {
-    if (mode === 'list') {
-      await useDepartmentStore().getDepartments();
-    }
-  },
-  { immediate: true },
-);
+onMounted(async () => {
+  await useDepartmentStore().getDepartments();
+});
 </script>
 <template>
   <main style="min-height: 300px">
@@ -110,44 +98,38 @@ watch(
                 <q-btn
                   @click="openFormDepartment(prop.key)"
                   :disable="loadingDepartment"
-                  size="sm"
                   round
-                  color="primary"
                   flat
-                  icon="add"
                   unelevated
+                  size="xs"
                 >
+                  <q-icon name="add" color="primary" size="xs" />
                   <q-tooltip>Sub-departamento</q-tooltip>
                 </q-btn>
                 <q-btn
                   @click="handleEdit(prop.node)"
                   :disable="loadingDepartment"
-                  size="10px"
+                  size="xs"
                   flat
                   round
-                  icon="edit"
-                />
+                >
+                  <q-icon name="edit" color="black" size="xs" />
+                </q-btn>
                 <q-btn
                   @click="openConfirmAction(prop.node.id)"
                   :disable="loadingDepartment"
-                  size="10px"
+                  size="xs"
                   flat
                   round
-                  color="negative"
-                  icon="delete"
-                />
+                >
+                  <q-icon name="delete" color="negative" size="xs" />
+                </q-btn>
               </div>
             </div>
           </template>
         </q-tree>
       </div>
-      <div v-show="treeDepartment.length == 0 && !loadingDepartment" class="q-pa-md full-width">
-        <Banner
-          text="Não há departamentos registrados. Por favor, adicione um novo departamento."
-        />
-      </div>
     </div>
-    <Loading :show="loadingDepartment" />
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"

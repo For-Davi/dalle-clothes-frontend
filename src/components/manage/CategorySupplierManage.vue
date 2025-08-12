@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { computed, ref, watch } from 'vue';
+import { computed, reactive } from 'vue';
 import FormCategorySupplier from '../form/FormCategorySupplier.vue';
 import TableCategorySupplier from '../table/TableCategorySupplier.vue';
+import { useCategorySupplierStore } from 'src/stores/category-supplier-store';
+import { storeToRefs } from 'pinia';
+import Empty from '../info/Empty.vue';
+import Loading from '../shared/Loading.vue';
 
 defineOptions({
   name: 'DepartmentManage',
@@ -15,74 +19,54 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const tab = ref<'list' | 'form'>('list');
-const dataEdit = ref<ICategorySupplier | null>(null);
-const dataExcludeId = ref<number | null>(null);
+const showFormCategorySupplier = reactive<{
+  open: boolean;
+  categoryEdit: ICategorySupplier | null;
+}>({
+  open: false,
+  categoryEdit: null,
+});
 
-const clear = () => {
-  dataEdit.value = null;
-  dataExcludeId.value = null;
+const { loadingCategorySupplier, listCategorySupplier } = storeToRefs(useCategorySupplierStore());
+
+const changeShowCategorySupplierManage = (
+  show: boolean,
+  categoryEdit: ICategorySupplier | null = null,
+): void => {
+  Object.assign(showFormCategorySupplier, {
+    open: show,
+    categoryEdit: categoryEdit,
+  });
 };
 
-const makeForm = (data: ICategorySupplier) => {
-  dataEdit.value = data;
-  tab.value = 'form';
-};
-const reset = (): void => {
-  clear();
-  tab.value = 'list';
+const startEdit = (categoryEdit: ICategorySupplier) => {
+  changeShowCategorySupplierManage(true, categoryEdit);
 };
 
 const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
 });
-
-watch(open, () => {
-  if (open.value) {
-    tab.value = 'list';
-    clear();
-  }
-});
-watch(tab, () => {
-  if (tab.value === 'list') {
-    clear();
-  }
-});
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 sub-page">
+    <q-card class="bg-grey-2 sub-page column justify-between">
       <q-card-section class="q-pa-none">
         <TitlePage title="Categorias de fornecedores" icon="group_work" />
       </q-card-section>
       <q-card-section>
-        <q-scroll-area style="height: 400px">
-          <q-tabs v-model="tab" dense align="left" inline-label :breakpoint="0" no-caps>
-            <q-tab
-              label="Categorias"
-              name="list"
-              :class="tab == 'list' ? 'text-primary' : 'text-grey'"
-              icon="list"
-              @click.prevent.stop
-            />
-            <q-tab
-              label="Formulário"
-              name="form"
-              :class="tab == 'form' ? 'text-primary' : 'text-grey'"
-              icon="assignment"
-              @click.prevent.stop
-            />
-          </q-tabs>
-          <q-tab-panels v-model="tab" animated class="q-pa-none">
-            <q-tab-panel name="list" class="q-px-none q-py-sm border-top-grey-light bg-grey-2">
-              <TableCategorySupplier :mode="tab" @show:show-form-category="makeForm" />
-            </q-tab-panel>
-            <q-tab-panel name="form" class="q-px-none q-py-sm border-top-grey-light bg-grey-2">
-              <FormCategorySupplier :mode="tab" :data-edit="dataEdit" @update:back-list="reset" />
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-scroll-area>
+        <div v-show="!loadingCategorySupplier">
+          <TableCategorySupplier
+            v-show="listCategorySupplier.length > 0"
+            @show:show-form-category="startEdit"
+          />
+          <Empty
+            v-show="listCategorySupplier.length <= 0 && !loadingCategorySupplier"
+            message="Sem categorias cadastradas"
+            color="bg-red-3"
+          />
+        </div>
+        <Loading :show="loadingCategorySupplier" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
@@ -91,12 +75,27 @@ watch(tab, () => {
             label="Fechar"
             size="md"
             @click="open = false"
-            unelevated
+            flat
             no-caps
-            :outline="tab === 'form'"
+            unelevated
+          />
+          <q-btn
+            color="primary"
+            label="Adicionar"
+            size="md"
+            @click="changeShowCategorySupplierManage(true)"
+            no-caps
+            unelevated
           />
         </div>
       </q-card-actions>
     </q-card>
   </q-dialog>
+
+  <!-- Modals -->
+  <FormCategorySupplier
+    :open="showFormCategorySupplier.open"
+    :data-edit="showFormCategorySupplier.categoryEdit"
+    @update:back-list="changeShowCategorySupplierManage(false)"
+  />
 </template>

@@ -1,12 +1,12 @@
 <!-- eslint-disable @typescript-eslint/no-redundant-type-constituents -->
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue';
+import { watch, reactive, ref, computed } from 'vue';
 import { checkDataDepartment } from 'src/composables/CheckData';
 import { useDepartmentStore } from 'src/stores/department-store';
 import { storeToRefs } from 'pinia';
 import { createErrorData } from 'src/composables/CreateNotify';
-import TitleAuth from '../shared/TitleAuth.vue';
+import TitlePage from '../shared/TitlePage.vue';
 import DepartmentChoose from '../shared/DepartmentChoose.vue';
 
 defineOptions({
@@ -14,7 +14,7 @@ defineOptions({
 });
 
 const props = defineProps<{
-  mode: 'form' | 'list';
+  open: boolean;
   keyRoot: number | null;
   departmentEdit: IDepartment | { id: number; label: string } | null;
 }>();
@@ -117,89 +117,107 @@ const handleChooseDepartment = (tree: { id: number; label: string } | null): voi
   closeDepartmentChoose();
 };
 
+const open = computed({
+  get: () => props.open,
+  set: () => emit('update:back-list'),
+});
+
 watch(
-  () => props.mode,
-  (mode) => {
-    if (mode === 'form') {
-      clear();
-      checkCreateWithDepartment();
+  () => props.departmentEdit,
+  (newVal) => {
+    if (newVal) {
       checkEditDepartment();
+    } else {
+      clear();
+    }
+  },
+  { immediate: true },
+);
+watch(
+  () => props.keyRoot,
+  (newVal) => {
+    if (newVal) {
+      checkCreateWithDepartment();
     }
   },
   { immediate: true },
 );
 </script>
 <template>
-  <q-card class="bg-grey-2" flat bordered>
-    <q-card-section class="q-pa-none">
-      <TitleAuth
-        :title="
-          props.departmentEdit === null ? 'Cadastre um departamento' : 'Atualize um departamento'
-        "
-      />
-    </q-card-section>
-    <q-card-section class="q-pa-sm">
-      <q-form class="q-gutter-y-sm">
-        <q-input
-          v-model="dataDepartment.name"
-          bg-color="white"
-          label-color="black"
-          outlined
-          label="Digite o nome do departamento"
-          dense
-          input-class="text-black"
-          :readonly="selectedBank !== null"
-        >
-          <template v-slot:prepend>
-            <q-icon name="groups" color="black" size="20px" />
-          </template>
-        </q-input>
-        <q-input
-          v-model="dataDepartment.parentName"
-          bg-color="white"
-          label-color="black"
-          outlined
-          type="text"
-          label="Escolher hierarquia"
-          readonly
-          clearable
-        >
-          <template v-slot:append>
-            <q-icon name="search" class="cursor-pointer" @click="openDepartmentChoose" />
-          </template>
-        </q-input>
-        <DepartmentChoose
-          :open="showDepartmentChoose"
-          @update:open="closeDepartmentChoose"
-          @update:choose-department="handleChooseDepartment"
+  <q-dialog v-model="open">
+    <q-card class="bg-grey-2" flat bordered style="width: 500px; max-width: 98vw">
+      <q-card-section class="q-pa-none">
+        <TitlePage
+          :title="
+            props.departmentEdit === null ? 'Cadastre um departamento' : 'Atualize um departamento'
+          "
+          icon="group_work"
         />
-      </q-form>
-    </q-card-section>
-    <q-card-actions align="right">
-      <div class="row justify-end items-center q-gutter-x-sm">
-        <q-btn
-          v-if="props.departmentEdit === null"
-          @click="save"
-          :loading="loadingDepartment"
-          color="primary"
-          label="Salvar"
-          size="md"
-          unelevated
-          no-caps
-        />
-        <q-btn
-          v-else
-          @click="update"
-          :loading="loadingDepartment"
-          color="primary"
-          label="Atualizar"
-          size="md"
-          unelevated
-          no-caps
-        />
-      </div>
-    </q-card-actions>
-  </q-card>
+      </q-card-section>
+      <q-card-section class="q-pa-sm">
+        <q-form class="q-gutter-y-sm">
+          <q-input
+            v-model="dataDepartment.name"
+            bg-color="white"
+            label-color="black"
+            outlined
+            label="Digite o nome do departamento"
+            dense
+            input-class="text-black"
+            :readonly="selectedBank !== null"
+          >
+            <template v-slot:prepend>
+              <q-icon name="groups" color="black" size="20px" />
+            </template>
+          </q-input>
+          <q-input
+            v-model="dataDepartment.parentName"
+            bg-color="white"
+            label-color="black"
+            outlined
+            type="text"
+            label="Escolher hierarquia"
+            readonly
+            clearable
+          >
+            <template v-slot:append>
+              <q-icon name="search" class="cursor-pointer" @click="openDepartmentChoose" />
+            </template>
+          </q-input>
+          <DepartmentChoose
+            :open="showDepartmentChoose"
+            @update:open="closeDepartmentChoose"
+            @update:choose-department="handleChooseDepartment"
+          />
+        </q-form>
+      </q-card-section>
+      <q-card-actions align="right">
+        <div class="row justify-end items-center q-gutter-x-sm">
+          <q-btn @click="open = false" color="red" label="Fechar" size="md" flat no-caps />
+          <q-btn
+            v-if="props.departmentEdit === null"
+            @click="save"
+            :loading="loadingDepartment"
+            color="primary"
+            label="Salvar"
+            size="md"
+            unelevated
+            no-caps
+          />
+          <q-btn
+            v-else
+            @click="update"
+            :loading="loadingDepartment"
+            color="primary"
+            label="Atualizar"
+            size="md"
+            unelevated
+            no-caps
+          />
+        </div>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
   <DepartmentChoose
     :open="showDepartmentChoose"
     @update:open="closeDepartmentChoose"
