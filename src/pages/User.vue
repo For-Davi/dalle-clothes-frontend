@@ -31,7 +31,6 @@ const showFormUser = reactive<{
 
 const changeShowDepartmentManage = (): void => {
   showManageDepartment.value = !showManageDepartment.value;
-  console.log('chegou')
 };
 const changeShowFilterUser = (): void => {
   showFilterUser.value = !showFilterUser.value;

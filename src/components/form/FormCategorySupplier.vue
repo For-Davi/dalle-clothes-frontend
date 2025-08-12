@@ -11,7 +11,7 @@ defineOptions({
 });
 
 const props = defineProps<{
-  open:boolean,
+  open: boolean;
   dataEdit: ICategorySupplier | null;
 }>();
 const emit = defineEmits<{
@@ -62,81 +62,68 @@ const checkEditCategory = () => {
 };
 
 const categoryID = computed(() => props.dataEdit?.id);
-
 const open = computed({
   get: () => props.open,
   set: () => emit('update:back-list'),
 });
 
-watch(
-  () => props.dataEdit,
-  (newVal) => {
-    if (newVal) {
-      checkEditCategory();
-    } else {
-      clear();
-    }
-  },
-  { immediate: true }
-);
+watch(open, () => {
+  if (open.value) {
+    clear();
+    checkEditCategory();
+  }
+});
 </script>
 <template>
- <q-dialog v-model="open">
-   <q-card class="bg-grey-2" flat bordered style="width: 350px;">
-    <q-card-section class="q-pa-none">
-      <TitleAuth
-        :title="props.dataEdit === null ? 'Cadastre uma categoria' : 'Atualize a categoria'"
-      />
-    </q-card-section>
-    <q-card-section class="q-pa-sm">
-      <q-form class="q-gutter-y-sm">
-        <q-input
-          v-model="dataCategory.name"
-          bg-color="white"
-          label-color="black"
-          outlined
-          label="Nome da categoria"
-          dense
-          input-class="text-black"
-        >
-          <template v-slot:prepend>
-            <q-icon name="category" color="black" size="20px" />
-          </template>
-        </q-input>
-      </q-form>
-    </q-card-section>
-    <q-card-actions align="right">
-      <div class="row justify-end items-center q-gutter-x-sm">
-         <q-btn
-          @click="open = false"
-          color="red"
-          label="Fechar"
-          size="md"
-          flat
-          no-caps
+  <q-dialog v-model="open">
+    <q-card class="bg-grey-2" flat bordered style="width: 350px">
+      <q-card-section class="q-pa-none">
+        <TitleAuth
+          :title="props.dataEdit === null ? 'Cadastre uma categoria' : 'Atualize a categoria'"
         />
-        <q-btn
-          v-if="!categoryID"
-          @click="save"
-          :loading="loadingCategorySupplier"
-          color="primary"
-          label="Salvar"
-          size="md"
-          unelevated
-          no-caps
-        />
-        <q-btn
-          v-else
-          @click="update"
-          :loading="loadingCategorySupplier"
-          color="primary"
-          label="Atualizar"
-          size="md"
-          unelevated
-          no-caps
-        />
-      </div>
-    </q-card-actions>
-  </q-card>
- </q-dialog>
+      </q-card-section>
+      <q-card-section class="q-pa-sm">
+        <q-form class="q-gutter-y-sm">
+          <q-input
+            v-model="dataCategory.name"
+            bg-color="white"
+            label-color="black"
+            outlined
+            label="Nome da categoria"
+            dense
+            input-class="text-black"
+          >
+            <template v-slot:prepend>
+              <q-icon name="category" color="black" size="20px" />
+            </template>
+          </q-input>
+        </q-form>
+      </q-card-section>
+      <q-card-actions align="right">
+        <div class="row justify-end items-center q-gutter-x-sm">
+          <q-btn @click="open = false" color="red" label="Fechar" size="md" flat no-caps />
+          <q-btn
+            v-if="!categoryID"
+            @click="save"
+            :loading="loadingCategorySupplier"
+            color="primary"
+            label="Salvar"
+            size="md"
+            unelevated
+            no-caps
+          />
+          <q-btn
+            v-else
+            @click="update"
+            :loading="loadingCategorySupplier"
+            color="primary"
+            label="Atualizar"
+            size="md"
+            unelevated
+            no-caps
+          />
+        </div>
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>

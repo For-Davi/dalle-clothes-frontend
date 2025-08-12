@@ -16,7 +16,7 @@ export const createDepartmentService = (
   status: number;
   data: {
     message: string;
-     departments: IDepartment[]
+    departments: IDepartment[];
   };
 }> => api.post(`${baseUrl}/`, { name, parentId });
 
@@ -28,7 +28,7 @@ export const updateDepartmentService = (
   status: number;
   data: {
     message: string;
-    departments: IDepartment[]
+    departments: IDepartment[];
   };
 }> =>
   api.put(`${baseUrl}/`, {

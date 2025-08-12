@@ -53,7 +53,6 @@ const openConfirmAction = (id: number): void => {
 onMounted(async () => {
   await useDepartmentStore().getDepartments();
 });
-
 </script>
 <template>
   <main style="min-height: 300px">
@@ -99,32 +98,32 @@ onMounted(async () => {
                 <q-btn
                   @click="openFormDepartment(prop.key)"
                   :disable="loadingDepartment"
-                  size="sm"
                   round
-                  color="primary"
                   flat
-                  icon="add"
                   unelevated
+                  size="xs"
                 >
+                  <q-icon name="add" color="primary" size="xs" />
                   <q-tooltip>Sub-departamento</q-tooltip>
                 </q-btn>
                 <q-btn
                   @click="handleEdit(prop.node)"
                   :disable="loadingDepartment"
-                  size="10px"
+                  size="xs"
                   flat
                   round
-                  icon="edit"
-                />
+                >
+                  <q-icon name="edit" color="black" size="xs" />
+                </q-btn>
                 <q-btn
                   @click="openConfirmAction(prop.node.id)"
                   :disable="loadingDepartment"
-                  size="10px"
+                  size="xs"
                   flat
                   round
-                  color="negative"
-                  icon="delete"
-                />
+                >
+                  <q-icon name="delete" color="negative" size="xs" />
+                </q-btn>
               </div>
             </div>
           </template>

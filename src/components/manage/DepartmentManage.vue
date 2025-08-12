@@ -19,18 +19,18 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { loadingDepartment, treeDepartment } = storeToRefs(useDepartmentStore())
+const { loadingDepartment, treeDepartment } = storeToRefs(useDepartmentStore());
 
 const showFormDepartament = reactive<{
-   open:boolean,
-  departmentEdit: IDepartment | null,
-  rootCreate: number | null,
-  excludeId: number | null
+  open: boolean;
+  departmentEdit: IDepartment | null;
+  rootCreate: number | null;
+  excludeId: number | null;
 }>({
   open: false,
   departmentEdit: null,
   rootCreate: null,
-  excludeId: null
+  excludeId: null,
 });
 
 const searchDepartment = ref<string>('');
@@ -42,22 +42,26 @@ const clear = () => {
 };
 
 const changeShowFormDepartament = (
-  show:boolean,
+  show: boolean,
   departmentEdit: IDepartment | null = null,
   rootCreate: number | null = null,
-  excludeId: number | null = null
+  excludeId: number | null = null,
 ): void => {
   Object.assign(showFormDepartament, {
     open: show,
     departmentEdit: departmentEdit,
     rootCreate: rootCreate,
-    excludeId: excludeId
+    excludeId: excludeId,
   });
-}
+};
 
- const startEdit = ( rootCreate: number | null,departmentEdit: IDepartment | null,excludeId: number | null) => {
-   changeShowFormDepartament(true, departmentEdit, rootCreate, excludeId );
- };
+const startEdit = (
+  rootCreate: number | null,
+  departmentEdit: IDepartment | null,
+  excludeId: number | null,
+) => {
+  changeShowFormDepartament(true, departmentEdit, rootCreate, excludeId);
+};
 
 const open = computed({
   get: () => props.open,
@@ -76,47 +80,38 @@ watch(open, () => {
       <q-card-section class="q-pa-none">
         <TitlePage title="Gerenciamento de departamentos" icon="group_work" />
       </q-card-section>
-     <q-card-section>
-  <div v-show="!loadingDepartment">
-    <TreeDepartment
-      v-show="treeDepartment.length > 0"
-      @open:form-department="startEdit"
-    />
-    <Empty
-      v-show="treeDepartment.length <= 0 && !loadingDepartment"
-      message="Sem departamentos cadastrados"
-      color="bg-red-3"
-    />
-  </div>
-  <Loading :show="loadingDepartment" />
-</q-card-section>
+      <q-card-section>
+        <div v-show="!loadingDepartment">
+          <TreeDepartment v-show="treeDepartment.length > 0" @open:form-department="startEdit" />
+          <Empty
+            v-show="treeDepartment.length <= 0 && !loadingDepartment"
+            message="Sem departamentos cadastrados"
+            color="bg-red-3"
+          />
+        </div>
+        <Loading :show="loadingDepartment" />
+      </q-card-section>
 
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
-            <q-btn
-            color="red"
-            label="Fechar"
-            size="md"
-            @click="open = false"
-            flat
-            no-caps
-          />
+          <q-btn color="red" label="Fechar" size="md" @click="open = false" flat no-caps />
           <q-btn
             color="primary"
             label="Adicionar"
             size="md"
             @click="changeShowFormDepartament(true)"
             no-caps
+            unelevated
           />
         </div>
       </q-card-actions>
     </q-card>
   </q-dialog>
   <!-- Modals -->
-   <FormDepartment 
-   :open="showFormDepartament.open"
-   :key-root="showFormDepartament.rootCreate"
-   :department-edit="showFormDepartament.departmentEdit"
+  <FormDepartment
+    :open="showFormDepartament.open"
+    :key-root="showFormDepartament.rootCreate"
+    :department-edit="showFormDepartament.departmentEdit"
     @update:back-list="changeShowFormDepartament(false)"
-   />
+  />
 </template>
