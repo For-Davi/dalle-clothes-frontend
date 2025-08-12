@@ -81,7 +81,7 @@ const hasFilter = computed((): boolean => {
           class="q-mr-sm"
         />
         <q-btn
-          @click="showManageDepartment = true"
+          @click="changeShowDepartmentManage()"
           color="white"
           text-color="black"
           label="Departamentos"
