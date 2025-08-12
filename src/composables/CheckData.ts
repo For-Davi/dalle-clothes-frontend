@@ -525,3 +525,19 @@ export const checkPasswordUpdateProfile = (data: {
   }
   return { status: true };
 };
+
+export const checkFeedbackData = (data: {
+  text: string;
+  images: File[];
+}): { status: boolean; message?: string } => {
+  if (data.text.trim() === '') {
+    return { status: false, message: 'Deve ser informado o campo da sugestão' };
+  }
+  if (data.text.trim().length > 10000) {
+    return { status: false, message: 'O campo da sugestão deve conter apenas 10000 caracteres' };
+  }
+  if (data.images.length > 1) {
+    return { status: false, message: 'Só é permitido o envio de uma imagem' };
+  }
+  return { status: true };
+};

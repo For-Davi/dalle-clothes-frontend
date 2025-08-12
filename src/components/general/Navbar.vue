@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import UserOptions from './UserOptions.vue';
 import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
+import FormFeedback from '../form/FormFeedback.vue';
 
 defineOptions({
   name: 'Navbar',
@@ -20,8 +21,8 @@ const { appearanceSetting } = storeToRefs(useSettingsStore());
 const showFormFedback = ref<boolean>(false);
 const showInbox = ref<boolean>(false);
 
-const openFormFeedback = (): void => {
-  showFormFedback.value = true;
+const changeOpenFormFeedback = (): void => {
+  showFormFedback.value = !showFormFedback.value;
 };
 const openInbox = (): void => {
   showInbox.value = true;
@@ -64,7 +65,7 @@ const getColorIconNavbar = computed(() => {
             <q-tooltip> Entrar em contato </q-tooltip>
           </q-btn>
           <q-btn
-            @click="openFormFeedback"
+            @click="changeOpenFormFeedback"
             :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
             flat
             icon-right="chat"
@@ -102,7 +103,7 @@ const getColorIconNavbar = computed(() => {
                 </q-item-section>
                 <q-item-section>Entrar em contato</q-item-section>
               </q-item>
-              <q-item clickable v-ripple @click="openFormFeedback">
+              <q-item clickable v-ripple @click="changeOpenFormFeedback">
                 <q-item-section avatar>
                   <q-avatar>
                     <q-icon name="fa-solid fa-headset" />
@@ -128,4 +129,6 @@ const getColorIconNavbar = computed(() => {
       </div>
     </q-toolbar>
   </nav>
+  <!-- Modals -->
+  <FormFeedback :open="showFormFedback" @update:open="changeOpenFormFeedback" />
 </template>
