@@ -172,7 +172,7 @@ export interface Variant {
 }
 
 export interface DataProductAdvanced {
-  id: number;
+  productID: number;
   active: number;
   allowCoupon: number;
   allowDiscount: number;
@@ -182,7 +182,7 @@ export interface DataProductAdvanced {
 }
 
 export interface DataProductBasic {
-  id: number;
+  productID: number;
   name: string;
   description: string | null;
   type: string;

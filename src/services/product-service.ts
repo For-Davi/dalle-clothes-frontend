@@ -80,6 +80,36 @@ export const createProductService = (
   });
 };
 
+export const updateProductMediaService = (
+  productID: number,
+  media: IMediaItem[],
+  imagesToKeep: number[],
+  imagesToDelete: number[],
+): Promise<{
+  status: number;
+  data: {
+    products: IProduct[];
+    message: string;
+  };
+}> => {
+  const formData = new FormData();
+
+  media.forEach((image) => {
+    if (image instanceof File) {
+      formData.append('new_images[]', image);
+    }
+  });
+
+  formData.append('images_to_keep', JSON.stringify(imagesToKeep));
+  formData.append('images_to_delete', JSON.stringify(imagesToDelete));
+
+  return api.post(`${baseUrl}/update-media/${productID}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
 export const updateProductBasicService = (
   data: IDataProductBasic,
 ): Promise<{

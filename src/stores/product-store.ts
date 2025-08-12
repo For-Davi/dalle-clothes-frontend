@@ -8,6 +8,7 @@ import {
   showProductService,
   updateProductAdvancedService,
   updateProductBasicService,
+  updateProductMediaService,
   updateProductTagService,
   updateVariantService,
 } from 'src/services/product-service';
@@ -110,6 +111,32 @@ export const useProductStore = defineStore('product', {
       try {
         this.setLoading(true);
         const response = await updateProductBasicService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
+
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async updateProductMedia(
+      productID: number,
+      media: IMediaItem[],
+      imagesToKeep: number[],
+      imagesToDelete: number[],
+    ) {
+      try {
+        this.setLoading(true);
+        const response = await updateProductMediaService(
+          productID,
+          media,
+          imagesToKeep,
+          imagesToDelete,
+        );
         if (response.status === 200) {
           createSuccess(response.data.message);
         }

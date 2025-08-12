@@ -42,6 +42,7 @@ const tab = ref<IProductModalTabs>('basic');
 const dataVariant = ref<IVModelProductVariant[]>([]);
 const dataVariantEdit = ref<IVariant[]>([]);
 const dataMedia = ref<IMediaItem[]>([]);
+const observerMedia = ref<IMediaItem[]>([]);
 const dataTags = ref<ITag[]>([]);
 const dataLog = ref<ILog[]>([]);
 const dataBasic = reactive<IVModelProductBasic>({
@@ -84,6 +85,7 @@ const clear = (): void => {
   dataVariantEdit.value = [];
   dataLog.value = [];
   dataMedia.value = [];
+  observerMedia.value = [];
   selectedGrid.value = {
     label: 'Nenhuma grade selecionada',
     value: null,
@@ -196,6 +198,7 @@ const mountData = async () => {
 
       // Imagens do produto
       dataMedia.value = product.images;
+      observerMedia.value = product.images;
 
       // Variantes do produto
       dataVariantEdit.value = product.variants;
@@ -232,7 +235,7 @@ const updateBasic = async () => {
   const check = checkDataProduct(dataBasic);
   if (check.status) {
     const response = await useProductStore().updateProductBasic({
-      id: productID.value ?? 0,
+      productID: productID.value ?? 0,
       name: dataBasic.name,
       description: dataBasic.description.trim().length === 0 ? null : dataBasic.description,
       type: dataBasic.type.value,
@@ -271,9 +274,26 @@ const updateTag = async () => {
     dataLog.value = response.data.logs;
   }
 };
+const isIImage = (item: IMediaItem) => {
+  return (item as IImage).id !== undefined;
+}
+const updateMedia =  () => {
+  const imagesKeep = dataMedia.value
+  .filter(item => ! (item instanceof File) && isIImage(item))
+  .map(item => item);
+
+  // const response = await useProductStore().updateProductMedia(
+  //   productID.value ?? 0,
+  //   dataMedia.value,
+  // );
+  // if (response?.status === 200) {
+  //   dataMedia.value = response.data.images;
+  //   dataLog.value = response.data.logs;
+  // }
+};
 const updateAdvanced = async () => {
   const response = await useProductStore().updateProductAdvanced({
-    id: productID.value ?? 0,
+    productID: productID.value ?? 0,
     active: Number(dataAdvanced.active),
     allowCoupon: Number(dataAdvanced.allowCoupon),
     allowDiscount: Number(dataAdvanced.allowDiscount),
@@ -294,14 +314,20 @@ const updateAdvanced = async () => {
   }
 };
 const update = async (): Promise<void> => {
-  if (tab.value === 'basic') {
-    await updateBasic();
-  } else if (tab.value === 'advanced') {
-    await updateAdvanced();
-  } else if (tab.value === 'tag') {
-    await updateTag();
+  if(tab.value === 'advanced') {
+    await updateAdvanced()
+  }
+  if(tab.value === 'basic'){
+    await updateBasic()
+  }
+  if(tab.value === 'tag'){
+    await updateTag()
+  }
+  if(tab.value === 'media'){
+    updateMedia()
   }
 };
+
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
   await exclude();
