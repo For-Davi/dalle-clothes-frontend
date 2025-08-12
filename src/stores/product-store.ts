@@ -125,18 +125,12 @@ export const useProductStore = defineStore('product', {
     },
     async updateProductMedia(
       productID: number,
-      media: IMediaItem[],
-      imagesToKeep: number[],
-      imagesToDelete: number[],
+      newImages: IMediaItem[],
+      imagesToDelete: { id: number }[],
     ) {
       try {
         this.setLoading(true);
-        const response = await updateProductMediaService(
-          productID,
-          media,
-          imagesToKeep,
-          imagesToDelete,
-        );
+        const response = await updateProductMediaService(productID, newImages, imagesToDelete);
         if (response.status === 200) {
           createSuccess(response.data.message);
         }

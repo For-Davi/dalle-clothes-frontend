@@ -82,28 +82,29 @@ export const createProductService = (
 
 export const updateProductMediaService = (
   productID: number,
-  media: IMediaItem[],
-  imagesToKeep: number[],
-  imagesToDelete: number[],
+  newImages: IMediaItem[],
+  imagesToDelete: { id: number }[],
 ): Promise<{
   status: number;
   data: {
-    products: IProduct[];
+    images: IImage[];
+    logs: ILog[];
     message: string;
   };
 }> => {
   const formData = new FormData();
 
-  media.forEach((image) => {
+  formData.append('productID', productID.toString());
+
+  newImages.forEach((image) => {
     if (image instanceof File) {
-      formData.append('new_images[]', image);
+      formData.append('newImages[]', image);
     }
   });
 
-  formData.append('images_to_keep', JSON.stringify(imagesToKeep));
-  formData.append('images_to_delete', JSON.stringify(imagesToDelete));
+  formData.append('imagesToDelete', JSON.stringify(imagesToDelete));
 
-  return api.post(`${baseUrl}/update-media/${productID}`, formData, {
+  return api.post(`${baseUrl}/update-media`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },

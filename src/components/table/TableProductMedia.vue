@@ -13,6 +13,7 @@ const props = defineProps<{
 }>();
 
 const listMedia = defineModel<IMediaItem[]>('listMedia', { required: true });
+const listMediaDelete = defineModel<{ id: number }[]>('listMediaDelete', { required: true });
 
 const showConfirmAction = ref<boolean>(false);
 const mediaIndexMonitoring = ref<number | null>(null);
@@ -21,12 +22,21 @@ const closeConfirmActionOk = () => {
   showConfirmAction.value = false;
 
   if (mediaIndexMonitoring.value !== null) {
+    const mediaItem = listMedia.value[mediaIndexMonitoring.value];
+    if (isIImage(mediaItem)) {
+      listMediaDelete.value.push({ id: mediaItem.id });
+    }
+
     listMedia.value.splice(mediaIndexMonitoring.value, 1);
     mediaIndexMonitoring.value = null;
   }
 };
+const isIImage = (item: IMediaItem): item is IImage => {
+  return (item as IImage).id !== undefined;
+};
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;
+  mediaIndexMonitoring.value = null;
 };
 const openConfirmAction = (index: number): void => {
   mediaIndexMonitoring.value = index;

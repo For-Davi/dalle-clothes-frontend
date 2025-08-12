@@ -13,6 +13,7 @@ const props = defineProps<{
 }>();
 
 const listMedia = defineModel<IMediaItem[]>('listMedia', { required: true });
+const listMediaDelete = defineModel<{ id: number }[]>('listMediaDelete', { required: true });
 const list = ref<IMediaItem[]>([]);
 const mediaUploadRef = ref<InstanceType<typeof MediaUpload>>();
 
@@ -53,7 +54,11 @@ const pushMediaInList = () => {
           no-caps
         />
       </div>
-      <TableProductMedia :loading="loading" v-model:listMedia="listMedia" />
+      <TableProductMedia
+        :loading="loading"
+        v-model:listMedia="listMedia"
+        v-model:listMediaDelete="listMediaDelete"
+      />
     </q-card-section>
   </q-card>
 </template>
