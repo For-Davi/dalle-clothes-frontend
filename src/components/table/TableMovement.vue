@@ -12,7 +12,7 @@ defineOptions({
 
 const emit = defineEmits<{
   'show:showFormMovement': [number];
-  'show:showDescription': [string]
+  'show:showDescription': [string];
 }>();
 
 const { loadingMovement, listMovement } = storeToRefs(useMovementStore());
@@ -83,7 +83,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn
-            v-show="props.row.description"
+              v-show="props.row.description"
               @click="emit('show:showDescription', props.row.description)"
               :disable="movementMonitoring === props.row.id"
               size="sm"

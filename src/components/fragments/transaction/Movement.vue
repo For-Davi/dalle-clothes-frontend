@@ -116,9 +116,12 @@ const hasFilter = computed(() => {
           </q-btn>
         </div>
       </q-banner>
-        <TableMovement @show:show-form-movement="startEditMovement" @show:show-description="startShowDescription"/>
+      <TableMovement
+        @show:show-form-movement="startEditMovement"
+        @show:show-description="startShowDescription"
+      />
     </section>
-    
+
     <!-- Modals -->
     <FormMovement :data="showFormMovement" @update:open="changeShowFormMovement(false)" />
     <Description :data="showDescription" @update:open="changeShowDescription(false)" />
