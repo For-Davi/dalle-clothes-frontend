@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <section style="min-height: 300px">
+  <section style="min-height: 300px; max-height: 500px;">
     <q-table
       v-show="!loading"
       :rows="loading ? [] : props.listLog"
@@ -23,7 +23,6 @@ const props = defineProps<{
       no-data-label="Nenhum registro para mostrar"
       virtual-scroll
       :rows-per-page-options="[5]"
-      style="height: 460px"
       bordered
       flat
     >
