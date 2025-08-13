@@ -475,6 +475,33 @@ export const columnsCategoryTransaction: IQuasarTable[] = [
   },
 ];
 
+export const columnsMovement: IQuasarTable[] = [
+  {
+    name: 'date',
+    label: 'Data',
+    field: 'date',
+    align: 'left',
+  },
+  {
+    name: 'value',
+    label: 'Valor',
+    field: 'value',
+    align: 'left',
+  },
+  {
+    name: 'category',
+    label: 'Categoria',
+    field: 'category',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: 'Ações',
+    field: 'actions',
+    align: 'right',
+  },
+];
+
 export const columnsTypesAccount: IQuasarTable[] = [
   {
     name: 'name',

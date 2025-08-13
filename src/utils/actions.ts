@@ -36,7 +36,7 @@ export const actionsStock: { label: string; icon: string; type: IActionStock }[]
   },
 ];
 
-export const actionsTransaction: { label: string; icon: string; type: IActionTransaction }[] = [
+export const actionsMovement: { label: string; icon: string; type: IActionMovement }[] = [
   {
     label: 'Exportar',
     icon: 'download',

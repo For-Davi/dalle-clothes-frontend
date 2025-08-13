@@ -1,4 +1,3 @@
-import type { ActionsTransaction } from './Actions';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
 import type { FilterSupplier } from './Supplier';
@@ -23,7 +22,7 @@ import type { FilterClient, Client } from './Client';
 import type { Color } from './Color';
 import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
-import type { ActionStock, ActionsTransaction } from 'src/utils/actions';
+import type { ActionStock, ActionsMovement } from './Actions';
 import type { Tag } from './Tag';
 import type {
   VModelProductBasic,
@@ -48,6 +47,7 @@ import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting'
 import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
 import type { TypesAccount } from './Types';
+import type { DataMovement, FilterMovement, Movement } from './Movement';
 
 export {};
 
@@ -95,7 +95,7 @@ declare global {
   type IGridItemUpdate = GridItemUpdate;
 
   type IActionStock = ActionStock;
-  type IActionTransaction = ActionsTransaction;
+  type IActionMovement = ActionsMovement;
 
   type ITag = Tag;
 
@@ -133,4 +133,8 @@ declare global {
   type IProfilePassword = ProfilePassword;
 
   type ITypesAccount = TypesAccount;
+
+  type IFilterMovement = FilterMovement;
+  type IMovement = Movement;
+  type IDataMovement = DataMovement;
 }
