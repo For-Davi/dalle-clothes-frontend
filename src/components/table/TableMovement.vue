@@ -12,6 +12,7 @@ defineOptions({
 
 const emit = defineEmits<{
   'show:showFormMovement': [number];
+  'show:showDescription': [string]
 }>();
 
 const { loadingMovement, listMovement } = storeToRefs(useMovementStore());
@@ -60,6 +61,7 @@ onMounted(async () => {
       no-data-label="Nenhuma movimentação para mostrar"
       virtual-scroll
       :rows-per-page-options="[10]"
+      dense
     >
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -69,17 +71,29 @@ onMounted(async () => {
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props">
+        <q-tr :props="props" :class="props.row.type === 'entry' ? 'bg-green-1' : 'bg-red-1'">
           <q-td key="date" :props="props" class="text-left">
-            {{ props.row.date }}
+            {{ props.row.date.replace(/-/g, '/') }}
           </q-td>
           <q-td key="value" :props="props" class="text-left">
             {{ formatToReal(props.row.value) }}
           </q-td>
           <q-td key="category" :props="props" class="text-left">
-            {{ props.row.category ?? 'Sem categoria' }}
+            {{ props.row.category?.name ?? 'Sem categoria' }}
           </q-td>
           <q-td key="actions" :props="props">
+            <q-btn
+            v-show="props.row.description"
+              @click="emit('show:showDescription', props.row.description)"
+              :disable="movementMonitoring === props.row.id"
+              size="sm"
+              flat
+              round
+              color="primary"
+              icon="fa-solid fa-file-lines"
+            >
+              <q-tooltip>Descrição</q-tooltip>
+            </q-btn>
             <q-btn
               @click="startEdit(props.row.id)"
               :disable="movementMonitoring === props.row.id"

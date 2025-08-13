@@ -4,6 +4,7 @@ import { actionsMovement } from 'src/utils/actions';
 import CategoryTransactionsManage from 'src/components/manage/CategoryTransactionsManage.vue';
 import TableMovement from 'src/components/table/TableMovement.vue';
 import FormMovement from 'src/components/form/FormMovement.vue';
+import Description from 'src/components/general/Description.vue';
 
 defineOptions({
   name: 'Movement',
@@ -14,6 +15,10 @@ const showCategoryTransactionManage = ref<boolean>(false);
 const showFormMovement = reactive({
   open: false as boolean,
   movementID: null as number | null,
+});
+const showDescription = reactive({
+  open: false as boolean,
+  description: null as string | null,
 });
 const filter = reactive<IFilterMovement>({
   startDate: '',
@@ -27,11 +32,20 @@ const changeShowFormMovement = (open: boolean, movementID: number | null = null)
     movementID,
   });
 };
+const changeShowDescription = (open: boolean, description: string | null = null): void => {
+  Object.assign(showDescription, {
+    open,
+    description,
+  });
+};
 const changeShowCategoryTransactionManage = () => {
   showCategoryTransactionManage.value = !showCategoryTransactionManage.value;
 };
 const startEditMovement = (id: number): void => {
   changeShowFormMovement(true, id);
+};
+const startShowDescription = (description: string): void => {
+  changeShowDescription(true, description);
 };
 const changeShowFilterMovement = (): void => {
   showFilterMovement.value = !showFilterMovement.value;
@@ -102,10 +116,12 @@ const hasFilter = computed(() => {
           </q-btn>
         </div>
       </q-banner>
-        <TableMovement @show:show-form-movement="startEditMovement" />
+        <TableMovement @show:show-form-movement="startEditMovement" @show:show-description="startShowDescription"/>
     </section>
+    
     <!-- Modals -->
     <FormMovement :data="showFormMovement" @update:open="changeShowFormMovement(false)" />
+    <Description :data="showDescription" @update:open="changeShowDescription(false)" />
     <CategoryTransactionsManage
       :open="showCategoryTransactionManage"
       @update:open="changeShowCategoryTransactionManage"
