@@ -32,7 +32,10 @@ const dataMovement = reactive({
   date: '' as string,
   description: '' as string,
 });
-const selectedCategory = ref<ICategoryTransaction | null>(null);
+const selectedCategory = ref<IQuasarSelect<number | null> | null>({
+  label: 'Sem categoria',
+  value: null,
+});
 const selectedType = ref<IQuasarSelect<'entry' | 'out'>>({
   label: 'Entrada 🟩',
   value: 'entry',
@@ -49,7 +52,18 @@ const clear = (): void => {
     description: '',
   });
 
-  selectedCategory.value = null;
+  selectedCategory.value = {
+    label: 'Sem categoria',
+    value: null,
+  };
+  selectedQuantity.value = {
+    label: 'Mês atual',
+    value: 1,
+  };
+  selectedType.value = {
+    label: 'Entrada 🟩',
+    value: 'entry',
+  };
 };
 const save = async () => {
   const check = checkDataMovement(dataMovement);
@@ -58,7 +72,7 @@ const save = async () => {
       value: parseFloat(dataMovement.value),
       description: dataMovement.description.trim().length > 0 ? dataMovement.description : null,
       type: selectedType.value.value,
-      transactionCategoryID: selectedCategory.value?.id ?? null,
+      transactionCategoryID: selectedCategory.value?.value ?? null,
       quantity: selectedQuantity.value.value,
       date: dataMovement.date,
     });
@@ -78,7 +92,7 @@ const update = async () => {
       value: parseFloat(dataMovement.value),
       description: dataMovement.description.trim().length > 0 ? dataMovement.description : null,
       type: selectedType.value.value,
-      transactionCategoryID: selectedCategory.value?.id ?? null,
+      transactionCategoryID: selectedCategory.value?.value ?? null,
       quantity: selectedQuantity.value.value,
       date: dataMovement.date,
     });
@@ -98,7 +112,7 @@ const checkDataEdit = async () => {
 
       Object.assign(dataMovement, {
         value: String(movement.value),
-        date: String(movement.date),
+        date: String(movement.date).replace(/-/g, '/'),
         description: movement.description ?? '',
       });
 
@@ -113,9 +127,20 @@ const checkDataEdit = async () => {
               value: 'out',
             };
 
-      selectedCategory.value = movement.transaction_category_id ? movement.category : null;
+      selectedCategory.value = movement.transaction_category_id
+        ? {
+            label: movement.category?.name ?? '',
+            value: movement.category?.id ?? null,
+          }
+        : {
+            label: 'Sem categoria',
+            value: null,
+          };
     }
   }
+};
+const fetchCategories = async (): Promise<void> => {
+  await useCategoryTransactionStore().getCategoriesTransaction();
 };
 
 const open = computed({
@@ -129,7 +154,6 @@ const getlabelCategory = computed((): string => {
   return selectedCategory.value !== null ? 'Categoria' : 'Sem categoria definida';
 });
 const movementID = computed(() => props.data.movementID);
-
 const optionsType = computed(() => {
   return [
     {
@@ -194,10 +218,19 @@ const optionsQuantity = computed(() => {
     },
   ];
 });
+const getOptionsCategories = computed((): IQuasarSelect<number | null>[] => {
+  const categories = listCategoryTransaction.value.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
+  return [{ label: 'Sem categoria', value: null }, ...categories];
+});
 
 watch(open, async () => {
   if (open.value) {
     clear();
+    await fetchCategories();
     await checkDataEdit();
   }
 });
@@ -209,7 +242,10 @@ watch(open, async () => {
       style="width: 800px; max-width: 98vw"
     >
       <q-card-section class="q-pa-none">
-        <TitlePage :title="movementID ? 'Atualização de movimentação' : 'Cadastro de movimentação'" icon="sync_alt" />
+        <TitlePage
+          :title="movementID ? 'Atualização de movimentação' : 'Cadastro de movimentação'"
+          icon="sync_alt"
+        />
       </q-card-section>
       <q-card-section class="q-pa-sm">
         <Loading :show="isLoading" />
@@ -282,14 +318,13 @@ watch(open, async () => {
             outlined
             bg-color="white"
             label-color="black"
-            :options="listCategoryTransaction"
-            option-label="name"
-            option-value="id"
+            :options="getOptionsCategories"
+            map-options
             :label="getlabelCategory"
             dense
-            options-selected-class="bg-green-1 text-black"
+            options-dense
           >
-          <template v-slot:prepend>
+            <template v-slot:prepend>
               <q-icon name="checklist" color="black" size="20px" />
             </template>
           </q-select>

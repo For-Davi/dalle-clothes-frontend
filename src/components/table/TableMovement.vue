@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { columnsMovement } from 'src/utils/columns';
 import { useMovementStore } from 'src/stores/movement-store';
+import { formatToReal } from 'src/composables/Money';
 
 defineOptions({
   name: 'TableMovement',
@@ -73,21 +74,12 @@ onMounted(async () => {
             {{ props.row.date }}
           </q-td>
           <q-td key="value" :props="props" class="text-left">
-            {{ props.row.value }}
+            {{ formatToReal(props.row.value) }}
           </q-td>
           <q-td key="category" :props="props" class="text-left">
-            {{ props.row.category }}
+            {{ props.row.category ?? 'Sem categoria' }}
           </q-td>
-          <q-td key="action" :props="props">
-            <q-btn
-              @click="startEdit(props.row.id)"
-              :disable="movementMonitoring === props.row.id"
-              size="sm"
-              flat
-              round
-              color="black"
-              icon="edit"
-            />
+          <q-td key="actions" :props="props">
             <q-btn
               @click="startEdit(props.row.id)"
               :disable="movementMonitoring === props.row.id"
@@ -108,7 +100,6 @@ onMounted(async () => {
             />
           </q-td>
         </q-tr>
-        <q-tr> teste </q-tr>
       </template>
     </q-table>
     <ConfirmAction

@@ -87,7 +87,7 @@ const hasFilter = computed(() => {
         </q-btn-dropdown>
       </div>
     </section>
-    <section class="q-mt-sm">
+    <section class="q-mt-md q-px-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">
           <q-btn
@@ -102,7 +102,7 @@ const hasFilter = computed(() => {
           </q-btn>
         </div>
       </q-banner>
-      <TableMovement @show:show-form-movement="startEditMovement" />
+        <TableMovement @show:show-form-movement="startEditMovement" />
     </section>
     <!-- Modals -->
     <FormMovement :data="showFormMovement" @update:open="changeShowFormMovement(false)" />

@@ -84,7 +84,7 @@ const hasFilter = computed(() => {
         />
       </div>
     </section>
-    <section class="q-mt-sm">
+    <section class="q-mt-md">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">
           <q-input
