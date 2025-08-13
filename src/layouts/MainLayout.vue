@@ -574,11 +574,11 @@ const getBackgroundSelectedSideMenu = computed(() => {
               clickable
               v-ripple
               class="text-white"
-              :to="{ name: 'account' }"
-              :active="isActive('account')"
+              :to="{ name: 'receipt' }"
+              :active="isActive('receipt')"
               active-class="text-bold"
               :style="
-                isActive('account')
+                isActive('receipt')
                   ? getBackgroundSelectedSideMenu
                     ? { backgroundColor: getBackgroundSelectedSideMenu }
                     : undefined
@@ -591,7 +591,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
                 <q-icon
                   name="account_balance"
                   :style="{
-                    color: isActive('account')
+                    color: isActive('receipt')
                       ? getColorIconSelectedSideMenu || ''
                       : getColorIconNotSelectedSideMenu || '',
                   }"
@@ -600,12 +600,12 @@ const getBackgroundSelectedSideMenu = computed(() => {
               <q-item-section>
                 <span
                   :style="{
-                    color: isActive('account')
+                    color: isActive('receipt')
                       ? getColorIconSelectedSideMenu || undefined
                       : getColorIconNotSelectedSideMenu || undefined,
                   }"
                 >
-                  Contas
+                  Recebimentos
                 </span>
               </q-item-section>
             </q-item>

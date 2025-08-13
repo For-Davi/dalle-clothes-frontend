@@ -5,23 +5,23 @@ import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { checkDataCategoryTransaction } from 'src/composables/CheckData';
-import { useTypesAccountStore } from 'src/stores/types-account-store';
+import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 
 defineOptions({
-  name: 'FormTypesAccount',
+  name: 'FormTypesReceipt',
 });
 
 const props = defineProps<{
   data: {
     open: boolean;
-    type: ITypesAccount | null;
+    type: ITypesReceipt | null;
   };
 }>();
 const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { loadingTypesAccount } = storeToRefs(useTypesAccountStore());
+const { loadingTypesReceipt } = storeToRefs(useTypesReceiptStore());
 
 const dataType = reactive({
   name: '' as string,
@@ -35,7 +35,7 @@ const clear = (): void => {
 const save = async () => {
   const check = checkDataCategoryTransaction(dataType);
   if (check.status) {
-    const response = await useTypesAccountStore().createTypesAccount(dataType.name);
+    const response = await useTypesReceiptStore().createTypesReceipt(dataType.name);
     if (response?.status === 201) {
       clear();
       emit('update:open');
@@ -47,7 +47,7 @@ const save = async () => {
 const update = async () => {
   const check = checkDataCategoryTransaction(dataType);
   if (check.status) {
-    const response = await useTypesAccountStore().updateTypesAccount(
+    const response = await useTypesReceiptStore().updateTypesReceipt(
       typeID.value ?? 0,
       dataType.name,
     );
@@ -85,20 +85,20 @@ watch(open, () => {
     <q-card
       class="bg-grey-2 column justify-between"
       style="width: 350px"
-      :style="loadingTypesAccount ? 'min-height: 350px' : ''"
+      :style="loadingTypesReceipt ? 'min-height: 350px' : ''"
     >
       <q-card-section class="q-pa-none">
         <TitlePage :title="typeID ? 'Atualização de tipo' : 'Cadastro de tipo'" icon="list_alt" />
       </q-card-section>
-      <Loading :show="loadingTypesAccount" />
-      <q-card-section class="q-pa-sm" v-show="!loadingTypesAccount">
+      <Loading :show="loadingTypesReceipt" />
+      <q-card-section class="q-pa-sm" v-show="!loadingTypesReceipt">
         <q-form class="q-gutter-y-sm">
           <q-input
             v-model="dataType.name"
             bg-color="white"
             label-color="black"
             outlined
-            label="Tipo de conta"
+            label="Tipo de recebimento"
             dense
             input-class="text-black"
             class="full-width"
@@ -109,7 +109,7 @@ watch(open, () => {
           </q-input>
         </q-form>
       </q-card-section>
-      <q-card-actions align="right" v-show="!loadingTypesAccount">
+      <q-card-actions align="right" v-show="!loadingTypesReceipt">
         <div class="row justify-end items-center q-gutter-x-sm">
           <q-btn
             color="red"
@@ -126,7 +126,7 @@ watch(open, () => {
             color="primary"
             label="Salvar"
             size="md"
-            :loading="loadingTypesAccount"
+            :loading="loadingTypesReceipt"
             unelevated
             no-caps
           />
@@ -136,7 +136,7 @@ watch(open, () => {
             color="primary"
             label="Atualizar"
             size="md"
-            :loading="loadingTypesAccount"
+            :loading="loadingTypesReceipt"
             unelevated
             no-caps
           />

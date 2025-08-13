@@ -4,12 +4,12 @@ import { computed, reactive, watch } from 'vue';
 import Loading from '../shared/Loading.vue';
 import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
-import { useTypesAccountStore } from 'src/stores/types-account-store';
-import FormTypesAccount from '../form/FormTypesAccount.vue';
-import TableTypesAccount from '../table/TableTypesAccount.vue';
+import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
+import TableTypesReceipt from '../table/TableTypesReceipt.vue';
+import FormTypesReceipt from '../form/FormTypesReceipt.vue';
 
 defineOptions({
-  name: 'TypesAccountManage',
+  name: 'TypesReceiptsManage',
 });
 
 const props = defineProps<{
@@ -19,30 +19,30 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { loadingTypesAccount, listTypesAccount } = storeToRefs(useTypesAccountStore());
+const { loadingTypesReceipt, listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 
-const showFormTypeAccount = reactive<{
+const showFormTypeReceipt = reactive<{
   open: boolean;
-  type: ITypesAccount | null;
+  type: ITypesReceipt | null;
 }>({
   open: false,
   type: null,
 });
 
 const clear = () => {
-  Object.assign(showFormTypeAccount, {
+  Object.assign(showFormTypeReceipt, {
     open: false,
     type: null,
   });
 };
-const startEdit = (data: ITypesAccount) => {
-  changeShowFormTypeAccount(true, data);
+const startEdit = (data: ITypesReceipt) => {
+  changeShowFormTypeReceipt(true, data);
 };
-const changeShowFormTypeAccount = (
+const changeShowFormTypeReceipt = (
   show: boolean,
   type: ICategoryTransaction | null = null,
 ): void => {
-  Object.assign(showFormTypeAccount, {
+  Object.assign(showFormTypeReceipt, {
     open: show,
     type: type,
   });
@@ -63,21 +63,21 @@ watch(open, () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 sub-page column justify-between">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Tipos de contas" icon="credit_card" />
+        <TitlePage title="Tipos de recebimentos" icon="credit_card" />
       </q-card-section>
       <q-card-section>
-        <div v-show="!loadingTypesAccount">
-          <TableTypesAccount
-            v-show="listTypesAccount.length > 0"
+        <div v-show="!loadingTypesReceipt">
+          <TableTypesReceipt
+            v-show="listTypesReceipt.length > 0"
             @show:show-form-type-account="startEdit"
           />
           <Empty
-            v-show="listTypesAccount.length <= 0 && !loadingTypesAccount"
+            v-show="listTypesReceipt.length <= 0 && !loadingTypesReceipt"
             message="Sem tipos cadastrados"
             color="bg-red-3"
           />
         </div>
-        <Loading :show="loadingTypesAccount" />
+        <Loading :show="loadingTypesReceipt" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
@@ -91,7 +91,7 @@ watch(open, () => {
             flat
           />
           <q-btn
-            @click="changeShowFormTypeAccount(true)"
+            @click="changeShowFormTypeReceipt(true)"
             color="primary"
             label="Adicionar"
             size="md"
@@ -102,9 +102,9 @@ watch(open, () => {
       </q-card-actions>
 
       <!-- Modals -->
-      <FormTypesAccount
-        :data="showFormTypeAccount"
-        @update:open="changeShowFormTypeAccount(false)"
+      <FormTypesReceipt
+        :data="showFormTypeReceipt"
+        @update:open="changeShowFormTypeReceipt(false)"
       />
     </q-card>
   </q-dialog>

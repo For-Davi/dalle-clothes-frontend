@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import TypesAccountManage from 'src/components/manage/TypesAccountManage.vue';
+import TypesReceiptsManage from 'src/components/manage/TypesReceiptsManage.vue';
+import FormReceipt from 'src/components/form/FormReceipt.vue';
 import { reactive, ref } from 'vue';
 defineOptions({
-  name: 'Account',
+  name: 'Receipts',
 });
 
-const showTypeAccountManage = ref<boolean>(false);
-const filterAccount = ref<string>('');
-const columnsAccount = reactive<IQuasarTable[]>([
+const showFormReceipt = ref<boolean>(false)
+const showTypeReceiptManage = ref<boolean>(false);
+const filterReceipt = ref<string>('');
+const columnsReceipt = reactive<IQuasarTable[]>([
   {
     name: 'name',
     label: 'Nome',
@@ -79,16 +81,27 @@ const rows = [
   },
 ];
 
-const changeShowTypeAccountManage = () => {
-  showTypeAccountManage.value = !showTypeAccountManage.value;
+const changeShowTypeReceiptsManage = () => {
+  showTypeReceiptManage.value = !showTypeReceiptManage.value;
 };
+
+const changeShowFormReceipt = () => {
+  showFormReceipt.value = !showFormReceipt.value
+}
 </script>
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Contas" icon="account_balance" />
+      <TitlePage class="col-7" title="Recebimentos" icon="account_balance" />
       <div>
-        <q-btn color="white" text-color="black" label="Nova conta" icon-right="add" no-caps />
+        <q-btn 
+        color="white" 
+        text-color="black" 
+        label="Nova conta" 
+        icon-right="add" 
+        no-caps 
+        @click="changeShowFormReceipt"
+        />
 
         <q-btn
           color="white"
@@ -97,7 +110,7 @@ const changeShowTypeAccountManage = () => {
           no-caps
           icon-right="credit_card "
           class="q-ml-sm"
-          @click="changeShowTypeAccountManage"
+          @click="changeShowTypeReceiptsManage"
         />
       </div>
     </section>
@@ -107,7 +120,7 @@ const changeShowTypeAccountManage = () => {
           <q-input
             label="Pesquise"
             outlined
-            v-model="filterAccount"
+            v-model="filterReceipt"
             dense
             style="width: 200px"
             class="bg-white rounded-borders"
@@ -120,8 +133,8 @@ const changeShowTypeAccountManage = () => {
       </q-banner>
       <q-table
         :rows="rows"
-        :columns="columnsAccount"
-        :filter="filterAccount"
+        :columns="columnsReceipt"
+        :filter="filterReceipt"
         :loading="false"
         title="Lista de contas"
         row-key="index"
@@ -173,6 +186,7 @@ const changeShowTypeAccountManage = () => {
     </section>
 
     <!-- Modals -->
-    <TypesAccountManage :open="showTypeAccountManage" @update:open="changeShowTypeAccountManage" />
+    <TypesReceiptsManage :open="showTypeReceiptManage" @update:open="changeShowTypeReceiptsManage" />
+    <FormReceipt :open="showFormReceipt" @update:open="changeShowFormReceipt"/>
   </main>
 </template>
