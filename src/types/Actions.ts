@@ -7,4 +7,4 @@ export type ActionStock =
   | 'tag'
   | 'category';
 
-export type ActionsTransaction = 'history' | 'category' | 'export';
+export type ActionsMovement = 'history' | 'category' | 'export';

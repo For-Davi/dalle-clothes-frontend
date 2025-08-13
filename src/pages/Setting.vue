@@ -14,9 +14,26 @@ const tab = ref<ISettingModalTabs>('appearance');
   <main class="q-pa-lg">
     <section>
       <TitlePage title="Configurações" icon="settings" />
-      <q-tabs v-model="tab" inline-label class="bg-grey-2 text-primary" align="left">
-        <q-tab name="appearance" icon="design_services" label="Aparência" no-caps />
-        <q-tab name="system" icon="build" label="Sistema" no-caps />
+      <q-tabs
+        v-model="tab"
+        inline-label
+        class="bg-grey-2 text-primary rounded-borders"
+        align="left"
+      >
+        <q-tab
+          name="appearance"
+          icon="design_services"
+          label="Aparência"
+          no-caps
+          :class="tab == 'appearance' ? 'text-primary' : 'text-grey'"
+        />
+        <q-tab
+          name="system"
+          icon="build"
+          label="Sistema"
+          no-caps
+          :class="tab == 'system' ? 'text-primary' : 'text-grey'"
+        />
       </q-tabs>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="appearance" class="q-px-none">

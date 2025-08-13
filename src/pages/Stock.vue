@@ -90,9 +90,6 @@ const openAction = (type: IActionStock): void => {
     case 'category':
       changeCategoryProductManage();
       break;
-    default:
-      console.warn(`Ação desconhecida: ${type}`);
-      break;
   }
 };
 const changeShowFilterProduct = (): void => {

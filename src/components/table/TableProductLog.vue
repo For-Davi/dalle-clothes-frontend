@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 </script>
 <template>
-  <section style="min-height: 300px; max-height: 500px;">
+  <section style="min-height: 300px; max-height: 500px">
     <q-table
       v-show="!loading"
       :rows="loading ? [] : props.listLog"
