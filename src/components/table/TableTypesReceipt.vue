@@ -4,17 +4,17 @@ import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import Loading from '../shared/Loading.vue';
 import { columnsTypesAccount } from 'src/utils/columns';
-import { useTypesAccountStore } from 'src/stores/types-account-store';
+import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 
 defineOptions({
-  name: 'TableTypesAccount',
+  name: 'TableTypesReceipt',
 });
 
 const emit = defineEmits<{
-  'show:showFormTypeAccount': [ITypesAccount];
+  'show:showFormTypeAccount': [ITypesReceipt];
 }>();
 
-const { loadingTypesAccount, listTypesAccount } = storeToRefs(useTypesAccountStore());
+const { loadingTypesReceipt, listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 
 const showConfirmAction = ref<boolean>(false);
 const typeMonitoring = ref<number | null>(null);
@@ -25,7 +25,7 @@ const clear = (): void => {
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  await useTypesAccountStore().deleteTypesAccount(typeMonitoring.value ?? 0);
+  await useTypesReceiptStore().deleteTypesReceipt(typeMonitoring.value ?? 0);
   clear();
 };
 const closeConfirmAction = (): void => {
@@ -36,14 +36,14 @@ const openConfirmAction = (id: number): void => {
   typeMonitoring.value = id;
   showConfirmAction.value = true;
 };
-const startEdit = (data: ITypesAccount) => {
+const startEdit = (data: ITypesReceipt) => {
   emit('show:showFormTypeAccount', data);
 };
 const startExclude = (id: number) => {
   openConfirmAction(id);
 };
 const fetchTypes = async (): Promise<void> => {
-  await useTypesAccountStore().getTypesAccount();
+  await useTypesReceiptStore().getTypesReceipt();
 };
 
 onMounted(async () => {
@@ -53,14 +53,14 @@ onMounted(async () => {
 <template>
   <section style="min-height: 300px">
     <q-table
-      v-show="!loadingTypesAccount"
-      :rows="loadingTypesAccount ? [] : listTypesAccount"
+      v-show="!loadingTypesReceipt"
+      :rows="loadingTypesReceipt ? [] : listTypesReceipt"
       :columns="columnsTypesAccount"
       :filter="filter"
-      :loading="loadingTypesAccount"
-      title="Lista de categorias"
+      :loading="loadingTypesReceipt"
+      title="Lista de tipos"
       row-key="index"
-      no-data-label="Nenhuma categoria para mostrar"
+      no-data-label="Nenhuma tipo para mostrar"
       virtual-scroll
       :rows-per-page-options="[6]"
       style="height: 460px"
@@ -76,10 +76,10 @@ onMounted(async () => {
       </template>
       <template v-slot:top>
         <div class="row justify-between items-center full-width">
-          <span class="text-body1">Lista de categorias</span>
+          <span class="text-body1">Lista de tipos</span>
           <q-space />
           <q-input
-            v-show="listTypesAccount.length > 0"
+            v-show="listTypesReceipt.length > 0"
             v-model="filter"
             outlined
             dense
@@ -122,7 +122,7 @@ onMounted(async () => {
     </q-table>
 
     <!-- Modals -->
-    <Loading :show="loadingTypesAccount" />
+    <Loading :show="loadingTypesReceipt" />
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
