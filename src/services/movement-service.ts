@@ -9,6 +9,13 @@ export const getMovementsService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const getMovementPeriodService = (): Promise<{
+  status: number;
+  data: {
+    periods: string[];
+  };
+}> => api.get(`${baseUrl}/periods`);
+
 export const getMovementsFilterService = (
   filter: IFilterMovement,
 ): Promise<{

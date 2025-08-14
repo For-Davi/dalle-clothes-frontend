@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
@@ -18,18 +18,18 @@ const emit = defineEmits<{
   'update:open': ['close' | IFilterMovement];
 }>();
 
-const { loadingMovement } = storeToRefs(useMovementStore());
+const { loadingMovement, listMovementPeriod } = storeToRefs(useMovementStore());
 const { loadingCategoryTransaction, listCategoryTransaction } = storeToRefs(
   useCategoryTransactionStore(),
 );
 
 const loading = ref<boolean>(false);
-const dataMovement = reactive({
-  startDate: '' as string,
-  endDate: '' as string,
-});
 const selectedCategory = ref<IQuasarSelect<number | null>>({
   label: 'Todos',
+  value: null,
+});
+const selectedPeriod = ref<IQuasarSelect<string | null>>({
+  label: 'Mês atual',
   value: null,
 });
 const selectedType = ref<IQuasarSelect<'all' | 'entry' | 'out'>>({
@@ -43,13 +43,12 @@ const open = computed({
 });
 
 const clear = (): void => {
-  Object.assign(dataMovement, {
-    startDate: '',
-    endDate: '',
-  });
-
   selectedCategory.value = {
     label: 'Todos',
+    value: null,
+  };
+  selectedPeriod.value = {
+    label: 'Mês atual',
     value: null,
   };
   selectedType.value = {
@@ -60,26 +59,35 @@ const clear = (): void => {
 const fetchCategories = async () => {
   await useCategoryTransactionStore().getCategoriesTransaction();
 };
+const fetchPeriods = async () => {
+  await useMovementStore().getMovementPeriod();
+};
 const changeLoading = (): void => {
   loading.value = !loading.value;
 };
 const mountFilter = () => {
-  Object.assign(dataMovement, {
-    startDate: props.filters.startDate ?? '',
-    endDate: props.filters.endDate ?? '',
-  });
-
   const selectedCategoryItem = listCategoryTransaction.value.find(
     (item) => item.id === props.filters.category,
   );
+
   selectedCategory.value = selectedCategoryItem
     ? { label: selectedCategoryItem?.name, value: selectedCategoryItem?.id }
     : { label: 'Todos', value: null };
+
+  selectedType.value = {
+    label:
+      props.filters.type === 'all' ? 'Todos' : props.filters.type === 'entry' ? 'Entrada' : 'Saída',
+    value: props.filters.type,
+  };
+
+  selectedPeriod.value = {
+    label: props.filters.period ?? 'Mês atual',
+    value: props.filters.period,
+  };
 };
 const search = () => {
   const data = {
-    startDate: dataMovement.startDate,
-    endDate: dataMovement.endDate,
+    period: selectedPeriod.value.value,
     type: selectedType.value.value,
     category: selectedCategory.value.value,
   };
@@ -97,6 +105,24 @@ const optionsCategories = computed(() => {
       label: item.name,
       value: item.id,
     })),
+  ];
+});
+const optionsPeriods = computed(() => {
+  const currentPeriod = new Date()
+    .toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
+    .replace('/', '-');
+
+  return [
+    {
+      label: 'Mês atual',
+      value: null,
+    },
+    ...listMovementPeriod.value
+      .filter((item) => item !== currentPeriod)
+      .map((item) => ({
+        label: item.replace(/-/g, '/'),
+        value: item.replace(/-/g, '/'),
+      })),
   ];
 });
 const optionsType = computed(() => {
@@ -123,6 +149,7 @@ watch(open, async () => {
   if (open.value) {
     clear();
     changeLoading();
+    await fetchPeriods();
     await fetchCategories();
     mountFilter();
     changeLoading();
@@ -138,34 +165,22 @@ watch(open, async () => {
       <q-card-section class="q-pa-sm">
         <Loading :show="isLoading" />
         <q-form v-show="!isLoading" class="q-gutter-y-sm">
-          <q-input
-            v-model="dataMovement.startDate"
-            bg-color="white"
-            label-color="black"
+          <q-select
             outlined
-            label="Data de início (mm/yyyy)"
+            v-model="selectedPeriod"
+            label="Filtre por período"
+            :options="optionsPeriods"
+            bg-color="white"
             dense
-            input-class="text-black no-spinners"
-            mask="##/####"
+            options-dense
+            map-options
+            label-color="black"
+            class="full-width"
           >
             <template v-slot:prepend>
-              <q-icon name="calendar_today" color="black" size="20px" />
+              <q-icon name="date_range" color="black" size="20px" />
             </template>
-          </q-input>
-          <q-input
-            v-model="dataMovement.endDate"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Data de fim (mm/yyyy)"
-            dense
-            input-class="text-black no-spinners"
-            mask="##/####"
-          >
-            <template v-slot:prepend>
-              <q-icon name="calendar_today" color="black" size="20px" />
-            </template>
-          </q-input>
+          </q-select>
           <q-select
             outlined
             v-model="selectedCategory"
