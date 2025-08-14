@@ -2,7 +2,8 @@ import {
     getReceiptsService,
     createReceiptService,
     updateReceiptService,
-    deleteReceiptService
+    deleteReceiptService,
+    showReceiptService
 } from 'src/services/receipt-service'
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -36,6 +37,16 @@ export const useReceiptstore = defineStore('receipt', {
         this.setLoading(false);
       }
     },
+       async showReceipt(receiptID: number) {
+          try {
+            this.setLoading(true);
+            return await showReceiptService(receiptID);
+          } catch (error) {
+            createError(error);
+          } finally {
+            this.setLoading(false);
+          }
+        },
     async createReceipt(data: IDataReceipt) {
       this.setLoading(true);
       try {
@@ -54,10 +65,16 @@ export const useReceiptstore = defineStore('receipt', {
         this.setLoading(false);
       }
     },
-    async updateReceipt(data: IReceipt) {
+    async updateReceipt(
+        id: number,
+      identifier: string,
+      typesID: number | null,
+      active: number,
+      description: string | null
+    ) {
       this.setLoading(true);
       try {
-        const response = await updateReceiptService(data);
+        const response = await updateReceiptService(id, identifier, typesID, active, description);
         if (response.status === 200) {
           this.clearListReceipt();
           this.setListReceipt(response.data.receipts);

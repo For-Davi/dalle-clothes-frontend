@@ -1,6 +1,6 @@
 import { api } from 'boot/axios';
 
-const baseUrl = 'account/type';
+const baseUrl = 'receipt/type';
 
 export const getTypesReceiptService = (): Promise<{
   status: number;

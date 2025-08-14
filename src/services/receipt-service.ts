@@ -9,32 +9,47 @@ export const getReceiptsService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const showReceiptService = (
+  receiptID: number,
+): Promise<{
+  status: number;
+  data: {
+    receipt: IReceipt;
+  };
+}> => api.get(`${baseUrl}/${receiptID}`);
+
 export const createReceiptService = (
-  data: IDataReceipt,
+  receipt: IDataReceipt,
 ): Promise<{
   status: number;
   data: {
     receipts: IReceipt[];
     message: string;
   };
-}> => api.post(`${baseUrl}/`, data);
+}> => api.post(`${baseUrl}/`, receipt);
 
 export const updateReceiptService = (
-  data: IDataReceipt,
+    id: number,
+    identifier: string,
+    typesID: number | null,
+    active: number,
+    description: string | null
 ): Promise<{
   status: number;
   data: {
     receipts: IReceipt[];
     message: string;
   };
-}> => api.put(`${baseUrl}/`, data);
+}> => api.put(`${baseUrl}/`, {
+  id, identifier, typesID, active, description
+});
 
 export const deleteReceiptService = (
-  id: number,
+  receiptID: number,
 ): Promise<{
   status: number;
   data: {
     receipts: IReceipt[];
     message: string;
   };
-}> => api.delete(`${baseUrl}/${id}`);
+}> => api.delete(`${baseUrl}/${receiptID}`);
