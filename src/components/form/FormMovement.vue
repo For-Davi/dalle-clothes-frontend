@@ -309,7 +309,6 @@ watch(open, async () => {
             label="Quantidade de lançamentos"
             options-dense
             dense
-            options-selected-class="bg-green-1 text-black"
           >
             <template v-slot:prepend>
               <q-icon name="checklist" color="black" size="20px" />

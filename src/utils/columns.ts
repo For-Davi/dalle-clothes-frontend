@@ -481,6 +481,7 @@ export const columnsMovement: IQuasarTable[] = [
     label: 'Data',
     field: 'date',
     align: 'left',
+    sortable: true
   },
   {
     name: 'type',
