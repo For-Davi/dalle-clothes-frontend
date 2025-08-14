@@ -5,6 +5,7 @@ import {
   getProductsFilterService,
   getProductsService,
   getProductVariantService,
+  searchProductService,
   showProductService,
   updateProductAdvancedService,
   updateProductBasicService,
@@ -54,6 +55,17 @@ export const useProductStore = defineStore('product', {
       this.setLoading(true);
       try {
         return await getProductVariantService(id);
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async searchProduct(value: string) {
+      this.setLoading(true);
+      try {
+        return await searchProductService(value);
       } catch (error) {
         createError(error);
         return undefined;

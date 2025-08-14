@@ -11,6 +11,7 @@ import { useProductStore } from 'src/stores/product-store';
 import FilterProduct from 'src/components/filter/FilterProduct.vue';
 import TableProduct from 'src/components/table/TableProduct.vue';
 import FormVariant from 'src/components/form/FormVariant.vue';
+import FormMovementProduct from 'src/components/form/FormMovementProduct.vue';
 
 defineOptions({
   name: 'Stock',
@@ -211,7 +212,6 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
-    
     <ColorManage :open="showColorManage" @update:open="changeColorManage" />
     <GridManage :open="showGridManage" @update:open="changeGridManage" />
     <TagManage :open="showTagManage" @update:open="changeTagManage" />

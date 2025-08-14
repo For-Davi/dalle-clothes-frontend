@@ -11,6 +11,15 @@ export const getProductVariantService = (
   };
 }> => api.get(`${baseUrl}/variant/${id}`);
 
+export const searchProductService = (
+  value: string,
+): Promise<{
+  status: number;
+  data: {
+    variant: IVariant[];
+  };
+}> => api.post(`${baseUrl}/variant/search/`, { value });
+
 export const getProductsService = (): Promise<{
   status: number;
   data: {
