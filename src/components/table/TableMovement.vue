@@ -10,6 +10,9 @@ defineOptions({
   name: 'TableMovement',
 });
 
+const props = defineProps<{
+  title: string;
+}>();
 const emit = defineEmits<{
   'show:showFormMovement': [number];
   'show:showDescription': [string];
@@ -56,7 +59,8 @@ onMounted(async () => {
       :rows="loadingMovement ? [] : listMovement"
       :columns="columnsMovement"
       :loading="loadingMovement"
-      title="Lista de movimentações"
+      :title="props.title"
+      title-class="bg-primary q-px-sm rounded-borders text-white"
       row-key="index"
       no-data-label="Nenhuma movimentação para mostrar"
       virtual-scroll
@@ -71,9 +75,17 @@ onMounted(async () => {
         </q-tr>
       </template>
       <template v-slot:body="props">
-        <q-tr :props="props" :class="props.row.type === 'entry' ? 'bg-green-1' : 'bg-red-1'">
+        <q-tr :props="props">
           <q-td key="date" :props="props" class="text-left">
             {{ props.row.date.replace(/-/g, '/') }}
+          </q-td>
+          <q-td
+            key="type"
+            :props="props"
+            class="text-left text-bold"
+            :class="props.row.type === 'entry' ? 'text-green' : 'text-red'"
+          >
+            {{ props.row.type === 'entry' ? 'Entrada' : 'Saída' }}
           </q-td>
           <q-td key="value" :props="props" class="text-left">
             {{ formatToReal(props.row.value) }}

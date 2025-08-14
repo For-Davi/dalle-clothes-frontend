@@ -113,6 +113,8 @@ const hasFilter = computed(() => {
       </q-banner>
       <TableClient :filter="search" @show:show-form-client="startEditClient" />
     </section>
+
+    <!-- Modals -->
     <FormClient :data="showFormClient" @update:open="changeShowFormClient(false)" />
     <FilterClient :open="showFilterClient" :filters="filter" @update:open="actionFilter" />
   </main>

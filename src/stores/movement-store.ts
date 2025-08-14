@@ -1,6 +1,7 @@
 import {
   createMovementService,
   deleteMovementService,
+  getMovementsFilterService,
   getMovementsService,
   showMovementService,
   updateMovementService,
@@ -23,10 +24,16 @@ export const useMovementStore = defineStore('movement', {
     setListMovement(movements: IMovement[]) {
       movements.map((item) => this.listMovement.push(item));
     },
-    async getMovements() {
+    async getMovements(filter: IFilterMovement | null = null) {
       try {
         this.setLoading(true);
-        const response = await getMovementsService();
+        let response = null;
+        if (filter) {
+          response = await getMovementsFilterService(filter);
+        } else {
+          response = await getMovementsService();
+        }
+
         if (response.status === 200) {
           this.clearListMovement();
           this.setListMovement(response.data.movements);

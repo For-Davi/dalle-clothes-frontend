@@ -5,6 +5,8 @@ import CategoryTransactionsManage from 'src/components/manage/CategoryTransactio
 import TableMovement from 'src/components/table/TableMovement.vue';
 import FormMovement from 'src/components/form/FormMovement.vue';
 import Description from 'src/components/general/Description.vue';
+import { useMovementStore } from 'src/stores/movement-store';
+import FilterMovement from 'src/components/filter/FilterMovement.vue';
 
 defineOptions({
   name: 'Movement',
@@ -21,9 +23,9 @@ const showDescription = reactive({
   description: null as string | null,
 });
 const filter = reactive<IFilterMovement>({
-  startDate: '',
-  endDate: '',
+  period: null,
   category: null,
+  type: 'all',
 });
 
 const changeShowFormMovement = (open: boolean, movementID: number | null = null): void => {
@@ -63,9 +65,33 @@ const openAction = (type: IActionMovement): void => {
       break;
   }
 };
+const actionFilter = async (data: 'close' | IFilterMovement): Promise<void> => {
+  changeShowFilterMovement();
 
+  if (data !== 'close') {
+    Object.assign(filter, {
+      period: data.period,
+      category: data.category,
+      type: data.type,
+    });
+    await useMovementStore().getMovements(filter);
+  }
+};
+
+const getTitleTableMovement = computed((): string => {
+  if (filter.period === null) {
+    const now = new Date();
+    return new Intl.DateTimeFormat('pt-BR', {
+      month: '2-digit',
+      year: 'numeric',
+      timeZone: 'America/Sao_Paulo',
+    }).format(now);
+  } else {
+    return filter.period;
+  }
+});
 const hasFilter = computed(() => {
-  return filter.startDate !== '' || filter.endDate != '' || filter.category !== null;
+  return filter.period !== null || filter.category !== null || filter.type !== 'all';
 });
 </script>
 <template>
@@ -117,12 +143,14 @@ const hasFilter = computed(() => {
         </div>
       </q-banner>
       <TableMovement
+        :title="getTitleTableMovement"
         @show:show-form-movement="startEditMovement"
         @show:show-description="startShowDescription"
       />
     </section>
 
     <!-- Modals -->
+    <FilterMovement :open="showFilterMovement" :filters="filter" @update:open="actionFilter" />
     <FormMovement :data="showFormMovement" @update:open="changeShowFormMovement(false)" />
     <Description :data="showDescription" @update:open="changeShowDescription(false)" />
     <CategoryTransactionsManage

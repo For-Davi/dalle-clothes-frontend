@@ -1,7 +1,7 @@
 export interface FilterMovement {
-  startDate: string;
-  endDate: string;
+  period: string | null;
   category: number | null;
+  type: 'all' | 'entry' | 'out';
 }
 
 export interface Movement {

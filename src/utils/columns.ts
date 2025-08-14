@@ -483,6 +483,12 @@ export const columnsMovement: IQuasarTable[] = [
     align: 'left',
   },
   {
+    name: 'type',
+    label: 'Tipo',
+    field: 'type',
+    align: 'left',
+  },
+  {
     name: 'value',
     label: 'Valor',
     field: 'value',
