@@ -2,118 +2,85 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import TypesReceiptsManage from 'src/components/manage/TypesReceiptsManage.vue';
 import FormReceipt from 'src/components/form/FormReceipt.vue';
-import { reactive, ref } from 'vue';
-defineOptions({
-  name: 'Receipts',
-});
+import Description from 'src/components/general/Description.vue';
+import { ref, reactive } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useReceiptstore } from 'src/stores/receipt-store';
+import { columnsReceipts } from 'src/utils/columns';
 
-const showFormReceipt = ref<boolean>(false)
-const showTypeReceiptManage = ref<boolean>(false);
-const filterReceipt = ref<string>('');
-const columnsReceipt = reactive<IQuasarTable[]>([
-  {
-    name: 'name',
-    label: 'Nome',
-    field: 'name',
-    align: 'left',
-  },
-  {
-    name: 'type',
-    label: 'Tipo',
-    field: 'type',
-    align: 'left',
-  },
-  {
-    name: 'bank',
-    label: 'Banco',
-    field: 'bank',
-    align: 'left',
-  },
-  {
-    name: 'account',
-    label: 'Conta',
-    field: 'account',
-    align: 'left',
-  },
-  {
-    name: 'agency',
-    label: 'Agência',
-    field: 'agency',
-    align: 'left',
-  },
-  {
-    name: 'active',
-    label: 'Ativo',
-    field: 'active',
-    align: 'left',
-  },
-  {
-    name: 'action',
-    label: 'Ação',
-    field: 'action',
-    align: 'right',
-  },
-]);
-const rows = [
-  {
-    name: 'Caixa',
-    type: 'Conta poupança',
-    bank: 'Banco do Brasil',
-    account: 510654,
-    agency: 1941,
-    active: 1,
-  },
-  {
-    name: 'Mercado pago',
-    type: 'Cartão de crédito',
-    bank: null,
-    account: null,
-    agency: null,
-    active: 0,
-  },
-  {
-    name: 'Banco XYZ',
-    type: 'Cartão de crédito',
-    bank: 'Santander',
-    account: 154206,
-    agency: 1236,
-    active: 1,
-  },
-];
+defineOptions({ name: 'Receipts' });
+
+const { listReceipt } = storeToRefs(useReceiptstore());
+
+const showTypeReceiptManage = ref(false);
+const filterReceipt = ref('');
+const showFormReceipt = reactive<{
+  open: boolean;
+  receipt: IReceipt | null;
+}>({
+  open: false,
+  receipt: null
+});
+const showDescription = reactive<{
+  open: boolean;
+  description: string | null;
+}>({
+  open: false,
+  description: null
+});
 
 const changeShowTypeReceiptsManage = () => {
   showTypeReceiptManage.value = !showTypeReceiptManage.value;
 };
 
-const changeShowFormReceipt = () => {
-  showFormReceipt.value = !showFormReceipt.value
-}
+const changeShowFormReceipt = (
+  show: boolean,
+  receipt: IReceipt | null = null
+) => {
+  Object.assign(showFormReceipt, { open: show, receipt });
+};
+
+const changeShowDescription = (
+  show: boolean,
+  receipt: IReceipt | null = null
+) => {
+  Object.assign(showDescription, {
+    open: show,
+    description: receipt?.description || null,
+  });
+};
+
+
+const startEdit = (data: IReceipt) => {
+  changeShowFormReceipt(true, data);
+};
 </script>
+
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
       <TitlePage class="col-7" title="Recebimentos" icon="account_balance" />
       <div>
         <q-btn 
-        color="white" 
-        text-color="black" 
-        label="Nova conta" 
-        icon-right="add" 
-        no-caps 
-        @click="changeShowFormReceipt"
+          color="white" 
+          text-color="black" 
+          label="Nova conta" 
+          icon-right="add" 
+          no-caps 
+          @click="changeShowFormReceipt(true)"
         />
-
         <q-btn
           color="white"
           text-color="black"
           label="Tipos"
           no-caps
-          icon-right="credit_card "
+          icon-right="credit_card"
           class="q-ml-sm"
           @click="changeShowTypeReceiptsManage"
         />
       </div>
     </section>
+
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">
@@ -131,14 +98,14 @@ const changeShowFormReceipt = () => {
           </q-input>
         </div>
       </q-banner>
+
       <q-table
-        :rows="rows"
-        :columns="columnsReceipt"
+        :rows="listReceipt"
+        :columns="columnsReceipts"
         :filter="filterReceipt"
-        :loading="false"
         title="Lista de contas"
         row-key="index"
-        no-data-label="Nenhuma conta para mostrar"
+        no-data-label="Nenhuma recebimento para mostrar"
         virtual-scroll
         :rows-per-page-options="[10]"
       >
@@ -149,36 +116,25 @@ const changeShowFormReceipt = () => {
             </q-th>
           </q-tr>
         </template>
+
         <template v-slot:body="props">
           <q-tr :props="props">
-            <q-td key="name" :props="props" class="text-left">
-              {{ props.row.name }}
-            </q-td>
-            <q-td key="type" :props="props" class="text-left">
-              {{ props.row.type }}
-            </q-td>
-            <q-td key="bank" :props="props" class="text-left">
-              {{ props.row.bank }}
-            </q-td>
-            <q-td key="account" :props="props" class="text-left">
-              {{ props.row.account }}
-            </q-td>
-            <q-td key="agency" :props="props" class="text-left">
-              {{ props.row.agency }}
-            </q-td>
-            <q-td key="active" :props="props" class="text-left">
+            <q-td key="name">{{ props.row.name }}</q-td>
+            <q-td key="type">{{ props.row.type }}</q-td>
+            <q-td key="bank">{{ props.row.bank }}</q-td>
+            <q-td key="account">{{ props.row.account }}</q-td>
+            <q-td key="agency">{{ props.row.agency }}</q-td>
+            <q-td key="active">
               <q-icon
                 :name="props.row.active === 1 ? 'check_circle' : 'close'"
                 :color="props.row.active === 1 ? 'green' : 'red'"
                 size="17px"
               />
             </q-td>
-            <q-td key="action" :props="props">
-              <q-btn :disable="false" size="sm" flat round color="blue" icon="change_circle">
-                <q-tooltip>Trocar ativação</q-tooltip>
-              </q-btn>
-              <q-btn :disable="false" size="sm" flat round color="black" icon="edit" />
-              <q-btn :disable="false" size="sm" flat round color="red" icon="delete" />
+            <q-td key="action">
+              <q-btn @click="changeShowDescription(true, props.row)" size="sm" flat round color="blue" icon="description"/>
+              <q-btn @click="startEdit(props.row)" size="sm" flat round color="black" icon="edit" />
+              <q-btn size="sm" flat round color="red" icon="delete" />
             </q-td>
           </q-tr>
         </template>
@@ -186,7 +142,17 @@ const changeShowFormReceipt = () => {
     </section>
 
     <!-- Modals -->
-    <TypesReceiptsManage :open="showTypeReceiptManage" @update:open="changeShowTypeReceiptsManage" />
-    <FormReceipt :open="showFormReceipt" @update:open="changeShowFormReceipt"/>
+    <TypesReceiptsManage
+      :open="showTypeReceiptManage"
+      @update:open="changeShowTypeReceiptsManage"
+    />
+    <FormReceipt
+      :data="showFormReceipt"
+      @update:open="changeShowFormReceipt(false)"
+    />
+    <Description
+      :data="showDescription"
+      @update:open="changeShowDescription(false)"
+    />
   </main>
 </template>
