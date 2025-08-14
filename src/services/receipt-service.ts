@@ -29,20 +29,25 @@ export const createReceiptService = (
 }> => api.post(`${baseUrl}/`, receipt);
 
 export const updateReceiptService = (
-    id: number,
-    identifier: string,
-    typesID: number | null,
-    active: number,
-    description: string | null
+  id: number,
+  identifier: string,
+  typesID: number | null,
+  active: number,
+  description: string | null,
 ): Promise<{
   status: number;
   data: {
     receipts: IReceipt[];
     message: string;
   };
-}> => api.put(`${baseUrl}/`, {
-  id, identifier, typesID, active, description
-});
+}> =>
+  api.put(`${baseUrl}/`, {
+    id,
+    identifier,
+    typesID,
+    active,
+    description,
+  });
 
 export const deleteReceiptService = (
   receiptID: number,

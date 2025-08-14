@@ -15,16 +15,13 @@ const showFormReceipt = reactive<{
   receiptID: number | null;
 }>({
   open: false,
-  receiptID: null
+  receiptID: null,
 });
 
 const changeShowTypeReceiptsManage = (): void => {
   showTypeReceiptManage.value = !showTypeReceiptManage.value;
 };
-const changeShowFormReceipt = (
-  show: boolean,
-  receiptID: number | null = null
-): void => {
+const changeShowFormReceipt = (show: boolean, receiptID: number | null = null): void => {
   Object.assign(showFormReceipt, { open: show, receiptID });
 };
 const makeEdit = (id: number): void => {
@@ -45,12 +42,12 @@ onMounted(async () => {
     <section class="row items-center justify-between">
       <TitlePage class="col-7" title="Recebimentos" icon="account_balance" />
       <div>
-        <q-btn 
-          color="white" 
-          text-color="black" 
-          label="Nova conta" 
-          icon-right="add" 
-          no-caps 
+        <q-btn
+          color="white"
+          text-color="black"
+          label="Nova conta"
+          icon-right="add"
+          no-caps
           @click="changeShowFormReceipt(true)"
         />
         <q-btn
@@ -82,7 +79,7 @@ onMounted(async () => {
           </q-input>
         </div>
       </q-banner>
-      <TableReceipt :filter="filterReceipt" @show:show-form-receipt="makeEdit"/>
+      <TableReceipt :filter="filterReceipt" @show:show-form-receipt="makeEdit" />
     </section>
 
     <!-- Modals -->
@@ -90,9 +87,6 @@ onMounted(async () => {
       :open="showTypeReceiptManage"
       @update:open="changeShowTypeReceiptsManage"
     />
-    <FormReceipt
-      :data="showFormReceipt"
-      @update:open="changeShowFormReceipt(false)"
-    />
+    <FormReceipt :data="showFormReceipt" @update:open="changeShowFormReceipt(false)" />
   </main>
 </template>

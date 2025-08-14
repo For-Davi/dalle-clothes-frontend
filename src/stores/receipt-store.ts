@@ -1,10 +1,10 @@
 import {
-    getReceiptsService,
-    createReceiptService,
-    updateReceiptService,
-    deleteReceiptService,
-    showReceiptService
-} from 'src/services/receipt-service'
+  getReceiptsService,
+  createReceiptService,
+  updateReceiptService,
+  deleteReceiptService,
+  showReceiptService,
+} from 'src/services/receipt-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
 
@@ -37,16 +37,16 @@ export const useReceiptstore = defineStore('receipt', {
         this.setLoading(false);
       }
     },
-       async showReceipt(receiptID: number) {
-          try {
-            this.setLoading(true);
-            return await showReceiptService(receiptID);
-          } catch (error) {
-            createError(error);
-          } finally {
-            this.setLoading(false);
-          }
-        },
+    async showReceipt(receiptID: number) {
+      try {
+        this.setLoading(true);
+        return await showReceiptService(receiptID);
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
     async createReceipt(data: IDataReceipt) {
       this.setLoading(true);
       try {
@@ -66,11 +66,11 @@ export const useReceiptstore = defineStore('receipt', {
       }
     },
     async updateReceipt(
-        id: number,
+      id: number,
       identifier: string,
       typesID: number | null,
       active: number,
-      description: string | null
+      description: string | null,
     ) {
       this.setLoading(true);
       try {

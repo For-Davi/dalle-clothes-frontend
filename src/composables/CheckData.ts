@@ -569,14 +569,14 @@ export const checkFeedbackData = (data: {
 
 export const checkReceiptData = (data: {
   identifier: string;
-  description: string
-}): { status: boolean, message?: string } => {
-  if(data.identifier.trim() === '') {
-    return { status: false, message: 'Deve ser informado o nome do recebimento'}
+  description: string;
+}): { status: boolean; message?: string } => {
+  if (data.identifier.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome do recebimento' };
   }
-  if(data.identifier.trim().length > 500) {
-    return { status: false, message: 'O campo da descrição deve conter apenas 500 caracteres'}
+  if (data.identifier.trim().length > 500) {
+    return { status: false, message: 'O campo da descrição deve conter apenas 500 caracteres' };
   }
 
-  return { status: true }
-} 
+  return { status: true };
+};

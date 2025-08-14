@@ -518,13 +518,13 @@ export const columnsTypesAccount: IQuasarTable[] = [
 ];
 
 export const columnsReceipts: IQuasarTable[] = [
-   {
+  {
     name: 'identifier',
     label: 'Nome (Identificador)',
     field: 'identifier',
     align: 'left',
   },
-   {
+  {
     name: 'type',
     label: 'Tipo',
     field: 'type',
@@ -536,10 +536,10 @@ export const columnsReceipts: IQuasarTable[] = [
     field: 'active',
     align: 'left',
   },
-    {
+  {
     name: 'actions',
     label: 'Ações',
     field: 'actions',
     align: 'right',
   },
-]
+];

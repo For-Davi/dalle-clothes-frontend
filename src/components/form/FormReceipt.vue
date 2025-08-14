@@ -1,111 +1,115 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
-import TitlePage from 'src/components/shared/TitlePage.vue'
-import { storeToRefs } from 'pinia'
-import Loading from '../shared/Loading.vue'
-import { useTypesReceiptStore } from 'src/stores/types-receipt-store'
-import { useReceiptstore } from 'src/stores/receipt-store'
-import { checkReceiptData } from 'src/composables/CheckData'
-import { createErrorData } from 'src/composables/CreateNotify'
+import { computed, reactive, ref, watch } from 'vue';
+import TitlePage from 'src/components/shared/TitlePage.vue';
+import { storeToRefs } from 'pinia';
+import Loading from '../shared/Loading.vue';
+import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
+import { useReceiptstore } from 'src/stores/receipt-store';
+import { checkReceiptData } from 'src/composables/CheckData';
+import { createErrorData } from 'src/composables/CreateNotify';
 
-defineOptions({ name: 'FormReceipt' })
+defineOptions({ name: 'FormReceipt' });
 
 const props = defineProps<{
   data: {
-    open: boolean,
-    receiptID: number | null
-  }
-}>()
-const emit = defineEmits<{ 'update:open':[void] }>()
+    open: boolean;
+    receiptID: number | null;
+  };
+}>();
+const emit = defineEmits<{ 'update:open': [void] }>();
 
-const { listTypesReceipt } = storeToRefs(useTypesReceiptStore())
-const { loadingReceipt } = storeToRefs(useReceiptstore())
-
+const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
+const { loadingReceipt } = storeToRefs(useReceiptstore());
 
 const dataReceipt = reactive({
   identifier: '',
   type: { label: 'Nenhum selecionado', value: null } as IQuasarSelect<number | null>,
   description: '',
-})
-const selectedStatus = ref<IQuasarSelect<number>>({ label: 'Ativo', value: 1 })
-
+});
+const selectedStatus = ref<IQuasarSelect<number>>({ label: 'Ativo', value: 1 });
 
 const clear = () => {
-  dataReceipt.identifier = ''
-  dataReceipt.type = { label: 'Nenhum selecionado', value: null }
-  dataReceipt.description = ''
-  selectedStatus.value = { label: 'Ativo', value: 1 }
-}
+  dataReceipt.identifier = '';
+  dataReceipt.type = { label: 'Nenhum selecionado', value: null };
+  dataReceipt.description = '';
+  selectedStatus.value = { label: 'Ativo', value: 1 };
+};
 const save = async () => {
-  const check = checkReceiptData(dataReceipt)
-  if (!check.status) return createErrorData(check.message || 'Erro ao cadastrar recebimento')
+  const check = checkReceiptData(dataReceipt);
+  if (!check.status) return createErrorData(check.message || 'Erro ao cadastrar recebimento');
 
   const response = await useReceiptstore().createReceipt({
     identifier: dataReceipt.identifier,
     typesID: dataReceipt.type.value,
     description: dataReceipt.description || null,
-  })
+  });
 
   if (response?.status === 201) {
-    clear()
-    emit('update:open')
+    clear();
+    emit('update:open');
   }
-}
+};
 const update = async () => {
-  const check = checkReceiptData(dataReceipt)
- if(check.status) {
-  const response = await useReceiptstore().updateReceipt(
-    receiptID.value ?? 0,
-    dataReceipt.identifier,
-    dataReceipt.type.value,
-    selectedStatus.value.value,
-    dataReceipt.description || null
-)
-if(response?.status === 200) {
-  clear()
-  emit('update:open')
-}
- }
-}
-const checkDataEdit = async() => {
- if(receiptID.value !== null) {
-  const response = await useReceiptstore().showReceipt(receiptID.value)
-
-  if(response?.status === 200) {
-    const receipt = response.data.receipt
-
-    Object.assign(dataReceipt, {
-      identifier: receipt.identifier,
-      type: optionsTypes.value.find(opt => opt.value === receipt.type_receipt_id) || { label: 'Nenhum selecionado', value: null },
-      active: receipt.active,
-      description: receipt.description
-    })
-    selectedStatus.value = optionsStatus.value.find(opt => opt.value === receipt.active) || { label: 'Ativo', value: 1 }
+  const check = checkReceiptData(dataReceipt);
+  if (check.status) {
+    const response = await useReceiptstore().updateReceipt(
+      receiptID.value ?? 0,
+      dataReceipt.identifier,
+      dataReceipt.type.value,
+      selectedStatus.value.value,
+      dataReceipt.description || null,
+    );
+    if (response?.status === 200) {
+      clear();
+      emit('update:open');
+    }
   }
- }
-}
+};
+const checkDataEdit = async () => {
+  if (receiptID.value !== null) {
+    const response = await useReceiptstore().showReceipt(receiptID.value);
+
+    if (response?.status === 200) {
+      const receipt = response.data.receipt;
+
+      Object.assign(dataReceipt, {
+        identifier: receipt.identifier,
+        type: optionsTypes.value.find((opt) => opt.value === receipt.type_receipt_id) || {
+          label: 'Nenhum selecionado',
+          value: null,
+        },
+        active: receipt.active,
+        description: receipt.description,
+      });
+      selectedStatus.value = optionsStatus.value.find((opt) => opt.value === receipt.active) || {
+        label: 'Ativo',
+        value: 1,
+      };
+    }
+  }
+};
 
 const receiptID = computed(() => props.data.receiptID);
 const optionsTypes = computed((): IQuasarSelect<number | null>[] => [
   { label: 'Nenhum selecionado', value: null },
-  ...listTypesReceipt.value.map(item => ({ label: item.name, value: item.id }))
-])
+  ...listTypesReceipt.value.map((item) => ({ label: item.name, value: item.id })),
+]);
 const optionsStatus = computed(() => [
   { label: 'Ativo', value: 1 },
-  { label: 'Inativo', value: 0 }
-])
+  { label: 'Inativo', value: 0 },
+]);
 const open = computed({
   get: () => props.data.open,
-  set: () => emit('update:open')
-})
+  set: () => emit('update:open'),
+});
 
-watch(open, async() => {
+watch(open, async () => {
   if (open.value) {
-    clear()
-    await useTypesReceiptStore().getTypesReceipt()
-   await checkDataEdit()
+    clear();
+    await useTypesReceiptStore().getTypesReceipt();
+    await checkDataEdit();
   }
-})
+});
 </script>
 
 <template>
@@ -178,7 +182,6 @@ watch(open, async() => {
             input-class="text-black no-resize"
             type="textarea"
             counter
-            
             :maxlength="500"
           >
             <template v-slot:prepend>
