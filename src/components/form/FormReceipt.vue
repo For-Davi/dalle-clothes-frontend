@@ -21,6 +21,7 @@ const emit = defineEmits<{ 'update:open': [void] }>();
 const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 const { loadingReceipt } = storeToRefs(useReceiptstore());
 
+const loading = ref<boolean>(false);
 const dataReceipt = reactive({
   identifier: '',
   type: { label: 'Nenhum selecionado', value: null } as IQuasarSelect<number | null>,
@@ -88,6 +89,9 @@ const checkDataEdit = async () => {
     }
   }
 };
+const changeLoading = (value: boolean) => {
+  loading.value = value
+}
 
 const receiptID = computed(() => props.data.receiptID);
 const optionsTypes = computed((): IQuasarSelect<number | null>[] => [
@@ -102,12 +106,17 @@ const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
 });
+const isLoading = computed(():boolean => {
+  return loading.value || loadingReceipt.value
+})
 
 watch(open, async () => {
   if (open.value) {
     clear();
+    changeLoading(true)
     await useTypesReceiptStore().getTypesReceipt();
     await checkDataEdit();
+    changeLoading(false)
   }
 });
 </script>
@@ -121,10 +130,9 @@ watch(open, async () => {
           icon="account_balance"
         />
       </q-card-section>
-
       <q-card-section class="q-pa-sm">
-        <Loading :show="loadingReceipt" />
-        <q-form v-show="!loadingReceipt" class="q-gutter-y-sm">
+        <Loading :show="isLoading" />
+        <q-form v-show="!isLoading" class="q-gutter-y-sm">
           <q-input
             v-model="dataReceipt.identifier"
             bg-color="white"
@@ -138,7 +146,6 @@ watch(open, async () => {
               <q-icon name="account_balance" color="black" size="20px" />
             </template>
           </q-input>
-
           <q-select
             v-model="dataReceipt.type"
             label="Selecione o tipo"
@@ -154,7 +161,6 @@ watch(open, async () => {
               <q-icon name="credit_card" color="black" size="20px" />
             </template>
           </q-select>
-
           <q-select
             v-show="receiptID !== null"
             v-model="selectedStatus"
@@ -171,7 +177,6 @@ watch(open, async () => {
               <q-icon name="check" color="black" size="20px" />
             </template>
           </q-select>
-
           <q-input
             v-model="dataReceipt.description"
             bg-color="white"
@@ -190,7 +195,6 @@ watch(open, async () => {
           </q-input>
         </q-form>
       </q-card-section>
-
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
           <q-btn
@@ -207,7 +211,7 @@ watch(open, async () => {
             color="primary"
             label="Salvar"
             @click="save"
-            :loading="loadingReceipt"
+            :loading="isLoading"
             size="md"
             unelevated
             no-caps
@@ -217,7 +221,7 @@ watch(open, async () => {
             color="primary"
             label="Atualizar"
             @click="update"
-            :loading="loadingReceipt"
+            :loading="isLoading"
             size="md"
             unelevated
             no-caps
