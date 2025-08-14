@@ -20,7 +20,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
-  'newRequest': [void]
+  newRequest: [void];
 }>();
 
 const { loadingMovement } = storeToRefs(useMovementStore());

@@ -28,11 +28,15 @@ const props = defineProps<{
 const { loadingFeedback } = storeToRefs(useFeedbackStore());
 
 const addMediaInList = (file: File) => {
+  if (dataFeedback.images.length >= 1) return;
   dataFeedback.images = [file];
 };
 
-const clear = () => {
+const clear = (): void => {
   dataFeedback.text = '';
+  dataFeedback.images = [];
+};
+const clearImages = (): void => {
   dataFeedback.images = [];
 };
 
@@ -65,7 +69,7 @@ watch(open, () => {
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 form-basic">
+    <q-card class="bg-grey-2 form-basic column justify-between">
       <q-card-section class="q-pa-none">
         <TitlePage title="Envie sua sugestão" icon="feedback" />
       </q-card-section>
@@ -92,8 +96,10 @@ watch(open, () => {
             ref="mediaUploadRef"
             v-model="dataFeedback.images"
             label="Adicione as imagens (3MB max)"
+            :multiple="false"
             accept=".jpg, image/*"
             @file:add-image="addMediaInList"
+            @clear-images="clearImages"
           />
         </div>
       </q-card-section>

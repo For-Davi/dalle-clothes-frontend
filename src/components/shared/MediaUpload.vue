@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import { QUploader } from 'quasar';
 import { createErrorData } from 'src/composables/CreateNotify';
@@ -10,16 +11,19 @@ const props = withDefaults(
   defineProps<{
     label: string;
     accept: string;
+    multiple?: boolean;
     maxFiles?: number;
     maxFileSize?: number;
   }>(),
   {
+    multiple: true,
     maxFiles: 3,
     maxFileSize: 3 * 1024 * 1024, // 3 MB
   },
 );
 const emit = defineEmits<{
   'file:addImage': [File];
+  clearImages: [void];
 }>();
 
 const uploaderRef = ref<InstanceType<typeof QUploader>>();
@@ -33,6 +37,10 @@ const onAddedFiles = (files: readonly File[]): void => {
 const onRejected = (): void => {
   createErrorData('Arquivo selecionado não passou nas regras');
 };
+const removeFileWithEmit = (scope: any, file: File) => {
+  scope.removeFile(file);
+  emit('clearImages');
+};
 
 defineExpose({
   clearFiles,
@@ -44,7 +52,7 @@ defineExpose({
   <q-uploader
     ref="uploaderRef"
     @added="onAddedFiles"
-    multiple
+    :multiple="props.multiple"
     hide-upload-btn
     class="full-width"
     flat
@@ -110,7 +118,7 @@ defineExpose({
               color="red"
               round
               icon="delete"
-              @click="scope.removeFile(file)"
+              @click="removeFileWithEmit(scope, file)"
             />
           </q-item-section>
         </q-item>

@@ -77,11 +77,11 @@ const actionFilter = async (data: 'close' | IFilterMovement): Promise<void> => {
     await useMovementStore().getMovements(filter);
   }
 };
-const newRequest = async ():Promise<void> => {
-  if(hasFilter.value){
+const newRequest = async (): Promise<void> => {
+  if (hasFilter.value) {
     await useMovementStore().getMovements(filter);
   }
-}
+};
 
 const getTitleTableMovement = computed((): string => {
   if (filter.period === null) {
@@ -156,7 +156,11 @@ const hasFilter = computed(() => {
 
     <!-- Modals -->
     <FilterMovement :open="showFilterMovement" :filters="filter" @update:open="actionFilter" />
-    <FormMovement :data="showFormMovement" @update:open="changeShowFormMovement(false)" @new-request="newRequest" />
+    <FormMovement
+      :data="showFormMovement"
+      @update:open="changeShowFormMovement(false)"
+      @new-request="newRequest"
+    />
     <Description :data="showDescription" @update:open="changeShowDescription(false)" />
     <CategoryTransactionsManage
       :open="showCategoryTransactionManage"
