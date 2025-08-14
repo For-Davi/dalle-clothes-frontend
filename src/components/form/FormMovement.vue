@@ -20,6 +20,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  'newRequest': [void]
 }>();
 
 const { loadingMovement } = storeToRefs(useMovementStore());
@@ -78,6 +79,7 @@ const save = async () => {
     });
     if (response?.status === 201) {
       clear();
+      emit('newRequest');
       emit('update:open');
     }
   } else {
