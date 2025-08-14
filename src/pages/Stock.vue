@@ -18,6 +18,7 @@ defineOptions({
 
 const filterStock = ref<string>('');
 const showFilterProduct = ref<boolean>(false);
+const showFormMovementProduct = ref<boolean>(false);
 const showColorManage = ref<boolean>(false);
 const showGridManage = ref<boolean>(false);
 const showTagManage = ref<boolean>(false);
@@ -58,6 +59,9 @@ const changeShowFormVariant = (show: boolean, variantID: number | null = null): 
 const changeColorManage = (): void => {
   showColorManage.value = !showColorManage.value;
 };
+const changeFormMovementProduct = (): void => {
+  showFormMovementProduct.value = !showFormMovementProduct.value;
+};
 const changeGridManage = (): void => {
   showGridManage.value = !showGridManage.value;
 };
@@ -82,7 +86,7 @@ const openAction = (type: IActionStock): void => {
       changeColorManage();
       break;
     case 'transaction':
-      console.log('Mostrando transações...');
+      changeFormMovementProduct();
       break;
     case 'tag':
       changeTagManage();
@@ -207,13 +211,14 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
+    
+    <ColorManage :open="showColorManage" @update:open="changeColorManage" />
+    <GridManage :open="showGridManage" @update:open="changeGridManage" />
+    <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <CategoryProductManage
       :open="showCategoryProductManage"
       @update:open="changeCategoryProductManage"
     />
-    <ColorManage :open="showColorManage" @update:open="changeColorManage" />
-    <GridManage :open="showGridManage" @update:open="changeGridManage" />
-    <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <FormProduct
       :data="showFormProduct"
       @update:open="changeShowFormProduct(false)"
@@ -224,6 +229,10 @@ const hasFilter = computed(() => {
       :data="showFormVariant"
       @update:open="changeShowFormVariant(false)"
       @update:open-form-product="makeProductEdit"
+    />
+    <FormMovementProduct
+      :open="showFormMovementProduct"
+      @update:open="changeFormMovementProduct()"
     />
   </main>
 </template>

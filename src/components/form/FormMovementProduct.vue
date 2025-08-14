@@ -9,18 +9,14 @@ import { createErrorData } from 'src/composables/CreateNotify';
 import { checkDataMovement } from 'src/composables/CheckData';
 
 defineOptions({
-  name: 'FormMovement',
+  name: 'FormMovementProduct',
 });
 
 const props = defineProps<{
-  data: {
     open: boolean;
-    movementID: number | null;
-  };
 }>();
 const emit = defineEmits<{
   'update:open': [void];
-  'newRequest': [void];
 }>();
 
 const { loadingMovement } = storeToRefs(useMovementStore());
@@ -41,10 +37,6 @@ const selectedType = ref<IQuasarSelect<'entry' | 'out'>>({
   label: 'Entrada 🟩',
   value: 'entry',
 });
-const selectedQuantity = ref<IQuasarSelect<number>>({
-  label: 'Mês atual',
-  value: 1,
-});
 
 const clear = (): void => {
   Object.assign(dataMovement, {
@@ -53,109 +45,20 @@ const clear = (): void => {
     description: '',
   });
 
-  selectedCategory.value = {
-    label: 'Sem categoria',
-    value: null,
-  };
-  selectedQuantity.value = {
-    label: 'Mês atual',
-    value: 1,
-  };
   selectedType.value = {
     label: 'Entrada 🟩',
     value: 'entry',
   };
 };
-const save = async () => {
-  const check = checkDataMovement(dataMovement);
-  if (check.status) {
-    const response = await useMovementStore().createMovement({
-      value: parseFloat(dataMovement.value),
-      description: dataMovement.description.trim().length > 0 ? dataMovement.description : null,
-      type: selectedType.value.value,
-      transactionCategoryID: selectedCategory.value?.value ?? null,
-      quantity: selectedQuantity.value.value,
-      date: dataMovement.date,
-    });
-    if (response?.status === 201) {
-      clear();
-      emit('newRequest');
-      emit('update:open');
-    }
-  } else {
-    createErrorData(check.message || 'Erro ao processar dados da movimentação');
-  }
-};
-const update = async () => {
-  const check = checkDataMovement(dataMovement);
-  if (check.status) {
-    const response = await useMovementStore().updateMovement({
-      id: movementID.value ?? 0,
-      value: parseFloat(dataMovement.value),
-      description: dataMovement.description.trim().length > 0 ? dataMovement.description : null,
-      type: selectedType.value.value,
-      transactionCategoryID: selectedCategory.value?.value ?? null,
-      quantity: selectedQuantity.value.value,
-      date: dataMovement.date,
-    });
-    if (response?.status === 200) {
-      clear();
-      emit('update:open');
-    }
-  } else {
-    createErrorData(check.message || 'Erro ao processar dados da movimentação');
-  }
-};
-const checkDataEdit = async () => {
-  if (movementID.value) {
-    const response = await useMovementStore().showMovement(movementID.value);
-    if (response?.status === 200) {
-      const movement = response.data.movement;
 
-      Object.assign(dataMovement, {
-        value: String(movement.value),
-        date: String(movement.date).replace(/-/g, '/'),
-        description: movement.description ?? '',
-      });
-
-      selectedType.value =
-        movement.type === 'entry'
-          ? {
-              label: 'Entrada 🟩',
-              value: 'entry',
-            }
-          : {
-              label: 'Saída 🟥',
-              value: 'out',
-            };
-
-      selectedCategory.value = movement.transaction_category_id
-        ? {
-            label: movement.category?.name ?? '',
-            value: movement.category?.id ?? null,
-          }
-        : {
-            label: 'Sem categoria',
-            value: null,
-          };
-    }
-  }
-};
-const fetchCategories = async (): Promise<void> => {
-  await useCategoryTransactionStore().getCategoriesTransaction();
-};
 
 const open = computed({
-  get: () => props.data.open,
+  get: () => props.open,
   set: () => emit('update:open'),
 });
 const isLoading = computed(() => {
   return loadingMovement.value || loadingCategoryTransaction.value;
 });
-const getlabelCategory = computed((): string => {
-  return selectedCategory.value !== null ? 'Categoria' : 'Sem categoria definida';
-});
-const movementID = computed(() => props.data.movementID);
 const optionsType = computed(() => {
   return [
     {
@@ -168,72 +71,10 @@ const optionsType = computed(() => {
     },
   ];
 });
-const optionsQuantity = computed(() => {
-  return [
-    {
-      label: 'Mês atual',
-      value: 1,
-    },
-    {
-      label: 'Mês atual + 1',
-      value: 2,
-    },
-    {
-      label: 'Mês atual + 2',
-      value: 3,
-    },
-    {
-      label: 'Mês atual + 3',
-      value: 4,
-    },
-    {
-      label: 'Mês atual + 4',
-      value: 5,
-    },
-    {
-      label: 'Mês atual + 5',
-      value: 6,
-    },
-    {
-      label: 'Mês atual + 6',
-      value: 7,
-    },
-    {
-      label: 'Mês atual + 7',
-      value: 8,
-    },
-    {
-      label: 'Mês atual + 8',
-      value: 9,
-    },
-    {
-      label: 'Mês atual + 9',
-      value: 10,
-    },
-    {
-      label: 'Mês atual + 10',
-      value: 11,
-    },
-    {
-      label: 'Mês atual + 11',
-      value: 12,
-    },
-  ];
-});
-const getOptionsCategories = computed((): IQuasarSelect<number | null>[] => {
-  const categories = listCategoryTransaction.value.map((item) => ({
-    label: item.name,
-    value: item.id,
-  }));
-
-  return [{ label: 'Sem categoria', value: null }, ...categories];
-});
 
 watch(open, async () => {
   if (open.value) {
     clear();
-    await fetchCategories();
-    await checkDataEdit();
   }
 });
 </script>
@@ -245,7 +86,7 @@ watch(open, async () => {
     >
       <q-card-section class="q-pa-none">
         <TitlePage
-          :title="movementID ? 'Atualização de movimentação' : 'Cadastro de movimentação'"
+          title="Atualização de estoque"
           icon="sync_alt"
         />
       </q-card-section>
