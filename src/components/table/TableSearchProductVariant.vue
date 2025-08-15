@@ -10,7 +10,7 @@ const props = defineProps<{
   list: ISearchProductVariant[];
 }>();
 const emit = defineEmits<{
-  chooseProductVariant: [ISearchProductVariant];
+  chooseProductVariant: [number];
 }>();
 
 const filter = ref<string>('');
@@ -91,7 +91,7 @@ const getColorStyle = (hexColor: string) => {
         </q-td>
         <q-td key="action" :props="props">
           <q-btn
-            @click="emit('chooseProductVariant', props.row)"
+            @click="emit('chooseProductVariant', props.row.id)"
             size="sm"
             flat
             round

@@ -5,8 +5,6 @@ import { storeToRefs } from 'pinia';
 import { useProductStore } from 'src/stores/product-store';
 import TableSearchProductVariant from '../table/TableSearchProductVariant.vue';
 import Empty from '../info/Empty.vue';
-// import { createErrorData } from 'src/composables/CreateNotify';
-// import { checkDataMovement } from 'src/composables/CheckData';
 
 defineOptions({
   name: 'FormMovementProduct',
@@ -22,7 +20,13 @@ const emit = defineEmits<{
 const { loadingProduct } = storeToRefs(useProductStore());
 
 const listProductSearch = ref<ISearchProductVariant[]>([]);
-const selectedProduct = ref<IVariant | null>(null);
+const showFormNewMovementProduct = reactive<{
+  open: boolean;
+  variantID: number | null;
+}>({
+  open: false,
+  variantID: null,
+});
 const search = ref<string>('');
 const dataMovement = reactive({
   value: '' as string,
@@ -55,6 +59,13 @@ const searchProduct = async () => {
     listProductSearch.value = response.data.products;
   }
 };
+const changeShowFormNewMovementProduct = (show: boolean, variantID: number | null = null): void => {
+  showFormNewMovementProduct.variantID = variantID;
+  showFormNewMovementProduct.open = show;
+};
+const makeProductVariant = (productVariantID: number) => {
+  changeShowFormNewMovementProduct(true, productVariantID);
+};
 
 const getLabelSearch = computed((): string => {
   return 'Buscar por produto, SKU ou código';
@@ -66,18 +77,6 @@ const open = computed({
 const isLoading = computed(() => {
   return loadingProduct.value;
 });
-// const optionsType = computed(() => {
-//   return [
-//     {
-//       label: 'Entrada 🟩',
-//       value: 'entry',
-//     },
-//     {
-//       label: 'Saída 🟥',
-//       value: 'out',
-//     },
-//   ];
-// });
 
 watch(open, () => {
   if (open.value) {
@@ -123,6 +122,7 @@ watch(open, () => {
             <TableSearchProductVariant
               v-if="listProductSearch.length > 0"
               :list="listProductSearch"
+              @choose-product-variant="makeProductVariant"
             />
             <Empty v-else message="Sem resultado" color="bg-red-3" />
           </div>
