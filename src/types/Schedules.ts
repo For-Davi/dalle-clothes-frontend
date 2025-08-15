@@ -24,3 +24,13 @@ export interface DataSchedule {
   quantity: number;
   value: number;
 }
+
+export interface DataScheduleFinish {
+  id?: number;
+  type: 'entry' | 'out';
+  transactionCategoryID: number | null;
+  description: string | null;
+  date: string;
+  value: number;
+  close: 'date_now' | 'date_schedule'
+}

@@ -5,6 +5,7 @@ import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { columnsSchedule } from 'src/utils/columns';
 import { useScheduleStore } from 'src/stores/schedule-store';
 import { formatToReal } from 'src/composables/Money';
+import ConfirmDateDifferentSchedule from '../confirm/ConfirmDateDifferentSchedule.vue';
 
 defineOptions({
   name: 'TableMovement',
@@ -21,6 +22,8 @@ const emit = defineEmits<{
 const { loadingSchedule, listSchedule } = storeToRefs(useScheduleStore());
 
 const showConfirmAction = ref<boolean>(false);
+const showConfirmDateDifferent = ref<boolean>(false)
+const showConfirmFinish = ref<boolean>(false)
 const scheduleMonitoring = ref<number | null>(null);
 
 const clear = (): void => {
@@ -31,6 +34,14 @@ const closeConfirmActionOk = async () => {
   await useScheduleStore().deleteSchedule(scheduleMonitoring.value ?? 0);
   clear();
 };
+const closeConfirmDateDifferent = () => {
+  showConfirmDateDifferent.value = false;
+  clear()
+}
+const closeConfirmFinish = ():void => {
+  showConfirmFinish.value = false;
+  clear()
+}
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;
   clear();
@@ -39,6 +50,19 @@ const openConfirmAction = (id: number): void => {
   scheduleMonitoring.value = id;
   showConfirmAction.value = true;
 };
+const startFinishSchedule = (id: number,date:string): void => {
+  scheduleMonitoring.value = id
+
+  const today = new Date()
+  const [day, month, year] = date.split('-')
+  const scheduleDate = new Date(`${year}-${month}-${day}T00:00:00`)
+
+  if(today.getMonth() === scheduleDate.getMonth() && today.getFullYear() === scheduleDate.getFullYear() ) {
+    showConfirmFinish.value = true
+  } else {
+    showConfirmDateDifferent.value = true
+  }
+}
 const startEdit = (id: number) => {
   emit('show:showFormSchedule', id);
 };
@@ -48,6 +72,30 @@ const startExclude = (id: number) => {
 const fetchSchedules = async (): Promise<void> => {
   await useScheduleStore().getSchedules();
 };
+const finishSchedule = async (close: 'date_schedule' | 'date_now') => {
+  if(scheduleMonitoring.value) {
+    const response = await useScheduleStore().showSchedule(scheduleMonitoring.value)
+
+    if(response?.status === 200) {
+      const schedule = response.data.schedule
+      const formattedDate = schedule.date.replace(/-/g, '/');
+
+      await useScheduleStore().finishSchedule({
+        id: schedule.id,
+        type: schedule.type,
+        transactionCategoryID: schedule.transaction_category_id,
+        description: schedule.description || null,
+        date: formattedDate,
+        value: schedule.value,
+        close: close
+      })
+
+      showConfirmFinish.value = false;
+      showConfirmDateDifferent.value = false;
+      clear();
+    }
+  }
+}
 
 onMounted(async () => {
   await fetchSchedules();
@@ -107,6 +155,8 @@ onMounted(async () => {
               <q-tooltip>Descrição</q-tooltip>
             </q-btn>
             <q-btn
+            @click="startFinishSchedule(props.row.id, props.row.date)"
+            :disable="scheduleMonitoring === props.row.id"
             size="sm"
             flat
             round
@@ -143,6 +193,23 @@ onMounted(async () => {
       message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o agendamento permanentemente."
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
+    />
+     <ConfirmAction
+      :open="showConfirmFinish"
+      label-action="Continuar"
+      title="Confirmação de finalização de agendamento"
+      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e finalizará o agendamento permanentemente."
+      @update:open="closeConfirmFinish"
+      @update:ok="finishSchedule('date_schedule')"
+    />
+      <ConfirmDateDifferentSchedule
+      :open="showConfirmDateDifferent"
+      label-action="Continuar"
+      title="Confirmação de finalização de agendamento"
+      message="O mês e ano atual difere do mês ou ano do agendamento, você deseja finalizar o agendamento com o mês e ano atual ou finalizar com a data padrão do agendamento?"
+      @update:open="closeConfirmDateDifferent"
+      @update:dateDefault="finishSchedule('date_schedule')"
+      @update:dateChange="finishSchedule('date_now')"
     />
   </section>
 </template>

@@ -34,6 +34,16 @@ export const showScheduleService = (
   };
 }> => api.get(`${baseUrl}/${scheduleID}`);
 
+export const finishScheduleService = (
+  data: IDataScheduleFinish,
+): Promise<{
+  status: number;
+  data: {
+    message: string
+    schedules: ISchedule[];
+  }
+}> => api.post(`${baseUrl}/finish`, data)
+
 export const createScheduleService = (
   data: IDataMovement,
 ): Promise<{

@@ -6,7 +6,7 @@ import { useScheduleStore } from 'src/stores/schedule-store';
 import { useCategoryTransactionStore } from 'src/stores/category-transaction-store';
 import Loading from '../shared/Loading.vue';
 import { createErrorData } from 'src/composables/CreateNotify';
-import { checkDataMovement } from 'src/composables/CheckData';
+import { checkDataSchedule } from 'src/composables/CheckData';
 
 defineOptions({
   name: 'FormSchedule',
@@ -67,7 +67,7 @@ const clear = (): void => {
   };
 };
 const save = async () => {
-  const check = checkDataMovement(dataSchedule);
+  const check = checkDataSchedule(dataSchedule);
   if (check.status) {
     const response = await useScheduleStore().createSchedule({
       value: parseFloat(dataSchedule.value),
@@ -87,7 +87,7 @@ const save = async () => {
   }
 };
 const update = async () => {
-  const check = checkDataMovement(dataSchedule);
+  const check = checkDataSchedule(dataSchedule);
   if (check.status) {
     const response = await useScheduleStore().updateSchedule({
       id: scheduleID.value ?? 0,

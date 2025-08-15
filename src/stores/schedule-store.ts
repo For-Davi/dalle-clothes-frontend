@@ -6,6 +6,7 @@ import {
   getSchedulesService,
   showScheduleService,
   updateScheduleService,
+  finishScheduleService
 } from 'src/services/schedule-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -26,11 +27,11 @@ export const useScheduleStore = defineStore('schedule', {
     setLoading(loading: boolean) {
       this.loadingSchedule = loading;
     },
-    setListSchedule(schedules: ISchedule[]) {
-      schedules.map((item) => this.listSchedule.push(item));
+    setListSchedule(schedules?: ISchedule[]) {
+      schedules?.map((item) => this.listSchedule.push(item));
     },
-    setListSchedulePeriod(schedules: string[]) {
-      schedules.map((item) => this.listSchedulePeriod.push(item));
+    setListSchedulePeriod(schedules?: string[]) {
+      schedules?.map((item) => this.listSchedulePeriod.push(item));
     },
     async getSchedules(filter: IFilterSchedule | null = null) {
       try {
@@ -75,6 +76,23 @@ export const useScheduleStore = defineStore('schedule', {
         createError(error);
       } finally {
         this.setLoading(false);
+      }
+    },
+    async finishSchedule(data: IDataScheduleFinish) {
+       this.setLoading(true)
+      try {
+        const response = await finishScheduleService(data)
+        if(response.status === 200) {
+          this.clearListSchedule()
+          this.setListSchedule(response.data.schedules)
+           createSuccess(response.data.message);
+        } 
+
+        return response 
+      } catch (error) {
+          createError(error);
+      } finally {
+        this.setLoading(false)
       }
     },
     async createSchedule(data: IDataSchedule) {
