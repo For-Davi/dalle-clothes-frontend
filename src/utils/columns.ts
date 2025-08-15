@@ -550,3 +550,37 @@ export const columnsReceipts: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsSchedule: IQuasarTable[] = [
+  {
+    name: 'date',
+    label: 'Data',
+    field: 'date',
+    align: 'left',
+    sortable: true,
+  },
+  {
+    name: 'type',
+    label: 'Tipo',
+    field: 'type',
+    align: 'left',
+  },
+  {
+    name: 'value',
+    label: 'Valor',
+    field: 'value',
+    align: 'left',
+  },
+  {
+    name: 'category',
+    label: 'Categoria',
+    field: 'category',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: 'Ações',
+    field: 'actions',
+    align: 'right',
+  },
+];

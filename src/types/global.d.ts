@@ -49,6 +49,7 @@ import type { ProfilePassword, ProfileData } from './Profile';
 import type { TypesReceipt } from './Types';
 import type { DataMovement, FilterMovement, Movement } from './Movement';
 import type { Receipt, DataReceipt } from './Receipts';
+import type { DataSchedule, FilterSchedule, Schedule } from './Schedules';
 
 export {};
 
@@ -140,4 +141,8 @@ declare global {
   type IFilterMovement = FilterMovement;
   type IMovement = Movement;
   type IDataMovement = DataMovement;
+
+  type IFilterSchedule = FilterSchedule;
+  type ISchedule = Schedule;
+  type IDataSchedule = DataSchedule;
 }

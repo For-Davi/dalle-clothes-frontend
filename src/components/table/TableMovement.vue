@@ -131,8 +131,8 @@ onMounted(async () => {
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
-      title="Confirmação de exclusão de cliente"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o cliente permanentemente."
+      title="Confirmação de exclusão de movimentação"
+      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a movimentação permanentemente."
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />

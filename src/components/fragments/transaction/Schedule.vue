@@ -1,106 +1,142 @@
 <script setup lang="ts">
-import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, ref } from 'vue';
-import { useClientStore } from 'src/stores/client-store';
-import TableClient from 'src/components/table/TableClient.vue';
-import FormClient from 'src/components/form/FormClient.vue';
-import FilterClient from 'src/components/filter/FilterClient.vue';
+import { actionsMovement } from 'src/utils/actions';
+import CategoryTransactionsManage from 'src/components/manage/CategoryTransactionsManage.vue';
+import TableSchedule from 'src/components/table/TableSchedule.vue';
+import FormSchedule from 'src/components/form/FormSchedule.vue';
+import Description from 'src/components/general/Description.vue';
+import { useScheduleStore } from 'src/stores/schedule-store';
+import FilterSchedule from 'src/components/filter/FilterSchedule.vue';
 
 defineOptions({
   name: 'Schedule',
 });
 
-const search = ref<string>('');
-const filter = reactive<IFilterClient>({
-  name: '',
-  email: '',
-  cnpj: '',
-  cpf: '',
-  country: '',
-  state: '',
-  city: '',
+const showFilterSchedule = ref<boolean>(false);
+const showCategoryTransactionManage = ref<boolean>(false);
+const showFormSchedule = reactive({
+  open: false as boolean,
+  scheduleID: null as number | null,
 });
-const showFilterClient = ref<boolean>(false);
-const showFormClient = reactive<{
-  open: boolean;
-  clientId: number | null;
-}>({
-  open: false,
-  clientId: null,
+const showDescription = reactive({
+  open: false as boolean,
+  description: null as string | null,
+});
+const filter = reactive<IFilterSchedule>({
+  period: null,
+  category: null,
+  type: 'all',
 });
 
-const changeShowFilterClient = (): void => {
-  showFilterClient.value = !showFilterClient.value;
+const changeShowFormSchedule = (open: boolean, scheduleID: number | null = null): void => {
+  Object.assign(showFormSchedule, {
+    open,
+    scheduleID,
+  });
 };
-const changeShowFormClient = (show: boolean, clientId: number | null = null): void => {
-  showFormClient.clientId = clientId;
-  showFormClient.open = show;
+const changeShowDescription = (open: boolean, description: string | null = null): void => {
+  Object.assign(showDescription, {
+    open,
+    description,
+  });
 };
-const startEditClient = (id: number): void => {
-  changeShowFormClient(true, id);
+const changeShowCategoryTransactionManage = () => {
+  showCategoryTransactionManage.value = !showCategoryTransactionManage.value;
 };
-const actionFilter = async (data: 'close' | IFilterClient): Promise<void> => {
-  changeShowFilterClient();
+const startEditSchedule = (id: number): void => {
+  changeShowFormSchedule(true, id);
+};
+const startShowDescription = (description: string): void => {
+  changeShowDescription(true, description);
+};
+const changeShowFilterSchedule = (): void => {
+  showFilterSchedule.value = !showFilterSchedule.value;
+};
+const openAction = (type: IActionMovement): void => {
+  switch (type) {
+    case 'export':
+      console.log('Exportando...');
+      break;
+    case 'category':
+      changeShowCategoryTransactionManage();
+      break;
+    case 'history':
+      console.log('Exibindo histórico...');
+      break;
+  }
+};
+const actionFilter = async (data: 'close' | IFilterSchedule): Promise<void> => {
+  changeShowFilterSchedule();
 
   if (data !== 'close') {
     Object.assign(filter, {
-      name: data.name,
-      email: data.email,
-      cnpj: data.cnpj,
-      cpf: data.cpf,
-      country: data.country,
-      state: data.state,
-      city: data.city,
+      period: data.period,
+      category: data.category,
+      type: data.type,
     });
-    await useClientStore().getClients(filter);
+    await useScheduleStore().getSchedules(filter);
+  }
+};
+const newRequest = async (): Promise<void> => {
+  if (hasFilter.value) {
+    await useScheduleStore().getSchedules(filter);
   }
 };
 
+const getTitleTableSchedule = computed((): string => {
+  if (filter.period === null) {
+    const now = new Date();
+    return new Intl.DateTimeFormat('pt-BR', {
+      month: '2-digit',
+      year: 'numeric',
+      timeZone: 'America/Sao_Paulo',
+    }).format(now);
+  } else {
+    return filter.period;
+  }
+});
 const hasFilter = computed(() => {
-  return (
-    filter.name !== '' ||
-    filter.email != '' ||
-    filter.cpf != '' ||
-    filter.cnpj != '' ||
-    filter.country != '' ||
-    filter.state != '' ||
-    filter.city != ''
-  );
+  return filter.period !== null || filter.category !== null || filter.type !== 'all';
 });
 </script>
 <template>
-  <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Usuários" icon="person" />
+  <main>
+    <section class="row items-center justify-end">
       <div>
         <q-btn
-          @click="changeShowFormClient(true)"
+          @click="changeShowFormSchedule(true)"
           color="white"
           text-color="black"
-          label="Novo cliente"
+          label="Novo agendamento"
           icon-right="add"
           no-caps
           class="q-mr-sm"
         />
+        <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
+          <q-list dense>
+            <q-item
+              clickable
+              v-ripple
+              v-for="(item, index) in actionsMovement"
+              :key="index"
+              @click="openAction(item.type)"
+            >
+              <q-item-section avatar>
+                <q-avatar>
+                  <q-icon :name="item.icon" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>{{ item.label }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </div>
     </section>
-    <section class="q-mt-md">
+    <section class="q-mt-md q-px-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">
-          <q-input
-            label="Pesquise"
-            outlined
-            v-model="search"
-            dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
-          >
-            <template v-slot:prepend>
-              <q-icon name="search" size="20px" color="black" />
-            </template>
-          </q-input>
           <q-btn
-            @click="changeShowFilterClient"
+            @click="changeShowFilterSchedule"
             round
             color="primary"
             icon="filter_alt"
@@ -111,9 +147,24 @@ const hasFilter = computed(() => {
           </q-btn>
         </div>
       </q-banner>
-      <TableClient :filter="search" @show:show-form-client="startEditClient" />
+      <TableSchedule
+        :title="getTitleTableSchedule"
+        @show:show-form-schedule="startEditSchedule"
+        @show:show-description="startShowDescription"
+      />
     </section>
-    <FormClient :data="showFormClient" @update:open="changeShowFormClient(false)" />
-    <FilterClient :open="showFilterClient" :filters="filter" @update:open="actionFilter" />
+
+    <!-- Modals -->
+    <FilterSchedule :open="showFilterSchedule" :filters="filter" @update:open="actionFilter" />
+    <FormSchedule
+      :data="showFormSchedule"
+      @update:open="changeShowFormSchedule(false)"
+      @new-request="newRequest"
+    />
+    <Description :data="showDescription" @update:open="changeShowDescription(false)" />
+    <CategoryTransactionsManage
+      :open="showCategoryTransactionManage"
+      @update:open="changeShowCategoryTransactionManage"
+    />
   </main>
 </template>
