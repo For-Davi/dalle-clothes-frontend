@@ -78,15 +78,8 @@ const finishSchedule = async (close: 'date_schedule' | 'date_now') => {
 
     if(response?.status === 200) {
       const schedule = response.data.schedule
-      const formattedDate = schedule.date.replace(/-/g, '/');
-
       await useScheduleStore().finishSchedule({
-        id: schedule.id,
-        type: schedule.type,
-        transactionCategoryID: schedule.transaction_category_id,
-        description: schedule.description || null,
-        date: formattedDate,
-        value: schedule.value,
+        scheduleID: schedule.id,
         close: close
       })
 

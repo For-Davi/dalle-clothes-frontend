@@ -26,11 +26,6 @@ export interface DataSchedule {
 }
 
 export interface DataScheduleFinish {
-  id?: number;
-  type: 'entry' | 'out';
-  transactionCategoryID: number | null;
-  description: string | null;
-  date: string;
-  value: number;
+  scheduleID: number
   close: 'date_now' | 'date_schedule'
 }
