@@ -203,3 +203,35 @@ export interface ReturnProductAdvanced {
   has_commission: number;
   commission_percentage: number;
 }
+
+export interface SearchProductVariant {
+  product_variant_id: number;
+  active: number;
+  price: string;
+  cost: string;
+  name: string;
+  location: string | null;
+  sku: string | null;
+  stock_quantity: number;
+  variant_active: number;
+  color_id: number | null;
+  color: IColor | null;
+  description: string | null;
+  product_id: number;
+  product: {
+    id: number;
+    name: string;
+  };
+  grid_item_id: number;
+  grid_item: {
+    id: number;
+    order: number;
+    size: string;
+    grid_group_id: number;
+    grid_group: {
+      id: number;
+      name: string;
+      active: number;
+    };
+  } | null;
+}

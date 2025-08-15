@@ -232,6 +232,39 @@ export const columnsTag: IQuasarTable[] = [
   },
 ];
 
+export const columnsSearchProductVariant: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'stock_quantity',
+    label: 'Estoque',
+    field: 'stock_quantity',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
 export const columnsCategoryProduct: IQuasarTable[] = [
   {
     name: 'name',

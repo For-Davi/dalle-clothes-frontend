@@ -16,7 +16,7 @@ export const searchProductService = (
 ): Promise<{
   status: number;
   data: {
-    variant: IVariant[];
+    products: ISearchProductVariant[];
   };
 }> => api.post(`${baseUrl}/variant/search/`, { value });
 

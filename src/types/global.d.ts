@@ -40,6 +40,7 @@ import type {
   DataProductAdvanced,
   ProductAdvanced,
   ReturnProductAdvanced,
+  SearchProductVariant,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -119,6 +120,7 @@ declare global {
   type IReturnProductAdvanced = ReturnProductAdvanced;
   type IDataProductBasic = DataProductBasic;
   type IDataProductAdvanced = DataProductAdvanced;
+  type ISearchProductVariant = SearchProductVariant;
 
   type ICustomFile = CustomFile;
 

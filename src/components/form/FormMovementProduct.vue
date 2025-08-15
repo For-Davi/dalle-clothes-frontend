@@ -3,6 +3,8 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from 'src/stores/product-store';
+import TableSearchProductVariant from '../table/TableSearchProductVariant.vue';
+import Empty from '../info/Empty.vue';
 // import { createErrorData } from 'src/composables/CreateNotify';
 // import { checkDataMovement } from 'src/composables/CheckData';
 
@@ -19,6 +21,8 @@ const emit = defineEmits<{
 
 const { loadingProduct } = storeToRefs(useProductStore());
 
+const listProductSearch = ref<ISearchProductVariant[]>([]);
+const selectedProduct = ref<IVariant | null>(null);
 const search = ref<string>('');
 const dataMovement = reactive({
   value: '' as string,
@@ -43,9 +47,13 @@ const clear = (): void => {
   };
 
   search.value = '';
+  listProductSearch.value = [];
 };
 const searchProduct = async () => {
-  await useProductStore().searchProduct(search.value);
+  const response = await useProductStore().searchProduct(search.value);
+  if (response?.status === 200) {
+    listProductSearch.value = response.data.products;
+  }
 };
 
 const getLabelSearch = computed((): string => {
@@ -111,28 +119,19 @@ watch(open, () => {
               :loading="loadingProduct"
             />
           </div>
-          <!-- <q-select
-            v-model="selectedType"
-            outlined
-            bg-color="white"
-            label-color="black"
-            :options="optionsType"
-            label="Selecitone o tipo"
-            map-options
-            dense
-            options-dense
-          >
-            <template v-slot:prepend>
-              <q-icon name="checklist" color="black" size="20px" />
-            </template>
-          </q-select> -->
+          <div>
+            <TableSearchProductVariant
+              v-if="listProductSearch.length > 0"
+              :list="listProductSearch"
+            />
+            <Empty v-else message="Sem resultado" color="bg-red-3" />
+          </div>
         </q-form>
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center full-width">
           <q-btn
             @click="open = false"
-            flat
             color="red"
             label="Fechar"
             size="md"
