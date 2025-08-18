@@ -16,6 +16,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'show:showFormMovement': [number];
   'show:showDescription': [string];
+  newRequest: [void];
 }>();
 
 const { loadingMovement, listMovement } = storeToRefs(useMovementStore());
@@ -30,6 +31,7 @@ const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
   await useMovementStore().deleteMovement(movementMonitoring.value ?? 0);
   clear();
+  emit('newRequest');
 };
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;
@@ -131,8 +133,8 @@ onMounted(async () => {
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
-      title="Confirmação de exclusão de cliente"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o cliente permanentemente."
+      title="Confirmação de exclusão de movimentação"
+      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a movimentação permanentemente."
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />

@@ -2,20 +2,20 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useMovementStore } from 'src/stores/movement-store';
+import { useScheduleStore } from 'src/stores/schedule-store';
 import { useCategoryTransactionStore } from 'src/stores/category-transaction-store';
 import Loading from '../shared/Loading.vue';
 import { createErrorData } from 'src/composables/CreateNotify';
-import { checkDataMovement } from 'src/composables/CheckData';
+import { checkDataSchedule } from 'src/composables/CheckData';
 
 defineOptions({
-  name: 'FormMovement',
+  name: 'FormSchedule',
 });
 
 const props = defineProps<{
   data: {
     open: boolean;
-    movementID: number | null;
+    scheduleID: number | null;
   };
 }>();
 const emit = defineEmits<{
@@ -23,12 +23,12 @@ const emit = defineEmits<{
   newRequest: [void];
 }>();
 
-const { loadingMovement } = storeToRefs(useMovementStore());
+const { loadingSchedule } = storeToRefs(useScheduleStore());
 const { loadingCategoryTransaction, listCategoryTransaction } = storeToRefs(
   useCategoryTransactionStore(),
 );
 
-const dataMovement = reactive({
+const dataSchedule = reactive({
   value: '' as string,
   date: '' as string,
   description: '' as string,
@@ -47,7 +47,7 @@ const selectedQuantity = ref<IQuasarSelect<number>>({
 });
 
 const clear = (): void => {
-  Object.assign(dataMovement, {
+  Object.assign(dataSchedule, {
     value: '',
     date: '',
     description: '',
@@ -67,15 +67,15 @@ const clear = (): void => {
   };
 };
 const save = async () => {
-  const check = checkDataMovement(dataMovement);
+  const check = checkDataSchedule(dataSchedule);
   if (check.status) {
-    const response = await useMovementStore().createMovement({
-      value: parseFloat(dataMovement.value),
-      description: dataMovement.description.trim().length > 0 ? dataMovement.description : null,
+    const response = await useScheduleStore().createSchedule({
+      value: parseFloat(dataSchedule.value),
+      description: dataSchedule.description.trim().length > 0 ? dataSchedule.description : null,
       type: selectedType.value.value,
       transactionCategoryID: selectedCategory.value?.value ?? null,
       quantity: selectedQuantity.value.value,
-      date: dataMovement.date,
+      date: dataSchedule.date,
     });
     if (response?.status === 201) {
       clear();
@@ -83,20 +83,20 @@ const save = async () => {
       emit('update:open');
     }
   } else {
-    createErrorData(check.message || 'Erro ao processar dados da movimentação');
+    createErrorData(check.message || 'Erro ao processar dados do agendamento');
   }
 };
 const update = async () => {
-  const check = checkDataMovement(dataMovement);
+  const check = checkDataSchedule(dataSchedule);
   if (check.status) {
-    const response = await useMovementStore().updateMovement({
-      id: movementID.value ?? 0,
-      value: parseFloat(dataMovement.value),
-      description: dataMovement.description.trim().length > 0 ? dataMovement.description : null,
+    const response = await useScheduleStore().updateSchedule({
+      id: scheduleID.value ?? 0,
+      value: parseFloat(dataSchedule.value),
+      description: dataSchedule.description.trim().length > 0 ? dataSchedule.description : null,
       type: selectedType.value.value,
       transactionCategoryID: selectedCategory.value?.value ?? null,
       quantity: selectedQuantity.value.value,
-      date: dataMovement.date,
+      date: dataSchedule.date,
     });
     if (response?.status === 200) {
       clear();
@@ -104,23 +104,23 @@ const update = async () => {
       emit('update:open');
     }
   } else {
-    createErrorData(check.message || 'Erro ao processar dados da movimentação');
+    createErrorData(check.message || 'Erro ao processar dados do agendamento');
   }
 };
 const checkDataEdit = async () => {
-  if (movementID.value) {
-    const response = await useMovementStore().showMovement(movementID.value);
+  if (scheduleID.value) {
+    const response = await useScheduleStore().showSchedule(scheduleID.value);
     if (response?.status === 200) {
-      const movement = response.data.movement;
+      const schedule = response.data.schedule;
 
-      Object.assign(dataMovement, {
-        value: String(movement.value),
-        date: String(movement.date).replace(/-/g, '/'),
-        description: movement.description ?? '',
+      Object.assign(dataSchedule, {
+        value: String(schedule.value),
+        date: String(schedule.date).replace(/-/g, '/'),
+        description: schedule.description ?? '',
       });
 
       selectedType.value =
-        movement.type === 'entry'
+        schedule.type === 'entry'
           ? {
               label: 'Entrada 🟩',
               value: 'entry',
@@ -130,10 +130,10 @@ const checkDataEdit = async () => {
               value: 'out',
             };
 
-      selectedCategory.value = movement.transaction_category_id
+      selectedCategory.value = schedule.transaction_category_id
         ? {
-            label: movement.category?.name ?? '',
-            value: movement.category?.id ?? null,
+            label: schedule.category?.name ?? '',
+            value: schedule.category?.id ?? null,
           }
         : {
             label: 'Sem categoria',
@@ -151,12 +151,12 @@ const open = computed({
   set: () => emit('update:open'),
 });
 const isLoading = computed(() => {
-  return loadingMovement.value || loadingCategoryTransaction.value;
+  return loadingSchedule.value || loadingCategoryTransaction.value;
 });
 const getlabelCategory = computed((): string => {
   return selectedCategory.value !== null ? 'Categoria' : 'Sem categoria definida';
 });
-const movementID = computed(() => props.data.movementID);
+const scheduleID = computed(() => props.data.scheduleID);
 const optionsType = computed(() => {
   return [
     {
@@ -246,7 +246,7 @@ watch(open, async () => {
     >
       <q-card-section class="q-pa-none">
         <TitlePage
-          :title="movementID ? 'Atualização de movimentação' : 'Cadastro de movimentação'"
+          :title="scheduleID ? 'Atualização de agendamento' : 'Cadastro de agendamento'"
           icon="sync_alt"
         />
       </q-card-section>
@@ -269,7 +269,7 @@ watch(open, async () => {
             </template>
           </q-select>
           <q-input
-            v-model="dataMovement.value"
+            v-model="dataSchedule.value"
             bg-color="white"
             label-color="black"
             outlined
@@ -286,11 +286,11 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-input
-            v-model="dataMovement.date"
+            v-model="dataSchedule.date"
             bg-color="white"
             label-color="black"
             outlined
-            label="Data de movimentação"
+            label="Data de agendamento"
             dense
             input-class="text-black no-spinners"
             mask="##/##/####"
@@ -300,7 +300,7 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-select
-            v-if="!movementID"
+            v-if="!scheduleID"
             v-model="selectedQuantity"
             outlined
             bg-color="white"
@@ -331,7 +331,7 @@ watch(open, async () => {
             </template>
           </q-select>
           <q-input
-            v-model="dataMovement.description"
+            v-model="dataSchedule.description"
             bg-color="white"
             label-color="black"
             outlined
@@ -361,7 +361,7 @@ watch(open, async () => {
             class="q-mr-sm"
           />
           <q-btn
-            v-if="!movementID"
+            v-if="!scheduleID"
             @click="save"
             color="primary"
             label="Salvar"

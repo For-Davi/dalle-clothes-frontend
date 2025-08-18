@@ -47,8 +47,10 @@ import type { Log } from './Log';
 import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting';
 import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
-import type { TypesAccount } from './Types';
+import type { TypesReceipt } from './Types';
 import type { DataMovement, FilterMovement, Movement } from './Movement';
+import type { Receipt, DataReceipt } from './Receipts';
+import type { DataSchedule, FilterSchedule, Schedule, DataScheduleFinish } from './Schedules';
 
 export {};
 
@@ -134,9 +136,16 @@ declare global {
   type IProfileData = ProfileData;
   type IProfilePassword = ProfilePassword;
 
-  type ITypesAccount = TypesAccount;
+  type ITypesReceipt = TypesReceipt;
+  type IReceipt = Receipt;
+  type IDataReceipt = DataReceipt;
 
   type IFilterMovement = FilterMovement;
   type IMovement = Movement;
   type IDataMovement = DataMovement;
+
+  type IFilterSchedule = FilterSchedule;
+  type ISchedule = Schedule;
+  type IDataSchedule = DataSchedule;
+  type IDataScheduleFinish = DataScheduleFinish;
 }

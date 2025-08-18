@@ -91,9 +91,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/Subscription.vue'),
       },
       {
-        path: 'account',
-        name: 'account',
-        component: () => import('src/pages/Account.vue'),
+        path: 'receipt',
+        name: 'receipt',
+        component: () => import('src/pages/Receipts.vue'),
       },
       {
         path: 'transaction',

@@ -1,32 +1,32 @@
 import { api } from 'boot/axios';
 
-const baseUrl = 'account/type';
+const baseUrl = 'receipt/type';
 
-export const getTypesAccountService = (): Promise<{
+export const getTypesReceiptService = (): Promise<{
   status: number;
   data: {
-    types: ITypesAccount[];
+    types: ITypesReceipt[];
   };
 }> => api.get(`${baseUrl}`);
 
-export const createTypesAccountService = (
+export const createTypesReceiptService = (
   name: string,
 ): Promise<{
   status: number;
   data: {
     message: string;
-    types: ITypesAccount[];
+    types: ITypesReceipt[];
   };
 }> => api.post(`${baseUrl}/`, { name });
 
-export const updateTypesAccountService = (
+export const updateTypesReceiptService = (
   id: number,
   name: string,
 ): Promise<{
   status: number;
   data: {
     message: string;
-    types: ITypesAccount[];
+    types: ITypesReceipt[];
   };
 }> =>
   api.put(`${baseUrl}/`, {
@@ -34,12 +34,12 @@ export const updateTypesAccountService = (
     name,
   });
 
-export const deleteTypesAccountService = (
+export const deleteTypesReceiptService = (
   id: number,
 ): Promise<{
   status: number;
   data: {
     message: string;
-    types: ITypesAccount[];
+    types: ITypesReceipt[];
   };
 }> => api.delete(`${baseUrl}/${id}`);
