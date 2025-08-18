@@ -85,7 +85,7 @@ const mountData = () => {
     sideMenuColorDefaultNotSelectedIcon:
       appearanceSetting.value.side_menu_color_default_not_selected_icon,
     sideMenuColorDefaultSelectedIcon: appearanceSetting.value.side_menu_color_default_selected_icon,
-    titlePageColorCode: appearanceSetting.value.title_page_color_code,
+    titlePageColorCode: appearanceSetting.value.title_page_color_code ?? '',
     navbarColorCode: appearanceSetting.value.navbar_color_code ?? '',
     navbarIconColorCode: appearanceSetting.value.navbar_icon_color_code ?? '',
     sideMenuColorCodeNotSelectedItem:
