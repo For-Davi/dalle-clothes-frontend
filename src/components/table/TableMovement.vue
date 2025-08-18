@@ -16,6 +16,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'show:showFormMovement': [number];
   'show:showDescription': [string];
+  newRequest: [void];
 }>();
 
 const { loadingMovement, listMovement } = storeToRefs(useMovementStore());
@@ -30,6 +31,7 @@ const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
   await useMovementStore().deleteMovement(movementMonitoring.value ?? 0);
   clear();
+  emit('newRequest');
 };
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;

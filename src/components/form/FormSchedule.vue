@@ -100,6 +100,7 @@ const update = async () => {
     });
     if (response?.status === 200) {
       clear();
+      emit('newRequest');
       emit('update:open');
     }
   } else {

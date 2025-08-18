@@ -19,16 +19,11 @@ const emit = defineEmits<{
 
 const check = ref<boolean>(false);
 
-const open = computed({
-  get: () => props.open,
-  set: () => emit('update:open'),
-});
-
 const confirmDateDefault = () => {
-  emit( 'update:dateDefault');
+  emit('update:dateDefault');
 };
 const confirmDateChange = () => {
-  emit( 'update:dateChange');
+  emit('update:dateChange');
 };
 const close = () => {
   emit('update:open');
@@ -36,6 +31,11 @@ const close = () => {
 const clear = (): void => {
   check.value = false;
 };
+
+const open = computed({
+  get: () => props.open,
+  set: () => emit('update:open'),
+});
 
 watch(open, () => {
   if (open.value) {
@@ -52,15 +52,6 @@ watch(open, () => {
       <q-card-section>
         <div class="column text-subtitle2">
           <span class="text-red q-px-sm">{{ props.message }}</span>
-          <q-checkbox
-            v-model="check"
-            v-show="
-              props.title === 'Confirmação de agendamento' ||
-              props.title === 'Confirmação de movimentação'
-            "
-            size="sm"
-            label="Eu li e concordo com a descrição de alerta para esta categoria"
-          />
         </div>
       </q-card-section>
       <q-card-actions align="right">
@@ -69,15 +60,15 @@ watch(open, () => {
           <q-btn
             @click="confirmDateChange"
             color="grey"
-            label="Finalizar com mês e ano atual"
+            label="Data de mês atual"
             size="md"
             unelevated
             no-caps
           />
-           <q-btn
+          <q-btn
             @click="confirmDateDefault"
             color="primary"
-            label="Finalizar com a data padrão"
+            label="Data do agendamento"
             size="md"
             unelevated
             no-caps

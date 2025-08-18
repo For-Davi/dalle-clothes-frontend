@@ -151,6 +151,7 @@ const hasFilter = computed(() => {
         :title="getTitleTableSchedule"
         @show:show-form-schedule="startEditSchedule"
         @show:show-description="startShowDescription"
+        @new-request="newRequest"
       />
     </section>
 

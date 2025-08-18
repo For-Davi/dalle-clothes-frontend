@@ -39,10 +39,10 @@ export const finishScheduleService = (
 ): Promise<{
   status: number;
   data: {
-    message: string
+    message: string;
     schedules: ISchedule[];
-  }
-}> => api.post(`${baseUrl}/finish`, data)
+  };
+}> => api.post(`${baseUrl}/finish`, data);
 
 export const createScheduleService = (
   data: IDataMovement,

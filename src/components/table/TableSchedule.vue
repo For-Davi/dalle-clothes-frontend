@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { columnsSchedule } from 'src/utils/columns';
@@ -17,13 +17,15 @@ const props = defineProps<{
 const emit = defineEmits<{
   'show:showFormSchedule': [number];
   'show:showDescription': [string];
+  newRequest: [void];
 }>();
 
 const { loadingSchedule, listSchedule } = storeToRefs(useScheduleStore());
 
+const mode = ref<'finish' | 'exclude'>('finish');
+const scheduleIsPeriodActual = ref<boolean>(false);
 const showConfirmAction = ref<boolean>(false);
-const showConfirmDateDifferent = ref<boolean>(false)
-const showConfirmFinish = ref<boolean>(false)
+const showConfirmDateDifferent = ref<boolean>(false);
 const scheduleMonitoring = ref<number | null>(null);
 
 const clear = (): void => {
@@ -31,17 +33,18 @@ const clear = (): void => {
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  await useScheduleStore().deleteSchedule(scheduleMonitoring.value ?? 0);
-  clear();
+  if (mode.value === 'exclude') {
+    await useScheduleStore().deleteSchedule(scheduleMonitoring.value ?? 0);
+    clear();
+  } else {
+    await finishSchedule(scheduleIsPeriodActual.value ? 'dateNow' : 'dateSchedule');
+  }
+  emit('newRequest');
 };
 const closeConfirmDateDifferent = () => {
   showConfirmDateDifferent.value = false;
-  clear()
-}
-const closeConfirmFinish = ():void => {
-  showConfirmFinish.value = false;
-  clear()
-}
+  clear();
+};
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;
   clear();
@@ -50,45 +53,65 @@ const openConfirmAction = (id: number): void => {
   scheduleMonitoring.value = id;
   showConfirmAction.value = true;
 };
-const startFinishSchedule = (id: number,date:string): void => {
-  scheduleMonitoring.value = id
+const startFinishSchedule = (id: number, date: string): void => {
+  scheduleMonitoring.value = id;
+  mode.value = 'finish';
 
-  const today = new Date()
-  const [day, month, year] = date.split('-')
-  const scheduleDate = new Date(`${year}-${month}-${day}T00:00:00`)
+  const today = new Date();
+  const [day, month, year] = date.split('-');
+  const scheduleDate = new Date(`${year}-${month}-${day}T00:00:00`);
 
-  if(today.getMonth() === scheduleDate.getMonth() && today.getFullYear() === scheduleDate.getFullYear() ) {
-    showConfirmFinish.value = true
+  const isPeriodActual =
+    today.getMonth() === scheduleDate.getMonth() &&
+    today.getFullYear() === scheduleDate.getFullYear();
+
+  if (isPeriodActual) {
+    showConfirmAction.value = true;
+    scheduleIsPeriodActual.value = true;
   } else {
-    showConfirmDateDifferent.value = true
+    showConfirmDateDifferent.value = true;
+    scheduleIsPeriodActual.value = false;
   }
-}
+};
 const startEdit = (id: number) => {
   emit('show:showFormSchedule', id);
 };
 const startExclude = (id: number) => {
+  mode.value = 'exclude';
   openConfirmAction(id);
 };
 const fetchSchedules = async (): Promise<void> => {
   await useScheduleStore().getSchedules();
 };
-const finishSchedule = async (close: 'date_schedule' | 'date_now') => {
-  if(scheduleMonitoring.value) {
-    const response = await useScheduleStore().showSchedule(scheduleMonitoring.value)
+const finishSchedule = async (close: 'dateSchedule' | 'dateNow') => {
+  showConfirmAction.value = false;
+  showConfirmDateDifferent.value = false;
 
-    if(response?.status === 200) {
-      const schedule = response.data.schedule
+  if (scheduleMonitoring.value) {
+    const response = await useScheduleStore().showSchedule(scheduleMonitoring.value);
+
+    if (response?.status === 200) {
+      const schedule = response.data.schedule;
       await useScheduleStore().finishSchedule({
         scheduleID: schedule.id,
-        close: close
-      })
-
-      showConfirmFinish.value = false;
-      showConfirmDateDifferent.value = false;
+        close: close,
+      });
       clear();
+      emit('newRequest');
     }
   }
-}
+};
+
+const getTitleConfirmAction = computed((): string => {
+  return mode.value === 'exclude'
+    ? 'Confirmação de exclusão de agendamento'
+    : 'Confirmação de finalização de agendamento';
+});
+const getMessageConfirmAction = computed((): string => {
+  return mode.value === 'exclude'
+    ? "Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o agendamento permanentemente"
+    : "Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e finalizará o agendamento permanentemente.";
+});
 
 onMounted(async () => {
   await fetchSchedules();
@@ -136,6 +159,17 @@ onMounted(async () => {
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn
+              @click="startFinishSchedule(props.row.id, props.row.date)"
+              :disable="scheduleMonitoring === props.row.id"
+              size="sm"
+              flat
+              round
+              color="green"
+              icon="check_circle"
+            >
+              <q-tooltip>Finalizar agendamento</q-tooltip>
+            </q-btn>
+            <q-btn
               v-show="props.row.description"
               @click="emit('show:showDescription', props.row.description)"
               :disable="scheduleMonitoring === props.row.id"
@@ -146,16 +180,6 @@ onMounted(async () => {
               icon="fa-solid fa-file-lines"
             >
               <q-tooltip>Descrição</q-tooltip>
-            </q-btn>
-            <q-btn
-            @click="startFinishSchedule(props.row.id, props.row.date)"
-            :disable="scheduleMonitoring === props.row.id"
-            size="sm"
-            flat
-            round
-            color="black"
-            icon="check">
-             <q-tooltip>Finalizar agendamento</q-tooltip>
             </q-btn>
             <q-btn
               @click="startEdit(props.row.id)"
@@ -182,27 +206,19 @@ onMounted(async () => {
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
-      title="Confirmação de exclusão de agendamento"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o agendamento permanentemente."
+      :title="getTitleConfirmAction"
+      :message="getMessageConfirmAction"
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />
-     <ConfirmAction
-      :open="showConfirmFinish"
-      label-action="Continuar"
-      title="Confirmação de finalização de agendamento"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e finalizará o agendamento permanentemente."
-      @update:open="closeConfirmFinish"
-      @update:ok="finishSchedule('date_schedule')"
-    />
-      <ConfirmDateDifferentSchedule
+    <ConfirmDateDifferentSchedule
       :open="showConfirmDateDifferent"
       label-action="Continuar"
       title="Confirmação de finalização de agendamento"
-      message="O mês e ano atual difere do mês ou ano do agendamento, você deseja finalizar o agendamento com o mês e ano atual ou finalizar com a data padrão do agendamento?"
+      message="O mês e ano atual difere do mês ou ano do agendamento, você deseja finalizar o agendamento com o mês e ano atual ou finalizar com a data do agendamento?"
       @update:open="closeConfirmDateDifferent"
-      @update:dateDefault="finishSchedule('date_schedule')"
-      @update:dateChange="finishSchedule('date_now')"
+      @update:dateDefault="finishSchedule('dateSchedule')"
+      @update:dateChange="finishSchedule('dateNow')"
     />
   </section>
 </template>

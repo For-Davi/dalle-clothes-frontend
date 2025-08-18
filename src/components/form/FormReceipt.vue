@@ -90,8 +90,8 @@ const checkDataEdit = async () => {
   }
 };
 const changeLoading = (value: boolean) => {
-  loading.value = value
-}
+  loading.value = value;
+};
 
 const receiptID = computed(() => props.data.receiptID);
 const optionsTypes = computed((): IQuasarSelect<number | null>[] => [
@@ -106,17 +106,17 @@ const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
 });
-const isLoading = computed(():boolean => {
-  return loading.value || loadingReceipt.value
-})
+const isLoading = computed((): boolean => {
+  return loading.value || loadingReceipt.value;
+});
 
 watch(open, async () => {
   if (open.value) {
     clear();
-    changeLoading(true)
+    changeLoading(true);
     await useTypesReceiptStore().getTypesReceipt();
     await checkDataEdit();
-    changeLoading(false)
+    changeLoading(false);
   }
 });
 </script>

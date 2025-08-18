@@ -151,6 +151,7 @@ const hasFilter = computed(() => {
         :title="getTitleTableMovement"
         @show:show-form-movement="startEditMovement"
         @show:show-description="startShowDescription"
+        @new-request="newRequest"
       />
     </section>
 

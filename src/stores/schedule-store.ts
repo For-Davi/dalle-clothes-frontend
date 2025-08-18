@@ -6,7 +6,7 @@ import {
   getSchedulesService,
   showScheduleService,
   updateScheduleService,
-  finishScheduleService
+  finishScheduleService,
 } from 'src/services/schedule-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -79,20 +79,20 @@ export const useScheduleStore = defineStore('schedule', {
       }
     },
     async finishSchedule(data: IDataScheduleFinish) {
-       this.setLoading(true)
+      this.setLoading(true);
       try {
-        const response = await finishScheduleService(data)
-        if(response.status === 200) {
-          this.clearListSchedule()
-          this.setListSchedule(response.data.schedules)
-           createSuccess(response.data.message);
-        } 
+        const response = await finishScheduleService(data);
+        if (response.status === 200) {
+          this.clearListSchedule();
+          this.setListSchedule(response.data.schedules);
+          createSuccess(response.data.message);
+        }
 
-        return response 
+        return response;
       } catch (error) {
-          createError(error);
+        createError(error);
       } finally {
-        this.setLoading(false)
+        this.setLoading(false);
       }
     },
     async createSchedule(data: IDataSchedule) {

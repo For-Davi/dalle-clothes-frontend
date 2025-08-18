@@ -26,6 +26,6 @@ export interface DataSchedule {
 }
 
 export interface DataScheduleFinish {
-  scheduleID: number
-  close: 'date_now' | 'date_schedule'
+  scheduleID: number;
+  close: 'dateNow' | 'dateSchedule';
 }
