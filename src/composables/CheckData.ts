@@ -430,7 +430,7 @@ export const checkDataAppearance = (data: {
   sideMenuColorCodeNotSelectedIcon: string;
   sideMenuColorCodeSelectedIcon: string;
 }): { status: boolean; message?: string } => {
-   if (data.titlePageColorCode.trim().length > 0 && data.titlePageColorCode.trim().length !== 7) {
+  if (data.titlePageColorCode.trim().length > 0 && data.titlePageColorCode.trim().length !== 7) {
     return {
       status: false,
       message: 'O código hexadecimal deve ter 7 caractéres em título',

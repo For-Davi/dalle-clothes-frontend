@@ -38,14 +38,17 @@ const update = async () => {
   const check = checkDataAppearance(dataAppearance);
   if (check.status) {
     await useSettingsStore().updateAppearanceSetting({
-      titlePageColorDefault:dataAppearance.titlePageColorDefault,
+      titlePageColorDefault: dataAppearance.titlePageColorDefault,
       navbarColorDefault: dataAppearance.navbarColorDefault,
       navbarIconColorDefault: dataAppearance.navbarIconColorDefault,
       sideMenuColorDefaultNotSelectedItem: dataAppearance.sideMenuColorDefaultNotSelectedItem,
       sideMenuColorDefaultSelectedItem: dataAppearance.sideMenuColorDefaultSelectedItem,
       sideMenuColorDefaultNotSelectedIcon: dataAppearance.sideMenuColorDefaultNotSelectedIcon,
       sideMenuColorDefaultSelectedIcon: dataAppearance.sideMenuColorDefaultSelectedIcon,
-      titlePageColorCode:dataAppearance.titlePageColorCode.trim().length > 0 ? dataAppearance.titlePageColorCode : null,
+      titlePageColorCode:
+        dataAppearance.titlePageColorCode.trim().length > 0
+          ? dataAppearance.titlePageColorCode
+          : null,
       navbarColorCode:
         dataAppearance.navbarColorCode.trim().length > 0 ? dataAppearance.navbarColorCode : null,
       navbarIconColorCode:
@@ -117,8 +120,8 @@ watch(
     <q-card-section v-show="!loadingSetting">
       <q-form class="q-gutter-y-md column">
         <!-- Título -->
-         <div>
-            <q-toggle
+        <div>
+          <q-toggle
             v-model="dataAppearance.titlePageColorDefault"
             checked-icon="check"
             color="green"
@@ -131,7 +134,7 @@ watch(
               <span>Utilizar a cor padrão para título das páginas</span>
             </div>
           </q-toggle>
-            <q-input
+          <q-input
             v-model="dataAppearance.titlePageColorCode"
             bg-color="white"
             label-color="black"
@@ -149,7 +152,7 @@ watch(
               </q-icon>
             </template>
           </q-input>
-         </div>
+        </div>
         <!-- Navbar -->
         <div>
           <q-toggle
