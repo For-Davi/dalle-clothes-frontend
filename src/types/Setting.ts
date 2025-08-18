@@ -1,6 +1,8 @@
 export type SettingModalTabs = 'appearance' | 'system';
 
 export interface SettingAppearance {
+  titlePageColorDefault: number;
+  titlePageColorCode: string | null;
   navbarColorDefault: number;
   navbarColorCode: string | null;
   navbarIconColorDefault: number;
@@ -16,6 +18,8 @@ export interface SettingAppearance {
 }
 
 export interface Appearance {
+  title_page_color_default: number;
+  title_page_color_code: string | null;
   navbar_color_default: number;
   navbar_color_code: string | null;
   navbar_icon_color_default: number;

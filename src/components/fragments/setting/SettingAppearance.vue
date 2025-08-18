@@ -18,12 +18,14 @@ const props = defineProps<{
 const { loadingSetting, appearanceSetting } = storeToRefs(useSettingsStore());
 
 const dataAppearance = reactive({
+  titlePageColorDefault: 1 as number,
   navbarColorDefault: 1 as number,
   navbarIconColorDefault: 1 as number,
   sideMenuColorDefaultNotSelectedItem: 1 as number,
   sideMenuColorDefaultSelectedItem: 1 as number,
   sideMenuColorDefaultNotSelectedIcon: 1 as number,
   sideMenuColorDefaultSelectedIcon: 1 as number,
+  titlePageColorCode: '' as string,
   navbarColorCode: '' as string,
   navbarIconColorCode: '' as string,
   sideMenuColorCodeNotSelectedItem: '' as string,
@@ -36,12 +38,14 @@ const update = async () => {
   const check = checkDataAppearance(dataAppearance);
   if (check.status) {
     await useSettingsStore().updateAppearanceSetting({
+      titlePageColorDefault:dataAppearance.titlePageColorDefault,
       navbarColorDefault: dataAppearance.navbarColorDefault,
       navbarIconColorDefault: dataAppearance.navbarIconColorDefault,
       sideMenuColorDefaultNotSelectedItem: dataAppearance.sideMenuColorDefaultNotSelectedItem,
       sideMenuColorDefaultSelectedItem: dataAppearance.sideMenuColorDefaultSelectedItem,
       sideMenuColorDefaultNotSelectedIcon: dataAppearance.sideMenuColorDefaultNotSelectedIcon,
       sideMenuColorDefaultSelectedIcon: dataAppearance.sideMenuColorDefaultSelectedIcon,
+      titlePageColorCode:dataAppearance.titlePageColorCode.trim().length > 0 ? dataAppearance.titlePageColorCode : null,
       navbarColorCode:
         dataAppearance.navbarColorCode.trim().length > 0 ? dataAppearance.navbarColorCode : null,
       navbarIconColorCode:
@@ -72,6 +76,7 @@ const update = async () => {
 
 const mountData = () => {
   Object.assign(dataAppearance, {
+    titlePageColorDefault: appearanceSetting.value.title_page_color_default,
     navbarColorDefault: appearanceSetting.value.navbar_color_default,
     navbarIconColorDefault: appearanceSetting.value.navbar_icon_color_default,
     sideMenuColorDefaultNotSelectedItem:
@@ -80,6 +85,7 @@ const mountData = () => {
     sideMenuColorDefaultNotSelectedIcon:
       appearanceSetting.value.side_menu_color_default_not_selected_icon,
     sideMenuColorDefaultSelectedIcon: appearanceSetting.value.side_menu_color_default_selected_icon,
+    titlePageColorCode: appearanceSetting.value.title_page_color_code,
     navbarColorCode: appearanceSetting.value.navbar_color_code ?? '',
     navbarIconColorCode: appearanceSetting.value.navbar_icon_color_code ?? '',
     sideMenuColorCodeNotSelectedItem:
@@ -109,7 +115,41 @@ watch(
     </q-card-section>
     <Loading :show="loadingSetting" />
     <q-card-section v-show="!loadingSetting">
-      <q-form class="q-gutter-y-sm column">
+      <q-form class="q-gutter-y-md column">
+        <!-- Título -->
+         <div>
+            <q-toggle
+            v-model="dataAppearance.titlePageColorDefault"
+            checked-icon="check"
+            color="green"
+            unchecked-icon="clear"
+            :true-value="1"
+            :false-value="0"
+          >
+            <div class="column">
+              <span class="text-bold text-body2"> Título </span>
+              <span>Utilizar a cor padrão para título das páginas</span>
+            </div>
+          </q-toggle>
+            <q-input
+            v-model="dataAppearance.titlePageColorCode"
+            bg-color="white"
+            label-color="black"
+            input-class="text-black"
+            style="width: 200px"
+            outlined
+            dense
+            label="Código da cor"
+          >
+            <template v-slot:append>
+              <q-icon name="colorize" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-color v-model="dataAppearance.titlePageColorCode" no-header />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+         </div>
         <!-- Navbar -->
         <div>
           <q-toggle
@@ -122,7 +162,6 @@ watch(
           >
             <div class="column">
               <span class="text-bold text-body2"> Navbar </span>
-
               <span>Utilizar a cor padrão para fundo da navbar</span>
             </div>
           </q-toggle>
