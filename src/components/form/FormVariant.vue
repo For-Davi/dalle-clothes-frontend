@@ -30,6 +30,7 @@ const dataVariant = reactive({
   stockQuantity: '',
   minStockAlert: '',
   sku: '',
+  code: '',
   active: 1,
   description: '',
   location: '',
@@ -44,6 +45,7 @@ const clear = (): void => {
     stockQuantity: '',
     minStockAlert: '',
     sku: '',
+    code: '',
     active: 1,
     description: '',
     location: '',
@@ -59,6 +61,7 @@ const mountData = async () => {
 
     Object.assign(dataVariant, {
       sku: variant.sku ?? '',
+      code: variant.code ?? '',
       active: variant.active,
       price: variant.price,
       cost: variant.cost,
@@ -82,6 +85,7 @@ const update = async (): Promise<void> => {
     minStockAlert: Number(dataVariant.minStockAlert),
     offer: parseFloat(dataVariant.offer),
     sku: dataVariant.sku.trim().length === 0 ? null : dataVariant.sku,
+    code: dataVariant.code.trim().length === 0 ? null : dataVariant.code,
     active: Number(dataVariant.active),
     description: dataVariant.description.trim().length === 0 ? null : dataVariant.description,
     location: dataVariant.location.trim().length === 0 ? null : dataVariant.location,
@@ -234,7 +238,9 @@ watch(open, async () => {
           </div>
           <q-input
             v-model="dataVariant.sku"
-            @update:model-value="(val) => (dataVariant.sku = String(val).toUpperCase())"
+            @update:model-value="
+              (val: string | number | null) => (dataVariant.sku = String(val).toUpperCase())
+            "
             bg-color="white"
             label-color="black"
             outlined
@@ -244,6 +250,22 @@ watch(open, async () => {
           >
             <template v-slot:prepend>
               <q-icon name="dialpad" color="black" size="20px" />
+            </template>
+          </q-input>
+          <q-input
+            v-model="dataVariant.code"
+            @update:model-value="
+              (val: string | number | null) => (dataVariant.code = String(val).toUpperCase())
+            "
+            bg-color="white"
+            label-color="black"
+            outlined
+            label="Código"
+            dense
+            input-class="text-black no-resize"
+          >
+            <template v-slot:prepend>
+              <q-icon name="grid_4x4" color="black" size="20px" />
             </template>
           </q-input>
           <q-select
