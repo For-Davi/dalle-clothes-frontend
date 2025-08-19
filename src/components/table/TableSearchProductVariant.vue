@@ -95,10 +95,13 @@ const getColorStyle = (hexColor: string) => {
             size="sm"
             flat
             round
-            color="primary"
-            icon="check_circle"
+            color="red"
+            icon="fa-solid fa-minus"
           >
-            <q-tooltip>Escolher</q-tooltip>
+            <q-tooltip class="bg-grey-3 text-bold text-red">Saída</q-tooltip>
+          </q-btn>
+          <q-btn size="sm" flat round color="green" icon="add">
+            <q-tooltip class="bg-grey-3 text-bold text-green">Entrada</q-tooltip>
           </q-btn>
         </q-td>
       </q-tr>
