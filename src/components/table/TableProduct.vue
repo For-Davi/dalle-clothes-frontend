@@ -110,6 +110,9 @@ onMounted(async () => {
           <q-td key="sku" :props="props" class="text-left">
             {{ props.row.sku }}
           </q-td>
+          <q-td key="code" :props="props" class="text-left">
+            {{ props.row.code }}
+          </q-td>
           <q-td key="price" :props="props" class="text-left">
             {{ formatToReal(props.row.price) }}
           </q-td>
