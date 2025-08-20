@@ -169,7 +169,9 @@ const open = computed({
                 </div>
                 <q-input
                   v-model="item.sku"
-                  @update:model-value="(val) => (item.sku = String(val).toUpperCase())"
+                  @update:model-value="
+                    (val: string | number | null) => (item.sku = String(val).toUpperCase())
+                  "
                   bg-color="white"
                   label-color="black"
                   outlined
@@ -179,6 +181,22 @@ const open = computed({
                 >
                   <template v-slot:prepend>
                     <q-icon name="dialpad" color="black" size="20px" />
+                  </template>
+                </q-input>
+                <q-input
+                  v-model="item.code"
+                  @update:model-value="
+                    (val: string | number | null) => (item.code = String(val).toUpperCase())
+                  "
+                  bg-color="white"
+                  label-color="black"
+                  outlined
+                  label="Código"
+                  dense
+                  input-class="text-black no-resize"
+                >
+                  <template v-slot:prepend>
+                    <q-icon size="20px" color="black" name="grid_4x4" />
                   </template>
                 </q-input>
                 <q-select

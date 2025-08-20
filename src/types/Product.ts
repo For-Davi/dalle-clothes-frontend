@@ -13,6 +13,7 @@ export interface ProductVariant {
   stockQuantity: string;
   minStockAlert: string;
   sku: string;
+  code: string;
   active: number;
   description: string;
   gridItem: {
@@ -29,6 +30,7 @@ export interface VModelProductVariant {
   stockQuantity: string;
   minStockAlert: string;
   sku: string;
+  code: string;
   active: number;
   description: string;
   location: string;
@@ -67,6 +69,7 @@ export interface DataCreateProduct {
     stockQuantity: number;
     minStockAlert: number;
     sku: string | null;
+    code: string | null;
     active: number;
     description: string | null;
     location: string | null;
@@ -93,6 +96,7 @@ export interface DataUpdateVariant {
   stockQuantity: number;
   minStockAlert: number;
   sku: string | null;
+  code: string | null;
   active: number;
   description: string | null;
   location: string | null;
@@ -104,6 +108,7 @@ export interface Product {
   price: number;
   stock_quantity: number;
   sku: string;
+  code: string;
   variant_active: number;
   color: {
     name: string;
@@ -150,6 +155,7 @@ export interface Variant {
   stock_quantity: number;
   min_stock_alert: number;
   sku: string | null;
+  code: string | null;
   active: number;
   color_id: number | null;
   color: IColor | null;
