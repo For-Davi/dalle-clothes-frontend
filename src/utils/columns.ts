@@ -444,6 +444,12 @@ export const columnsProduct: IQuasarTable[] = [
     align: 'left',
   },
   {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
     name: 'price',
     label: 'Preço',
     field: 'price',

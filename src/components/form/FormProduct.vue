@@ -123,6 +123,7 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
         minStockAlert: Number(item.minStockAlert),
         offer: parseFloat(item.cost),
         sku: item.sku.trim().length === 0 ? null : item.sku,
+        code: item.code.trim().length === 0 ? null : item.code,
         active: Number(item.active),
         description: item.description.trim().length === 0 ? null : item.description,
         gridItemID: item.gridItem.id,

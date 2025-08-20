@@ -43,6 +43,7 @@ const generateVariants = (): void => {
     stockQuantity: '0',
     minStockAlert: '0',
     sku: '',
+    code: '',
     active: 1,
     description: '',
     location: '',

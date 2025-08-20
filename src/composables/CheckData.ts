@@ -415,12 +415,14 @@ export const checkDataCategoryTransaction = (data: {
 };
 
 export const checkDataAppearance = (data: {
+  titlePageColorDefault: number;
   navbarColorDefault: number;
   navbarIconColorDefault: number;
   sideMenuColorDefaultNotSelectedItem: number;
   sideMenuColorDefaultSelectedItem: number;
   sideMenuColorDefaultNotSelectedIcon: number;
   sideMenuColorDefaultSelectedIcon: number;
+  titlePageColorCode: string;
   navbarColorCode: string;
   navbarIconColorCode: string;
   sideMenuColorCodeNotSelectedItem: string;
@@ -428,6 +430,12 @@ export const checkDataAppearance = (data: {
   sideMenuColorCodeNotSelectedIcon: string;
   sideMenuColorCodeSelectedIcon: string;
 }): { status: boolean; message?: string } => {
+  if (data.titlePageColorCode.trim().length > 0 && data.titlePageColorCode.trim().length !== 7) {
+    return {
+      status: false,
+      message: 'O código hexadecimal deve ter 7 caractéres em título',
+    };
+  }
   if (data.navbarColorCode.trim().length > 0 && data.navbarColorCode.trim().length !== 7) {
     return {
       status: false,
