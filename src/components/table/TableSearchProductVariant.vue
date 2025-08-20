@@ -72,6 +72,9 @@ const getColorStyle = (hexColor: string) => {
         <q-td key="sku" :props="props" class="text-left">
           {{ props.row.sku }}
         </q-td>
+        <q-td key="code" :props="props" class="text-left">
+          {{ props.row.code }}
+        </q-td>
         <q-td key="color" :props="props" class="text-left">
           <div
             v-if="props.row.color"

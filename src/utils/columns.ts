@@ -246,6 +246,12 @@ export const columnsSearchProductVariant: IQuasarTable[] = [
     align: 'left',
   },
   {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
     name: 'color',
     label: 'Cor',
     field: 'color',
