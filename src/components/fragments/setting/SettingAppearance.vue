@@ -120,7 +120,7 @@ watch(
     <q-card-section v-show="!loadingSetting">
       <q-form class="q-gutter-y-md column">
         <!-- Título -->
-        <div>
+        <div class="q-my-md">
           <q-toggle
             v-model="dataAppearance.titlePageColorDefault"
             checked-icon="check"
@@ -153,8 +153,9 @@ watch(
             </template>
           </q-input>
         </div>
+        <q-separator />
         <!-- Navbar -->
-        <div>
+        <div >
           <q-toggle
             v-model="dataAppearance.navbarColorDefault"
             checked-icon="check"
