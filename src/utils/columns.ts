@@ -590,3 +590,36 @@ export const columnsSchedule: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsLinkedProducts: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Produto',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: 'Preço',
+    field: 'price',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+    {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: 'Ações',
+    field: 'actions',
+    align: 'right',
+  },
+]

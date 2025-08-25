@@ -613,3 +613,13 @@ export const checkReceiptData = (data: {
 
   return { status: true };
 };
+
+export const checkDataCatalog = (data: {
+  price: number;
+}): { status: boolean; message?: string }  => {
+  if (data.price < 0) {
+    return { status: false, message: 'Insira um preço válido' };
+  }
+
+  return { status: true };
+}

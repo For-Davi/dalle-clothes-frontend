@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
-import type { FilterSupplier } from './Supplier';
+import type { FilterSupplier, DataSupplierCatalog } from './Supplier';
 import type {
   CategorySupplier,
   CategoryProduct,
@@ -40,6 +40,7 @@ import type {
   DataProductAdvanced,
   ProductAdvanced,
   ReturnProductAdvanced,
+  LinkedProducts
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -121,6 +122,7 @@ declare global {
   type IReturnProductAdvanced = ReturnProductAdvanced;
   type IDataProductBasic = DataProductBasic;
   type IDataProductAdvanced = DataProductAdvanced;
+  type ILinkedProducts = LinkedProducts;
 
   type ICustomFile = CustomFile;
 
@@ -146,4 +148,6 @@ declare global {
   type ISchedule = Schedule;
   type IDataSchedule = DataSchedule;
   type IDataScheduleFinish = DataScheduleFinish;
+
+  type IDataSupplierCatalog = DataSupplierCatalog;
 }

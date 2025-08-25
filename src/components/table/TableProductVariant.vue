@@ -101,7 +101,7 @@ const showConfigVariant = () => {
             />
           </q-td>
           <q-td key="action" :props="props">
-            <q-btn
+              <q-btn
               :disable="variantIndexMonitoring === props.rowIndex"
               size="sm"
               flat

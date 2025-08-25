@@ -1,0 +1,51 @@
+import { api } from 'boot/axios';
+
+const baseUrl = 'supplier/catalog/supplier';
+
+export const getCatalogSupplierService = (id: number | null): Promise<{
+  status: number;
+  data: {
+    catalog: ILinkedProducts[];
+  };
+}> => api.get(`${baseUrl}/${id}`,);
+
+export const createCatalogSupplierService = (
+  supplierID: number | null,
+  productVariantID: number,
+  price: number,
+  description: string | null,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+    catalog: ILinkedProducts[];
+  };
+}> => api.post(`${baseUrl}/`, { price, description, supplierID, productVariantID });
+
+export const updateCatalogSupplierService = (
+  id: number,
+  price: number,
+  description: string | null
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+    catalog: ILinkedProducts[];
+  };
+}> =>
+  api.put(`${baseUrl}/`, {
+    id,
+    price,
+    description
+  });
+
+export const deleteCatalogSupplierService = (
+  supplierID: number,
+  variantProductID: number
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+    catalog: ILinkedProducts[];
+  };
+}> => api.delete(`${baseUrl}/${supplierID}/${variantProductID}`,);
