@@ -7,7 +7,8 @@ import FormSchedule from 'src/components/form/FormSchedule.vue';
 import Description from 'src/components/general/Description.vue';
 import { useScheduleStore } from 'src/stores/schedule-store';
 import FilterSchedule from 'src/components/filter/FilterSchedule.vue';
-// import Export from 'src/components/exportsExcelPDF/Export.vue';
+import ExportSchedule from 'src/components/export/ExportSchedule.vue';
+import { exportSchedulesService } from 'src/services/schedule-service';
 
 defineOptions({
   name: 'Schedule',
@@ -87,6 +88,14 @@ const newRequest = async (): Promise<void> => {
     await useScheduleStore().getSchedules(filter);
   }
 };
+const startExport = async (format: 'excel' | 'pdf'): Promise<void> => {
+  await exportSchedulesService({
+    category: filter.category,
+    format: format,
+    period: filter.period,
+    type: filter.type,
+  });
+};
 
 const getTitleTableSchedule = computed((): string => {
   if (filter.period === null) {
@@ -162,11 +171,12 @@ const hasFilter = computed(() => {
 
     <!-- Modals -->
     <FilterSchedule :open="showFilterSchedule" :filters="filter" @update:open="actionFilter" />
-    <!-- <Export
+    <ExportSchedule
       :open="showExport"
+      :filters="filter"
       @update:open="changeShowExport"
-      :period="filter.period ?? getTitleTableSchedule"
-    /> -->
+      @choose-format="startExport"
+    />
     <FormSchedule
       :data="showFormSchedule"
       @update:open="changeShowFormSchedule(false)"
