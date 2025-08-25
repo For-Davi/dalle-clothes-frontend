@@ -31,7 +31,7 @@ const clear = (): void => {
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  await useCatalogSupplierStore().deleteLinkedProductSupplier(linkedProductMonitoring.value ?? 0);
+  // await useCatalogSupplierStore().deleteLinkedProductSupplier(linkedProductMonitoring.value, props.supplierId);
   clear();
 };
 const closeConfirmAction = (): void => {

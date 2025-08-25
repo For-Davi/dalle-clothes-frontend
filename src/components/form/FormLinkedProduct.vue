@@ -39,7 +39,7 @@ const save = async () => {
     const response = await useCatalogSupplierStore().createLinkedProductSupplier(
       props.data.catalog.supplierID,
       variantID.value,
-      dataCatalog.price,
+      dataCatalog.price,   
       dataCatalog.description
     );
     if (response?.status === 201) {
