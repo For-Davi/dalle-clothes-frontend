@@ -4,7 +4,7 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
 import { createErrorData } from 'src/composables/CreateNotify';
-import { checkDataCatalog } from 'src/composables/CheckData';
+// import { checkDataCatalog } from 'src/composables/CheckData';
 import { useCatalogSupplierStore } from 'src/stores/catalog-supplier-store';
 
 defineOptions({
@@ -34,8 +34,8 @@ const clear = (): void => {
   });
 };
 const save = async () => {
-  const check = checkDataCatalog(dataCatalog);
-  if (check.status) {
+  // const check = checkDataCatalog(dataCatalog);
+  if (true) {
     const response = await useCatalogSupplierStore().createLinkedProductSupplier(
       props.data.catalog.supplierID,
       variantID.value,
@@ -47,7 +47,7 @@ const save = async () => {
       emit('update:open');
     }
   } else {
-    createErrorData(check.message || 'Erro ao processar dados da categoria');
+    createErrorData('Erro ao processar dados da categoria');
   }
 };
 // const update = async () => {

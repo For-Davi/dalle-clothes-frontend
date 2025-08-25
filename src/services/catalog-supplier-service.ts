@@ -1,6 +1,6 @@
 import { api } from 'boot/axios';
 
-const baseUrl = 'supplier/catalog/supplier';
+const baseUrl = 'supplier/catalog/';
 
 export const getCatalogSupplierService = (id: number | null): Promise<{
   status: number;
