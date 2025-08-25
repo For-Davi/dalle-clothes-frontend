@@ -4,6 +4,13 @@ export interface FilterSchedule {
   type: 'all' | 'entry' | 'out';
 }
 
+export interface ExportSchedule {
+  period: string | null;
+  category: number | null;
+  type: 'all' | 'entry' | 'out';
+  format: 'pdf' | 'excel';
+}
+
 export interface Schedule {
   id: number;
   enterprise_id: number;
