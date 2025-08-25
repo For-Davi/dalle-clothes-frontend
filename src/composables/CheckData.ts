@@ -615,11 +615,11 @@ export const checkReceiptData = (data: {
 };
 
 export const checkExportData = (data: {
-  data: IMovement[]
-}): { status: boolean; message?: string} => {
-  if(data.data.length === 0) {
-    return { status: false, message:'Você não possui nenhum dado para exportar'}
+  data: IMovement[];
+}): { status: boolean; message?: string } => {
+  if (data.data.length === 0) {
+    return { status: false, message: 'Você não possui nenhum dado para exportar' };
   }
 
-  return { status: true }
-}
+  return { status: true };
+};

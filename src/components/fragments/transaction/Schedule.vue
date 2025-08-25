@@ -7,7 +7,7 @@ import FormSchedule from 'src/components/form/FormSchedule.vue';
 import Description from 'src/components/general/Description.vue';
 import { useScheduleStore } from 'src/stores/schedule-store';
 import FilterSchedule from 'src/components/filter/FilterSchedule.vue';
-import Export from 'src/components/exportsExcelPDF/Export.vue';
+// import Export from 'src/components/exportsExcelPDF/Export.vue';
 
 defineOptions({
   name: 'Schedule',
@@ -15,7 +15,7 @@ defineOptions({
 
 const showFilterSchedule = ref<boolean>(false);
 const showCategoryTransactionManage = ref<boolean>(false);
-const showExport = ref<boolean>(false)
+const showExport = ref<boolean>(false);
 const showFormSchedule = reactive({
   open: false as boolean,
   scheduleID: null as number | null,
@@ -31,8 +31,8 @@ const filter = reactive<IFilterSchedule>({
 });
 
 const changeShowExport = () => {
-  showExport.value = !showExport.value
-}
+  showExport.value = !showExport.value;
+};
 const changeShowFormSchedule = (open: boolean, scheduleID: number | null = null): void => {
   Object.assign(showFormSchedule, {
     open,
@@ -162,7 +162,11 @@ const hasFilter = computed(() => {
 
     <!-- Modals -->
     <FilterSchedule :open="showFilterSchedule" :filters="filter" @update:open="actionFilter" />
-    <Export :open="showExport" @update:open="changeShowExport" :period="filter.period ?? getTitleTableSchedule"/>
+    <!-- <Export
+      :open="showExport"
+      @update:open="changeShowExport"
+      :period="filter.period ?? getTitleTableSchedule"
+    /> -->
     <FormSchedule
       :data="showFormSchedule"
       @update:open="changeShowFormSchedule(false)"
