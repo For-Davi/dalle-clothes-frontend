@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { computed, ref } from 'vue';
+import { computed, ref, reactive } from 'vue';
 import Loading from '../shared/Loading.vue';
 import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
 import { useCatalogSupplierStore } from 'src/stores/catalog-supplier-store';
 import TableLinkedProducts from '../table/TableLinkedProducts.vue';
 import ProductsVariantsManage from './ProductsVariantsManage.vue';
+import FormLinkedProduct from '../form/FormLinkedProduct.vue';
 
 defineOptions({
   name: 'LinkedProductsManage',
@@ -23,11 +24,39 @@ const emit = defineEmits<{
 const { loadingLinkedProducts, listLinkedProducts } = storeToRefs(useCatalogSupplierStore());
 
 const showProductVariantsManage = ref<boolean>(false)
+const showFormLinkedProduct = reactive<{
+  open: boolean;
+  catalog: IDataSupplierCatalog | null;
+}>({
+  open: false,
+  catalog: null,
+});
+const showDescription = reactive({
+  open: false as boolean,
+  description: null as string | null,
+});
 
-
-// const startEdit = (data: ISupplierCatalog) => {
-//   changeShowProductVariantsManage(true, data);
-// };
+const changeShowDescription = (open: boolean, description: string | null = null): void => {
+  Object.assign(showDescription, {
+    open,
+    description,
+  });
+};
+const startShowDescription = (description: string): void => {
+  changeShowDescription(true, description);
+};
+const startEdit = (data: IDataSupplierCatalog) => {
+  changeShowFormLinkedProduct(true, data);
+};
+const changeShowFormLinkedProduct = (
+  show: boolean,
+  catalog: IDataSupplierCatalog | null = null,
+): void => {
+  Object.assign(showFormLinkedProduct, {
+    open: show,
+    catalog: catalog,
+  });
+};
 const changeShowProductVariantsManage = () => {
   showProductVariantsManage.value = !showProductVariantsManage.value;
 }
@@ -49,6 +78,8 @@ const open = computed({
           <TableLinkedProducts
             v-show="listLinkedProducts.length > 0"
             :supplierId="props.supplierId"
+            @show:show-form-linked-products="startEdit"
+            @show:show-description="startShowDescription"
           />
           <Empty
             v-show="listLinkedProducts.length <= 0"
@@ -81,7 +112,11 @@ const open = computed({
       </q-card-actions>
 
       <!-- Modals -->
-
+        <Description :data="showDescription" @update:open="changeShowDescription(false)" />
+      <FormLinkedProduct
+      :data="showFormLinkedProduct"
+      @update:open="changeShowFormLinkedProduct(false)"
+      />
       <ProductsVariantsManage
         :open="showProductVariantsManage"
         :supplierId="props.supplierId"

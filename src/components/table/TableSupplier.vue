@@ -25,7 +25,6 @@ const emit = defineEmits<{
 const { loadingSupplier, listSupplier } = storeToRefs(useSupplierStore());
 
 const showCatalogSupplier = ref<boolean>(false)
-const selectedSupplier = ref<number>(0)
 const showConfirmAction = ref<boolean>(false);
 const supplierMonitoring = ref<number | null>(null);
 const showInformation = ref<number>(0);
@@ -37,7 +36,7 @@ const openCatalogSupplier = (id: number) => {
 
 const changeShowCatalogSupplier = () => {
   showCatalogSupplier.value = false
-  selectedSupplier.value = 0
+  supplierMonitoring.value = 0
 }
 const clear = (): void => {
   supplierMonitoring.value = null;

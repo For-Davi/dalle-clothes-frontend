@@ -4,7 +4,6 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
 import { createErrorData } from 'src/composables/CreateNotify';
-// import { checkDataCatalog } from 'src/composables/CheckData';
 import { useCatalogSupplierStore } from 'src/stores/catalog-supplier-store';
 
 defineOptions({
@@ -23,59 +22,58 @@ const emit = defineEmits<{
 
 const { loadingLinkedProducts } = storeToRefs(useCatalogSupplierStore());
 
+
 const dataCatalog = reactive({
-  price: 0.00,
+  price: '0.00' as string,
   description: '' as string
 });
 
 const clear = (): void => {
   Object.assign(dataCatalog, {
-    name: '',
+    price: '0.00',
+    description: ''
   });
 };
 const save = async () => {
-  // const check = checkDataCatalog(dataCatalog);
-  if (true) {
     const response = await useCatalogSupplierStore().createLinkedProductSupplier(
-      props.data.catalog.supplierID,
+      supplierID.value,
       variantID.value,
       dataCatalog.price,   
-      dataCatalog.description
+      dataCatalog.description || ''
     );
     if (response?.status === 201) {
       clear();
       emit('update:open');
     }
-  } else {
-    createErrorData('Erro ao processar dados da categoria');
+  }
+const update = async () => {
+  if (variantID.value && supplierID.value) {
+  
+    
+    const response = await useCatalogSupplierStore().updateLinkedProductSupplier(
+      supplierID.value,
+      variantID.value,
+      dataCatalog.price,
+      dataCatalog.description || ''
+    );
+
+    if (response?.status === 200) {
+      clear();
+      emit('update:open');
+    } else {
+      createErrorData(response?.data?.message || 'Erro ao atualizar catálogo');
+    }
   }
 };
-// const update = async () => {
-//   const check = checkDataCategoryTransaction(dataCategory);
-//   if (check.status) {
-//     const response = await useCategoryTransactionStore().updateCategoryTransaction(
-//       categoryID.value ?? 0,
-//       dataCategory.name,
-//     );
-//     if (response?.status === 200) {
-//       clear();
-//       emit('update:open');
-//     }
-//   } else {
-//     createErrorData(check.message || 'Erro ao processar dados da categoria');
-//   }
-// };
 const checkDataEdit = () => {
   if (props.data.catalog) {
-    Object.assign(dataCatalog, {
-      price: props.data.catalog.price,
-      description: props.data.catalog.description
-    });
+    dataCatalog.price = props.data.catalog.price;
+    dataCatalog.description = props.data?.catalog?.description || '';
   }
 };
 
-const variantID = computed(() => props.data.catalog?.productVariantID);
-const catalogID = computed(() => props.data.catalog?.id)
+const variantID = computed(() => props.data.catalog?.variant_id);
+const supplierID = computed(() => props.data.catalog?.supplier_id);
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
@@ -83,10 +81,13 @@ const open = computed({
 
 watch(open, () => {
   if (open.value) {
-    clear();
-    checkDataEdit();
+    if (!variantID.value && !supplierID.value) { 
+      clear();
+    }
+    checkDataEdit(); 
   }
 });
+
 </script>
 <template>
   <q-dialog v-model="open">
@@ -97,7 +98,7 @@ watch(open, () => {
     >
       <q-card-section class="q-pa-none">
         <TitlePage
-          :title="catalogID ? 'Atualização de catálogo' : 'Cadastro de catálogo'"
+          :title="variantID && supplierID ? 'Atualização de catálogo' : 'Cadastro de catálogo'"
           icon="list_alt"
         />
       </q-card-section>
@@ -118,7 +119,7 @@ watch(open, () => {
             class="full-width"
           >
             <template v-slot:prepend>
-              <q-icon name="category" color="black" size="20px" />
+              <q-icon name="attach_money" color="black" size="20px" />
             </template>
           </q-input>
            <q-input
@@ -150,7 +151,7 @@ watch(open, () => {
             no-caps
           />
           <q-btn
-            v-if="!catalogID"
+            v-if="!variantID && !supplierID"
             @click="save"
             color="primary"
             label="Salvar"
@@ -161,6 +162,7 @@ watch(open, () => {
           />
           <q-btn
             v-else
+            @click="update"
             color="primary"
             label="Atualizar"
             size="md"

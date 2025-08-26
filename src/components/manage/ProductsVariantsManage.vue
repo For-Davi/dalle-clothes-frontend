@@ -67,6 +67,19 @@ watch(open, () => {
         </div>
         <Loading v-show="loadingProduct" :show="loadingProduct" />
       </q-card-section>
+       <q-card-actions align="right">
+        <div class="row justify-end items-center q-gutter-x-sm">
+          <q-btn
+            color="red"
+            label="Fechar"
+            size="md"
+            @click="open = false"
+            unelevated
+            no-caps
+            flat
+          />
+        </div>
+      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>

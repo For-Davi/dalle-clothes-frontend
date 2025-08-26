@@ -36,9 +36,8 @@ export interface FilterSupplier {
 }
 
 export interface DataSupplierCatalog {
-  id?: number;
-  supplierID: number;
-  productVariantID: number; 
-  price: number;
+  supplier_id: number;
+  variant_id: number; 
+  price: string;
   description: string | null;
 }

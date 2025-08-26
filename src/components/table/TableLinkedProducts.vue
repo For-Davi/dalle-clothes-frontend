@@ -13,9 +13,10 @@ defineOptions({
 const props = defineProps<{
     supplierId: number | null
 }>()
-// const emit = defineEmits<{
-//   'show:showFormCategoryTransaction': [ICategoryTransaction];
-// }>();
+const emit = defineEmits<{
+  'show:showFormLinkedProducts': [IDataSupplierCatalog];
+   'show:showDescription': [string];
+}>();
 
 
 const { loadingLinkedProducts, listLinkedProducts } = storeToRefs(
@@ -31,7 +32,7 @@ const clear = (): void => {
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  // await useCatalogSupplierStore().deleteLinkedProductSupplier(linkedProductMonitoring.value, props.supplierId);
+  await useCatalogSupplierStore().deleteLinkedProductSupplier(props.supplierId!, linkedProductMonitoring.value!);
   clear();
 };
 const closeConfirmAction = (): void => {
@@ -42,18 +43,31 @@ const openConfirmAction = (id: number): void => {
    linkedProductMonitoring.value = id;
   showConfirmAction.value = true;
 };
-// const startEdit = (data: ICategoryTransaction) => {
-//   emit('show:showFormCategoryTransaction', data);
-// };
+const startEdit = (data: IDataSupplierCatalog) => {
+  emit('show:showFormLinkedProducts', data);
+};
 const startExclude = (id: number) => {
+  console.log('productVariantId recebido', id);
   openConfirmAction(id);
 };
 const fetchLinkedProducts = async (): Promise<void> => {
   await useCatalogSupplierStore().getLinkedProducts(props.supplierId);
 };
+const getColorStyle = (hexColor: string) => {
+  return {
+    backgroundColor: hexColor || 'transparent',
+    width: '24px',
+    height: '24px',
+    border: '1px solid #ddd',
+    borderRadius: '50%',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  };
+};
 
 onMounted(async () => {
   await fetchLinkedProducts();
+  console.log('id', props.supplierId)
 });
 </script>
 <template>
@@ -109,10 +123,33 @@ onMounted(async () => {
            <q-td key="sku" :props="props" class="text-left">
             {{ props.row.sku }}
           </q-td>
+            <q-td key="color" :props="props" class="text-left">
+            <div
+              v-if="props.row.color_code"
+              class="cursor-pointer"
+              :style="getColorStyle(props.row.color_code)"
+            >
+              <q-tooltip class="bg-grey-3 text-bold text-black">{{
+                props.row.color_name
+              }}</q-tooltip>
+            </div>
+          </q-td>
           <q-td key="actions" :props="props">
+              <q-btn
+              v-show="props.row.description"
+              @click="emit('show:showDescription', props.row.description)"
+              :disable="linkedProductMonitoring === props.row.variant_id"
+              size="sm"
+              flat
+              round
+              color="primary"
+              icon="fa-solid fa-file-lines"
+            >
+              <q-tooltip>Descrição</q-tooltip>
+            </q-btn>
             <q-btn
               @click="startEdit(props.row)"
-              :disable="linkedProductMonitoring === props.row.id"
+              :disable="linkedProductMonitoring === props.row.variant_id"
               size="sm"
               flat
               round
@@ -120,8 +157,8 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
-              @click="startExclude(props.row.product_variant_id)"
-              :disable="linkedProductMonitoring === props.row.id"
+              @click="startExclude(props.row.variant_id)"
+              :disable="linkedProductMonitoring === props.row.variant_id"
               size="sm"
               flat
               round
@@ -139,7 +176,7 @@ onMounted(async () => {
       :open="showConfirmAction"
       label-action="Continuar"
       title="Confirmação de exclusão de categoria"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a categoria permanentemente."
+      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o item de catálogo permanentemente."
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />

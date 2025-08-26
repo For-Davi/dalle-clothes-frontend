@@ -2,7 +2,7 @@ import {
   createCatalogSupplierService,
   deleteCatalogSupplierService,
   getCatalogSupplierService,
-  // updateCatalogSupplierService,
+  updateCatalogSupplierService,
 } from 'src/services/catalog-supplier-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -36,9 +36,10 @@ export const useCatalogSupplierStore = defineStore('catalogSupplier', {
         this.setLoading(false);
       }
     },
-    async createLinkedProductSupplier(supplierId: number | null, productVariantId: number, price: number, description: string | null) {
+    async createLinkedProductSupplier(supplierId: number | null, productVariantId: number, price: string, description: string | null) {
       this.setLoading(true);
       try {
+        console.log('dados', supplierId, productVariantId)
         const response = await createCatalogSupplierService(supplierId, productVariantId, price, description);
         if (response.status === 201) {
           this.clearListLinkedProducts();
@@ -54,28 +55,31 @@ export const useCatalogSupplierStore = defineStore('catalogSupplier', {
         this.setLoading(false);
       }
     },
-    // async updateLinkedProductSupplier(id: number, name: string) {
-    //   this.setLoading(true);
-    //   try {
-    //     const response = await updateCategorySupplierService(id, name);
-    //     if (response.status === 200) {
-    //       this.clearListLinkedProducts();
-    //       this.setListLinkedProducts(response.data.catalog);
-    //       createSuccess(response.data.message);
-    //     }
+    async updateLinkedProductSupplier(supplierID: number,productVariantId: number, price: string, description: string | null) {
+  this.setLoading(true);
 
-    //     return response;
-    //   } catch (error) {
-    //     createError(error);
-    //     return undefined;
-    //   } finally {
-    //     this.setLoading(false);
-    //   }
-    // },
-    async deleteLinkedProductSupplier(productVariantID: number,supplierID: number) {
+  try {
+    const response = await updateCatalogSupplierService(supplierID, productVariantId, price, description);
+
+    if (response?.status === 200) {
+      this.clearListLinkedProducts();
+      this.setListLinkedProducts(response.data.catalog);
+      createSuccess(response.data.message);
+    }
+
+    return response;
+  } catch (error) {
+    createError(error);
+    return undefined;
+  } finally {
+    this.setLoading(false);
+  }
+},
+
+    async deleteLinkedProductSupplier(supplierID: number,productVariantID: number) {
       this.setLoading(true);
       try {
-        const response = await deleteCatalogSupplierService(productVariantID ,supplierID);
+        const response = await deleteCatalogSupplierService(supplierID ,productVariantID);
         if (response.status === 200) {
           this.clearListLinkedProducts();
           this.setListLinkedProducts(response.data.catalog);
