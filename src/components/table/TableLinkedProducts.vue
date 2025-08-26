@@ -53,7 +53,6 @@ const startEdit = (data: IDataSupplierCatalog) => {
   emit('show:showFormLinkedProducts', data);
 };
 const startExclude = (id: number) => {
-  console.log('productVariantId recebido', id);
   openConfirmAction(id);
 };
 const fetchLinkedProducts = async (): Promise<void> => {
@@ -82,7 +81,6 @@ const startShowDescription = (description: string): void => {
 
 onMounted(async () => {
   await fetchLinkedProducts();
-  console.log('id', props.supplierId);
 });
 </script>
 <template>

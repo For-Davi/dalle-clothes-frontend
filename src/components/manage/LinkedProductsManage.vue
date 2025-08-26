@@ -50,7 +50,6 @@ const startShowDescription = (description: string): void => {
   changeShowDescription(true, description);
 };
 const startEdit = (data: IDataSupplierCatalog) => {
-  console.log('data', data);
   changeShowFormLinkedProduct(true, data);
 };
 const changeShowFormLinkedProduct = (
@@ -78,7 +77,6 @@ const open = computed({
         <TitlePage title="Catálogo do fornecedor" icon="fa-solid fa-box" />
       </q-card-section>
       <q-card-section>
-        <Loading :show="loadingLinkedProducts" />
         <div v-show="!loadingLinkedProducts">
           <TableLinkedProducts
             v-show="listLinkedProducts.length > 0"
@@ -92,6 +90,7 @@ const open = computed({
             color="bg-red-3"
           />
         </div>
+        <Loading v-show="loadingLinkedProducts" :show="loadingLinkedProducts" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
