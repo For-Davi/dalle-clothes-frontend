@@ -70,7 +70,7 @@ const open = computed({
           />
           <Empty
             v-show="listLinkedProducts.length <= 0 && !loadingLinkedProducts"
-            message="Sem categorias cadastradas"
+            message="Sem fornecedores vinculados"
             color="bg-red-3"
           />
         </div>
