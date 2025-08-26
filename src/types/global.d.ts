@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
-import type { FilterSupplier, DataSupplierCatalog } from './Supplier';
+import type { FilterSupplier, DataSupplierCatalog, CatalogSupplier } from './Supplier';
 import type {
   CategorySupplier,
   CategoryProduct,
@@ -158,4 +158,5 @@ declare global {
   type IExportSchedule = ExportSchedule;
 
   type IDataSupplierCatalog = DataSupplierCatalog;
+  type ICatalogSupplier = CatalogSupplier;
 }

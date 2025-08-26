@@ -82,7 +82,6 @@ const startShowDescription = (description: string): void => {
 
 onMounted(async () => {
   await fetchLinkedProducts();
-  console.log('id', props.supplierId);
 });
 </script>
 <template>

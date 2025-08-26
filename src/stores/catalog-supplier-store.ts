@@ -3,6 +3,7 @@ import {
   deleteCatalogSupplierService,
   getCatalogSupplierService,
   updateCatalogSupplierService,
+  getAllSuppliersByVariantService
 } from 'src/services/catalog-supplier-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -36,6 +37,20 @@ export const useCatalogSupplierStore = defineStore('catalogSupplier', {
         this.setLoading(false);
       }
     },
+    async getLinkedProductsByVariant(variantID: number | null) {
+  this.setLoading(true);
+  try {
+    const response = await getAllSuppliersByVariantService(variantID); 
+    if (response.status === 200) {
+      this.clearListLinkedProducts();
+      this.setListLinkedProducts(response.data.catalog);
+    }
+  } catch (error) {
+    createError(error);
+  } finally {
+    this.setLoading(false);
+  }
+},
     async createLinkedProductSupplier(
       supplierId: number | null,
       productVariantId: number,

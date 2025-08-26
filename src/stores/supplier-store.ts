@@ -44,10 +44,10 @@ export const useSupplierStore = defineStore('supplier', {
         this.setLoading(false);
       }
     },
-    async showSupplier(supplierId: number) {
+    async showSupplier(supplierID: number) {
       try {
         this.setLoading(true);
-        return await showSupplierService(supplierId);
+        return await showSupplierService(supplierID);
       } catch (error) {
         createError(error);
       } finally {

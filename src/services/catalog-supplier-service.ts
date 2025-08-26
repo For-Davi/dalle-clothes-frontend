@@ -37,6 +37,15 @@ export const updateCatalogSupplierService = (
   };
 }> => api.put(`${baseUrl}/`, { supplierID, productVariantID, price, description });
 
+export const getAllSuppliersByVariantService = (
+  variantID: number | null
+): Promise<{
+  status: number;
+  data: {
+    catalog: ILinkedProducts[];
+  };
+}> => api.get(`${baseUrl}/variant/${variantID}`);
+
 export const deleteCatalogSupplierService = (
   supplierID: number,
   variantProductID: number,

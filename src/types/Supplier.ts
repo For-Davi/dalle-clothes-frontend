@@ -41,3 +41,15 @@ export interface DataSupplierCatalog {
   price: string;
   description: string | null;
 }
+
+export interface CatalogSupplier {
+  variant_id: number;
+  supplier_id: number;
+  name: string;
+  sku: string | null;
+  price: string; 
+  description: string | null;
+  color_code: string | null;
+  color_name: string | null;
+  supplier_name: string;
+}

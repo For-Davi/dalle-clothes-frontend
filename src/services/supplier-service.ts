@@ -19,13 +19,13 @@ export const getSuppliersFilterService = (
 }> => api.post(`${baseUrl}/filter`, filter);
 
 export const showSupplierService = (
-  supplierId: number,
+  supplierID: number,
 ): Promise<{
   status: number;
   data: {
     supplier: ISupplier;
   };
-}> => api.get(`${baseUrl}/${supplierId}`);
+}> => api.get(`${baseUrl}/${supplierID}`);
 
 export const createSupplierService = (
   name: string,

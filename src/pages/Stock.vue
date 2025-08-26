@@ -11,6 +11,7 @@ import { useProductStore } from 'src/stores/product-store';
 import FilterProduct from 'src/components/filter/FilterProduct.vue';
 import TableProduct from 'src/components/table/TableProduct.vue';
 import FormVariant from 'src/components/form/FormVariant.vue';
+import SupplierLinkedProductsManage from 'src/components/manage/SupplierLinkedProductsManage.vue';
 
 defineOptions({
   name: 'Stock',
@@ -22,6 +23,15 @@ const showColorManage = ref<boolean>(false);
 const showGridManage = ref<boolean>(false);
 const showTagManage = ref<boolean>(false);
 const showCategoryProductManage = ref<boolean>(false);
+const showSupplierLinkedProductManage = reactive<{
+  open: boolean;
+  variantID: number | null;
+  supplierID: number | null
+}>({
+  open: false,
+  variantID: null,
+  supplierID: null
+})
 const showFormProduct = reactive<{
   open: boolean;
   productID: number | null;
@@ -44,6 +54,14 @@ const filter = reactive<IFilterProduct>({
   stockCritical: null,
 });
 
+const changeShowSupplierLinkedProductManage = (show: boolean, variantID: number | null = null, supplierID: number | null = null) => {
+  showSupplierLinkedProductManage.open = show;
+  showSupplierLinkedProductManage.variantID = variantID;
+  showSupplierLinkedProductManage.supplierID = supplierID
+}
+const changeModalSupplierLinkedProductManage = (variantID: number, supplierID: number) => {
+  changeShowSupplierLinkedProductManage(true, variantID, supplierID)
+}
 const changeShowFormProduct = (show: boolean, productID: number | null = null): void => {
   showFormProduct.open = show;
   showFormProduct.productID = productID;
@@ -203,10 +221,15 @@ const hasFilter = computed(() => {
         :filter="filterStock"
         @show:show-form-variant="makeEdit"
         @clear-filter="clearFilter"
+        @show:show-modal-supplier="changeModalSupplierLinkedProductManage"
       />
     </section>
 
     <!-- Modals -->
+     <SupplierLinkedProductsManage
+     :data="showSupplierLinkedProductManage"
+     @update:open="changeShowSupplierLinkedProductManage(false)"
+     />
     <CategoryProductManage
       :open="showCategoryProductManage"
       @update:open="changeCategoryProductManage"
