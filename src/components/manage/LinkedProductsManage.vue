@@ -23,13 +23,17 @@ const emit = defineEmits<{
 
 const { loadingLinkedProducts, listLinkedProducts } = storeToRefs(useCatalogSupplierStore());
 
-const showProductVariantsManage = ref<boolean>(false)
+const showProductVariantsManage = ref<boolean>(false);
 const showFormLinkedProduct = reactive<{
   open: boolean;
   catalog: IDataSupplierCatalog | null;
+  variantID: null;
+  supplierID: null;
 }>({
   open: false,
   catalog: null,
+  variantID: null,
+  supplierID: null,
 });
 const showDescription = reactive({
   open: false as boolean,
@@ -46,6 +50,7 @@ const startShowDescription = (description: string): void => {
   changeShowDescription(true, description);
 };
 const startEdit = (data: IDataSupplierCatalog) => {
+  console.log('data', data);
   changeShowFormLinkedProduct(true, data);
 };
 const changeShowFormLinkedProduct = (
@@ -59,21 +64,21 @@ const changeShowFormLinkedProduct = (
 };
 const changeShowProductVariantsManage = () => {
   showProductVariantsManage.value = !showProductVariantsManage.value;
-}
+};
 
 const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
 });
-
 </script>
 <template>
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 sub-page column justify-between">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Catálogo do fornecedor" icon="colorize" />
+        <TitlePage title="Catálogo do fornecedor" icon="fa-solid fa-box" />
       </q-card-section>
       <q-card-section>
+        <Loading :show="loadingLinkedProducts" />
         <div v-show="!loadingLinkedProducts">
           <TableLinkedProducts
             v-show="listLinkedProducts.length > 0"
@@ -87,7 +92,6 @@ const open = computed({
             color="bg-red-3"
           />
         </div>
-        <Loading v-show="loadingLinkedProducts" :show="loadingLinkedProducts" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
@@ -112,15 +116,15 @@ const open = computed({
       </q-card-actions>
 
       <!-- Modals -->
-        <Description :data="showDescription" @update:open="changeShowDescription(false)" />
+      <Description :data="showDescription" @update:open="changeShowDescription(false)" />
       <FormLinkedProduct
-      :data="showFormLinkedProduct"
-      @update:open="changeShowFormLinkedProduct(false)"
+        :data="showFormLinkedProduct"
+        @update:open="changeShowFormLinkedProduct(false)"
       />
       <ProductsVariantsManage
         :open="showProductVariantsManage"
         :supplierId="props.supplierId"
-        @update:open="changeShowProductVariantsManage()"
+        @update:open="changeShowProductVariantsManage"
       />
     </q-card>
   </q-dialog>

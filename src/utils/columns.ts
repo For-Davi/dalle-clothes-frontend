@@ -610,7 +610,7 @@ export const columnsLinkedProducts: IQuasarTable[] = [
     field: 'sku',
     align: 'left',
   },
-    {
+  {
     name: 'color',
     label: 'Cor',
     field: 'color',
@@ -622,4 +622,4 @@ export const columnsLinkedProducts: IQuasarTable[] = [
     field: 'actions',
     align: 'right',
   },
-]
+];

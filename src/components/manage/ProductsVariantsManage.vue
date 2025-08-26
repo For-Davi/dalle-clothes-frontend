@@ -51,14 +51,11 @@ watch(open, () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 sub-page column justify-between">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Produtos e variantes" icon="colorize" />
+        <TitlePage title="Produtos e variantes" icon="fa-solid fa-box" />
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingProduct">
-          <TableListVariants
-            v-show="listProduct.length > 0"
-            :supplierId="props.supplierId"
-          />
+          <TableListVariants v-show="listProduct.length > 0" :supplierId="props.supplierId" />
           <Empty
             v-show="listProduct.length <= 0"
             message="Sem variantes de produtos"
@@ -67,17 +64,9 @@ watch(open, () => {
         </div>
         <Loading v-show="loadingProduct" :show="loadingProduct" />
       </q-card-section>
-       <q-card-actions align="right">
+      <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
-          <q-btn
-            color="red"
-            label="Fechar"
-            size="md"
-            @click="open = false"
-            unelevated
-            no-caps
-            flat
-          />
+          <q-btn color="red" label="Fechar" size="md" @click="open = false" unelevated no-caps />
         </div>
       </q-card-actions>
     </q-card>

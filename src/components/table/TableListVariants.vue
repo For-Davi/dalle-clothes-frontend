@@ -22,33 +22,22 @@ const props = withDefaults(
 
 const { loadingProduct, listProduct } = storeToRefs(useProductStore());
 
-
 const showFormLinkedProduct = reactive<{
   open: boolean;
-  catalog: IDataSupplierCatalog | null;
+  variantID: number | null;
+  supplierID: number | null;
+  catalog: null;
 }>({
   open: false,
+  variantID: null,
+  supplierID: null,
   catalog: null,
 });
 
-
-const changeShowFormLinkedProduct = (
-  variantId?: number,
-  catalog?: IDataSupplierCatalog
-) => {
-  showFormLinkedProduct.open = !showFormLinkedProduct.open;
-  if (catalog) {
-    Object.assign(showFormLinkedProduct, { catalog });
-  } else if (variantId) {
-    Object.assign(showFormLinkedProduct, {
-      catalog: {
-        supplierID: props.supplierId ?? 0,
-        productVariantID: variantId,
-        price: 0,
-        description: null,
-      },
-    });
-  }
+const changeShowFormLinkedProduct = (open: boolean, variantID: number | null = null) => {
+  showFormLinkedProduct.variantID = variantID;
+  showFormLinkedProduct.supplierID = props.supplierId;
+  showFormLinkedProduct.open = open;
 };
 const getColorStyle = (hexColor: string) => {
   return {
@@ -97,13 +86,13 @@ onMounted(async () => {
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
           </q-td>
-            <q-td key="sku" :props="props" class="text-left">
+          <q-td key="sku" :props="props" class="text-left">
             {{ props.row.sku }}
           </q-td>
-            <q-td key="code" :props="props" class="text-left">
+          <q-td key="code" :props="props" class="text-left">
             {{ props.row.code }}
           </q-td>
-               <q-td key="price" :props="props" class="text-left">
+          <q-td key="price" :props="props" class="text-left">
             {{ formatToReal(props.row.price) }}
           </q-td>
           <q-td
@@ -131,20 +120,20 @@ onMounted(async () => {
               flat
               round
               color="green"
-              @click="changeShowFormLinkedProduct(props.row.product_variant_id)"
-              icon="check">
-            <q-tooltip>
-                Vincular
-            </q-tooltip>
+              @click="changeShowFormLinkedProduct(true, props.row.product_variant_id)"
+              icon="check"
+            >
+              <q-tooltip> Vincular </q-tooltip>
             </q-btn>
           </q-td>
         </q-tr>
       </template>
     </q-table>
     <!-- Modals -->
-       <FormLinkedProduct
-        :data="showFormLinkedProduct"
-        @update:open="changeShowFormLinkedProduct()"
-      />
+    <FormLinkedProduct
+      :data="showFormLinkedProduct"
+      :supplierID="supplierId"
+      @update:open="changeShowFormLinkedProduct(false)"
+    />
   </section>
 </template>

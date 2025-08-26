@@ -40,7 +40,7 @@ import type {
   DataProductAdvanced,
   ProductAdvanced,
   ReturnProductAdvanced,
-  LinkedProducts
+  LinkedProducts,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';

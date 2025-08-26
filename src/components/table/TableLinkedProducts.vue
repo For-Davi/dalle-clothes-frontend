@@ -1,38 +1,44 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import Loading from '../shared/Loading.vue';
 import { columnsLinkedProducts } from 'src/utils/columns';
 import { useCatalogSupplierStore } from 'src/stores/catalog-supplier-store';
+import Description from '../general/Description.vue';
+import { formatToReal } from 'src/composables/Money';
 
 defineOptions({
   name: 'TableLinkedProducts',
 });
 
 const props = defineProps<{
-    supplierId: number | null
-}>()
+  supplierId: number | null;
+}>();
 const emit = defineEmits<{
   'show:showFormLinkedProducts': [IDataSupplierCatalog];
-   'show:showDescription': [string];
+  'show:showDescription': [string];
 }>();
 
-
-const { loadingLinkedProducts, listLinkedProducts } = storeToRefs(
-  useCatalogSupplierStore(),
-);
+const { loadingLinkedProducts, listLinkedProducts } = storeToRefs(useCatalogSupplierStore());
 
 const showConfirmAction = ref<boolean>(false);
 const linkedProductMonitoring = ref<number | null>(null);
 const filter = ref<string>('');
+const showDescription = reactive({
+  open: false as boolean,
+  description: null as string | null,
+});
 
 const clear = (): void => {
   linkedProductMonitoring.value = null;
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  await useCatalogSupplierStore().deleteLinkedProductSupplier(props.supplierId!, linkedProductMonitoring.value!);
+  await useCatalogSupplierStore().deleteLinkedProductSupplier(
+    props.supplierId!,
+    linkedProductMonitoring.value!,
+  );
   clear();
 };
 const closeConfirmAction = (): void => {
@@ -40,7 +46,7 @@ const closeConfirmAction = (): void => {
   clear();
 };
 const openConfirmAction = (id: number): void => {
-   linkedProductMonitoring.value = id;
+  linkedProductMonitoring.value = id;
   showConfirmAction.value = true;
 };
 const startEdit = (data: IDataSupplierCatalog) => {
@@ -64,10 +70,19 @@ const getColorStyle = (hexColor: string) => {
     verticalAlign: 'middle',
   };
 };
+const changeShowDescription = (open: boolean, description: string | null = null): void => {
+  Object.assign(showDescription, {
+    open,
+    description,
+  });
+};
+const startShowDescription = (description: string): void => {
+  changeShowDescription(true, description);
+};
 
 onMounted(async () => {
   await fetchLinkedProducts();
-  console.log('id', props.supplierId)
+  console.log('id', props.supplierId);
 });
 </script>
 <template>
@@ -117,13 +132,13 @@ onMounted(async () => {
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
           </q-td>
-           <q-td key="price" :props="props" class="text-left">
-            {{ props.row.price }}
+          <q-td key="price" :props="props" class="text-left">
+            {{ formatToReal(props.row.price) }}
           </q-td>
-           <q-td key="sku" :props="props" class="text-left">
+          <q-td key="sku" :props="props" class="text-left">
             {{ props.row.sku }}
           </q-td>
-            <q-td key="color" :props="props" class="text-left">
+          <q-td key="color" :props="props" class="text-left">
             <div
               v-if="props.row.color_code"
               class="cursor-pointer"
@@ -135,9 +150,9 @@ onMounted(async () => {
             </div>
           </q-td>
           <q-td key="actions" :props="props">
-              <q-btn
+            <q-btn
               v-show="props.row.description"
-              @click="emit('show:showDescription', props.row.description)"
+              @click="startShowDescription(props.row.description)"
               :disable="linkedProductMonitoring === props.row.variant_id"
               size="sm"
               flat
@@ -172,11 +187,12 @@ onMounted(async () => {
 
     <!-- Modals -->
     <Loading :show="loadingLinkedProducts" />
+    <Description :data="showDescription" @update:open="changeShowDescription(false)" />
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"
-      title="Confirmação de exclusão de categoria"
-      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o item de catálogo permanentemente."
+      title="Confirmação de exclusão de vínculo"
+      message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o vínculo com a variante permanentemente."
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />

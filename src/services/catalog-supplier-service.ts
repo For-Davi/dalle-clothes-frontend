@@ -2,12 +2,14 @@ import { api } from 'boot/axios';
 
 const baseUrl = 'supplier/catalog';
 
-export const getCatalogSupplierService = (id: number | null): Promise<{
+export const getCatalogSupplierService = (
+  id: number | null,
+): Promise<{
   status: number;
   data: {
     catalog: ILinkedProducts[];
   };
-}> => api.get(`${baseUrl}/${id}`,);
+}> => api.get(`${baseUrl}/${id}`);
 
 export const createCatalogSupplierService = (
   supplierID: number | null,
@@ -33,16 +35,15 @@ export const updateCatalogSupplierService = (
     message: string;
     catalog: ILinkedProducts[];
   };
-}> =>
-  api.put(`${baseUrl}/`, { supplierID, productVariantID, price, description });
+}> => api.put(`${baseUrl}/`, { supplierID, productVariantID, price, description });
 
 export const deleteCatalogSupplierService = (
   supplierID: number,
-  variantProductID: number
+  variantProductID: number,
 ): Promise<{
   status: number;
   data: {
     message: string;
     catalog: ILinkedProducts[];
   };
-}> => api.delete(`${baseUrl}/${supplierID}/${variantProductID}`,);
+}> => api.delete(`${baseUrl}/${supplierID}/${variantProductID}`);
