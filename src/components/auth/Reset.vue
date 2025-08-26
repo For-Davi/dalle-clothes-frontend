@@ -83,14 +83,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <q-form class="form-auth rounded-borders bg-grey-3">
-    <div class="row justify-center items-center q-pa-md">
-      <q-img src="/images/logo.png" spinner-color="white" width="250px" />
-    </div>
-    <div class="q-px-md">
-      <TitleAuth title="Recupere sua senha" />
-    </div>
+  <q-form class="form-auth rounded-borders bg-grey-3 q-pb-sm">
+    <TitleAuth />
     <div class="q-pb-sm q-px-md q-gutter-y-sm">
+      <SubTitleAuth title="Reset" />
       <q-input
         v-if="modeView === 'setEmail'"
         v-model="dataReset.email"
@@ -169,46 +165,51 @@ onMounted(() => {
         </q-input>
       </div>
     </div>
-    <div class="q-pb-sm q-px-md row justify-end items-center q-gutter-x-sm">
-      <q-btn
-        @click="changeRender('register')"
-        color="black"
-        label="Cadastrar"
-        size="md"
-        no-caps
-        flat
-      />
-      <q-btn @click="changeRender('login')" color="black" label="Entrar" size="md" no-caps flat />
+    <div class="q-pb-sm q-px-md row justify-end items-center">
       <q-btn
         v-show="modeView === 'setEmail'"
         @click="sendEmailReset"
-        color="red-6"
+        color="primary"
         label="Enviar"
         size="md"
         :loading="loadingAuth"
         unelevated
         no-caps
+        class="full-width"
       />
       <q-btn
         v-show="modeView === 'setCode'"
         @click="verifyCode"
-        color="red-6"
+        color="primary"
         label="Verificar"
         size="md"
         :loading="loadingAuth"
         unelevated
         no-caps
+        class="full-width"
       />
       <q-btn
         v-show="modeView === 'setPassword'"
         @click="newPassword"
-        color="red-6"
+        color="primary"
         label="Salvar"
         size="md"
         :loading="loadingAuth"
         unelevated
         no-caps
+        class="full-width"
       />
+      <div class="row justify-end items-center">
+        <span class="q-mt-sm q-mr-md">Deseja realizar outra ação?</span>
+        <span
+          @click="emit('update:changeRender', 'login')"
+          class="q-mt-sm text-bold cursor-pointer hover color-default"
+          ><u>Entrar na conta</u></span> <span>ou</span> <span
+          @click="changeRender('register')"
+          class="q-mt-sm text-bold cursor-pointer hover color-default"
+          ><u>Cadastrar-se</u></span
+        >
+      </div>
     </div>
   </q-form>
 </template>
