@@ -59,7 +59,7 @@ onMounted(() => {
   <q-form class="form-auth rounded-borders bg-grey-3 q-pb-sm">
     <TitleAuth />
     <div class="q-pb-sm q-px-md q-gutter-y-sm">
-    <SubTitleAuth title="Cadastro" />
+      <SubTitleAuth title="Cadastro" />
       <q-input
         v-model="dataRegister.name"
         bg-color="white"
@@ -147,7 +147,7 @@ onMounted(() => {
         </template>
       </q-input>
     </div>
-    <div class="q-pb-sm q-px-md column justify-end items-center ">
+    <div class="q-py-sm q-px-md column justify-end items-center">
       <q-btn
         @click="register"
         color="primary"

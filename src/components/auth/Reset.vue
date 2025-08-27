@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
 import TitleAuth from '../shared/TitleAuth.vue';
-import { checkDataReset, checkPassword } from 'src/composables/CheckData';
+import { checkDataReset } from 'src/composables/CheckData';
 import { createSuccess } from 'src/composables/CreateNotify';
+import SubTitleAuth from '../shared/SubTitleAuth.vue';
 
 defineOptions({
   name: 'ResetPassword',
@@ -22,9 +23,6 @@ const dataReset = reactive({
   password: '' as string,
   passwordConfirm: '' as string,
 });
-const modeView = ref<'setEmail' | 'setCode' | 'setPassword'>('setEmail');
-const isPwd = ref<boolean>(true);
-const isPwd2 = ref<boolean>(true);
 
 const clear = (): void => {
   Object.assign(dataReset, {
@@ -44,38 +42,10 @@ const sendEmailReset = async () => {
   } else {
     const response = await useAuthStore().doReset(dataReset.email);
     if (response?.status === 200) {
-      modeView.value = 'setCode';
+      changeRender('login');
     }
   }
 };
-const verifyCode = async () => {
-  const response = await useAuthStore().doVerify(dataReset.code, dataReset.email);
-  if (response?.status === 200 && response.data.valid) {
-    modeView.value = 'setPassword';
-  }
-};
-const newPassword = async () => {
-  const check = checkPassword(dataReset);
-  if (check.status) {
-    const response = await useAuthStore().setNewPassword(dataReset.password, dataReset.email);
-    if (response?.status === 200) {
-      emit('update:changeRender', 'login');
-      clear();
-    }
-  } else {
-    createSuccess(check.message || 'Erro ao atualizar senha');
-  }
-};
-
-watch(
-  modeView,
-  (mode) => {
-    if (mode === 'setEmail') {
-      clear();
-    }
-  },
-  { immediate: true },
-);
 
 onMounted(() => {
   clear();
@@ -88,7 +58,6 @@ onMounted(() => {
     <div class="q-pb-sm q-px-md q-gutter-y-sm">
       <SubTitleAuth title="Reset" />
       <q-input
-        v-if="modeView === 'setEmail'"
         v-model="dataReset.email"
         bg-color="white"
         label-color="black"
@@ -102,72 +71,9 @@ onMounted(() => {
           <q-icon name="email" color="black" size="20px" />
         </template>
       </q-input>
-      <q-input
-        v-else-if="modeView === 'setCode'"
-        v-model="dataReset.code"
-        bg-color="white"
-        label-color="black"
-        outlined
-        label="Digite o código enviado para o e-mail "
-        dense
-        input-class="text-black"
-      >
-        <template v-slot:prepend>
-          <q-icon name="vpn_key" color="black" size="20px" />
-        </template>
-      </q-input>
-      <div v-else class="column q-gutter-y-sm">
-        <q-input
-          v-model="dataReset.password"
-          bg-color="white"
-          label-color="black"
-          outlined
-          label="Digite sua senha"
-          autocomplete="new-password"
-          dense
-          input-class="text-black"
-          :type="isPwd ? 'password' : 'text'"
-        >
-          <template v-slot:append>
-            <q-icon
-              @click="isPwd = !isPwd"
-              :name="isPwd ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              size="20px"
-            />
-          </template>
-          <template v-slot:prepend>
-            <q-icon name="key" color="black" size="20px" />
-          </template>
-        </q-input>
-        <q-input
-          v-model="dataReset.passwordConfirm"
-          bg-color="white"
-          label-color="black"
-          outlined
-          label="Confirme sua senha"
-          autocomplete="new-password"
-          dense
-          input-class="text-black"
-          :type="isPwd2 ? 'password' : 'text'"
-        >
-          <template v-slot:append>
-            <q-icon
-              @click="isPwd2 = !isPwd2"
-              :name="isPwd2 ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              size="20px"
-            />
-          </template>
-          <template v-slot:prepend>
-            <q-icon name="key" color="black" size="20px" />
-          </template>
-        </q-input>
-      </div>
     </div>
-    <div class="q-pb-sm q-px-md row justify-end items-center">
+    <div class="q-py-sm q-px-md column justify-end items-center">
       <q-btn
-        v-show="modeView === 'setEmail'"
         @click="sendEmailReset"
         color="primary"
         label="Enviar"
@@ -177,34 +83,14 @@ onMounted(() => {
         no-caps
         class="full-width"
       />
-      <q-btn
-        v-show="modeView === 'setCode'"
-        @click="verifyCode"
-        color="primary"
-        label="Verificar"
-        size="md"
-        :loading="loadingAuth"
-        unelevated
-        no-caps
-        class="full-width"
-      />
-      <q-btn
-        v-show="modeView === 'setPassword'"
-        @click="newPassword"
-        color="primary"
-        label="Salvar"
-        size="md"
-        :loading="loadingAuth"
-        unelevated
-        no-caps
-        class="full-width"
-      />
-      <div class="row justify-end items-center">
-        <span class="q-mt-sm q-mr-md">Deseja realizar outra ação?</span>
+      <div class="row justify-end items-center q-gutter-x-sm">
         <span
-          @click="emit('update:changeRender', 'login')"
+          @click="changeRender('login')"
           class="q-mt-sm text-bold cursor-pointer hover color-default"
-          ><u>Entrar na conta</u></span> <span>ou</span> <span
+          ><u>Entrar na conta</u></span
+        >
+        <span class="q-mt-sm">ou</span>
+        <span
           @click="changeRender('register')"
           class="q-mt-sm text-bold cursor-pointer hover color-default"
           ><u>Cadastrar-se</u></span
