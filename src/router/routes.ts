@@ -12,6 +12,12 @@ const routes: RouteRecordRaw[] = [
     component: () => import('src/pages/Auth.vue'),
   },
   {
+    path: '/reset-password/:token(.*)',
+    name: 'resetPassword',
+    component: () => import('src/pages/ResetPassword.vue'),
+    props: true,
+  },
+  {
     path: '/admin',
     component: () => import('src/layouts/MainLayout.vue'),
     meta: { requiresAuth: true },

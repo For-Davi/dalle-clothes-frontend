@@ -162,6 +162,28 @@ export const checkDataUserSystem = (
   return { status: true };
 };
 
+export const checkDataPassword = (data: {
+  newPassword: string;
+  confirmPassword: string;
+}): { status: boolean; message?: string } => {
+  if (data.newPassword.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado a senha do usuário',
+    };
+  }
+  if (data.newPassword.trim().length < 7) {
+    return {
+      status: false,
+      message: 'A senha deve conter mais de 7 caracteres',
+    };
+  }
+  if (data.newPassword.trim() !== (data.confirmPassword && data.confirmPassword.trim())) {
+    return { status: false, message: 'As senhas não coincidem' };
+  }
+  return { status: true };
+};
+
 export const checkDataSupplier = (data: {
   name: string;
   email: string;

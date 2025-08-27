@@ -34,13 +34,13 @@ export const doVerifyService = (
 }> => api.post('/verify', { code, email });
 export const setNewPasswordService = (
   password: string,
-  email: string,
+  token: string,
 ): Promise<{
   status: number;
   data: {
     message: string;
   };
-}> => api.post('/newPassword', { password, email });
+}> => api.post('/newPassword', { password, token });
 
 export const doRegisterService = (
   name: string,
