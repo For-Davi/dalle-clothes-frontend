@@ -34,17 +34,6 @@ const showDetails = (id: number) => {
 const fetchLinkedProducts = async (): Promise<void> => {
   await useCatalogSupplierStore().getLinkedProductsByVariant(props.variantID);
 };
-const getColorStyle = (hexColor: string) => {
-  return {
-    backgroundColor: hexColor || 'transparent',
-    width: '24px',
-    height: '24px',
-    border: '1px solid #ddd',
-    borderRadius: '50%',
-    display: 'inline-block',
-    verticalAlign: 'middle',
-  };
-};
 const changeShowDescription = (open: boolean, description: string | null = null): void => {
   Object.assign(showDescription, {
     open,
@@ -108,20 +97,6 @@ onMounted(async () => {
           </q-td>
           <q-td key="price" :props="props" class="text-left">
             {{ formatToReal(props.row.price) }}
-          </q-td>
-          <q-td key="sku" :props="props" class="text-left">
-            {{ props.row.sku }}
-          </q-td>
-          <q-td key="color" :props="props" class="text-left">
-            <div
-              v-if="props.row.color_code"
-              class="cursor-pointer"
-              :style="getColorStyle(props.row.color_code)"
-            >
-              <q-tooltip class="bg-grey-3 text-bold text-black">{{
-                props.row.color_name
-              }}</q-tooltip>
-            </div>
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn

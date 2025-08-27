@@ -638,18 +638,6 @@ export const columnsSupplierLinkedProducts: IQuasarTable[] = [
     align: 'left',
   },
   {
-    name: 'sku',
-    label: 'SKU',
-    field: 'sku',
-    align: 'left',
-  },
-  {
-    name: 'color',
-    label: 'Cor',
-    field: 'color',
-    align: 'left',
-  },
-  {
     name: 'actions',
     label: 'Ações',
     field: 'actions',

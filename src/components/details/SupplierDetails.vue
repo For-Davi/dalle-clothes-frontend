@@ -235,7 +235,7 @@ watch([() => open.value, () => supplierID.value], async ([isOpen, id]) => {
     <q-card class="bg-grey-2 form-basic">
       <q-card-section class="q-pa-none">
         <TitlePage
-          :title="supplierID ? 'Atualização de fornecedor' : 'Cadastro de fornecedor'"
+          title="Detalhes do fornecedor"
           icon="list_alt"
         />
       </q-card-section>
