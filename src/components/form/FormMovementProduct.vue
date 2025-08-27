@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useProductStore } from 'src/stores/product-store';
 import TableSearchProductVariant from '../table/TableSearchProductVariant.vue';
 import Empty from '../info/Empty.vue';
+import FormMovementProductRegister from './FormMovementProductRegister.vue';
 
 defineOptions({
   name: 'FormMovementProduct',
@@ -23,9 +24,11 @@ const listProductSearch = ref<ISearchProductVariant[]>([]);
 const showFormNewMovementProduct = reactive<{
   open: boolean;
   variantID: number | null;
+  type: 'in' | 'out';
 }>({
   open: false,
   variantID: null,
+  type: 'in',
 });
 const search = ref<string>('');
 const dataMovement = reactive({
@@ -33,9 +36,9 @@ const dataMovement = reactive({
   date: '' as string,
   description: '' as string,
 });
-const selectedType = ref<IQuasarSelect<'entry' | 'out'>>({
+const selectedType = ref<IQuasarSelect<'in' | 'out'>>({
   label: 'Entrada 🟩',
-  value: 'entry',
+  value: 'in',
 });
 
 const clear = (): void => {
@@ -47,7 +50,7 @@ const clear = (): void => {
 
   selectedType.value = {
     label: 'Entrada 🟩',
-    value: 'entry',
+    value: 'in',
   };
 
   search.value = '';
@@ -59,12 +62,17 @@ const searchProduct = async () => {
     listProductSearch.value = response.data.products;
   }
 };
-const changeShowFormNewMovementProduct = (show: boolean, variantID: number | null = null): void => {
+const changeShowFormNewMovementProduct = (
+  show: boolean,
+  type: 'in' | 'out' = 'in',
+  variantID: number | null = null,
+): void => {
   showFormNewMovementProduct.variantID = variantID;
+  showFormNewMovementProduct.type = type;
   showFormNewMovementProduct.open = show;
 };
-const makeProductVariant = (productVariantID: number) => {
-  changeShowFormNewMovementProduct(true, productVariantID);
+const makeProductVariant = (productVariantID: number, type: 'in' | 'out') => {
+  changeShowFormNewMovementProduct(true, type, productVariantID);
 };
 
 const getLabelSearch = computed((): string => {
@@ -73,9 +81,6 @@ const getLabelSearch = computed((): string => {
 const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
-});
-const isLoading = computed(() => {
-  return loadingProduct.value;
 });
 
 watch(open, () => {
@@ -139,17 +144,14 @@ watch(open, () => {
             no-caps
             class="q-mr-sm"
           />
-          <q-btn
-            v-if="false"
-            color="primary"
-            label="Registrar"
-            size="md"
-            :loading="isLoading"
-            unelevated
-            no-caps
-          />
         </div>
       </q-card-actions>
     </q-card>
+
+    <!-- Modals -->
+    <FormMovementProductRegister
+      :data="showFormNewMovementProduct"
+      @update:open="changeShowFormNewMovementProduct(false)"
+    />
   </q-dialog>
 </template>

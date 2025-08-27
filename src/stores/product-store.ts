@@ -1,4 +1,5 @@
 import {
+  createMovementVariantService,
   createProductService,
   deleteProductService,
   deleteProductVariantService,
@@ -93,6 +94,21 @@ export const useProductStore = defineStore('product', {
           createSuccess(response.data.message);
         }
 
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async createMovementVariant(data: IDataMovementProductRegister) {
+      this.setLoading(true);
+      try {
+        const response = await createMovementVariantService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
         return response;
       } catch (error) {
         createError(error);

@@ -131,6 +131,15 @@ export const updateProductBasicService = (
   };
 }> => api.put(`${baseUrl}/basic/`, data);
 
+export const createMovementVariantService = (
+  data: IDataMovementProductRegister,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+  };
+}> => api.post(`${baseUrl}/variant/movement`, data);
+
 export const updateProductAdvancedService = (
   data: IDataProductAdvanced,
 ): Promise<{

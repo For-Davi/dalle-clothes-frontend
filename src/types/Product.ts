@@ -201,6 +201,18 @@ export interface ProductBasic {
   category: ICategoryProduct | null;
 }
 
+export interface DataMovementProductRegister {
+  variantID: number;
+  documentNumber: string | null;
+  lotNumber: string | null;
+  quantity: number;
+  unitCost: number;
+  totalCost: number;
+  reason: string;
+  type: 'in' | 'out';
+  supplierID: number | null;
+}
+
 export interface ReturnProductAdvanced {
   active: number;
   allow_coupon: number;

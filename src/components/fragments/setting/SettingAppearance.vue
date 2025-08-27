@@ -155,7 +155,7 @@ watch(
         </div>
         <q-separator />
         <!-- Navbar -->
-        <div >
+        <div>
           <q-toggle
             v-model="dataAppearance.navbarColorDefault"
             checked-icon="check"
