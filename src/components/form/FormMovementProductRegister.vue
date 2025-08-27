@@ -81,6 +81,7 @@ const save = async (): Promise<void> => {
     reason: selectedReason.value.value,
     supplierID: selectedSupplier.value.value,
     type: props.data.type,
+    description: dataMovement.description.trim().length === 0 ? null : dataMovement.description
   });
   if (response?.status === 200) {
     clear();
@@ -102,25 +103,42 @@ const checkType = (): void => {
           value: 'out',
         };
 };
+const checkReason = (): void => {
+  if (props.data.type === 'in') {
+    selectedReason.value = {
+      label: 'Compra',
+      value: 'buy',
+    };
+  } else {
+    selectedReason.value = {
+      label: 'Devolução',
+      value: 'return',
+    };
+  }
+};
 
 const isLoading = computed((): boolean => {
   return loadingProduct.value || loadingSupplier.value;
 });
 const variantID = computed(() => props.data.variantID);
 const optionsReason = computed((): IQuasarSelect<string>[] => {
-  const common: IQuasarSelect<string>[] = [
+  const entryReasons: IQuasarSelect<string>[] = [
     { label: 'Compra', value: 'buy' },
     { label: 'Devolução', value: 'return' },
-    { label: 'Transferência', value: 'transfer' },
-    { label: 'Ajuste', value: 'adjustment' },
-    { label: 'Inventário', value: 'inventory' },
+    { label: 'Transferência de entrada', value: 'transfer_in' },
+    { label: 'Ajuste de entrada', value: 'adjustment_in' },
+    { label: 'Produção', value: 'production' },
   ];
 
-  if (props.data.type === 'in') {
-    return common;
-  }
+  const exitReasons: IQuasarSelect<string>[] = [
+    { label: 'Devolução', value: 'return' },
+    { label: 'Transferência de saída', value: 'transfer_out' },
+    { label: 'Perda/Avaria', value: 'loss' },
+    { label: 'Ajuste de saída', value: 'adjustment_out' },
+    { label: 'Consumo interno', value: 'internal_use' },
+  ];
 
-  return [...common, { label: 'Perda', value: 'loss' }, { label: 'Venda', value: 'sale' }];
+  return props.data.type === 'in' ? entryReasons : exitReasons;
 });
 const optionsSuppliers = computed((): IQuasarSelect<number | null>[] => {
   return [
@@ -146,16 +164,60 @@ const optionsType = computed(() => {
     },
   ];
 });
-
+const showSupplierField = computed(() => {
+  const entryReasons = ['buy', 'return', 'production'];
+  return props.data.type === 'in' && entryReasons.includes(selectedReason.value.value);
+});
+const showFinancialFields = computed(() => {
+  const financialReasons = ['buy', 'sale', 'production'];
+  return financialReasons.includes(selectedReason.value.value);
+});
+const showDocumentField = computed(() => {
+  const noDocumentReasons = ['adjustment_in', 'adjustment_out', 'internal_use'];
+  return !noDocumentReasons.includes(selectedReason.value.value);
+});
+const showLotField = computed(() => {
+  const noLotReasons = ['adjustment_in', 'adjustment_out', 'internal_use'];
+  return !noLotReasons.includes(selectedReason.value.value);
+});
+const documentLabel = computed(() => {
+  const labels: Record<string, string> = {
+    buy: 'Nº Nota Fiscal',
+    sale: 'Nº Pedido',
+    return: 'Nº Devolução',
+    transfer_in: 'Nº Transferência',
+    transfer_out: 'Nº Transferência',
+    loss: 'Nº Relatório',
+    production: 'Nº Ordem Produção',
+    adjustment_in: 'Nº Ajuste',
+    adjustment_out: 'Nº Ajuste',
+    internal_use: 'Nº Requisição',
+  };
+  return labels[selectedReason.value.value] || 'Nº Documento';
+});
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
 });
 
+watch(selectedReason, (newReason) => {
+  if (newReason.value === 'return' && props.data.type === 'in') {
+    selectedSupplier.value = {
+      label: 'Cliente/Consumidor',
+      value: null,
+    };
+  } else if (newReason.value === 'buy') {
+    selectedSupplier.value = {
+      label: 'Não informado',
+      value: null,
+    };
+  }
+});
 watch(open, async () => {
   clear();
   if (open.value) {
     checkType();
+    checkReason();
     await fetchSuppliers();
   }
 });
@@ -202,6 +264,7 @@ watch(open, async () => {
             </template>
           </q-select>
           <q-select
+            v-if="showSupplierField"
             outlined
             v-model="selectedSupplier"
             label="Fornecedor"
@@ -218,11 +281,12 @@ watch(open, async () => {
             </template>
           </q-select>
           <q-input
+            v-if="showDocumentField"
             v-model="dataMovement.documentNumber"
             bg-color="white"
             label-color="black"
             outlined
-            label="Nº Documento"
+            :label="documentLabel"
             dense
             input-class="text-black"
             class="full-width"
@@ -232,6 +296,7 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-input
+            v-if="showLotField"
             v-model="dataMovement.lotNumber"
             bg-color="white"
             label-color="black"
@@ -260,7 +325,7 @@ watch(open, async () => {
               <q-icon name="calculate" color="black" size="20px" />
             </template>
           </q-input>
-          <div class="row justify-between">
+          <div v-if="showFinancialFields" class="row justify-between">
             <q-input
               v-model="dataMovement.totalCost"
               bg-color="white"

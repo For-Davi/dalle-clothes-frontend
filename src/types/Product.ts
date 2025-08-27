@@ -204,6 +204,7 @@ export interface ProductBasic {
 export interface DataMovementProductRegister {
   variantID: number;
   documentNumber: string | null;
+  description: string | null;
   lotNumber: string | null;
   quantity: number;
   unitCost: number;
