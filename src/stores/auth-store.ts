@@ -87,12 +87,13 @@ export const useAuthStore = defineStore('auth', {
         this.setLoading(false);
       }
     },
-    async setNewPassword(code: string, email: string) {
+    async setNewPassword(password: string, token: string) {
       try {
         this.setLoading(true);
-        const response = await setNewPasswordService(code, email);
+        const response = await setNewPasswordService(password, token);
         if (response.status === 200) {
           createSuccess(response.data.message);
+          await router.push({ name: 'auth' });
         }
 
         return response;

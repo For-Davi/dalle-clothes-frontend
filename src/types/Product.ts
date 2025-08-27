@@ -210,6 +210,15 @@ export interface ReturnProductAdvanced {
   commission_percentage: number;
 }
 
+export interface LinkedProducts {
+  supplier_id: number;
+  product_variant_id: number;
+  name: string;
+  sku: string | null;
+  price: number;
+  description: string | null;
+}
+
 export interface SearchProductVariant {
   product_variant_id: number;
   active: number;

@@ -3,8 +3,9 @@ import { onMounted, reactive, ref } from 'vue';
 import { Notify } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
-import TitleAuth from '../shared/TitleAuth.vue';
 import { checkDataLogin } from 'src/composables/CheckData';
+import TitleAuth from '../shared/TitleAuth.vue';
+import SubTitleAuth from '../shared/SubTitleAuth.vue';
 
 defineOptions({
   name: 'Login',
@@ -49,14 +50,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <q-form class="form-auth rounded-borders bg-grey-3">
-    <div class="row justify-center items-center q-pa-md">
-      <q-img src="/images/logo.png" spinner-color="white" width="300px" height="170px" />
-    </div>
-    <div class="q-px-md">
-      <TitleAuth title="Faça seu login" />
-    </div>
+  <q-form class="form-auth rounded-borders bg-grey-3 q-pb-sm">
+    <TitleAuth />
     <div class="q-pb-sm q-px-md q-gutter-y-sm">
+      <SubTitleAuth title="Login" />
       <q-input
         v-model="dataLogin.email"
         bg-color="white"
@@ -71,57 +68,58 @@ onMounted(() => {
           <q-icon name="email" color="black" size="20px" />
         </template>
       </q-input>
-      <q-input
-        v-model="dataLogin.password"
-        bg-color="white"
-        label-color="black"
-        outlined
-        label="Digite sua senha"
-        autocomplete="new-password"
-        dense
-        input-class="text-black"
-        :type="isPwd ? 'password' : 'text'"
-      >
-        <template v-slot:append>
-          <q-icon
-            @click="isPwd = !isPwd"
-            :name="isPwd ? 'visibility_off' : 'visibility'"
-            class="cursor-pointer"
-            size="20px"
-          />
-        </template>
-        <template v-slot:prepend>
-          <q-icon name="key" color="black" size="20px" />
-        </template>
-      </q-input>
+      <div>
+        <q-input
+          v-model="dataLogin.password"
+          bg-color="white"
+          label-color="black"
+          outlined
+          label="Digite sua senha"
+          autocomplete="new-password"
+          dense
+          input-class="text-black"
+          :type="isPwd ? 'password' : 'text'"
+        >
+          <template v-slot:append>
+            <q-icon
+              @click="isPwd = !isPwd"
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              size="20px"
+            />
+          </template>
+          <template v-slot:prepend>
+            <q-icon name="key" color="black" size="20px" />
+          </template>
+        </q-input>
+        <div class="row justify-end items-center">
+          <span
+            @click="changeRender('reset')"
+            class="q-mt-sm text-bold cursor-pointer hover color-default"
+            >Esqueceu sua senha?</span
+          >
+        </div>
+      </div>
     </div>
-    <div class="q-pb-sm q-px-md row justify-end items-center q-gutter-x-sm">
-      <q-btn
-        color="black"
-        label="Esqueceu senha"
-        size="md"
-        flat
-        @click="changeRender('reset')"
-        no-caps
-      />
-      <q-btn
-        @click="changeRender('register')"
-        color="black"
-        label="Cadastrar"
-        size="md"
-        unelevated
-        no-caps
-        flat
-      />
+    <div class="q-pb-sm q-px-md column justify-end items-center">
       <q-btn
         @click="login"
-        color="red-6"
+        color="primary"
         label="Entrar"
         size="md"
         :loading="loadingAuth"
         unelevated
         no-caps
+        class="full-width"
       />
+      <div class="row justify-end items-center">
+        <span class="q-mt-sm q-mr-md">Não tem uma conta?</span>
+        <span
+          @click="changeRender('register')"
+          class="q-mt-sm text-bold cursor-pointer hover color-default"
+          ><u>Cadastrar-se</u></span
+        >
+      </div>
     </div>
   </q-form>
 </template>

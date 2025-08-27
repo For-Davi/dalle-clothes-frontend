@@ -7,6 +7,8 @@ import FormSchedule from 'src/components/form/FormSchedule.vue';
 import Description from 'src/components/general/Description.vue';
 import { useScheduleStore } from 'src/stores/schedule-store';
 import FilterSchedule from 'src/components/filter/FilterSchedule.vue';
+import ExportSchedule from 'src/components/export/ExportSchedule.vue';
+import { exportSchedulesService } from 'src/services/schedule-service';
 
 defineOptions({
   name: 'Schedule',
@@ -14,6 +16,7 @@ defineOptions({
 
 const showFilterSchedule = ref<boolean>(false);
 const showCategoryTransactionManage = ref<boolean>(false);
+const showExport = ref<boolean>(false);
 const showFormSchedule = reactive({
   open: false as boolean,
   scheduleID: null as number | null,
@@ -28,6 +31,9 @@ const filter = reactive<IFilterSchedule>({
   type: 'all',
 });
 
+const changeShowExport = () => {
+  showExport.value = !showExport.value;
+};
 const changeShowFormSchedule = (open: boolean, scheduleID: number | null = null): void => {
   Object.assign(showFormSchedule, {
     open,
@@ -55,7 +61,7 @@ const changeShowFilterSchedule = (): void => {
 const openAction = (type: IActionMovement): void => {
   switch (type) {
     case 'export':
-      console.log('Exportando...');
+      changeShowExport();
       break;
     case 'category':
       changeShowCategoryTransactionManage();
@@ -81,6 +87,14 @@ const newRequest = async (): Promise<void> => {
   if (hasFilter.value) {
     await useScheduleStore().getSchedules(filter);
   }
+};
+const startExport = async (format: 'excel' | 'pdf'): Promise<void> => {
+  await exportSchedulesService({
+    category: filter.category,
+    format: format,
+    period: filter.period,
+    type: filter.type,
+  });
 };
 
 const getTitleTableSchedule = computed((): string => {
@@ -157,6 +171,12 @@ const hasFilter = computed(() => {
 
     <!-- Modals -->
     <FilterSchedule :open="showFilterSchedule" :filters="filter" @update:open="actionFilter" />
+    <ExportSchedule
+      :open="showExport"
+      :filters="filter"
+      @update:open="changeShowExport"
+      @choose-format="startExport"
+    />
     <FormSchedule
       :data="showFormSchedule"
       @update:open="changeShowFormSchedule(false)"

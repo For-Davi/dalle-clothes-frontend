@@ -2,14 +2,12 @@
 defineOptions({
   name: 'TitleAuth',
 });
-
-const props = defineProps<{
-  title: string;
-}>();
 </script>
 
 <template>
-  <q-toolbar>
-    <q-toolbar-title>{{ props.title }}</q-toolbar-title>
-  </q-toolbar>
+  <div class="row justify-center items-center q-pa-md">
+    <span class="text-h4 text-primary text-weight-bold">
+      Dalle <span class="text-grey-9">Manage</span>
+    </span>
+  </div>
 </template>

@@ -4,6 +4,13 @@ export interface FilterMovement {
   type: 'all' | 'entry' | 'out';
 }
 
+export interface ExportMovement {
+  period: string | null;
+  category: number | null;
+  type: 'all' | 'entry' | 'out';
+  format: 'excel' | 'pdf';
+}
+
 export interface Movement {
   id: number;
   enterprise_id: number;

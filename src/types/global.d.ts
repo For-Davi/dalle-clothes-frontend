@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
-import type { FilterSupplier } from './Supplier';
+import type { FilterSupplier, DataSupplierCatalog } from './Supplier';
 import type {
   CategorySupplier,
   CategoryProduct,
@@ -40,6 +40,7 @@ import type {
   DataProductAdvanced,
   ProductAdvanced,
   ReturnProductAdvanced,
+  LinkedProducts,
   SearchProductVariant,
 } from './Product';
 import type { CustomFile } from './File';
@@ -48,9 +49,15 @@ import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting'
 import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
 import type { TypesReceipt } from './Types';
-import type { DataMovement, FilterMovement, Movement } from './Movement';
+import type { DataMovement, ExportMovement, FilterMovement, Movement } from './Movement';
 import type { Receipt, DataReceipt } from './Receipts';
-import type { DataSchedule, FilterSchedule, Schedule, DataScheduleFinish } from './Schedules';
+import type {
+  DataSchedule,
+  FilterSchedule,
+  Schedule,
+  DataScheduleFinish,
+  ExportSchedule,
+} from './Schedules';
 
 export {};
 
@@ -122,6 +129,7 @@ declare global {
   type IReturnProductAdvanced = ReturnProductAdvanced;
   type IDataProductBasic = DataProductBasic;
   type IDataProductAdvanced = DataProductAdvanced;
+  type ILinkedProducts = LinkedProducts;
   type ISearchProductVariant = SearchProductVariant;
 
   type ICustomFile = CustomFile;
@@ -143,9 +151,13 @@ declare global {
   type IFilterMovement = FilterMovement;
   type IMovement = Movement;
   type IDataMovement = DataMovement;
+  type IExportMovement = ExportMovement;
 
   type IFilterSchedule = FilterSchedule;
   type ISchedule = Schedule;
   type IDataSchedule = DataSchedule;
   type IDataScheduleFinish = DataScheduleFinish;
+  type IExportSchedule = ExportSchedule;
+
+  type IDataSupplierCatalog = DataSupplierCatalog;
 }

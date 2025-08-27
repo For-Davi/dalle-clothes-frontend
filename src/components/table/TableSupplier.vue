@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useSupplierStore } from 'src/stores/supplier-store';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { columnsSupplier } from 'src/utils/columns';
+import LinkedProductsManage from '../manage/LinkedProductsManage.vue';
 
 defineOptions({
   name: 'TableSupplier',
@@ -23,10 +24,20 @@ const emit = defineEmits<{
 
 const { loadingSupplier, listSupplier } = storeToRefs(useSupplierStore());
 
+const showCatalogSupplier = ref<boolean>(false);
 const showConfirmAction = ref<boolean>(false);
 const supplierMonitoring = ref<number | null>(null);
 const showInformation = ref<number>(0);
 
+const openCatalogSupplier = (id: number) => {
+  supplierMonitoring.value = id;
+  showCatalogSupplier.value = true;
+};
+
+const changeShowCatalogSupplier = () => {
+  showCatalogSupplier.value = false;
+  supplierMonitoring.value = 0;
+};
 const clear = (): void => {
   supplierMonitoring.value = null;
 };
@@ -119,7 +130,15 @@ onMounted(async () => {
             />
           </q-td>
           <q-td key="action" :props="props">
-            <q-btn :disable="false" size="sm" flat round color="primary" icon="storefront">
+            <q-btn
+              :disable="false"
+              @click="openCatalogSupplier(props.row.id)"
+              size="sm"
+              flat
+              round
+              color="primary"
+              icon="storefront"
+            >
               <q-tooltip>Catálogo</q-tooltip>
             </q-btn>
             <q-btn
@@ -149,6 +168,12 @@ onMounted(async () => {
         </q-tr>
       </template>
     </q-table>
+    <!-- Modals -->
+    <LinkedProductsManage
+      :open="showCatalogSupplier"
+      :supplierId="supplierMonitoring!"
+      @update:open="changeShowCatalogSupplier"
+    />
     <ConfirmAction
       :open="showConfirmAction"
       label-action="Continuar"

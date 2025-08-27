@@ -34,3 +34,10 @@ export interface FilterSupplier {
   state: string;
   city: string;
 }
+
+export interface DataSupplierCatalog {
+  supplier_id: number;
+  variant_id: number;
+  price: string;
+  description: string | null;
+}

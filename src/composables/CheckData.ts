@@ -162,6 +162,28 @@ export const checkDataUserSystem = (
   return { status: true };
 };
 
+export const checkDataPassword = (data: {
+  newPassword: string;
+  confirmPassword: string;
+}): { status: boolean; message?: string } => {
+  if (data.newPassword.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado a senha do usuário',
+    };
+  }
+  if (data.newPassword.trim().length < 7) {
+    return {
+      status: false,
+      message: 'A senha deve conter mais de 7 caracteres',
+    };
+  }
+  if (data.newPassword.trim() !== (data.confirmPassword && data.confirmPassword.trim())) {
+    return { status: false, message: 'As senhas não coincidem' };
+  }
+  return { status: true };
+};
+
 export const checkDataSupplier = (data: {
   name: string;
   email: string;
@@ -609,6 +631,16 @@ export const checkReceiptData = (data: {
   }
   if (data.identifier.trim().length > 500) {
     return { status: false, message: 'O campo da descrição deve conter apenas 500 caracteres' };
+  }
+
+  return { status: true };
+};
+
+export const checkExportData = (data: {
+  data: IMovement[];
+}): { status: boolean; message?: string } => {
+  if (data.data.length === 0) {
+    return { status: false, message: 'Você não possui nenhum dado para exportar' };
   }
 
   return { status: true };

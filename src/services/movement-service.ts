@@ -1,3 +1,4 @@
+import { createError } from 'src/composables/CreateNotify';
 import { api } from 'boot/axios';
 
 const baseUrl = 'movement';
@@ -33,6 +34,31 @@ export const showMovementService = (
     movement: IMovement;
   };
 }> => api.get(`${baseUrl}/${movementID}`);
+
+export const exportMovementService = async (filter: IExportMovement) => {
+  try {
+    const response = await api.post(`${baseUrl}/export`, filter, {
+      responseType: 'blob',
+    });
+
+    const ext = filter.format === 'excel' ? 'xlsx' : 'pdf';
+
+    const now = new Date();
+    const timestamp = now.toISOString().replace(/[-:]/g, '').replace(/\..+/, '');
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `movimentacoes_${timestamp}.${ext}`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    createError(error);
+  }
+};
 
 export const createMovementService = (
   data: IDataMovement,

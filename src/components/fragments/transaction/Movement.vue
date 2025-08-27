@@ -7,6 +7,8 @@ import FormMovement from 'src/components/form/FormMovement.vue';
 import Description from 'src/components/general/Description.vue';
 import { useMovementStore } from 'src/stores/movement-store';
 import FilterMovement from 'src/components/filter/FilterMovement.vue';
+import ExportMovement from 'src/components/export/ExportMovement.vue';
+import { exportMovementService } from 'src/services/movement-service';
 
 defineOptions({
   name: 'Movement',
@@ -14,6 +16,7 @@ defineOptions({
 
 const showFilterMovement = ref<boolean>(false);
 const showCategoryTransactionManage = ref<boolean>(false);
+const showExport = ref<boolean>(false);
 const showFormMovement = reactive({
   open: false as boolean,
   movementID: null as number | null,
@@ -28,6 +31,9 @@ const filter = reactive<IFilterMovement>({
   type: 'all',
 });
 
+const changeShowExport = () => {
+  showExport.value = !showExport.value;
+};
 const changeShowFormMovement = (open: boolean, movementID: number | null = null): void => {
   Object.assign(showFormMovement, {
     open,
@@ -55,7 +61,7 @@ const changeShowFilterMovement = (): void => {
 const openAction = (type: IActionMovement): void => {
   switch (type) {
     case 'export':
-      console.log('Exportando...');
+      changeShowExport();
       break;
     case 'category':
       changeShowCategoryTransactionManage();
@@ -81,6 +87,14 @@ const newRequest = async (): Promise<void> => {
   if (hasFilter.value) {
     await useMovementStore().getMovements(filter);
   }
+};
+const startExport = async (format: 'excel' | 'pdf'): Promise<void> => {
+  await exportMovementService({
+    category: filter.category,
+    format: format,
+    period: filter.period,
+    type: filter.type,
+  });
 };
 
 const getTitleTableMovement = computed((): string => {
@@ -156,6 +170,12 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
+    <ExportMovement
+      :open="showExport"
+      :filters="filter"
+      @update:open="changeShowExport"
+      @choose-format="startExport"
+    />
     <FilterMovement :open="showFilterMovement" :filters="filter" @update:open="actionFilter" />
     <FormMovement
       :data="showFormMovement"
