@@ -50,13 +50,13 @@ const startEdit = (id: number) => {
   emit('show:showFormVariant', id);
 };
 const startOpenModalSupplier = (variantID: number, supplierID: number) => {
-  emit('show:showModalSupplier', variantID, supplierID)
-}
+  emit('show:showModalSupplier', variantID, supplierID);
+};
 const startExclude = (id: number) => {
   openConfirmAction(id);
 };
 const fetchProducts = async (): Promise<void> => {
-  await useProductStore().getProducts(); 
+  await useProductStore().getProducts();
 };
 const getColorStyle = (hexColor: string) => {
   return {
@@ -141,18 +141,19 @@ onMounted(async () => {
           </q-td>
 
           <q-td key="action" :props="props">
-             <q-btn
-             v-if="props.row.catalog"
-              @click="startOpenModalSupplier(props.row.product_variant_id, props.row.catalog.supplier_id)"
+            <q-btn
+              v-if="props.row.catalog"
+              @click="
+                startOpenModalSupplier(props.row.product_variant_id, props.row.catalog.supplier_id)
+              "
               size="sm"
               flat
               round
               color="primary"
-              icon="local_shipping">
-              <q-tooltip>
-                Fornecedores
-              </q-tooltip>
-             </q-btn>
+              icon="local_shipping"
+            >
+              <q-tooltip> Fornecedores </q-tooltip>
+            </q-btn>
             <q-btn
               @click="startEdit(props.row.product_variant_id)"
               :disable="productMonitoring === props.row.product_variant_id"

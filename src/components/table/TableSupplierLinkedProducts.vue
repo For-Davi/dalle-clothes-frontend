@@ -10,7 +10,7 @@ import { formatToReal } from 'src/composables/Money';
 defineOptions({
   name: 'TableSupplierLinkedProducts',
 });
- 
+
 const props = defineProps<{
   variantID: number | null;
 }>();
@@ -27,7 +27,6 @@ const showDescription = reactive({
   open: false as boolean,
   description: null as string | null,
 });
-
 
 const showDetails = (id: number) => {
   emit('show:showDetailsSupplier', id);
@@ -144,10 +143,9 @@ onMounted(async () => {
               flat
               round
               color="black"
-              icon="fa-solid fa-eye">
-            <q-tooltip>
-              Detalhes do fornecedor
-            </q-tooltip>
+              icon="fa-solid fa-eye"
+            >
+              <q-tooltip> Detalhes do fornecedor </q-tooltip>
             </q-btn>
           </q-td>
         </q-tr>

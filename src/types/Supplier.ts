@@ -47,7 +47,7 @@ export interface CatalogSupplier {
   supplier_id: number;
   name: string;
   sku: string | null;
-  price: string; 
+  price: string;
   description: string | null;
   color_code: string | null;
   color_name: string | null;

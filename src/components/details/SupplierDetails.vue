@@ -121,8 +121,8 @@ const checkDataEdit = async () => {
       }
 
       const selectedCategoryItem = listCategorySupplier.value.find(
-      (item) => item.id === supplier.supplier_category_id,
-    );
+        (item) => item.id === supplier.supplier_category_id,
+      );
       selectedCategory.value = selectedCategoryItem
         ? { label: selectedCategoryItem?.name, value: selectedCategoryItem?.id }
         : { label: 'Sem categoria', value: null };
@@ -193,7 +193,6 @@ const open = computed({
   set: () => emit('update:open'),
 });
 
-
 watch(
   () => dataSupplier.country,
   (country: string) => {
@@ -230,7 +229,6 @@ watch([() => open.value, () => supplierID.value], async ([isOpen, id]) => {
     await checkDataEdit();
   }
 });
-
 </script>
 <template>
   <q-dialog v-model="open">
@@ -566,15 +564,7 @@ watch([() => open.value, () => supplierID.value], async ([isOpen, id]) => {
       </q-card-section>
       <q-card-actions align="right" v-show="!loadingCategorySupplier">
         <div class="row justify-end items-center q-gutter-x-sm">
-          <q-btn
-            color="red"
-            label="Fechar"
-            size="md"
-            flat
-            @click="open = false"
-            unelevated
-            no-caps
-          />
+          <q-btn color="red" label="Fechar" size="md" @click="open = false" unelevated no-caps />
         </div>
       </q-card-actions>
     </q-card>

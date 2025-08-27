@@ -9,23 +9,21 @@ import SupplierDetails from '../details/SupplierDetails.vue';
 import TableSupplierLinkedProducts from '../table/TableSupplierLinkedProducts.vue';
 
 defineOptions({
-  name: 'SupplierLinkedProducts',
+  name: 'SupplierLinkedProductsManage',
 });
- 
+
 const props = defineProps<{
   data: {
     open: boolean;
     supplierID: number | null;
     variantID: number | null;
-  }
+  };
 }>();
 const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { loadingLinkedProducts, listLinkedProducts } = storeToRefs(
-  useCatalogSupplierStore(),
-);
+const { loadingLinkedProducts, listLinkedProducts } = storeToRefs(useCatalogSupplierStore());
 
 const showSuppplierDetails = reactive<{
   open: boolean;
@@ -36,24 +34,20 @@ const showSuppplierDetails = reactive<{
 });
 
 const startOpenDetails = (id: number) => {
-  changeShowSuppplierDetails(true, id)
-}
-const changeShowSuppplierDetails = (
-  show: boolean,
-  supplierID: number | null = null,
-): void => {
+  changeShowSuppplierDetails(true, id);
+};
+const changeShowSuppplierDetails = (show: boolean, supplierID: number | null = null): void => {
   Object.assign(showSuppplierDetails, {
     open: show,
     supplierID: supplierID,
   });
 };
 
-const variantID = computed(() => props.data.variantID)
+const variantID = computed(() => props.data.variantID);
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
 });
-
 </script>
 <template>
   <q-dialog v-model="open">
@@ -78,14 +72,7 @@ const open = computed({
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
-          <q-btn
-            color="red"
-            label="Fechar"
-            size="md"
-            @click="open = false"
-            unelevated
-            no-caps
-          />
+          <q-btn color="red" label="Fechar" size="md" @click="open = false" unelevated no-caps />
         </div>
       </q-card-actions>
 
