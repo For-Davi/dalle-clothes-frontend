@@ -41,6 +41,7 @@ import type {
   ProductAdvanced,
   ReturnProductAdvanced,
   LinkedProducts,
+  ExportProduct
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -129,6 +130,7 @@ declare global {
   type IDataProductBasic = DataProductBasic;
   type IDataProductAdvanced = DataProductAdvanced;
   type ILinkedProducts = LinkedProducts;
+  type IExportProduct = ExportProduct;
 
   type ICustomFile = CustomFile;
 

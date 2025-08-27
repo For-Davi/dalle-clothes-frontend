@@ -7,7 +7,7 @@ import FormSchedule from 'src/components/form/FormSchedule.vue';
 import Description from 'src/components/general/Description.vue';
 import { useScheduleStore } from 'src/stores/schedule-store';
 import FilterSchedule from 'src/components/filter/FilterSchedule.vue';
-import ExportSchedule from 'src/components/export/ExportSchedule.vue';
+import Exports from 'src/components/export/Exports.vue';
 import { exportSchedulesService } from 'src/services/schedule-service';
 
 defineOptions({
@@ -171,9 +171,12 @@ const hasFilter = computed(() => {
 
     <!-- Modals -->
     <FilterSchedule :open="showFilterSchedule" :filters="filter" @update:open="actionFilter" />
-    <ExportSchedule
+    <Exports
       :open="showExport"
-      :filters="filter"
+      title="Exportação de agendamentos"
+      message="Deseja exportar os agendamentos que estão sendo visualizados agora?"
+      :allowExcel="true"
+      :allowPdf="true"
       @update:open="changeShowExport"
       @choose-format="startExport"
     />

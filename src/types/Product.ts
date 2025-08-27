@@ -147,6 +147,14 @@ export interface FilterProduct {
   stockCritical: number | null;
 }
 
+export interface ExportProduct {
+  name: string | null;
+  sku: string | null;
+  active: number | null;
+  category: number | null;
+  stockCritical: number | null;
+}
+
 export interface Variant {
   id: number;
   price: string;
