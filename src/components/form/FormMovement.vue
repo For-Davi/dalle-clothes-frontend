@@ -251,7 +251,7 @@ watch(open, async () => {
         />
       </q-card-section>
       <q-card-section class="q-pa-sm">
-        <Loading :show="isLoading" />
+        <Loading v-show="isLoading" :show="isLoading" />
         <q-form class="q-gutter-y-sm column full-width" v-show="!isLoading">
           <q-select
             v-model="selectedType"

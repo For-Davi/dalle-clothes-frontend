@@ -11,6 +11,15 @@ export const getProductVariantService = (
   };
 }> => api.get(`${baseUrl}/variant/${id}`);
 
+export const searchProductService = (
+  value: string,
+): Promise<{
+  status: number;
+  data: {
+    products: ISearchProductVariant[];
+  };
+}> => api.post(`${baseUrl}/variant/search/`, { value });
+
 export const getProductsService = (): Promise<{
   status: number;
   data: {
@@ -121,6 +130,15 @@ export const updateProductBasicService = (
     message: string;
   };
 }> => api.put(`${baseUrl}/basic/`, data);
+
+export const createMovementVariantService = (
+  data: IDataMovementProductRegister,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+  };
+}> => api.post(`${baseUrl}/variant/movement`, data);
 
 export const updateProductAdvancedService = (
   data: IDataProductAdvanced,

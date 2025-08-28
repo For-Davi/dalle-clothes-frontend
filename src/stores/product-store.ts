@@ -1,10 +1,12 @@
 import {
+  createMovementVariantService,
   createProductService,
   deleteProductService,
   deleteProductVariantService,
   getProductsFilterService,
   getProductsService,
   getProductVariantService,
+  searchProductService,
   showProductService,
   updateProductAdvancedService,
   updateProductBasicService,
@@ -61,6 +63,17 @@ export const useProductStore = defineStore('product', {
         this.setLoading(false);
       }
     },
+    async searchProduct(value: string) {
+      this.setLoading(true);
+      try {
+        return await searchProductService(value);
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
     async showProduct(productID: number) {
       try {
         this.setLoading(true);
@@ -81,6 +94,21 @@ export const useProductStore = defineStore('product', {
           createSuccess(response.data.message);
         }
 
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async createMovementVariant(data: IDataMovementProductRegister) {
+      this.setLoading(true);
+      try {
+        const response = await createMovementVariantService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
         return response;
       } catch (error) {
         createError(error);
