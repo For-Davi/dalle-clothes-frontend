@@ -36,9 +36,7 @@ const open = computed({
       </q-card-section>
       <q-card-section>
         <div>
-          <span class="text-red q-px-sm text-body1 text-bold"
-            >{{ props.message }}</span
-          >
+          <span class="text-red q-px-sm text-body1 text-bold">{{ props.message }}</span>
         </div>
       </q-card-section>
       <q-card-actions align="right">
@@ -53,7 +51,7 @@ const open = computed({
             flat
           />
           <q-btn
-          v-show="props.allowExcel"
+            v-show="props.allowExcel"
             color="green-7"
             label="Excel"
             @click="chooseFormat('excel')"
@@ -62,7 +60,7 @@ const open = computed({
             no-caps
           />
           <q-btn
-          v-show="props.allowPdf"
+            v-show="props.allowPdf"
             color="red-8"
             label="PDF"
             @click="chooseFormat('pdf')"

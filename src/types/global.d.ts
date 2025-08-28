@@ -43,7 +43,7 @@ import type {
   LinkedProducts,
   SearchProductVariant,
   DataMovementProductRegister,
-  ExportProduct
+  ExportProduct,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';

@@ -241,11 +241,10 @@ export interface LinkedProducts {
 }
 
 export interface SearchProductVariant {
-  product_variant_id: number;
+  id: number;
   active: number;
   price: string;
   cost: string;
-  name: string;
   location: string | null;
   sku: string | null;
   stock_quantity: number;

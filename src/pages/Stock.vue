@@ -60,8 +60,8 @@ const filter = reactive<IFilterProduct>({
 });
 
 const changeShowExport = () => {
-  showExport.value = !showExport.value
-}
+  showExport.value = !showExport.value;
+};
 const changeShowSupplierLinkedProductManage = (
   show: boolean,
   variantID: number | null = null,
@@ -104,8 +104,8 @@ const startExport = async () => {
     category: filter.category,
     active: filter.active,
     stockCritical: filter.stockCritical,
-  })
-}
+  });
+};
 const changeCategoryProductManage = (): void => {
   showCategoryProductManage.value = !showCategoryProductManage.value;
 };
@@ -253,7 +253,7 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
-       <Exports
+    <Exports
       :open="showExport"
       title="Exportação de produtos"
       message="Deseja exportar os produtos que estão sendo visualizados agora?"

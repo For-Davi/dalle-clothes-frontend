@@ -170,15 +170,15 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
-     <Exports
-     :open="showExport"
-     title="Exportação de movimentações"
-     message="Deseja exportar as movimentações que estão sendo visualizadas agora?"
-     :allowExcel="true"
-     :allowPdf="true"
-     @choose-format="startExport"
-     @update:open="changeShowExport"
-     />
+    <Exports
+      :open="showExport"
+      title="Exportação de movimentações"
+      message="Deseja exportar as movimentações que estão sendo visualizadas agora?"
+      :allowExcel="true"
+      :allowPdf="true"
+      @choose-format="startExport"
+      @update:open="changeShowExport"
+    />
     <FilterMovement :open="showFilterMovement" :filters="filter" @update:open="actionFilter" />
     <FormMovement
       :data="showFormMovement"
