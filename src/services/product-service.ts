@@ -1,4 +1,5 @@
 import { api } from 'boot/axios';
+import { createError } from 'src/composables/CreateNotify';
 
 const baseUrl = 'product';
 
@@ -35,6 +36,29 @@ export const showProductService = (
     product: IShowProdut;
   };
 }> => api.get(`${baseUrl}/${productID}}`);
+
+export const exportProductsService = async (filter: IExportProduct) => {
+  try {
+    const response = await api.post(`${baseUrl}/export`, filter, {
+      responseType: 'blob',
+    });
+
+    const now = new Date();
+    const timestamp = now.toISOString().replace(/[-:]/g, '').replace(/\..+/, '');
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `produtos_${timestamp}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    createError(error);
+  }
+};
 
 export const getProductsFilterService = (
   filter: IFilterProduct,

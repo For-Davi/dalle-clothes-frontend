@@ -7,7 +7,7 @@ import FormMovement from 'src/components/form/FormMovement.vue';
 import Description from 'src/components/general/Description.vue';
 import { useMovementStore } from 'src/stores/movement-store';
 import FilterMovement from 'src/components/filter/FilterMovement.vue';
-import ExportMovement from 'src/components/export/ExportMovement.vue';
+import Exports from 'src/components/export/Exports.vue';
 import { exportMovementService } from 'src/services/movement-service';
 
 defineOptions({
@@ -170,12 +170,15 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
-    <ExportMovement
-      :open="showExport"
-      :filters="filter"
-      @update:open="changeShowExport"
-      @choose-format="startExport"
-    />
+     <Exports
+     :open="showExport"
+     title="Exportação de movimentações"
+     message="Deseja exportar as movimentações que estão sendo visualizadas agora?"
+     :allowExcel="true"
+     :allowPdf="true"
+     @choose-format="startExport"
+     @update:open="changeShowExport"
+     />
     <FilterMovement :open="showFilterMovement" :filters="filter" @update:open="actionFilter" />
     <FormMovement
       :data="showFormMovement"

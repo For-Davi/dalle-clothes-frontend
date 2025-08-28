@@ -43,6 +43,7 @@ import type {
   LinkedProducts,
   SearchProductVariant,
   DataMovementProductRegister,
+  ExportProduct
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -133,6 +134,7 @@ declare global {
   type ILinkedProducts = LinkedProducts;
   type ISearchProductVariant = SearchProductVariant;
   type IDataMovementProductRegister = DataMovementProductRegister;
+  type IExportProduct = ExportProduct;
 
   type ICustomFile = CustomFile;
 
