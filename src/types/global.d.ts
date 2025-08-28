@@ -59,6 +59,7 @@ import type {
   DataScheduleFinish,
   ExportSchedule,
 } from './Schedules';
+import type { Notification } from './Notification'
 
 export {};
 
@@ -165,4 +166,6 @@ declare global {
 
   type IDataSupplierCatalog = DataSupplierCatalog;
   type ICatalogSupplier = CatalogSupplier;
+
+  type INotification = Notification;
 }

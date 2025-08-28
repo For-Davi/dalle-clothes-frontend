@@ -20,7 +20,6 @@ const isActive = (routeName: string) => {
 
 const changeShowInbox = () => {
   showInbox.value = !showInbox.value;
-  console.log(showInbox.value)
 }
 
 const getColorIconNotSelectedSideMenu = computed(() => {

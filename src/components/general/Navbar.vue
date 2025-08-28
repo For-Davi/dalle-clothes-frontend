@@ -4,6 +4,7 @@ import UserOptions from './UserOptions.vue';
 import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
 import FormFeedback from '../form/FormFeedback.vue';
+import { useNotificationStore } from 'src/stores/notification-store';
 
 defineOptions({
   name: 'Navbar',
@@ -18,6 +19,7 @@ const emit = defineEmits<{
 }>();
 
 const { appearanceSetting } = storeToRefs(useSettingsStore());
+const { listNotification } = storeToRefs(useNotificationStore())
 
 const showFormFedback = ref<boolean>(false);
 
@@ -82,7 +84,7 @@ const getColorIconNavbar = computed(() => {
             :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
           >
             <q-tooltip> Notificações </q-tooltip>
-            <q-badge color="black" rounded floating :label="0" />
+            <q-badge color="black" rounded floating :label="listNotification.length" /> 
           </q-btn>
         </div>
         <div v-else>
