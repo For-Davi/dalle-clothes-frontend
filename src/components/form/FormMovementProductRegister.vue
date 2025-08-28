@@ -19,6 +19,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  newRequest: [void];
 }>();
 
 const { loadingProduct } = storeToRefs(useProductStore());
@@ -81,11 +82,12 @@ const save = async (): Promise<void> => {
     reason: selectedReason.value.value,
     supplierID: selectedSupplier.value.value,
     type: props.data.type,
-    description: dataMovement.description.trim().length === 0 ? null : dataMovement.description
+    description: dataMovement.description.trim().length === 0 ? null : dataMovement.description,
   });
   if (response?.status === 200) {
     clear();
     emit('update:open');
+    emit('newRequest');
   }
 };
 const fetchSuppliers = async () => {
@@ -224,12 +226,12 @@ watch(open, async () => {
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 form-basic">
+    <q-card class="bg-grey-2 form-basic column justify-between">
       <q-card-section class="q-pa-none">
         <TitlePage title="Registro de movimentação" icon="list_alt" />
       </q-card-section>
-      <Loading v-show="isLoading" :show="isLoading" />
       <q-card-section class="q-pa-sm" v-show="!isLoading">
+        <Loading v-show="isLoading" :show="isLoading" />
         <q-form class="q-gutter-y-sm">
           <q-select
             v-model="selectedType"

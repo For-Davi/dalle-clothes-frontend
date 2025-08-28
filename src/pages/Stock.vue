@@ -132,6 +132,9 @@ const makeShowFormVariant = (id: number): void => {
   changeShowFormProduct(false);
   changeShowFormVariant(true, id);
 };
+const fetchProducts = async (): Promise<void> => {
+  await useProductStore().getProducts();
+};
 
 const hasFilter = computed(() => {
   return (
@@ -233,6 +236,7 @@ const hasFilter = computed(() => {
     <FormMovementProduct
       :open="showFormMovementProduct"
       @update:open="changeFormMovementProduct()"
+      @new-request="fetchProducts"
     />
   </main>
 </template>

@@ -16,6 +16,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  newRequest: [void];
 }>();
 
 const { loadingProduct } = storeToRefs(useProductStore());
@@ -62,6 +63,12 @@ const searchProduct = async () => {
     listProductSearch.value = response.data.products;
   }
 };
+const newRequest = async (): Promise<void> => {
+  const response = await useProductStore().searchProduct(search.value);
+  if (response?.status === 200) {
+    listProductSearch.value = response.data.products;
+  }
+};
 const changeShowFormNewMovementProduct = (
   show: boolean,
   type: 'in' | 'out' = 'in',
@@ -80,7 +87,10 @@ const getLabelSearch = computed((): string => {
 });
 const open = computed({
   get: () => props.open,
-  set: () => emit('update:open'),
+  set: () => {
+    emit('update:open');
+    emit('newRequest');
+  },
 });
 
 watch(open, () => {
@@ -91,7 +101,7 @@ watch(open, () => {
 </script>
 <template>
   <q-dialog v-model="open" persistent>
-    <q-card class="bg-grey-2" style="width: 800px; max-width: 98vw">
+    <q-card class="bg-grey-2" style="width: 900px; max-width: 98vw">
       <q-card-section class="q-pa-none">
         <TitlePage title="Atualização de estoque" icon="sync_alt" />
       </q-card-section>
@@ -152,6 +162,7 @@ watch(open, () => {
     <FormMovementProductRegister
       :data="showFormNewMovementProduct"
       @update:open="changeShowFormNewMovementProduct(false)"
+      @new-request="newRequest"
     />
   </q-dialog>
 </template>
