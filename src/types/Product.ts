@@ -201,6 +201,19 @@ export interface ProductBasic {
   category: ICategoryProduct | null;
 }
 
+export interface DataMovementProductRegister {
+  variantID: number;
+  documentNumber: string | null;
+  description: string | null;
+  lotNumber: string | null;
+  quantity: number;
+  unitCost: number;
+  totalCost: number;
+  reason: string;
+  type: 'in' | 'out';
+  supplierID: number | null;
+}
+
 export interface ReturnProductAdvanced {
   active: number;
   allow_coupon: number;
@@ -217,4 +230,36 @@ export interface LinkedProducts {
   sku: string | null;
   price: number;
   description: string | null;
+}
+
+export interface SearchProductVariant {
+  product_variant_id: number;
+  active: number;
+  price: string;
+  cost: string;
+  name: string;
+  location: string | null;
+  sku: string | null;
+  stock_quantity: number;
+  variant_active: number;
+  color_id: number | null;
+  color: IColor | null;
+  description: string | null;
+  product_id: number;
+  product: {
+    id: number;
+    name: string;
+  };
+  grid_item_id: number;
+  grid_item: {
+    id: number;
+    order: number;
+    size: string;
+    grid_group_id: number;
+    grid_group: {
+      id: number;
+      name: string;
+      active: number;
+    };
+  } | null;
 }

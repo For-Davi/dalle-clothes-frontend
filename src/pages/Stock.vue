@@ -12,6 +12,7 @@ import FilterProduct from 'src/components/filter/FilterProduct.vue';
 import TableProduct from 'src/components/table/TableProduct.vue';
 import FormVariant from 'src/components/form/FormVariant.vue';
 import SupplierLinkedProductsManage from 'src/components/manage/SupplierLinkedProductsManage.vue';
+import FormMovementProduct from 'src/components/form/FormMovementProduct.vue';
 
 defineOptions({
   name: 'Stock',
@@ -19,6 +20,7 @@ defineOptions({
 
 const filterStock = ref<string>('');
 const showFilterProduct = ref<boolean>(false);
+const showFormMovementProduct = ref<boolean>(false);
 const showColorManage = ref<boolean>(false);
 const showGridManage = ref<boolean>(false);
 const showTagManage = ref<boolean>(false);
@@ -80,6 +82,9 @@ const changeShowFormVariant = (show: boolean, variantID: number | null = null): 
 const changeColorManage = (): void => {
   showColorManage.value = !showColorManage.value;
 };
+const changeFormMovementProduct = (): void => {
+  showFormMovementProduct.value = !showFormMovementProduct.value;
+};
 const changeGridManage = (): void => {
   showGridManage.value = !showGridManage.value;
 };
@@ -104,7 +109,7 @@ const openAction = (type: IActionStock): void => {
       changeColorManage();
       break;
     case 'transaction':
-      console.log('Mostrando transações...');
+      changeFormMovementProduct();
       break;
     case 'tag':
       changeTagManage();
@@ -148,6 +153,9 @@ const clearFilter = (): void => {
 const makeShowFormVariant = (id: number): void => {
   changeShowFormProduct(false);
   changeShowFormVariant(true, id);
+};
+const fetchProducts = async (): Promise<void> => {
+  await useProductStore().getProducts();
 };
 
 const hasFilter = computed(() => {
@@ -234,13 +242,13 @@ const hasFilter = computed(() => {
       :data="showSupplierLinkedProductManage"
       @update:open="changeShowSupplierLinkedProductManage(false)"
     />
+    <ColorManage :open="showColorManage" @update:open="changeColorManage" />
+    <GridManage :open="showGridManage" @update:open="changeGridManage" />
+    <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <CategoryProductManage
       :open="showCategoryProductManage"
       @update:open="changeCategoryProductManage"
     />
-    <ColorManage :open="showColorManage" @update:open="changeColorManage" />
-    <GridManage :open="showGridManage" @update:open="changeGridManage" />
-    <TagManage :open="showTagManage" @update:open="changeTagManage" />
     <FormProduct
       :data="showFormProduct"
       @update:open="changeShowFormProduct(false)"
@@ -251,6 +259,11 @@ const hasFilter = computed(() => {
       :data="showFormVariant"
       @update:open="changeShowFormVariant(false)"
       @update:open-form-product="makeProductEdit"
+    />
+    <FormMovementProduct
+      :open="showFormMovementProduct"
+      @update:open="changeFormMovementProduct()"
+      @new-request="fetchProducts"
     />
   </main>
 </template>
