@@ -33,3 +33,11 @@ export interface Appearance {
   side_menu_color_default_selected_icon: number;
   side_menu_color_code_selected_icon: string | null;
 }
+
+export interface SettingSystem {
+  sendNotificationStockCritical: number;
+}
+
+export interface System {
+  send_notification_stock_critical: number;
+}

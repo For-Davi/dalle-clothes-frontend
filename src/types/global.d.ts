@@ -44,7 +44,7 @@ import type {
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
-import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting';
+import type { SettingAppearance, SettingModalTabs, Appearance, SettingSystem, System } from './Setting';
 import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
 import type { TypesReceipt } from './Types';
@@ -138,6 +138,8 @@ declare global {
   type ISettingModalTabs = SettingModalTabs;
   type ISettingAppearance = SettingAppearance;
   type IAppearance = Appearance;
+  type ISettingSystem = SettingSystem;
+  type ISystem = System;
 
   type IProfileData = ProfileData;
   type IProfilePassword = ProfilePassword;

@@ -40,7 +40,7 @@ const tab = ref<ISettingModalTabs>('appearance');
           <SettingAppearance :tab="tab" />
         </q-tab-panel>
         <q-tab-panel name="system" class="q-px-none">
-          <SettingSystem />
+          <SettingSystem :tab="tab" />
         </q-tab-panel>
       </q-tab-panels>
     </section>

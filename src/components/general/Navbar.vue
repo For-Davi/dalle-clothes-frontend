@@ -14,18 +14,18 @@ const emit = defineEmits<{
   'update:openFormEnterprise': [void];
   'update:openEmailInfo': [void];
   'update:changeOpenMenu': [void];
+  'update:openInbox': [void];
 }>();
 
 const { appearanceSetting } = storeToRefs(useSettingsStore());
 
 const showFormFedback = ref<boolean>(false);
-const showInbox = ref<boolean>(false);
 
 const changeOpenFormFeedback = (): void => {
   showFormFedback.value = !showFormFedback.value;
 };
-const openInbox = (): void => {
-  showInbox.value = true;
+const startOpenInbox = (): void => {
+  emit('update:openInbox')
 };
 
 const getBackgroundNavbar = computed(() => {
@@ -74,7 +74,7 @@ const getColorIconNavbar = computed(() => {
             <q-tooltip> Enviar sugestão </q-tooltip>
           </q-btn>
           <q-btn
-            @click="openInbox"
+            @click="startOpenInbox"
             flat
             icon-right="notifications"
             rounded
@@ -111,7 +111,7 @@ const getColorIconNavbar = computed(() => {
                 </q-item-section>
                 <q-item-section>Enviar sugestão ou dúvida</q-item-section>
               </q-item>
-              <q-item clickable v-ripple @click="openInbox">
+              <q-item clickable v-ripple @click="startOpenInbox">
                 <q-item-section avatar>
                   <q-avatar>
                     <q-icon name="notifications" />

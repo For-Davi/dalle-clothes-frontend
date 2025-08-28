@@ -4,17 +4,24 @@ import { useRoute } from 'vue-router';
 import Navbar from 'src/components/general/Navbar.vue';
 import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
+import Inbox from 'src/components/general/Inbox.vue';
 
 const route = useRoute();
 
 const { appearanceSetting } = storeToRefs(useSettingsStore());
 
+const showInbox = ref<boolean>(false);
 const miniState = ref<boolean>(false);
 const drawer = ref<boolean>(false);
 
 const isActive = (routeName: string) => {
   return route.name === routeName;
 };
+
+const changeShowInbox = () => {
+  showInbox.value = !showInbox.value;
+  console.log(showInbox.value)
+}
 
 const getColorIconNotSelectedSideMenu = computed(() => {
   return appearanceSetting.value.side_menu_color_default_not_selected_icon === 0 &&
@@ -46,7 +53,9 @@ const getBackgroundSelectedSideMenu = computed(() => {
   <div>
     <q-layout view="hHh Lpr lff" container style="height: 100vh">
       <q-header class="bg-blue-10">
-        <Navbar />
+        <Navbar 
+        @update:open-inbox="changeShowInbox"
+        />
       </q-header>
 
       <q-drawer
@@ -814,6 +823,10 @@ const getBackgroundSelectedSideMenu = computed(() => {
           </transition>
         </router-view>
       </q-page-container>
+        <!-- Notification -->
+      <Inbox
+      :open="showInbox"
+      />
     </q-layout>
   </div>
 </template>
