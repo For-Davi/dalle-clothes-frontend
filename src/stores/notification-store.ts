@@ -1,6 +1,10 @@
-import { getNotificationsService } from 'src/services/notification-service';
+import {
+  getNotificationsService,
+  updateReadService,
+  deleteReadService,
+} from 'src/services/notification-service';
 import { defineStore } from 'pinia';
-import { createError } from 'src/composables/CreateNotify';
+import { createError, createSuccess } from 'src/composables/CreateNotify';
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
@@ -31,58 +35,41 @@ export const useNotificationStore = defineStore('notification', {
         this.setLoading(false);
       }
     },
-    // async createCategoryTransaction(name: string) {
-    //   this.setLoading(true);
-    //   try {
-    //     const response = await createCategoryTransactionService(name);
-    //     if (response.status === 201) {
-    //       this.clearListCategoryTransaction();
-    //       this.setListCategoryTransaction(response.data.categories);
-    //       createSuccess(response.data.message);
-    //     }
-
-    //     return response;
-    //   } catch (error) {
-    //     createError(error);
-    //     return undefined;
-    //   } finally {
-    //     this.setLoading(false);
-    //   }
-    // },
-    // async updateCategoryTransaction(id: number, name: string) {
-    //   this.setLoading(true);
-    //   try {
-    //     const response = await updateCategoryTransactionService(id, name);
-    //     if (response.status === 200) {
-    //       this.clearListCategoryTransaction();
-    //       this.setListCategoryTransaction(response.data.categories);
-    //       createSuccess(response.data.message);
-    //     }
-
-    //     return response;
-    //   } catch (error) {
-    //     createError(error);
-    //     return undefined;
-    //   } finally {
-    //     this.setLoading(false);
-    //   }
-    // },
-    // async deleteCategoryTransaction(id: number) {
-    //   this.setLoading(true);
-    //   try {
-    //     const response = await deleteCategoryTransactionService(id);
-    //     if (response.status === 200) {
-    //       this.clearListCategoryTransaction();
-    //       this.setListCategoryTransaction(response.data.categories);
-    //       createSuccess(response.data.message);
-    //     }
-    //     return response;
-    //   } catch (error) {
-    //     createError(error);
-    //     return undefined;
-    //   } finally {
-    //     this.setLoading(false);
-    //   }
-    // },
+    async updateRead(notificationID: number | null) {
+      this.setLoading(true);
+      try {
+        const response = await updateReadService(notificationID);
+        if (response.status === 200) {
+          this.listNotification = this.listNotification.map((item) => {
+            if (item.id === notificationID) {
+              return { ...item, read: 1 };
+            }
+            return item;
+          });
+        }
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async deleteNotification(notificationID: number) {
+      this.setLoading(true);
+      try {
+        const response = await deleteReadService(notificationID);
+        if (response.status === 200) {
+          this.clearListNotification();
+          this.setListNotification(response.data.notifications);
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
   },
 });

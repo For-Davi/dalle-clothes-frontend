@@ -19,7 +19,7 @@ const emit = defineEmits<{
 }>();
 
 const { appearanceSetting } = storeToRefs(useSettingsStore());
-const { listNotification } = storeToRefs(useNotificationStore())
+const { listNotification } = storeToRefs(useNotificationStore());
 
 const showFormFedback = ref<boolean>(false);
 
@@ -27,7 +27,7 @@ const changeOpenFormFeedback = (): void => {
   showFormFedback.value = !showFormFedback.value;
 };
 const startOpenInbox = (): void => {
-  emit('update:openInbox')
+  emit('update:openInbox');
 };
 
 const getBackgroundNavbar = computed(() => {
@@ -84,7 +84,7 @@ const getColorIconNavbar = computed(() => {
             :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
           >
             <q-tooltip> Notificações </q-tooltip>
-            <q-badge color="black" rounded floating :label="listNotification.length" /> 
+            <q-badge color="black" rounded floating :label="listNotification.length" />
           </q-btn>
         </div>
         <div v-else>

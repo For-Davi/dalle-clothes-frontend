@@ -20,7 +20,7 @@ const isActive = (routeName: string) => {
 
 const changeShowInbox = () => {
   showInbox.value = !showInbox.value;
-}
+};
 
 const getColorIconNotSelectedSideMenu = computed(() => {
   return appearanceSetting.value.side_menu_color_default_not_selected_icon === 0 &&
@@ -52,9 +52,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
   <div>
     <q-layout view="hHh Lpr lff" container style="height: 100vh">
       <q-header class="bg-blue-10">
-        <Navbar 
-        @update:open-inbox="changeShowInbox"
-        />
+        <Navbar @update:open-inbox="changeShowInbox" />
       </q-header>
 
       <q-drawer
@@ -822,10 +820,8 @@ const getBackgroundSelectedSideMenu = computed(() => {
           </transition>
         </router-view>
       </q-page-container>
-        <!-- Notification -->
-      <Inbox
-      :open="showInbox"
-      />
+      <!-- Notification -->
+      <Inbox :open="showInbox" />
     </q-layout>
   </div>
 </template>

@@ -88,4 +88,4 @@ export const deleteMovementService = (
     movements: IMovement[];
     message: string;
   };
-}> => api.delete(`${baseUrl}/${id}`);
+}> => api.delete(`${baseUrl}/delete/${id}`);

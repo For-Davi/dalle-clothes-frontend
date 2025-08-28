@@ -47,7 +47,13 @@ import type {
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
-import type { SettingAppearance, SettingModalTabs, Appearance, SettingSystem, System } from './Setting';
+import type {
+  SettingAppearance,
+  SettingModalTabs,
+  Appearance,
+  SettingSystem,
+  System,
+} from './Setting';
 import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
 import type { TypesReceipt } from './Types';
@@ -60,7 +66,7 @@ import type {
   DataScheduleFinish,
   ExportSchedule,
 } from './Schedules';
-import type { Notification } from './Notification'
+import type { Notification } from './Notification';
 
 export {};
 

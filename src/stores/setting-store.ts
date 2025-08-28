@@ -5,8 +5,8 @@ import {
 } from 'src/services/appearance-settings-service';
 import {
   updateSystemSettingService,
-  getSystemSettingService
-} from 'src/services/system-settings-service'
+  getSystemSettingService,
+} from 'src/services/system-settings-service';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
 import { useStorage } from '@vueuse/core';
 
@@ -14,7 +14,7 @@ export const useSettingsStore = defineStore('settings', {
   state: () => ({
     loadingSetting: false as boolean,
     appearanceSetting: useStorage('dalle_manage_appearance_setting', {} as IAppearance),
-    systemSetting: useStorage('dalle_manage_notification_setting', {} as ISystem)
+    systemSetting: useStorage('dalle_manage_notification_setting', {} as ISystem),
   }),
   actions: {
     setAppearance(appearance: IAppearance) {
@@ -59,30 +59,30 @@ export const useSettingsStore = defineStore('settings', {
     async updateSystemSetting(data: ISettingSystem) {
       try {
         this.setLoading(true);
-        const response = await updateSystemSettingService(data)
+        const response = await updateSystemSettingService(data);
 
-        if(response.status === 200) {
+        if (response.status === 200) {
           this.setSystem(response.data.system);
-            createSuccess(response.data.message);
+          createSuccess(response.data.message);
         }
       } catch (error) {
-          createError(error);
+        createError(error);
       } finally {
         this.setLoading(false);
       }
     },
     async getSettingSystem() {
       try {
-         this.setLoading(true);
-         const response = await getSystemSettingService();
+        this.setLoading(true);
+        const response = await getSystemSettingService();
         if (response.status === 200) {
           this.setSystem(response.data.system);
         }
       } catch (error) {
-          createError(error);
+        createError(error);
       } finally {
-          this.setLoading(false);
+        this.setLoading(false);
       }
-    }
+    },
   },
 });
