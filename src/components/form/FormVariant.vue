@@ -81,7 +81,6 @@ const update = async (): Promise<void> => {
     id: variantID.value ?? 0,
     price: parseFloat(dataVariant.price),
     cost: parseFloat(dataVariant.cost),
-    stockQuantity: Number(dataVariant.stockQuantity),
     minStockAlert: Number(dataVariant.minStockAlert),
     offer: parseFloat(dataVariant.offer),
     sku: dataVariant.sku.trim().length === 0 ? null : dataVariant.sku,
@@ -176,11 +175,12 @@ watch(open, async () => {
               bg-color="white"
               label-color="black"
               outlined
-              label="Estoque inicial"
+              label="Estoque atual"
               dense
               input-class="text-black no-spinners"
               mask="###############"
               class="input-divider"
+              disable
             >
               <template v-slot:prepend>
                 <q-icon name="pin" color="black" size="20px" />
