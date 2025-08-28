@@ -234,10 +234,7 @@ watch([() => open.value, () => supplierID.value], async ([isOpen, id]) => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 form-basic">
       <q-card-section class="q-pa-none">
-        <TitlePage
-          title="Detalhes do fornecedor"
-          icon="list_alt"
-        />
+        <TitlePage title="Detalhes do fornecedor" icon="list_alt" />
       </q-card-section>
       <Loading :show="loadingCategorySupplier" />
       <q-card-section class="q-pa-sm" v-show="!loadingCategorySupplier">

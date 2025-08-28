@@ -13,11 +13,14 @@ import TableProduct from 'src/components/table/TableProduct.vue';
 import FormVariant from 'src/components/form/FormVariant.vue';
 import SupplierLinkedProductsManage from 'src/components/manage/SupplierLinkedProductsManage.vue';
 import FormMovementProduct from 'src/components/form/FormMovementProduct.vue';
+import Exports from 'src/components/export/Exports.vue';
+import { exportProductsService } from 'src/services/product-service';
 
 defineOptions({
   name: 'Stock',
 });
 
+const showExport = ref<boolean>(false);
 const filterStock = ref<string>('');
 const showFilterProduct = ref<boolean>(false);
 const showFormMovementProduct = ref<boolean>(false);
@@ -56,6 +59,9 @@ const filter = reactive<IFilterProduct>({
   stockCritical: null,
 });
 
+const changeShowExport = () => {
+  showExport.value = !showExport.value;
+};
 const changeShowSupplierLinkedProductManage = (
   show: boolean,
   variantID: number | null = null,
@@ -91,13 +97,22 @@ const changeGridManage = (): void => {
 const changeTagManage = (): void => {
   showTagManage.value = !showTagManage.value;
 };
+const startExport = async () => {
+  await exportProductsService({
+    name: filter.name,
+    sku: filter.sku,
+    category: filter.category,
+    active: filter.active,
+    stockCritical: filter.stockCritical,
+  });
+};
 const changeCategoryProductManage = (): void => {
   showCategoryProductManage.value = !showCategoryProductManage.value;
 };
 const openAction = (type: IActionStock): void => {
   switch (type) {
     case 'export':
-      console.log('Exportando...');
+      changeShowExport();
       break;
     case 'history':
       console.log('Exibindo histórico...');
@@ -238,6 +253,15 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
+    <Exports
+      :open="showExport"
+      title="Exportação de produtos"
+      message="Deseja exportar os produtos que estão sendo visualizados agora?"
+      :allowExcel="true"
+      :allowPdf="false"
+      @update:open="changeShowExport"
+      @choose-format="startExport"
+    />
     <SupplierLinkedProductsManage
       :data="showSupplierLinkedProductManage"
       @update:open="changeShowSupplierLinkedProductManage(false)"

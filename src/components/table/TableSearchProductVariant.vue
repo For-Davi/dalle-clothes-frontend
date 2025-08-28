@@ -67,7 +67,7 @@ const getColorStyle = (hexColor: string) => {
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td key="name" :props="props" class="text-left">
-          {{ props.row.name }}
+          {{ props.row.product.name }}
         </q-td>
         <q-td key="sku" :props="props" class="text-left">
           {{ props.row.sku }}

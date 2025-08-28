@@ -3,11 +3,15 @@ import { computed } from 'vue';
 import TitlePage from '../shared/TitlePage.vue';
 
 defineOptions({
-  name: 'ExportMovement',
+  name: 'Exports',
 });
 
 const props = defineProps<{
   open: boolean;
+  title: string;
+  message: string;
+  allowExcel: boolean;
+  allowPdf: boolean;
 }>();
 const emit = defineEmits<{
   'update:open': [void];
@@ -28,13 +32,11 @@ const open = computed({
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 sub-page column justify-between" style="min-height: min-content">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Exportação de movimentações" icon="file_copy" />
+        <TitlePage :title="props.title" icon="file_copy" />
       </q-card-section>
       <q-card-section>
         <div>
-          <span class="text-red q-px-sm text-body1 text-bold"
-            >Deseja exportar as movimentações que estão sendo visualizadas em que formato?</span
-          >
+          <span class="text-red q-px-sm text-body1 text-bold">{{ props.message }}</span>
         </div>
       </q-card-section>
       <q-card-actions align="right">
@@ -49,6 +51,7 @@ const open = computed({
             flat
           />
           <q-btn
+            v-show="props.allowExcel"
             color="green-7"
             label="Excel"
             @click="chooseFormat('excel')"
@@ -57,6 +60,7 @@ const open = computed({
             no-caps
           />
           <q-btn
+            v-show="props.allowPdf"
             color="red-8"
             label="PDF"
             @click="chooseFormat('pdf')"
