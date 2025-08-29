@@ -22,7 +22,7 @@ import type { FilterClient, Client } from './Client';
 import type { Color } from './Color';
 import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
-import type { ActionStock, ActionsMovement } from './Actions';
+import type { ActionStock, ActionsMovement, ActionsSupplier } from './Actions';
 import type { Tag } from './Tag';
 import type {
   VModelProductBasic,
@@ -108,6 +108,7 @@ declare global {
 
   type IActionStock = ActionStock;
   type IActionMovement = ActionsMovement;
+  type IActionsSupplier = ActionsSupplier;
 
   type ITag = Tag;
 

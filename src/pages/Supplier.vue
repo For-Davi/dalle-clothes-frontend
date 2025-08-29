@@ -6,6 +6,7 @@ import FormSupplier from 'src/components/form/FormSupplier.vue';
 import TableSupplier from 'src/components/table/TableSupplier.vue';
 import { useSupplierStore } from 'src/stores/supplier-store';
 import FilterSupplier from 'src/components/filter/FilterSupplier.vue';
+import { actionsSupplier } from 'src/utils/actions';
 
 defineOptions({
   name: 'Supplier',
@@ -13,6 +14,7 @@ defineOptions({
 
 const filterSupplier = ref<string>('');
 const showCategorySupplierManage = ref<boolean>(false);
+const showOrderSupplierManage = ref<boolean>(false);
 const showFilterSupplier = ref<boolean>(false);
 const showFormSupplier = reactive({
   open: false as boolean,
@@ -63,6 +65,19 @@ const actionFilter = async (data: 'close' | IFilterSupplier): Promise<void> => {
 const makeEdit = (id: number): void => {
   changeShowFormSupplier(true, id);
 };
+const changeShowOrderSupplierManage = () => {
+  showOrderSupplierManage.value = !showOrderSupplierManage.value;
+};
+const openAction = (type: IActionsSupplier): void => {
+  switch (type) {
+    case 'order':
+      changeShowOrderSupplierManage();
+      break;
+    case 'category':
+      changeShowCategorySupplierManage();
+      break;
+  }
+};
 
 const hasFilter = computed(() => {
   return (
@@ -84,23 +99,6 @@ const hasFilter = computed(() => {
       <TitlePage class="col-7" title="Fornecedores" icon="list_alt" />
       <div>
         <q-btn
-          @click="changeShowCategorySupplierManage"
-          color="white"
-          text-color="black"
-          label="Categorias"
-          icon-right="category"
-          no-caps
-          class="q-mr-sm"
-        />
-        <q-btn
-          color="white"
-          text-color="black"
-          label="Compras"
-          icon-right="paid"
-          no-caps
-          class="q-mr-sm"
-        />
-        <q-btn
           @click="changeShowFormSupplier(true)"
           color="white"
           text-color="black"
@@ -109,6 +107,24 @@ const hasFilter = computed(() => {
           no-caps
           class="q-mr-sm"
         />
+        <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
+          <q-list dense>
+            <q-item
+              clickable
+              v-ripple
+              v-for="(item, index) in actionsSupplier"
+              :key="index"
+              @click="openAction(item.type)"
+            >
+              <q-item-section avatar>
+                <q-avatar>
+                  <q-icon :name="item.icon" />
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>{{ item.label }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </div>
     </section>
     <section class="q-mt-sm">
@@ -142,6 +158,10 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
+    <OrderSupplierManage
+      :open="showOrderSupplierManage"
+      @update:open="changeShowOrderSupplierManage"
+    />
     <CategorySupplierManage
       :open="showCategorySupplierManage"
       @update:open="changeShowCategorySupplierManage"

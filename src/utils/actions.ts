@@ -53,3 +53,16 @@ export const actionsMovement: { label: string; icon: string; type: IActionMoveme
     type: 'category',
   },
 ];
+
+export const actionsSupplier: { label: string; icon: string; type: IActionsSupplier }[] = [
+  {
+    label: 'Categorias',
+    icon: 'category',
+    type: 'category',
+  },
+  {
+    label: 'Pedidos',
+    icon: 'paid',
+    type: 'order',
+  },
+];

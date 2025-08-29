@@ -8,3 +8,5 @@ export type ActionStock =
   | 'category';
 
 export type ActionsMovement = 'history' | 'category' | 'export';
+
+export type ActionsSupplier = 'order' | 'category' ;
