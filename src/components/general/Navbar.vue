@@ -84,7 +84,7 @@ const getColorIconNavbar = computed(() => {
             :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
           >
             <q-tooltip> Notificações </q-tooltip>
-            <q-badge color="black" rounded floating :label="listNotification.length" />
+            <q-badge color="grey-9" rounded floating :label="listNotification.length" />
           </q-btn>
         </div>
         <div v-else>

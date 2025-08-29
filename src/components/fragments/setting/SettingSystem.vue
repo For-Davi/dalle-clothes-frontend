@@ -62,7 +62,8 @@ watch(
             <div class="column">
               <span class="text-bold text-body2"> Notificações - Estoque crítico </span>
               <span>
-                Notificações serão enviadas se o seu produto estiver abaixo do alerta mínimo.
+                Notificações serão enviadas se o seu produto estiver abaixo ou igual do alerta
+                mínimo.
               </span>
             </div>
           </q-toggle>

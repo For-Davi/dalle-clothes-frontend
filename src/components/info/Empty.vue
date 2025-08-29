@@ -7,7 +7,7 @@ const props = withDefaults(
   defineProps<{
     message: string;
     color: string;
-    typeImg?: 'box' | 'file';
+    typeImg?: 'box' | 'file' | 'inbox';
   }>(),
   {
     typeImg: 'box',
@@ -20,6 +20,8 @@ const getUrlImg = (): string => {
       return '/icons/empty.png';
     case 'file':
       return '/icons/file-empty.png';
+    case 'inbox':
+      return '/icons/mail-empty.png';
     default:
       return '';
   }

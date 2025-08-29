@@ -90,7 +90,15 @@ watch(
 </script>
 
 <template>
-  <q-drawer v-model="open" side="right" class="bg-grey-2" overlay :width="500">
+  <q-drawer
+    v-model="open"
+    show-if-above
+    side="right"
+    class="bg-grey-2"
+    overlay
+    :width="300"
+    bordered
+  >
     <div class="q-ma-sm">
       <TitlePage title="Notificações" icon="notifications" />
     </div>
@@ -135,14 +143,25 @@ watch(
         </q-list>
         <Loading :show="loadingNotification" />
       </div>
-
       <div class="q-mt-lg">
         <Empty
           v-show="listNotification.length <= 0 && !loadingNotification"
           message="Você não possui notificações"
           color="bg-red-3"
+          type-img="inbox"
         />
       </div>
+    </div>
+    <div class="q-mini-drawer-hide absolute" style="top: 15px; left: -12px">
+      <q-btn
+        dense
+        round
+        unelevated
+        color="grey-9"
+        icon="chevron_right"
+        size="sm"
+        @click="open = false"
+      />
     </div>
   </q-drawer>
   <!-- Modals -->

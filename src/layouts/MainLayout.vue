@@ -821,7 +821,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
         </router-view>
       </q-page-container>
       <!-- Notification -->
-      <Inbox :open="showInbox" />
+      <Inbox :open="showInbox" @update:open="changeShowInbox" />
     </q-layout>
   </div>
 </template>
