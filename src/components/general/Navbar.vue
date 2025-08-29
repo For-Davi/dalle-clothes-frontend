@@ -42,6 +42,9 @@ const getColorIconNavbar = computed(() => {
     ? appearanceSetting.value.navbar_icon_color_code
     : undefined;
 });
+const countNotificationsNoRead = computed((): number => {
+  return listNotification.value.filter((item) => item.read === 0).length;
+});
 </script>
 <template>
   <nav :style="getBackgroundNavbar ? { backgroundColor: getBackgroundNavbar } : undefined">
@@ -84,7 +87,7 @@ const getColorIconNavbar = computed(() => {
             :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
           >
             <q-tooltip> Notificações </q-tooltip>
-            <q-badge color="grey-9" rounded floating :label="listNotification.length" />
+            <q-badge color="grey-9" rounded floating :label="countNotificationsNoRead" />
           </q-btn>
         </div>
         <div v-else>

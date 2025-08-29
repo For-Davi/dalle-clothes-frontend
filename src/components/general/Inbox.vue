@@ -7,7 +7,6 @@ import { useNotificationStore } from 'src/stores/notification-store';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
 import NotificationDetails from '../details/NotificationDetails.vue';
-import ConfirmAction from '../confirm/ConfirmAction.vue';
 
 defineOptions({
   name: 'Inbox',
@@ -16,7 +15,6 @@ defineOptions({
 const props = defineProps<{ open: boolean }>();
 const emit = defineEmits<{ 'update:open': [void] }>();
 
-const showConfirmAction = ref<boolean>(false);
 const notificationMonitoring = ref<number | null>(null);
 const route = useRoute();
 const { loadingNotification, listNotification } = storeToRefs(useNotificationStore());
@@ -32,16 +30,8 @@ const showNotificationDetails = reactive<{
 const clear = () => {
   notificationMonitoring.value = null;
 };
-const closeConfirmAction = () => {
-  showConfirmAction.value = false;
-  clear();
-};
-const openConfirmAction = (id: number): void => {
+const excludeNotification = async (id: number) => {
   notificationMonitoring.value = id;
-  showConfirmAction.value = true;
-};
-const closeConfirmActionOk = async () => {
-  showConfirmAction.value = false;
   await useNotificationStore().deleteNotification(notificationMonitoring.value ?? 0);
   clear();
 };
@@ -109,8 +99,8 @@ watch(
           <q-item
             v-for="notification in listNotification"
             :key="notification.id"
-            class="cursor-pointer hover-notification"
-            :class="{ 'bg-grey-4': notification.read === 1 }"
+            class="cursor-pointer hover"
+            :class="{ 'text-bold bg-grey-4': notification.read === 0 }"
             dense
             @click="changeShowNotificationDetails(true, notification)"
           >
@@ -119,9 +109,7 @@ watch(
               v-ripple
               @click="changeShowNotificationDetails(true, notification)"
             >
-              <q-item-label :class="{ 'text-bold': notification.read !== 1 }">{{
-                notification.title
-              }}</q-item-label>
+              <q-item-label>{{ notification.title }}</q-item-label>
               <q-item-label caption>{{ timeAgo(notification.created_at) }}</q-item-label>
             </q-item-section>
 
@@ -129,11 +117,12 @@ watch(
               <q-item-label>
                 <q-btn
                   :loading="loadingNotification"
-                  @click="openConfirmAction(notification.id)"
+                  @click="excludeNotification(notification.id)"
                   flat
                   round
                   icon="delete"
                   color="red"
+                  size="sm"
                 />
               </q-item-label>
             </q-item-section>
@@ -168,13 +157,5 @@ watch(
   <NotificationDetails
     :data="showNotificationDetails"
     @update:open="changeShowNotificationDetails(false)"
-  />
-  <ConfirmAction
-    :open="showConfirmAction"
-    label-action="Continuar"
-    title="Confirmação de exclusão de notificação"
-    message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a notificação permanentemente."
-    @update:open="closeConfirmAction"
-    @update:ok="closeConfirmActionOk"
   />
 </template>

@@ -31,14 +31,6 @@
     opacity: 0.5;
   }
 }
-.hover-notification {
-  transition: all 0.3s;
-
-  &:hover {
-    opacity: 0.7;
-    background-color: #4b4b4b;
-  }
-}
 .capitalize {
   text-transform: lowercase;
 
