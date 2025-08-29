@@ -5,12 +5,13 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<{
-    message: string;
+    message?: string;
     color: string;
     typeImg?: 'box' | 'file' | 'inbox';
   }>(),
   {
     typeImg: 'box',
+    message: '',
   },
 );
 

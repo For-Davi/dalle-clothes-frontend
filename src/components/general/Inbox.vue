@@ -14,6 +14,8 @@ defineOptions({
 
 const props = defineProps<{ open: boolean }>();
 const emit = defineEmits<{ 'update:open': [void] }>();
+const currentPage = ref<number>(1);
+const maxPerPage = ref<number>(8);
 
 const notificationMonitoring = ref<number | null>(null);
 const route = useRoute();
@@ -64,6 +66,14 @@ const changeShowNotificationDetails = (
     notification: notification,
   });
 };
+const paginatedNotifications = computed((): INotification[] => {
+  const start = (currentPage.value - 1) * maxPerPage.value;
+  const end = start + maxPerPage.value;
+  return listNotification.value.slice(start, end);
+});
+const totalPages = computed(() => {
+  return Math.ceil(listNotification.value.length / maxPerPage.value);
+});
 
 const open = computed({
   get: () => props.open,
@@ -92,54 +102,56 @@ watch(
     <div class="q-ma-sm">
       <TitlePage title="Notificações" icon="notifications" />
     </div>
-
-    <div v-show="!loadingNotification">
-      <div v-show="listNotification.length > 0">
-        <q-list>
-          <q-item
-            v-for="notification in listNotification"
-            :key="notification.id"
-            class="cursor-pointer hover"
-            :class="{ 'text-bold bg-grey-4': notification.read === 0 }"
-            dense
+    <div v-show="listNotification.length > 0 && !loadingNotification">
+      <q-list>
+        <q-item
+          v-for="notification in paginatedNotifications"
+          :key="notification.id"
+          class="cursor-pointer hover"
+          :class="{ 'text-bold bg-grey-4': notification.read === 0 }"
+          dense
+          @click="changeShowNotificationDetails(true, notification)"
+        >
+          <q-item-section
+            clickable
+            v-ripple
             @click="changeShowNotificationDetails(true, notification)"
           >
-            <q-item-section
-              clickable
-              v-ripple
-              @click="changeShowNotificationDetails(true, notification)"
-            >
-              <q-item-label>{{ notification.title }}</q-item-label>
-              <q-item-label caption>{{ timeAgo(notification.created_at) }}</q-item-label>
-            </q-item-section>
+            <q-item-label>{{ notification.title }}</q-item-label>
+            <q-item-label caption>{{ timeAgo(notification.created_at) }}</q-item-label>
+          </q-item-section>
 
-            <q-item-section side top>
-              <q-item-label>
-                <q-btn
-                  :loading="loadingNotification"
-                  @click="excludeNotification(notification.id)"
-                  flat
-                  round
-                  icon="delete"
-                  color="red"
-                  size="sm"
-                />
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-
-          <q-separator inset />
-        </q-list>
-        <Loading :show="loadingNotification" />
-      </div>
-      <div class="q-mt-lg">
-        <Empty
-          v-show="listNotification.length <= 0 && !loadingNotification"
-          message="Você não possui notificações"
-          color="bg-red-3"
-          type-img="inbox"
+          <q-item-section side top>
+            <q-item-label>
+              <q-btn
+                :loading="loadingNotification"
+                @click="excludeNotification(notification.id)"
+                flat
+                round
+                icon="delete"
+                color="red"
+                size="sm"
+              />
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-separator inset />
+      </q-list>
+      <div class="flex justify-center items-center q-mt-sm">
+        <q-pagination
+          v-show="listNotification.length > maxPerPage"
+          v-model="currentPage"
+          :max="totalPages"
+          :max-pages="maxPerPage"
+          direction-links
+          color="primary"
+          round
         />
       </div>
+    </div>
+    <Loading v-show="loadingNotification" :show="loadingNotification" />
+    <div class="q-mt-lg" v-show="listNotification.length <= 0 && !loadingNotification">
+      <Empty color="bg-red-3" type-img="inbox" />
     </div>
     <div class="q-mini-drawer-hide absolute" style="top: 15px; left: -12px">
       <q-btn
