@@ -93,7 +93,6 @@ export interface DataUpdateVariant {
   price: number;
   offer: number;
   cost: number;
-  stockQuantity: number;
   minStockAlert: number;
   sku: string | null;
   code: string | null;
