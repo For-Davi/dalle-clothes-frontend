@@ -38,7 +38,7 @@ const pushMediaInList = () => {
       <div v-if="listMedia.length < 3">
         <MediaUpload
           ref="mediaUploadRef"
-          label="Selecione as imagens (10MB max)"
+          label="Selecione as imagens (5MB max)"
           accept=".jpg, image/*"
           @file:add-image="addMediaInList"
         />

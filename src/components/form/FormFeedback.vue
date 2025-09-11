@@ -107,7 +107,7 @@ watch(open, () => {
           <MediaUpload
             ref="mediaUploadRef"
             v-model="dataFeedback.images"
-            label="Adicione as imagens (10MB max)"
+            label="Adicione as imagens (5MB max)"
             :multiple="false"
             accept=".jpg, image/*"
             @file:add-image="addMediaInList"
