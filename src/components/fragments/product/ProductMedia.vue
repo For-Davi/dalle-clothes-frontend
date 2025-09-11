@@ -14,7 +14,7 @@ const props = defineProps<{
 
 const listMedia = defineModel<IMediaItem[]>('listMedia', { required: true });
 const listMediaDelete = defineModel<{ id: number }[]>('listMediaDelete', { required: true });
-const list = ref<IMediaItem[]>([]);
+const list = ref<Array<IMediaItem>>([]);
 const mediaUploadRef = ref<InstanceType<typeof MediaUpload>>();
 
 const clearUploader = () => {
@@ -38,7 +38,7 @@ const pushMediaInList = () => {
       <div v-if="listMedia.length < 3">
         <MediaUpload
           ref="mediaUploadRef"
-          label="Selecione as imagens (3MB max)"
+          label="Selecione as imagens (10MB max)"
           accept=".jpg, image/*"
           @file:add-image="addMediaInList"
         />

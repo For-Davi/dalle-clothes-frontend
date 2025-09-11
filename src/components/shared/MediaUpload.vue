@@ -3,6 +3,8 @@
 import { QUploader } from 'quasar';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { ref } from 'vue';
+import imageCompression from 'browser-image-compression';
+
 defineOptions({
   name: 'MediaUpload',
 });
@@ -18,7 +20,7 @@ const props = withDefaults(
   {
     multiple: true,
     maxFiles: 3,
-    maxFileSize: 3 * 1024 * 1024, // 3 MB
+    maxFileSize: 10 * 1024 * 1024, // 10 MB
   },
 );
 const emit = defineEmits<{
@@ -31,8 +33,27 @@ const uploaderRef = ref<InstanceType<typeof QUploader>>();
 const clearFiles = () => {
   uploaderRef.value?.removeQueuedFiles();
 };
-const onAddedFiles = (files: readonly File[]): void => {
-  files.forEach((file) => emit('file:addImage', file));
+const onAddedFiles = async (files: readonly File[]): Promise<void> => {
+  for (const file of files) {
+    try {
+      let processedFile: File = file;
+      if (file.size / 1024 / 1024 > 3) {
+        const compressedBlob = await imageCompression(file, {
+          maxSizeMB: 3,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        });
+        processedFile = new File([compressedBlob], file.name, {
+          type: file.type,
+          lastModified: file.lastModified,
+        });
+      }
+      emit('file:addImage', processedFile);
+    } catch (error) {
+      createErrorData('Erro ao compressar a imagem.');
+      console.log('Erro ao fazer a compressão', error)
+    }
+  }
 };
 const onRejected = (): void => {
   createErrorData('Arquivo selecionado não passou nas regras');
