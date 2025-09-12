@@ -9,7 +9,6 @@ import { useFeedbackStore } from 'src/stores/feedback-store';
 import Loading from '../shared/Loading.vue';
 import imageCompression from 'browser-image-compression';
 
-
 defineOptions({
   name: 'FormFeedback',
 });
@@ -107,7 +106,7 @@ watch(open, () => {
           <MediaUpload
             ref="mediaUploadRef"
             v-model="dataFeedback.images"
-            label="Adicione as imagens (5MB max)"
+            label="Adicione a imagem (10MB max)"
             :multiple="false"
             accept=".jpg, image/*"
             @file:add-image="addMediaInList"
