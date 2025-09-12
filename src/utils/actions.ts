@@ -36,6 +36,19 @@ export const actionsStock: { label: string; icon: string; type: IActionStock }[]
   },
 ];
 
+export const actionsSupplier: { label: string; icon: string; type: IActionSupplier }[] = [
+  {
+    label: 'Pedidos',
+    icon: 'paid',
+    type: 'order',
+  },
+  {
+    label: 'Categorias',
+    icon: 'category',
+    type: 'category',
+  },
+];
+
 export const actionsMovement: { label: string; icon: string; type: IActionMovement }[] = [
   {
     label: 'Exportar',

@@ -34,8 +34,8 @@ const dataMovement = reactive({
   description: '' as string,
 });
 const selectedReason = ref<IQuasarSelect<string>>({
-  label: 'Compra',
-  value: 'buy',
+  label: 'Devolução',
+  value: 'return',
 });
 const selectedSupplier = ref<IQuasarSelect<number | null>>({
   label: 'Não informado',
@@ -57,8 +57,8 @@ const clear = (): void => {
   });
 
   selectedReason.value = {
-    label: 'Compra',
-    value: 'buy',
+    label: 'Devolução',
+    value: 'return',
   };
   selectedSupplier.value = {
     label: 'Não informado',

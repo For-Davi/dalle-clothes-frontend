@@ -108,7 +108,11 @@ declare global {
 
   type IActionStock = ActionStock;
   type IActionMovement = ActionsMovement;
+<<<<<<< Updated upstream
   type IActionsSupplier = ActionsSupplier;
+=======
+  type IActionSupplier = ActionsSupplier;
+>>>>>>> Stashed changes
 
   type ITag = Tag;
 

@@ -6,7 +6,11 @@ import FormSupplier from 'src/components/form/FormSupplier.vue';
 import TableSupplier from 'src/components/table/TableSupplier.vue';
 import { useSupplierStore } from 'src/stores/supplier-store';
 import FilterSupplier from 'src/components/filter/FilterSupplier.vue';
+<<<<<<< Updated upstream
 import { actionsSupplier } from 'src/utils/actions';
+=======
+import { actionsSupplier } from '@/utils/actions';
+>>>>>>> Stashed changes
 
 defineOptions({
   name: 'Supplier',
@@ -34,6 +38,9 @@ const filter = reactive<IFilterSupplier>({
 
 const changeShowCategorySupplierManage = (): void => {
   showCategorySupplierManage.value = !showCategorySupplierManage.value;
+};
+const changeShowOrderSupplierManage = (): void => {
+  showOrderSupplierManage.value = !showOrderSupplierManage.value;
 };
 const changeShowFormSupplier = (open: boolean, supplierId: number | null = null): void => {
   Object.assign(showFormSupplier, {
@@ -65,10 +72,14 @@ const actionFilter = async (data: 'close' | IFilterSupplier): Promise<void> => {
 const makeEdit = (id: number): void => {
   changeShowFormSupplier(true, id);
 };
+<<<<<<< Updated upstream
 const changeShowOrderSupplierManage = () => {
   showOrderSupplierManage.value = !showOrderSupplierManage.value;
 };
 const openAction = (type: IActionsSupplier): void => {
+=======
+const openAction = (type: IActionSupplier): void => {
+>>>>>>> Stashed changes
   switch (type) {
     case 'order':
       changeShowOrderSupplierManage();
