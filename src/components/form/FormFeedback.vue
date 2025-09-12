@@ -7,6 +7,7 @@ import { createErrorData } from 'src/composables/CreateNotify';
 import { storeToRefs } from 'pinia';
 import { useFeedbackStore } from 'src/stores/feedback-store';
 import Loading from '../shared/Loading.vue';
+import imageCompression from 'browser-image-compression';
 
 defineOptions({
   name: 'FormFeedback',
@@ -27,11 +28,21 @@ const props = defineProps<{
 
 const { loadingFeedback } = storeToRefs(useFeedbackStore());
 
-const addMediaInList = (file: File) => {
+const addMediaInList = async (file: File) => {
   if (dataFeedback.images.length >= 1) return;
-  dataFeedback.images = [file];
+  try {
+    const options = {
+      maxSizeMB: 3,              
+      maxWidthOrHeight: 1920,    
+      useWebWorker: true,   
+    };
+    const compressedFile = await imageCompression(file, options);
+    dataFeedback.images = [compressedFile];
+  } catch (error) {
+    createErrorData('Erro ao processar a imagem.');
+    console.log('Erro ao fazer a compressão', error)
+  }
 };
-
 const clear = (): void => {
   dataFeedback.text = '';
   dataFeedback.images = [];
@@ -95,7 +106,7 @@ watch(open, () => {
           <MediaUpload
             ref="mediaUploadRef"
             v-model="dataFeedback.images"
-            label="Adicione as imagens (3MB max)"
+            label="Adicione a imagem (10MB max)"
             :multiple="false"
             accept=".jpg, image/*"
             @file:add-image="addMediaInList"

@@ -19,6 +19,7 @@
     "@quasar/extras": "^1.16.4",
     "@vueuse/core": "^13.2.0",
     "axios": "^1.2.1",
+    "browser-image-compression": "^2.0.2",
     "dotenv": "^16.5.0",
     "pinia": "^3.0.1",
     "quasar": "^2.16.0",
