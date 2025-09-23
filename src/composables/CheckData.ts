@@ -645,3 +645,44 @@ export const checkExportData = (data: {
 
   return { status: true };
 };
+
+export const checkEnterpriseData = (data: {
+  name: string;
+  email: string;
+  phone: string;
+  cpf: string;
+  cnpj: string;
+  cep: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  address: string;
+  numberAddress: string;
+  complement: string;
+}): { status: boolean; message?: string } => {
+  if (data.name.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome da empresa' };
+  }
+  if (data.email !== '') {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email.trim())) {
+      return { status: false, message: 'Informe um e-mail válido' };
+    }
+  }
+  if (data.cpf !== '') {
+    if (data.cpf.trim().length > 11 || data.cpf.trim().length < 11) {
+      return { status: false, message: 'Informe um CPF válido' };
+    }
+  }
+  if (data.cnpj !== '') {
+    if (data.cnpj.trim().length > 14 || data.cnpj.trim().length < 14) {
+      return { status: false, message: 'Informe um CNPJ válido' };
+    }
+  }
+  if (data.numberAddress !== '') {
+    if (data.numberAddress.trim().length > 15) {
+      return { status: false, message: 'Informe um número de endereço válido' };
+    }
+  }
+
+  return { status: true };
+};

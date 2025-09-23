@@ -67,6 +67,7 @@ import type {
   ExportSchedule,
 } from './Schedules';
 import type { Notification } from './Notification';
+import type { Enterprise, DataEnterprise } from './Enterprise';
 
 export {};
 
@@ -176,4 +177,7 @@ declare global {
   type ICatalogSupplier = CatalogSupplier;
 
   type INotification = Notification;
+
+  type IEnterprise = Enterprise;
+  type IDataEnterprise = DataEnterprise;
 }
