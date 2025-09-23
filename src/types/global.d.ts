@@ -155,6 +155,5 @@ declare global {
   type ICatalogSupplier = CatalogSupplier;
   type ISupplierOrder = SupplierOrder;
   type IDataSupplierOrder = DataSupplierOrder;
-
   type INotification = Notification;
 }

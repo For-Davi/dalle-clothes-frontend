@@ -5,6 +5,7 @@ import Loading from '../shared/Loading.vue';
 import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
 import { useSupplierOrderStore } from 'src/stores/order-supplier-store';
+import FormSupplierOrder from '../form/FormSupplierOrder.vue';
 
 defineOptions({
   name: 'SupplierOrderManage',
@@ -63,7 +64,10 @@ watch(open, () => {
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingSupplierOrder">
-          <!-- <TableTag v-show="listTag.length > 0" @show:show-form-tag="startEdit" /> -->
+          <TableSupplierOrder
+            v-show="listSupplierOrder.length > 0"
+            @show:show-form-supplier-order="startEdit"
+          />
           <Empty
             v-show="listSupplierOrder.length <= 0"
             message="Sem pedidos cadastrados"
@@ -96,7 +100,7 @@ watch(open, () => {
       </q-card-actions>
 
       <!-- Modals -->
-      <FormOrderSupplier
+      <FormSupplierOrder
         :data="showFormSupplierOrder"
         @update:open="changeShowFormSupplierOrder(false)"
       />

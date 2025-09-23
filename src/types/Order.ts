@@ -1,6 +1,5 @@
 export interface SupplierOrder {
   id: number;
-  supplier_id: number | null;
   order_number: string;
   status: string;
   date_delivery_expected: string | null;

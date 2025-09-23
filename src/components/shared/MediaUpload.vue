@@ -51,7 +51,7 @@ const onAddedFiles = async (files: readonly File[]): Promise<void> => {
       emit('file:addImage', processedFile);
     } catch (error) {
       createErrorData('Erro ao compressar a imagem.');
-      console.log('Erro ao fazer a compressão', error)
+      console.error('Erro ao fazer a compressão', error);
     }
   }
 };

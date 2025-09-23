@@ -683,3 +683,36 @@ export const columnsSupplierLinkedProducts: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsSupplierOrder: IQuasarTable[] = [
+  {
+    name: 'created_at',
+    label: 'Data de criação',
+    field: 'created_at',
+    align: 'left',
+  },
+  {
+    name: 'order',
+    label: 'Nº Identificador',
+    field: 'order',
+    align: 'left',
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'date_delivery_expected',
+    label: 'Previsão de entrega',
+    field: 'date_delivery_expected',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: 'Ações',
+    field: 'actions',
+    align: 'right',
+  },
+];

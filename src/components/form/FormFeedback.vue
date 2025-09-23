@@ -32,15 +32,15 @@ const addMediaInList = async (file: File) => {
   if (dataFeedback.images.length >= 1) return;
   try {
     const options = {
-      maxSizeMB: 3,              
-      maxWidthOrHeight: 1920,    
-      useWebWorker: true,   
+      maxSizeMB: 3,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
     };
     const compressedFile = await imageCompression(file, options);
     dataFeedback.images = [compressedFile];
   } catch (error) {
     createErrorData('Erro ao processar a imagem.');
-    console.log('Erro ao fazer a compressão', error)
+    console.error('Erro ao fazer a compressão', error);
   }
 };
 const clear = (): void => {

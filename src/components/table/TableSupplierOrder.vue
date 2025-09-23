@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import Description from 'src/components/general/Description.vue';
 import { ref, reactive, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useReceiptstore } from 'src/stores/receipt-store';
-import { columnsReceipts } from 'src/utils/columns';
 import ConfirmAction from 'src/components/confirm/ConfirmAction.vue';
+import { useSupplierOrderStore } from 'src/stores/order-supplier-store';
+import { columnsSupplierOrder } from 'src/utils/columns';
+import { getLabelStatusSupplierOrder } from 'src/composables/Label';
+import { formatToBrazilianDate } from 'src/composables/FormatData';
+import SupplierOrderDetails from '../fragments/supplier/SupplierOrderDetails.vue';
 
 defineOptions({
-  name: 'TableReceipt',
+  name: 'TableSupplierOrder',
 });
 
 const props = withDefaults(
@@ -20,61 +22,61 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'show:showFormReceipt': [number];
+  'show:showFormSupplierOrder': [number];
 }>();
 
-const { loadingReceipt, listReceipt } = storeToRefs(useReceiptstore());
+const { loadingSupplierOrder, listSupplierOrder } = storeToRefs(useSupplierOrderStore());
 
 const showConfirmAction = ref<boolean>(false);
-const receiptMonitoring = ref<number | null>(null);
-const showDescription = reactive<{
+const orderMonitoring = ref<number | null>(null);
+const showDetails = reactive<{
   open: boolean;
-  description: string | null;
+  orderID: number | null;
 }>({
   open: false,
-  description: null,
+  orderID: null,
 });
 
-const changeShowDescription = (show: boolean, receipt: IReceipt | null = null): void => {
-  Object.assign(showDescription, {
+const changeShowDetails = (show: boolean, orderID: number | null = null): void => {
+  Object.assign(showDetails, {
     open: show,
-    description: receipt?.description || null,
+    orderID: orderID,
   });
 };
 const openConfirmAction = (id: number): void => {
-  receiptMonitoring.value = id;
+  orderMonitoring.value = id;
   showConfirmAction.value = true;
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  await useReceiptstore().deleteReceipt(receiptMonitoring.value ?? 0);
+  await useSupplierOrderStore().deleteSupplierOrder(orderMonitoring.value ?? 0);
 };
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;
 };
 const startEdit = (id: number): void => {
-  emit('show:showFormReceipt', id);
+  emit('show:showFormSupplierOrder', id);
 };
 const startExclude = (id: number): void => {
   openConfirmAction(id);
 };
-const fetchReceipts = async (): Promise<void> => {
-  await useReceiptstore().getReceipt();
+const fetchOrders = async (): Promise<void> => {
+  await useSupplierOrderStore().getSupplierOrders();
 };
 
 onMounted(async () => {
-  await fetchReceipts();
+  await fetchOrders();
 });
 </script>
 
 <template>
   <q-table
-    :rows="loadingReceipt ? [] : listReceipt"
-    :columns="columnsReceipts"
+    :rows="loadingSupplierOrder ? [] : listSupplierOrder"
+    :columns="columnsSupplierOrder"
     :filter="props.filter"
-    title="Lista de recebimentos"
+    title="Lista de pedidos"
     row-key="index"
-    no-data-label="Nenhum recebimento para mostrar"
+    no-data-label="Nenhum pedido para mostrar"
     virtual-scroll
     :rows-per-page-options="[10]"
   >
@@ -88,24 +90,23 @@ onMounted(async () => {
 
     <template v-slot:body="props">
       <q-tr :props="props">
-        <q-td key="name">{{ props.row.identifier }}</q-td>
-        <q-td key="type">{{ props.row.type?.name || 'Nenhum selecionado' }}</q-td>
-        <q-td key="active">
-          <q-icon
-            :name="props.row.active === 1 ? 'check_circle' : 'close'"
-            :color="props.row.active === 1 ? 'green' : 'red'"
-            size="17px"
-          />
-        </q-td>
+        <q-td key="created_at">{{ props.row.created_at }}</q-td>
+        <q-td key="order">{{ props.row.order ?? '' }}</q-td>
+        <q-td key="status">{{ getLabelStatusSupplierOrder(props.row.status) }}</q-td>
+        <q-td key="date_delivery_expected">{{
+          props.row.date_delivery_expected
+            ? formatToBrazilianDate(props.row.date_delivery_expected)
+            : ''
+        }}</q-td>
         <q-td key="actions" :props="props">
           <q-btn
-            v-show="props.row.description"
-            @click="changeShowDescription(true, props.row)"
+            v-show="props.row.id"
+            @click="changeShowDetails(true, props.row.id)"
             size="sm"
             flat
             round
             color="blue"
-            icon="description"
+            icon="visibility"
           />
           <q-btn @click="startEdit(props.row.id)" size="sm" flat round color="black" icon="edit" />
           <q-btn
@@ -122,11 +123,11 @@ onMounted(async () => {
   </q-table>
 
   <!-- Modals -->
-  <Description :data="showDescription" @update:open="changeShowDescription(false)" />
+  <SupplierOrderDetails :data="showDetails" @update:open="changeShowDetails(false)" />
   <ConfirmAction
     :open="showConfirmAction"
     label-action="Continuar"
-    title="Confirmação de exclusão de recebimento"
+    title="Confirmação de exclusão de pedido"
     message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o recebimento permanentemente."
     @update:open="closeConfirmAction"
     @update:ok="closeConfirmActionOk"
