@@ -47,7 +47,13 @@ import type {
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
-import type { SettingAppearance, SettingModalTabs, Appearance } from './Setting';
+import type {
+  SettingAppearance,
+  SettingModalTabs,
+  Appearance,
+  SettingSystem,
+  System,
+} from './Setting';
 import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
 import type { TypesReceipt } from './Types';
@@ -60,6 +66,7 @@ import type {
   DataScheduleFinish,
   ExportSchedule,
 } from './Schedules';
+import type { Notification } from './Notification';
 import type { DataSupplierOrder, SupplierOrder } from './Order';
 
 export {};
@@ -128,6 +135,8 @@ declare global {
   type ISettingModalTabs = SettingModalTabs;
   type ISettingAppearance = SettingAppearance;
   type IAppearance = Appearance;
+  type ISettingSystem = SettingSystem;
+  type ISystem = System;
   type IProfileData = ProfileData;
   type IProfilePassword = ProfilePassword;
   type ITypesReceipt = TypesReceipt;
@@ -146,4 +155,6 @@ declare global {
   type ICatalogSupplier = CatalogSupplier;
   type ISupplierOrder = SupplierOrder;
   type IDataSupplierOrder = DataSupplierOrder;
+
+  type INotification = Notification;
 }

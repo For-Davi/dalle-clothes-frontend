@@ -5,12 +5,13 @@ defineOptions({
 
 const props = withDefaults(
   defineProps<{
-    message: string;
+    message?: string;
     color: string;
-    typeImg?: 'box' | 'file' | 'list';
+    typeImg?: 'box' | 'file' | 'list' | 'inbox';
   }>(),
   {
     typeImg: 'box',
+    message: '',
   },
 );
 
@@ -22,6 +23,8 @@ const getUrlImg = (): string => {
       return '/icons/file-empty.png';
     case 'list':
       return '/icons/list-empty.png';
+    case 'inbox':
+      return '/icons/mail-empty.png';
     default:
       return '';
   }

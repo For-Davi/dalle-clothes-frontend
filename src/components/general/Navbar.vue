@@ -4,6 +4,7 @@ import UserOptions from './UserOptions.vue';
 import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
 import FormFeedback from '../form/FormFeedback.vue';
+import { useNotificationStore } from 'src/stores/notification-store';
 
 defineOptions({
   name: 'Navbar',
@@ -14,18 +15,19 @@ const emit = defineEmits<{
   'update:openFormEnterprise': [void];
   'update:openEmailInfo': [void];
   'update:changeOpenMenu': [void];
+  'update:openInbox': [void];
 }>();
 
 const { appearanceSetting } = storeToRefs(useSettingsStore());
+const { listNotification } = storeToRefs(useNotificationStore());
 
 const showFormFedback = ref<boolean>(false);
-const showInbox = ref<boolean>(false);
 
 const changeOpenFormFeedback = (): void => {
   showFormFedback.value = !showFormFedback.value;
 };
-const openInbox = (): void => {
-  showInbox.value = true;
+const startOpenInbox = (): void => {
+  emit('update:openInbox');
 };
 
 const getBackgroundNavbar = computed(() => {
@@ -39,6 +41,9 @@ const getColorIconNavbar = computed(() => {
     appearanceSetting.value.navbar_icon_color_code
     ? appearanceSetting.value.navbar_icon_color_code
     : undefined;
+});
+const countNotificationsNoRead = computed((): number => {
+  return listNotification.value.filter((item) => item.read === 0).length;
 });
 </script>
 <template>
@@ -74,7 +79,7 @@ const getColorIconNavbar = computed(() => {
             <q-tooltip> Enviar sugestão </q-tooltip>
           </q-btn>
           <q-btn
-            @click="openInbox"
+            @click="startOpenInbox"
             flat
             icon-right="notifications"
             rounded
@@ -82,7 +87,7 @@ const getColorIconNavbar = computed(() => {
             :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
           >
             <q-tooltip> Notificações </q-tooltip>
-            <q-badge color="black" rounded floating :label="0" />
+            <q-badge color="grey-9" rounded floating :label="countNotificationsNoRead" />
           </q-btn>
         </div>
         <div v-else>
@@ -111,7 +116,7 @@ const getColorIconNavbar = computed(() => {
                 </q-item-section>
                 <q-item-section>Enviar sugestão ou dúvida</q-item-section>
               </q-item>
-              <q-item clickable v-ripple @click="openInbox">
+              <q-item clickable v-ripple @click="startOpenInbox">
                 <q-item-section avatar>
                   <q-avatar>
                     <q-icon name="notifications" />
