@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, watch } from 'vue';
-import FormTag from '../form/FormTag.vue';
 import Loading from '../shared/Loading.vue';
 import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
-import { useTagStore } from 'src/stores/tag-store';
-import TableTag from '../table/TableTag.vue';
+import { useSupplierOrderStore } from 'src/stores/order-supplier-store';
 
 defineOptions({
-  name: 'OrderSupplierManage',
+  name: 'SupplierOrderManage',
 });
 
 const props = defineProps<{
@@ -19,30 +17,30 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { loadingTag, listTag } = storeToRefs(useTagStore());
+const { listSupplierOrder, loadingSupplierOrder } = storeToRefs(useSupplierOrderStore());
 
-const showFormTag = reactive<{
+const showFormSupplierOrder = reactive<{
   open: boolean;
-  tag: ITag | null;
+  orderID: number | null;
 }>({
   open: false,
-  tag: null,
+  orderID: null,
 });
 
 const clear = () => {
-  Object.assign(showFormTag, {
+  Object.assign(showFormSupplierOrder, {
     open: false,
-    tag: null,
+    orderID: null,
   });
 };
 
-const startEdit = (data: ITag) => {
-  changeShowFormTag(true, data);
+const startEdit = (orderID: number) => {
+  changeShowFormSupplierOrder(true, orderID);
 };
-const changeShowFormTag = (show: boolean, tag: ITag | null = null): void => {
-  Object.assign(showFormTag, {
+const changeShowFormSupplierOrder = (show: boolean, orderID: number | null = null): void => {
+  Object.assign(showFormSupplierOrder, {
     open: show,
-    tag: tag,
+    orderID: orderID,
   });
 };
 
@@ -61,14 +59,19 @@ watch(open, () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 sub-page column justify-between">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Gerenciamento de tags" icon="tag" />
+        <TitlePage title="Gerenciamento de pedidos" icon="fa-solid fa-list" />
       </q-card-section>
       <q-card-section>
-        <div v-show="!loadingTag">
-          <TableTag v-show="listTag.length > 0" @show:show-form-tag="startEdit" />
-          <Empty v-show="listTag.length <= 0" message="Sem tags cadastradas" color="bg-red-3" />
+        <div v-show="!loadingSupplierOrder">
+          <!-- <TableTag v-show="listTag.length > 0" @show:show-form-tag="startEdit" /> -->
+          <Empty
+            v-show="listSupplierOrder.length <= 0"
+            message="Sem pedidos cadastrados"
+            color="bg-red-3"
+            type-img="list"
+          />
         </div>
-        <Loading v-show="loadingTag" :show="loadingTag" />
+        <Loading v-show="loadingSupplierOrder" :show="loadingSupplierOrder" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
@@ -82,7 +85,7 @@ watch(open, () => {
             flat
           />
           <q-btn
-            @click="changeShowFormTag(true)"
+            @click="changeShowFormSupplierOrder(true)"
             color="primary"
             label="Adicionar"
             size="md"
@@ -93,7 +96,10 @@ watch(open, () => {
       </q-card-actions>
 
       <!-- Modals -->
-      <FormTag :data="showFormTag" @update:open="changeShowFormTag(false)" />
+      <FormOrderSupplier
+        :data="showFormSupplierOrder"
+        @update:open="changeShowFormSupplierOrder(false)"
+      />
     </q-card>
   </q-dialog>
 </template>

@@ -7,6 +7,7 @@ import TableSupplier from 'src/components/table/TableSupplier.vue';
 import { useSupplierStore } from 'src/stores/supplier-store';
 import FilterSupplier from 'src/components/filter/FilterSupplier.vue';
 import { actionsSupplier } from 'src/utils/actions';
+import SupplierOrderManage from 'src/components/manage/SupplierOrderManage.vue';
 
 defineOptions({
   name: 'Supplier',
@@ -14,7 +15,7 @@ defineOptions({
 
 const filterSupplier = ref<string>('');
 const showCategorySupplierManage = ref<boolean>(false);
-const showOrderSupplierManage = ref<boolean>(false);
+const showSupplierOrderManage = ref<boolean>(false);
 const showFilterSupplier = ref<boolean>(false);
 const showFormSupplier = reactive({
   open: false as boolean,
@@ -35,8 +36,8 @@ const filter = reactive<IFilterSupplier>({
 const changeShowCategorySupplierManage = (): void => {
   showCategorySupplierManage.value = !showCategorySupplierManage.value;
 };
-const changeShowOrderSupplierManage = (): void => {
-  showOrderSupplierManage.value = !showOrderSupplierManage.value;
+const changeShowSupplierOrderManage = (): void => {
+  showSupplierOrderManage.value = !showSupplierOrderManage.value;
 };
 const changeShowFormSupplier = (open: boolean, supplierId: number | null = null): void => {
   Object.assign(showFormSupplier, {
@@ -68,13 +69,10 @@ const actionFilter = async (data: 'close' | IFilterSupplier): Promise<void> => {
 const makeEdit = (id: number): void => {
   changeShowFormSupplier(true, id);
 };
-const changeShowOrderSupplierManage = () => {
-  showOrderSupplierManage.value = !showOrderSupplierManage.value;
-};
 const openAction = (type: IActionsSupplier): void => {
   switch (type) {
     case 'order':
-      changeShowOrderSupplierManage();
+      changeShowSupplierOrderManage();
       break;
     case 'category':
       changeShowCategorySupplierManage();
@@ -161,9 +159,9 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
-    <OrderSupplierManage
-      :open="showOrderSupplierManage"
-      @update:open="changeShowOrderSupplierManage"
+    <SupplierOrderManage
+      :open="showSupplierOrderManage"
+      @update:open="changeShowSupplierOrderManage"
     />
     <CategorySupplierManage
       :open="showCategorySupplierManage"

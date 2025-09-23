@@ -9,8 +9,4 @@ export type ActionStock =
 
 export type ActionsMovement = 'history' | 'category' | 'export';
 
-<<<<<<< Updated upstream
-export type ActionsSupplier = 'order' | 'category' ;
-=======
-export type ActionSupplier = 'category' | 'order';
->>>>>>> Stashed changes
+export type ActionsSupplier = 'order' | 'category';
