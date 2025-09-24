@@ -6,8 +6,8 @@ defineOptions({
   name: 'Index',
 });
 
-const goLogin =  () => {
-   void router.push({ name: 'auth' });
+const goLogin = () => {
+  void router.push({ name: 'auth' });
 };
 
 const listFeatures = computed(() => [
@@ -32,15 +32,25 @@ const listFeatures = computed(() => [
 
 <template>
   <main class="landing-page">
-    <q-header class="bg-white text-dark shadow-2">
+    <header class="bg-white text-dark shadow-2">
       <q-toolbar class="header-toolbar">
         <q-toolbar-title class="q-ml-md">
-          <div class="logo-text text-primary text-weight-bold">Dalle Manage</div>
+          <div class="logo-text">
+            <span class=" text-primary text-weight-bold">
+      Dalle <span class="text-grey-9">Manage</span>
+    </span>
+          </div>
         </q-toolbar-title>
         <q-space />
-        <q-btn flat class="bg-primary text-white q-px-md" label="Entrar" />
+        <div class="row items-center q-gutter-md ">
+          <q-btn flat class="text-dark" label="Recursos" href="#features-section" />
+          <q-btn flat class="text-dark" label="Depoimentos" href="#testimonials-section" />
+          <q-btn flat class="text-dark" label="Preços" href="#pricing-section" />
+          <q-btn flat class="text-dark" label="Associado"/>
+          <q-btn flat class="bg-primary text-white q-px-md" label="Entrar" @click="goLogin" />
+        </div>
       </q-toolbar>
-    </q-header>
+    </header>
 
     <section class="hero-section q-pa-xl bg-primary text-white">
       <div class="container text-center">
@@ -53,17 +63,12 @@ const listFeatures = computed(() => [
         </p>
         <div class="q-gutter-md">
           <q-btn @click="goLogin" class="bg-dark text-white q-px-xl q-py-sm" label="Comece Grátis" size="lg" />
-          <q-btn
-            class="bg-white text-primary q-px-xl q-py-sm"
-            outline
-            label="Saber Mais"
-            size="lg"
-          />
+          <q-btn class="bg-white text-primary q-px-xl q-py-sm" outline label="Saber Mais" size="lg" />
         </div>
       </div>
     </section>
 
-    <section class="features-section q-py-xl">
+    <section id="features-section" class="features-section q-py-xl">
       <div class="container">
         <h2 class="text-h3 text-center text-dark q-mb-lg">Recursos que Fazem a Diferença</h2>
         <div class="row q-col-gutter-xl">
@@ -84,7 +89,7 @@ const listFeatures = computed(() => [
       </div>
     </section>
 
-    <section class="testimonials-section q-py-xl bg-dark text-white text-center">
+    <section id="testimonials-section" class="testimonials-section q-py-xl bg-dark text-white text-center">
       <div class="container">
         <h2 class="text-h3 q-mb-lg">O que nossos Clientes Dizem</h2>
         <div class="row justify-center">
@@ -116,7 +121,6 @@ const listFeatures = computed(() => [
               </p>
             </div>
           </div>
-
           <div class="col-xs-12 col-sm-6 col-md-4">
             <div class="benefit-item q-pa-md">
               <q-icon name="trending_up" size="xl" color="primary" class="q-mb-md" />
@@ -127,7 +131,6 @@ const listFeatures = computed(() => [
               </p>
             </div>
           </div>
-
           <div class="col-xs-12 col-sm-6 col-md-4">
             <div class="benefit-item q-pa-md">
               <q-icon name="savings" size="xl" color="primary" class="q-mb-md" />
@@ -142,7 +145,7 @@ const listFeatures = computed(() => [
       </div>
     </section>
 
-    <section class="pricing-section q-py-xl bg-grey-2">
+    <section id="pricing-section" class="pricing-section q-py-xl bg-grey-2">
       <div class="container text-center">
         <h2 class="text-h3 text-dark q-mb-lg">Escolha o Plano Ideal para o Seu Negócio</h2>
         <div class="row q-col-gutter-lg justify-center">
@@ -170,7 +173,6 @@ const listFeatures = computed(() => [
               <q-btn class="bg-primary text-white q-mt-md" label="Contratar" />
             </q-card>
           </div>
-
           <div class="col-xs-12 col-sm-6 col-md-4">
             <q-card class="pricing-card q-pa-lg bg-primary text-white highlight-card shadow-10">
               <q-badge color="orange" floating class="q-ma-sm">Mais Popular</q-badge>
@@ -194,7 +196,6 @@ const listFeatures = computed(() => [
               <q-btn class="bg-white text-primary q-mt-md" label="Contratar" />
             </q-card>
           </div>
-
           <div class="col-xs-12 col-sm-6 col-md-4">
             <q-card class="pricing-card q-pa-lg">
               <div class="text-h5 text-dark q-mb-sm">Plano Empresarial</div>
@@ -259,18 +260,6 @@ const listFeatures = computed(() => [
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
-}
-
-.bg-primary {
-  background-color: #1976d2 !important;
-}
-
-.bg-dark {
-  background-color: #1d1d1d !important;
-}
-
-.text-dark {
-  color: #1d1d1d;
 }
 
 .header-toolbar {
