@@ -9,6 +9,7 @@ import { checkEnterpriseData } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { useRouter } from 'vue-router';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
+import { useAuthStore } from 'src/stores/auth-store';
 
 defineOptions({
   name: 'FormEnterprise',
@@ -25,7 +26,6 @@ const { loadingEnterprise } = storeToRefs(useEnterpriseStore());
 const router = useRouter();
 
 const dataEnterprise = reactive({
-  id: 0,
   name: '' as string,
   email: '' as string,
   phone: '' as string,
@@ -47,9 +47,11 @@ const showConfirmAction = ref<boolean>(false);
 
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  const response = await useEnterpriseStore().deleteEnterpriseData(dataEnterprise.id);
+  const response = await useEnterpriseStore().deleteEnterprise();
 
   if (response?.status === 200) {
+    useAuthStore().setToken(null);
+    useAuthStore().setUser(null);
     await router.push({ name: 'auth' });
   }
 };
@@ -62,7 +64,7 @@ const changeShowConfirmAction = () => {
 const update = async () => {
   const check = checkEnterpriseData(dataEnterprise);
   if (check.status) {
-    const response = await useEnterpriseStore().updateEnterpriseData(dataEnterprise);
+    const response = await useEnterpriseStore().updateEnterprise(dataEnterprise);
     if (response?.status == 200) {
       emit('update:open');
     }
@@ -71,22 +73,23 @@ const update = async () => {
   }
 };
 const clear = () => {
-  dataEnterprise.id = 0;
-  dataEnterprise.name = '';
-  dataEnterprise.email = '';
-  dataEnterprise.phone = '';
-  dataEnterprise.cpf = '';
-  dataEnterprise.cnpj = '';
-  dataEnterprise.cep = '';
-  dataEnterprise.state = '';
-  dataEnterprise.city = '';
-  dataEnterprise.neighborhood = '';
-  dataEnterprise.address = '';
-  dataEnterprise.numberAddress = '';
-  dataEnterprise.complement = '';
+  Object.assign(dataEnterprise, {
+    name: '',
+    email: '',
+    phone: '',
+    cpf: '',
+    cnpj: '',
+    cep: '',
+    state: '',
+    city: '',
+    neighborhood: '',
+    address: '',
+    numberAddress: '',
+    complement: '',
+  });
 };
 const checkDataEdit = async () => {
-  const response = await useEnterpriseStore().getUSerEnterprise();
+  const response = await useEnterpriseStore().showEnterprise();
   if (response?.status === 200) {
     const enterprise = response.data.enterprise;
 
@@ -110,8 +113,6 @@ const checkDataEdit = async () => {
     } else {
       dataEnterprise.cpf = '';
     }
-
-    dataEnterprise.id = enterprise.id;
   }
 };
 

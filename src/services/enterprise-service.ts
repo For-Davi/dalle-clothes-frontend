@@ -2,7 +2,7 @@ import { api } from 'boot/axios';
 
 const baseUrl = 'enterprise';
 
-export const getEnterpriseService = (): Promise<{
+export const showEnterpriseService = (): Promise<{
   status: number;
   data: {
     enterprise: IEnterprise;
@@ -19,11 +19,9 @@ export const updateEnterpriseService = (
   };
 }> => api.put(`${baseUrl}/`, enterprise);
 
-export const deleteEnterpriseService = (
-  id: number,
-): Promise<{
+export const deleteEnterpriseService = (): Promise<{
   status: number;
   data: {
     message: string;
   };
-}> => api.delete(`${baseUrl}/${id}`);
+}> => api.delete(`${baseUrl}/`);

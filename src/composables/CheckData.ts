@@ -652,13 +652,6 @@ export const checkEnterpriseData = (data: {
   phone: string;
   cpf: string;
   cnpj: string;
-  cep: string;
-  state: string;
-  city: string;
-  neighborhood: string;
-  address: string;
-  numberAddress: string;
-  complement: string;
 }): { status: boolean; message?: string } => {
   if (data.name.trim() === '') {
     return { status: false, message: 'Deve ser informado o nome da empresa' };
@@ -676,11 +669,6 @@ export const checkEnterpriseData = (data: {
   if (data.cnpj !== '') {
     if (data.cnpj.trim().length > 14 || data.cnpj.trim().length < 14) {
       return { status: false, message: 'Informe um CNPJ válido' };
-    }
-  }
-  if (data.numberAddress !== '') {
-    if (data.numberAddress.trim().length > 15) {
-      return { status: false, message: 'Informe um número de endereço válido' };
     }
   }
 
