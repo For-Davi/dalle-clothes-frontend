@@ -190,7 +190,7 @@ watch(open, async () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 form-basic column justify-between">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Formulário da empresa" icon="groups" />
+        <TitlePage title="Dados da organização" icon="groups" />
       </q-card-section>
       <Loading :show="loadingEnterprise" />
       <q-card-section class="q-pa-sm">
