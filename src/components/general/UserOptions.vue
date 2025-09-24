@@ -5,12 +5,14 @@ import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 import FormProfile from '../form/FormProfile.vue';
 import { useSettingsStore } from 'src/stores/setting-store';
+import FormEnterprise from '../form/FormEnterprise.vue';
 
 defineOptions({
   name: 'UserOptions',
 });
 
 const showFormProfile = ref<boolean>(false);
+const showFormEnterprise = ref<boolean>(false);
 
 // const emit = defineEmits<{
 //   'update:openFormPerfil': [void];
@@ -27,9 +29,12 @@ const openPerfil = () => {
   dropdown.value?.hide();
   changeShowFormProfile();
 };
-
 const changeShowFormProfile = () => {
   showFormProfile.value = !showFormProfile.value;
+};
+const changeShowFormEnterprise = () => {
+  dropdown.value?.hide();
+  showFormEnterprise.value = !showFormEnterprise.value;
 };
 
 const logout = async () => {
@@ -62,6 +67,14 @@ const getColorIconNavbar = computed(() => {
       </div>
     </template>
     <q-list>
+      <q-item clickable v-ripple @click="changeShowFormEnterprise">
+        <q-item-section avatar>
+          <q-avatar>
+            <q-icon name="groups" />
+          </q-avatar>
+        </q-item-section>
+        <q-item-section>Organização</q-item-section>
+      </q-item>
       <q-item clickable v-ripple @click="openPerfil">
         <q-item-section avatar>
           <q-avatar>
@@ -84,4 +97,5 @@ const getColorIconNavbar = computed(() => {
   <!-- Modals -->
 
   <FormProfile :open="showFormProfile" @update:open="changeShowFormProfile()" />
+  <FormEnterprise :open="showFormEnterprise" @update:open="changeShowFormEnterprise" />
 </template>
