@@ -3,7 +3,7 @@ import { reactive, watch, computed } from 'vue';
 import { checkDataCategorySupplier } from 'src/composables/CheckData';
 import { storeToRefs } from 'pinia';
 import { createErrorData } from 'src/composables/CreateNotify';
-import TitleAuth from '../shared/TitleAuth.vue';
+import TitlePage from '../shared/TitlePage.vue';
 import { useCategorySupplierStore } from 'src/stores/category-supplier-store';
 
 defineOptions({
@@ -78,8 +78,9 @@ watch(open, () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2" flat bordered style="width: 350px">
       <q-card-section class="q-pa-none">
-        <TitleAuth
+        <TitlePage
           :title="props.dataEdit === null ? 'Cadastre uma categoria' : 'Atualize a categoria'"
+          icon="list_alt"
         />
       </q-card-section>
       <q-card-section class="q-pa-sm">

@@ -374,12 +374,12 @@ export const checkDataEmployee = (
   hasAccessLogin: boolean,
 ): { status: boolean; message?: string } => {
   if (data.name.trim() === '') {
-    return { status: false, message: 'Deve ser informado o nome do fornecedor' };
+    return { status: false, message: 'Deve ser informado o nome do funcionário' };
   }
   if (data.name.trim().length < 2) {
     return {
       status: false,
-      message: 'Nome de fornecedor deve ter mais de 2 caracteres',
+      message: 'Nome do funcionário deve ter mais de 2 caracteres',
     };
   }
   if (data.email.trim() !== '') {
