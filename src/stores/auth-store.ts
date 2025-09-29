@@ -122,10 +122,15 @@ export const useAuthStore = defineStore('auth', {
         this.setLoading(false);
       }
     },
-    async updateUserData(name: string, email: string) {
+    async updateUserData(
+      name: string,
+      email: string,
+      photoAdd: IMediaItem | null,
+      photoDelete: number | null,
+    ) {
       try {
         this.setLoading(true);
-        const response = await updateUserDataService(name, email);
+        const response = await updateUserDataService(name, email, photoAdd, photoDelete);
         if (response.status === 200) {
           this.setUser(response.data.user);
           createSuccess(response.data.message);
@@ -134,6 +139,7 @@ export const useAuthStore = defineStore('auth', {
         return response;
       } catch (error) {
         createError(error);
+        console.log('ERRO', error);
         return null;
       } finally {
         this.setLoading(false);

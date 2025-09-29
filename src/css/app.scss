@@ -117,6 +117,21 @@
   background-color: #0d47a1;
 }
 
+.avatar-placeholder {
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+}
+
+.transparent-file {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
 html {
   scroll-behavior: smooth;
 }

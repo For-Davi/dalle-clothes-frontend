@@ -65,13 +65,29 @@ export const doRegisterService = (
 export const updateUserDataService = (
   name: string,
   email: string,
+  photoAdd: IMediaItem | null,
+  photoDelete: number | null,
 ): Promise<{
   status: number;
   data: {
     user: IUser;
     message: string;
   };
-}> => api.put(`${baseUrl}/update-data`, { name, email });
+}> => {
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('email', email);
+
+  if (photoDelete !== null) {
+    formData.append('photoDelete', String(photoDelete));
+  }
+
+  if (photoAdd) {
+    formData.append('photoAdd', photoAdd as File);
+  }
+
+  return api.post(`${baseUrl}/update-data`, formData);
+};
 
 export const updateUserPasswordService = (
   actualPassword: string,
