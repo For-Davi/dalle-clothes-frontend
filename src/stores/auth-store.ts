@@ -104,11 +104,17 @@ export const useAuthStore = defineStore('auth', {
         this.setLoading(false);
       }
     },
-    async doRegister(name: string, email: string, password: string, nameEnterprise: string) {
+    async doRegister(
+      name: string,
+      email: string,
+      password: string,
+      nameEnterprise: string,
+      sellerCode: string | null,
+    ) {
       this.setLoading(true);
       try {
         this.setLoading(true);
-        const response = await doRegisterService(name, email, password, nameEnterprise);
+        const response = await doRegisterService(name, email, password, nameEnterprise, sellerCode);
         if (response.status === 201) {
           this.setUser(response.data.user);
           this.setToken(response.data.token);
