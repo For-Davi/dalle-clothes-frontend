@@ -36,17 +36,17 @@ const listFeatures = computed(() => [
       <q-toolbar class="header-toolbar">
         <q-toolbar-title class="q-ml-md">
           <div class="logo-text">
-            <span class=" text-primary text-weight-bold">
-      Dalle <span class="text-grey-9">Manage</span>
-    </span>
+            <span class="text-primary text-weight-bold">
+              Dalle <span class="text-grey-9">Manage</span>
+            </span>
           </div>
         </q-toolbar-title>
         <q-space />
-        <div class="row items-center q-gutter-md ">
+        <div class="row items-center q-gutter-md">
           <q-btn flat class="text-dark" label="Recursos" href="#features-section" />
           <q-btn flat class="text-dark" label="Depoimentos" href="#testimonials-section" />
           <q-btn flat class="text-dark" label="Preços" href="#pricing-section" />
-          <q-btn flat class="text-dark" label="Associado"/>
+          <q-btn flat class="text-dark" label="Associado" />
           <q-btn flat class="bg-primary text-white q-px-md" label="Entrar" @click="goLogin" />
         </div>
       </q-toolbar>
@@ -62,8 +62,18 @@ const listFeatures = computed(() => [
           decisões inteligentes e impulsione seu crescimento.
         </p>
         <div class="q-gutter-md">
-          <q-btn @click="goLogin" class="bg-dark text-white q-px-xl q-py-sm" label="Comece Grátis" size="lg" />
-          <q-btn class="bg-white text-primary q-px-xl q-py-sm" outline label="Saber Mais" size="lg" />
+          <q-btn
+            @click="goLogin"
+            class="bg-dark text-white q-px-xl q-py-sm"
+            label="Comece Grátis"
+            size="lg"
+          />
+          <q-btn
+            class="bg-white text-primary q-px-xl q-py-sm"
+            outline
+            label="Saber Mais"
+            size="lg"
+          />
         </div>
       </div>
     </section>
@@ -89,7 +99,10 @@ const listFeatures = computed(() => [
       </div>
     </section>
 
-    <section id="testimonials-section" class="testimonials-section q-py-xl bg-dark text-white text-center">
+    <section
+      id="testimonials-section"
+      class="testimonials-section q-py-xl bg-dark text-white text-center"
+    >
       <div class="container">
         <h2 class="text-h3 q-mb-lg">O que nossos Clientes Dizem</h2>
         <div class="row justify-center">

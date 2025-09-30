@@ -9,6 +9,13 @@ export const getSuppliersService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const getSuppliersSelectService = (): Promise<{
+  status: number;
+  data: {
+    suppliers: IQuasarSelect<number>[];
+  };
+}> => api.get(`${baseUrl}/list-select`);
+
 export const getSuppliersFilterService = (
   filter: IFilterSupplier,
 ): Promise<{

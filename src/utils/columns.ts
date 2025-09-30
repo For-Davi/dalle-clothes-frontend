@@ -481,6 +481,39 @@ export const columnsProduct: IQuasarTable[] = [
   },
 ];
 
+export const columnsProductSelect: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'stock_quantity',
+    label: 'Estoque',
+    field: 'stock_quantity',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+];
+
 export const columnsProductLog: IQuasarTable[] = [
   {
     name: 'created_at',

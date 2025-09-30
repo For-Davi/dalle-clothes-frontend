@@ -4,7 +4,7 @@ import {
   getSupplierOrdersService,
   showSupplierOrderService,
   updateSupplierOrderService,
-} from 'src/services/order-supplier-service';
+} from 'src/services/supplier-order-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
 

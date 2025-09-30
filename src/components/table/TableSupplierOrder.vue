@@ -2,7 +2,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from 'src/components/confirm/ConfirmAction.vue';
-import { useSupplierOrderStore } from 'src/stores/order-supplier-store';
+import { useSupplierOrderStore } from '@/stores/supplier-order-store';
 import { columnsSupplierOrder } from 'src/utils/columns';
 import { getLabelStatusSupplierOrder } from 'src/composables/Label';
 import { formatToBrazilianDate } from 'src/composables/FormatData';

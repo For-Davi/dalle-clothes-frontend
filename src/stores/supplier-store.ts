@@ -2,6 +2,7 @@ import {
   createSupplierService,
   deleteSupplierService,
   getSuppliersFilterService,
+  getSuppliersSelectService,
   getSuppliersService,
   showSupplierService,
   updateSupplierService,
@@ -13,9 +14,13 @@ export const useSupplierStore = defineStore('supplier', {
   state: () => ({
     loadingSupplier: false as boolean,
     listSupplier: [] as ISupplier[],
+    listSupplierSelect: [] as IQuasarSelect<number>[],
   }),
   actions: {
     clearListSupplier() {
+      this.listSupplier.splice(0, this.listSupplier.length);
+    },
+    clearListSupplierSelect() {
       this.listSupplier.splice(0, this.listSupplier.length);
     },
     setLoading(loading: boolean) {
@@ -23,6 +28,9 @@ export const useSupplierStore = defineStore('supplier', {
     },
     setListSupplier(categories: ISupplier[]) {
       categories.map((item) => this.listSupplier.push(item));
+    },
+    setListSupplierSelect(suppliers: IQuasarSelect<number>[]) {
+      suppliers.map((item) => this.listSupplierSelect.push(item));
     },
     async getSuppliers(filter: IFilterSupplier | null = null) {
       try {
@@ -37,6 +45,21 @@ export const useSupplierStore = defineStore('supplier', {
         if (response.status === 200) {
           this.clearListSupplier();
           this.setListSupplier(response.data.suppliers);
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async getSuppliersSelect() {
+      try {
+        this.setLoading(true);
+        const response = await getSuppliersSelectService();
+
+        if (response.status === 200) {
+          this.clearListSupplierSelect();
+          this.setListSupplierSelect(response.data.suppliers);
         }
       } catch (error) {
         createError(error);

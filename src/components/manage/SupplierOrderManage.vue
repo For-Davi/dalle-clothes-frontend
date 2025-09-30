@@ -4,7 +4,7 @@ import { computed, reactive, watch } from 'vue';
 import Loading from '../shared/Loading.vue';
 import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
-import { useSupplierOrderStore } from 'src/stores/order-supplier-store';
+import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import FormSupplierOrder from '../form/FormSupplierOrder.vue';
 
 defineOptions({
