@@ -23,8 +23,8 @@ const dataProfile = reactive({
   photoAdd: null as File | null,
   photoDelete: null as number | null,
 });
-const showMediaUpload = ref<boolean>(false);
 const localImage = ref<IImage | null>(user.value?.image ?? null);
+const fileRef = ref();
 
 const addMediaInList = async (file: File) => {
   try {
@@ -87,14 +87,19 @@ const getImageUrl = (file: File | ICustomFile | IImage | null | undefined): stri
   return '/icons/image-empty.png';
 };
 const handleAvatarClick = () => {
-  if (dataProfile.photoAdd) return;
+
+  if (dataProfile.photoAdd) {
+    dataProfile.photoAdd = null;
+    return;
+  };
 
   if (localImage.value) {
     dataProfile.photoDelete = localImage.value.id;
     localImage.value = null;
-  } else {
-    showMediaUpload.value = true;
-  }
+    return;
+  } 
+
+   fileRef.value.pickFiles();
 };
 
 const getStyleTooltip = computed(() => {
@@ -139,12 +144,14 @@ watch(user, (newUser) => {
           draggable="false"
         />
         <q-file
+        ref="fileRef"
           v-model="dataProfile.photoAdd"
           hide-input
           accept="image/*"
           :multiple="false"
           @change="addMediaInList"
           class="transparent-file"
+          style="display: none;"
         />
         <q-tooltip :class="getStyleTooltip">
           {{ dataProfile.photoAdd || localImage ? 'Remover foto' : 'Adicionar foto' }}
