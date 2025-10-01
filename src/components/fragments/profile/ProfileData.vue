@@ -87,19 +87,18 @@ const getImageUrl = (file: File | ICustomFile | IImage | null | undefined): stri
   return '/icons/image-empty.png';
 };
 const handleAvatarClick = () => {
-
   if (dataProfile.photoAdd) {
     dataProfile.photoAdd = null;
     return;
-  };
+  }
 
   if (localImage.value) {
     dataProfile.photoDelete = localImage.value.id;
     localImage.value = null;
     return;
-  } 
+  }
 
-   fileRef.value.pickFiles();
+  fileRef.value.pickFiles();
 };
 
 const getStyleTooltip = computed(() => {
@@ -144,14 +143,14 @@ watch(user, (newUser) => {
           draggable="false"
         />
         <q-file
-        ref="fileRef"
+          ref="fileRef"
           v-model="dataProfile.photoAdd"
           hide-input
           accept="image/*"
           :multiple="false"
           @change="addMediaInList"
           class="transparent-file"
-          style="display: none;"
+          style="display: none"
         />
         <q-tooltip :class="getStyleTooltip">
           {{ dataProfile.photoAdd || localImage ? 'Remover foto' : 'Adicionar foto' }}
