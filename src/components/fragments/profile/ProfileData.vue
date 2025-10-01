@@ -37,11 +37,12 @@ const addMediaInList = async (file: File) => {
     dataProfile.photoAdd = compressedFile;
   } catch (error) {
     createErrorData('Erro ao processar a imagem.');
-    console.log('Erro ao fazer a compressão', error);
+    console.error('Erro ao fazer a compressão', error);
   }
 };
 const clearImages = (): void => {
   dataProfile.photoAdd = null;
+  dataProfile.photoDelete = null;
 };
 
 const mountData = () => {
@@ -127,6 +128,8 @@ watch(user, (newUser) => {
 <template>
   <section class="q-gutter-y-sm">
     <div class="flex justify-center">
+      data {{ dataProfile }}
+      user.value?.image {{ user.image }}
       <q-avatar
         color="grey-4"
         size="200px"
