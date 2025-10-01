@@ -47,6 +47,7 @@ export const doRegisterService = (
   email: string,
   password: string,
   nameEnterprise: string,
+  sellerCode: string | null,
 ): Promise<{
   status: number;
   data: {
@@ -60,6 +61,7 @@ export const doRegisterService = (
     email,
     password,
     nameEnterprise,
+    sellerCode,
   });
 
 export const updateUserDataService = (
