@@ -52,22 +52,22 @@ const getColorIconNavbar = computed(() => {
 });
 const getImageUrl = (file: File | ICustomFile | IImage | null | undefined): string => {
   if (!file) {
-    return '/images/user.png'; 
+    return '/images/user.png';
   }
 
   if ('url' in file && file.url) {
-    return file.url; 
+    return file.url;
   }
 
   if (file instanceof File) {
-    return URL.createObjectURL(file); 
+    return URL.createObjectURL(file);
   }
 
   if ('img' in file && file.img) {
-    return file.img; 
+    return file.img;
   }
 
-  return '/images/user.png'; 
+  return '/images/user.png';
 };
 
 watch(user, (newUser) => {

@@ -73,10 +73,10 @@ export const useEmployeeStore = defineStore('employee', {
         this.setLoading(false);
       }
     },
-    async createAccessLogin(employeeId: number, password: string, roleId: number | null) {
+    async createAccessLogin(employeeId: number, password: string, roleID: number | null) {
       try {
         this.setLoading(true);
-        const response = await createAccessLoginService(employeeId, password, roleId);
+        const response = await createAccessLoginService(employeeId, password, roleID);
         if (response.status === 201) {
           this.clearListEmployee();
           this.setListEmployee(response.data.employees);
