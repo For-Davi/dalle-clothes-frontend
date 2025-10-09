@@ -12,7 +12,7 @@ export const getSuppliersService = (): Promise<{
 export const getSuppliersSelectService = (): Promise<{
   status: number;
   data: {
-    suppliers: IQuasarSelect<number>[];
+    suppliers: ISupplierSelect[];
   };
 }> => api.get(`${baseUrl}/list-select`);
 

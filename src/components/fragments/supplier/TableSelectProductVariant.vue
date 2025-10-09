@@ -55,7 +55,7 @@ const open = computed({
           row-key="index"
           no-data-label="Nenhum produto para mostrar"
           virtual-scroll
-          :rows-per-page-options="[6]"
+          :rows-per-page-options="[0]"
           style="height: 460px"
           bordered
           flat
@@ -88,43 +88,45 @@ const open = computed({
             </div>
           </template>
           <template v-slot:body="props">
-             <q-td key="name" :props="props" class="text-left">
-            <q-icon
-              :name="props.row.variant_active === 1 ? 'check_circle' : 'close'"
-              :color="props.row.variant_active === 1 ? 'green' : 'red'"
-              size="17px"
-            >
-              <q-tooltip class="bg-grey-3 text-bold text-black">{{
-                props.row.variant_active === 1 ? 'Ativo' : 'Inativo'
-              }}</q-tooltip>
-            </q-icon>
-            {{ props.row.name }}
-          </q-td>
-          <q-td key="sku" :props="props" class="text-left">
-            {{ props.row.sku }}
-          </q-td>
-          <q-td key="code" :props="props" class="text-left">
-            {{ props.row.code }}
-          </q-td>
-          <q-td
-            key="stock_quantity"
-            :props="props"
-            class="text-left"
-            :class="isStockCritical(props.row.stock_quantity) ? 'text-red' : ''"
-          >
-            {{ props.row.stock_quantity }}
-          </q-td>
-          <q-td key="color" :props="props" class="text-left">
-            <div
-              v-if="props.row.color"
-              class="cursor-pointer"
-              :style="getColorStyle(props.row.color.hex_color_code)"
-            >
-              <q-tooltip class="bg-grey-3 text-bold text-black">{{
-                props.row.color.name
-              }}</q-tooltip>
-            </div>
-          </q-td>
+            <q-tr :props="props">
+              <q-td key="name" :props="props" class="text-left">
+                 <q-icon
+                   :name="props.row.variant_active === 1 ? 'check_circle' : 'close'"
+                   :color="props.row.variant_active === 1 ? 'green' : 'red'"
+                   size="17px"
+                 >
+                   <q-tooltip class="bg-grey-3 text-bold text-black">{{
+                     props.row.variant_active === 1 ? 'Ativo' : 'Inativo'
+                   }}</q-tooltip>
+                 </q-icon>
+                 {{ props.row.name }}
+               </q-td>
+               <q-td key="sku" :props="props" class="text-left">
+                 {{ props.row.sku }}
+               </q-td>
+               <q-td key="code" :props="props" class="text-left">
+                 {{ props.row.code }}
+               </q-td>
+               <q-td
+                 key="stock_quantity"
+                 :props="props"
+                 class="text-left"
+                 :class="isStockCritical(props.row.stock_quantity) ? 'text-red' : ''"
+               >
+                 {{ props.row.stock_quantity }}
+               </q-td>
+               <q-td key="color" :props="props" class="text-left">
+                 <div
+                   v-if="props.row.color"
+                   class="cursor-pointer"
+                   :style="getColorStyle(props.row.color.hex_color_code)"
+                 >
+                   <q-tooltip class="bg-grey-3 text-bold text-black">{{
+                     props.row.color.name
+                   }}</q-tooltip>
+                 </div>
+               </q-td>
+            </q-tr>
           </template>
         </q-table>
       </q-card-section>

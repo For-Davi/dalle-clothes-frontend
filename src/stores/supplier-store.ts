@@ -14,14 +14,14 @@ export const useSupplierStore = defineStore('supplier', {
   state: () => ({
     loadingSupplier: false as boolean,
     listSupplier: [] as ISupplier[],
-    listSupplierSelect: [] as IQuasarSelect<number>[],
+    listSupplierSelect: [] as ISupplierSelect[],
   }),
   actions: {
     clearListSupplier() {
       this.listSupplier.splice(0, this.listSupplier.length);
     },
     clearListSupplierSelect() {
-      this.listSupplier.splice(0, this.listSupplier.length);
+      this.listSupplierSelect.splice(0, this.listSupplierSelect.length);
     },
     setLoading(loading: boolean) {
       this.loadingSupplier = loading;
@@ -29,7 +29,7 @@ export const useSupplierStore = defineStore('supplier', {
     setListSupplier(categories: ISupplier[]) {
       categories.map((item) => this.listSupplier.push(item));
     },
-    setListSupplierSelect(suppliers: IQuasarSelect<number>[]) {
+    setListSupplierSelect(suppliers: ISupplierSelect[]) {
       suppliers.map((item) => this.listSupplierSelect.push(item));
     },
     async getSuppliers(filter: IFilterSupplier | null = null) {

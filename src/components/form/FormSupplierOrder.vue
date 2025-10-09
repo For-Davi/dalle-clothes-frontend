@@ -28,13 +28,14 @@ const { loadingSupplier, listSupplierSelect } = storeToRefs(useSupplierStore());
 const { loadingSupplierOrder } = storeToRefs(useSupplierOrderStore());
 const { loadingProduct, listProduct } = storeToRefs(useProductStore());
 
+const textAny = ref<string>('');
 const showTableSelectProductVariant = ref<boolean>(false);
-const selectedItens = ref<IProduct[]>([]);
 const dataSupplierOrder = reactive({
   orderNumber: '' as string,
   dateIssue: '' as string,
   dateDeliveryExpected: '' as string,
   description: '' as string,
+  itens: [] as IProduct[],
 });
 const selectedSupplier = ref<IQuasarSelect<number | null>>({
   label: 'Não informado',
@@ -47,14 +48,13 @@ const clear = (): void => {
     dateIssue: '',
     dateDeliveryExpected: '',
     description: '',
+    itens: [],
   });
 
   selectedSupplier.value = {
     label: 'Não informado',
     value: null,
   };
-
-  selectedItens.value = []
 };
 const changeShowTableSelectProductVariant = () => {
   showTableSelectProductVariant.value = !showTableSelectProductVariant.value;
@@ -176,21 +176,31 @@ const fetchProductVariants = async (): Promise<void> => {
   await useProductStore().getProducts();
 };
 
+const getListSupplierSelect = computed((): IQuasarSelect<number | null>[] => {
+  const mappedSuppliers = listSupplierSelect.value.map((item) => ({
+    label: item.name,
+    value: item.id,
+  }));
+
+  return [...mappedSuppliers, { label: 'Não informado', value: null }];
+});
 const isLoading = computed((): boolean => {
   return loadingSupplier.value || loadingSupplierOrder.value || loadingProduct.value;
 });
 const orderID = computed(() => props.data.orderID);
-
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
+});
+const getLabelItens = computed((): string => {
+  return `Total de itens: ${dataSupplierOrder.itens.length}`;
 });
 
 watch(open, async () => {
   clear();
   if (open.value) {
     await fetchSuppliers();
-    await  fetchProductVariants();
+    await fetchProductVariants();
     // await checkDataEdit();
   }
 });
@@ -211,7 +221,7 @@ watch(open, async () => {
             outlined
             v-model="selectedSupplier"
             label="Selecione o fornecedor"
-            :options="listSupplierSelect"
+            :options="getListSupplierSelect"
             bg-color="white"
             dense
             options-dense
@@ -220,7 +230,7 @@ watch(open, async () => {
             class="full-width"
           >
             <template v-slot:prepend>
-              <q-icon name="category" color="black" size="20px" />
+              <q-icon name="local_shipping" color="black" size="20px" />
             </template>
           </q-select>
           <q-input
@@ -261,7 +271,34 @@ watch(open, async () => {
             input-class="text-black"
           >
             <template v-slot:prepend>
-              <q-icon name="person" color="black" size="20px" />
+              <q-icon name="info" color="black" size="20px" />
+            </template>
+          </q-input>
+          <q-input
+            v-model="textAny"
+            bg-color="white"
+            label-color="black"
+            outlined
+            :label="getLabelItens"
+            dense
+            input-class="text-black"
+            class="full-width"
+            color="orange"
+            readonly
+            :disable="isLoading"
+          >
+            <template v-slot:append>
+              <q-btn
+                size="sm"
+                @click="changeShowTableSelectProductVariant"
+                unelevated
+                no-caps
+                round
+              >
+                <q-icon name="add_circle" color="black" size="20px">
+                  <q-tooltip> Gerenciar itens </q-tooltip>
+                </q-icon>
+              </q-btn>
             </template>
           </q-input>
           <q-input
@@ -278,17 +315,6 @@ watch(open, async () => {
               <q-icon name="description" color="black" size="20px" />
             </template>
           </q-input>
-          <q-btn
-            @click="changeShowTableSelectProductVariant"
-            :disable="isLoading"
-            color="green-9"
-            label="Gerenciar itens"
-            class="full-width"
-            size="md"
-            unelevated
-            no-caps
-          />
-          listProduct
         </q-form>
       </q-card-section>
       <q-card-actions align="right" v-show="!isLoading">
@@ -305,13 +331,12 @@ watch(open, async () => {
           <q-btn v-if="!orderID" color="primary" label="Salvar" size="md" unelevated no-caps />
           <q-btn v-else color="primary" label="Atualizar" size="md" unelevated no-caps />
         </div>
-        listProduct
       </q-card-actions>
     </q-card>
 
     <!-- Modals -->
     <TableSelectProductVariant
-      v-model:selected="selectedItens"
+      v-model:selected="dataSupplierOrder.itens"
       :list="listProduct"
       :loading="isLoading"
       :open="showTableSelectProductVariant"

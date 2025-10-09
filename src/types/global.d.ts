@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
-import type { FilterSupplier, DataSupplierCatalog, CatalogSupplier } from './Supplier';
+import type {
+  FilterSupplier,
+  DataSupplierCatalog,
+  CatalogSupplier,
+  SupplierSelect,
+} from './Supplier';
 import type {
   CategorySupplier,
   CategoryProduct,
@@ -107,6 +112,7 @@ declare global {
   type IActionStock = ActionStock;
   type IActionMovement = ActionsMovement;
   type IActionsSupplier = ActionsSupplier;
+  type ISupplierSelect = SupplierSelect;
   type ITag = Tag;
   type ILog = Log;
   type IProductModalTabs = ProductModalTabs;

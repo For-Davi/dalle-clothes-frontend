@@ -53,3 +53,8 @@ export interface CatalogSupplier {
   color_name: string | null;
   supplier_name: string;
 }
+
+export interface SupplierSelect {
+  id: number;
+  name: string;
+}
