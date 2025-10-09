@@ -49,6 +49,7 @@ import type {
   SearchProductVariant,
   DataMovementProductRegister,
   ExportProduct,
+  ClientCartProduct,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -136,6 +137,7 @@ declare global {
   type ISearchProductVariant = SearchProductVariant;
   type IDataMovementProductRegister = DataMovementProductRegister;
   type IExportProduct = ExportProduct;
+  type IClientCartProduct = ClientCartProduct;
   type ICustomFile = CustomFile;
   type IImage = Image;
   type IMediaItem = MediaItem;

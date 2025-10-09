@@ -477,7 +477,7 @@ watch(open, async () => {
               no-caps
             />
           </div>
-          <div>
+          <div class="flex row justify-end q-gutter-x-sm">
             <q-btn
               color="red"
               label="Fechar"
