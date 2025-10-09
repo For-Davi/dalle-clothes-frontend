@@ -110,10 +110,10 @@ export const useUserStore = defineStore('user', {
         this.setLoading(false);
       }
     },
-    async deleteUser(userId: number) {
+    async deleteUser(userId: number, deleteEmployee: number) {
       this.setLoading(true);
       try {
-        const response = await deleteUserService(userId);
+        const response = await deleteUserService(userId, deleteEmployee);
         if (response.status === 200) {
           this.clearListUserSystem();
           this.setListUserSystem(response.data.users);

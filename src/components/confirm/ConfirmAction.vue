@@ -11,13 +11,15 @@ const props = defineProps<{
   title: string;
   labelAction: string;
   message: string;
+  checkShow?: boolean;
+  checkLabel?: string;
 }>();
 const emit = defineEmits<{
   'update:open': [void];
-  'update:ok': [void];
+  'update:ok': [number];
 }>();
 
-const check = ref<boolean>(false);
+const check = ref(0);
 
 const open = computed({
   get: () => props.open,
@@ -25,13 +27,13 @@ const open = computed({
 });
 
 const confirm = () => {
-  emit('update:ok');
+  emit('update:ok', check.value);
 };
 const close = () => {
   emit('update:open');
 };
 const clear = (): void => {
-  check.value = false;
+  check.value = 0;
 };
 
 watch(open, () => {
@@ -50,13 +52,12 @@ watch(open, () => {
         <div class="column text-subtitle2">
           <span class="text-red q-px-sm">{{ props.message }}</span>
           <q-checkbox
+            v-if="props.checkShow"
             v-model="check"
-            v-show="
-              props.title === 'Confirmação de agendamento' ||
-              props.title === 'Confirmação de movimentação'
-            "
-            size="sm"
-            label="Eu li e concordo com a descrição de alerta para esta categoria"
+            size="md"
+            :true-value="1"
+            :false-value="0"
+            :label="props.checkLabel || ''"
           />
         </div>
       </q-card-section>
