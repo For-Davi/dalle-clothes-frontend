@@ -28,9 +28,9 @@ const userMonitoring = ref<number | null>(null);
 const clear = (): void => {
   userMonitoring.value = null;
 };
-const closeConfirmActionOk = async () => {
+const closeConfirmActionOk = async (deleteEmployee: number) => {
   showConfirmAction.value = false;
-  await useUserStore().deleteUser(userMonitoring.value ?? 0);
+  await useUserStore().deleteUser(userMonitoring.value ?? 0, deleteEmployee);
   clear();
 };
 const closeConfirmAction = (): void => {
@@ -124,6 +124,8 @@ onMounted(async () => {
       label-action="Continuar"
       title="Confirmação de exclusão de usuário"
       message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá o usuário permanentemente."
+      :check-show="true"
+      check-label="Deseja excluir este mesmo usuário da lista de funcionários caso esteja cadastrado?"
       @update:open="closeConfirmAction"
       @update:ok="closeConfirmActionOk"
     />

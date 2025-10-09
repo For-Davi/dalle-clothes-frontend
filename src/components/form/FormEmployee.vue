@@ -737,7 +737,7 @@ watch(open, async () => {
               <q-icon name="check" color="black" size="20px" />
             </template>
           </q-select>
-          <q-toggle
+          <q-checkbox
             v-show="employeeId === null"
             v-model="hasLoginAccess"
             label="Criar acesso ao sistema"

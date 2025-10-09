@@ -368,18 +368,18 @@ export const checkDataEmployee = (
     name: string;
     email: string;
     dateBirthday: string;
-    password: string;
-    confirmPassword: string;
+    password: string | null;
+    confirmPassword: string | null;
   },
   hasAccessLogin: boolean,
 ): { status: boolean; message?: string } => {
   if (data.name.trim() === '') {
-    return { status: false, message: 'Deve ser informado o nome do fornecedor' };
+    return { status: false, message: 'Deve ser informado o nome do funcionário' };
   }
   if (data.name.trim().length < 2) {
     return {
       status: false,
-      message: 'Nome de fornecedor deve ter mais de 2 caracteres',
+      message: 'Nome do funcionário deve ter mais de 2 caracteres',
     };
   }
   if (data.email.trim() !== '') {
@@ -403,19 +403,21 @@ export const checkDataEmployee = (
         return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
       }
     }
-    if (data.password.trim() === '') {
+    if (data.password?.trim() === '') {
       return {
         status: false,
         message: 'Deve ser informado a senha do usuário',
       };
     }
-    if (data.password.trim().length < 7) {
-      return {
-        status: false,
-        message: 'A senha deve conter mais de 7 caracteres',
-      };
+    if (data.password !== null) {
+      if (data.password.trim().length < 7) {
+        return {
+          status: false,
+          message: 'A senha deve conter mais de 7 caracteres',
+        };
+      }
     }
-    if (data.password.trim() !== (data.confirmPassword && data.confirmPassword.trim())) {
+    if (data.password?.trim() !== (data.confirmPassword && data.confirmPassword.trim())) {
       return { status: false, message: 'As senhas não coincidem' };
     }
   }

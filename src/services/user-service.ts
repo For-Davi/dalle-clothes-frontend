@@ -67,10 +67,14 @@ export const updateUserService = (
 
 export const deleteUserService = (
   id: number,
+  deleteEmployee: number,
 ): Promise<{
   status: number;
   data: {
     users: IUserSystem[];
     message: string;
   };
-}> => api.delete(`${baseUrl}/${id}`);
+}> =>
+  api.delete(`${baseUrl}/${id}`, {
+    data: { deleteEmployee },
+  });

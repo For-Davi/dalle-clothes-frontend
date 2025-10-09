@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 import FormProfile from '../form/FormProfile.vue';
@@ -24,6 +24,7 @@ const { appearanceSetting } = storeToRefs(useSettingsStore());
 
 const router = useRouter();
 const dropdown = ref<{ hide: () => void } | null>(null);
+const localImage = ref<IImage | null>(user.value?.image ?? null);
 
 const openPerfil = () => {
   dropdown.value?.hide();
@@ -49,6 +50,29 @@ const getColorIconNavbar = computed(() => {
     ? appearanceSetting.value.navbar_icon_color_code
     : undefined;
 });
+const getImageUrl = (file: File | ICustomFile | IImage | null | undefined): string => {
+  if (!file) {
+    return '/images/user.png';
+  }
+
+  if ('url' in file && file.url) {
+    return file.url;
+  }
+
+  if (file instanceof File) {
+    return URL.createObjectURL(file);
+  }
+
+  if ('img' in file && file.img) {
+    return file.img;
+  }
+
+  return '/images/user.png';
+};
+
+watch(user, (newUser) => {
+  localImage.value = newUser?.image ?? null;
+});
 </script>
 
 <template>
@@ -56,7 +80,7 @@ const getColorIconNavbar = computed(() => {
     <template v-slot:label>
       <div class="row items-center no-wrap q-pa-none">
         <q-avatar class="q-ml-sm">
-          <q-img size="sm" src="/images/user.png" />
+          <img size="sm" :src="getImageUrl(localImage)" />
         </q-avatar>
         <span
           class="q-ml-sm"

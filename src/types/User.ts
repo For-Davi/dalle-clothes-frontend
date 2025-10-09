@@ -6,6 +6,8 @@ export interface User {
   role_id: number;
   enterprise_id: number;
   department_id: number;
+  image_id: number | null;
+  image: IImage | null;
 }
 
 export interface UserSystem {

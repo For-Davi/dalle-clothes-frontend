@@ -275,7 +275,7 @@ watch(open, async () => {
             bg-color="white"
             label-color="black"
             outlined
-            label="Nome do fornecedor"
+            label="Nome do cliente"
             dense
             input-class="text-black"
           >
@@ -306,7 +306,7 @@ watch(open, async () => {
             bg-color="white"
             label-color="black"
             outlined
-            label="E-mail do fornecedor"
+            label="E-mail do cliente"
             dense
             input-class="text-black"
             autocomplete="new-email"

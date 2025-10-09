@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
 import { createError } from 'src/composables/CreateNotify';
@@ -25,6 +25,7 @@ const dataRegister = reactive({
   password: '' as string,
   confirmPassword: '' as string,
   nameEnterprise: '' as string,
+  sellerCode: '' as string,
 });
 
 const clear = (): void => {
@@ -34,6 +35,7 @@ const clear = (): void => {
     nameEnterprise: '',
     password: '',
     confirmPassword: '',
+    sellerCode: '',
   });
 };
 const register = async () => {
@@ -44,11 +46,21 @@ const register = async () => {
       dataRegister.email,
       dataRegister.password,
       dataRegister.nameEnterprise,
+      dataRegister.sellerCode,
     );
   } else {
     createError(check.message);
   }
 };
+
+watch(
+  () => dataRegister.sellerCode,
+  (value: string) => {
+    if (value !== null) {
+      dataRegister.sellerCode = value.toUpperCase();
+    }
+  },
+);
 
 onMounted(() => {
   clear();
@@ -144,6 +156,20 @@ onMounted(() => {
         </template>
         <template v-slot:prepend>
           <q-icon name="key" color="black" size="20px" />
+        </template>
+      </q-input>
+      <q-input
+        v-model="dataRegister.sellerCode"
+        bg-color="white"
+        label-color="black"
+        outlined
+        label="Código do vendedor"
+        dense
+        input-class="text-black"
+        maxlength="20"
+      >
+        <template v-slot:prepend>
+          <q-icon name="badge" color="black" size="20px" />
         </template>
       </q-input>
     </div>
