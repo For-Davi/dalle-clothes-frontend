@@ -674,3 +674,14 @@ export const checkEnterpriseData = (data: {
 
   return { status: true };
 };
+
+export const checkProductClientData = (data: IClientCartProduct): { status: boolean, message?: string } => {
+  if(data.stock_quantity < data.quantity){
+    return { status: false, message: 'A quantidade informada excede a quantidade em estoque'}
+  }
+  if(data.quantity === 0){
+    return { status: false, message: 'A quantidade informada é inválida' }
+  }
+
+  return { status: true }
+}

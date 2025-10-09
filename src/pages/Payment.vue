@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
+import PaymentStepper from 'src/components/stepper/PaymentStepper.vue';
+
 defineOptions({
   name: 'Payment',
 });
@@ -9,5 +11,6 @@ defineOptions({
     <section>
       <TitlePage title="Caixa" icon="point_of_sale" />
     </section>
+    <PaymentStepper />
   </main>
 </template>

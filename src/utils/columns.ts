@@ -683,3 +683,48 @@ export const columnsSupplierLinkedProducts: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsClientCart: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: 'Preço',
+    field: 'price',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Quantidade',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];

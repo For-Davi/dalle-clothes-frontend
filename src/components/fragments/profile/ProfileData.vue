@@ -128,8 +128,6 @@ watch(user, (newUser) => {
 <template>
   <section class="q-gutter-y-sm">
     <div class="flex justify-center">
-      data {{ dataProfile }}
-      user.value?.image {{ user.image }}
       <q-avatar
         color="grey-4"
         size="200px"

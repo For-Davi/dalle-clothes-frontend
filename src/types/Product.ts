@@ -109,6 +109,7 @@ export interface Product {
   sku: string;
   code: string;
   variant_active: number;
+  newQuantity?: number;
   color: {
     name: string;
     hex_color_code: string;
@@ -267,5 +268,20 @@ export interface SearchProductVariant {
       name: string;
       active: number;
     };
+  } | null;
+}
+
+export interface ClientCartProduct {
+  product_variant_id: number;
+  price: number;
+  stock_quantity: number;
+  sku: string;
+  code: string;
+  variant_active: number;
+  quantity: number;
+  newQuantity?: number;
+  color: {
+    name: string;
+    hex_color_code: string;
   } | null;
 }
