@@ -50,6 +50,7 @@ import type {
   DataMovementProductRegister,
   ExportProduct,
   ClientCartProduct,
+  SupplierCartProduct
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -167,4 +168,5 @@ declare global {
   type INotification = Notification;
   type IEnterprise = Enterprise;
   type IDataEnterprise = DataEnterprise;
+  type ISupplierCartProduct = SupplierCartProduct;
 }
