@@ -287,3 +287,22 @@ export interface ClientCartProduct {
     hex_color_code: string;
   } | null;
 }
+<<<<<<< HEAD
+=======
+
+export interface SupplierCartProduct {
+  product_variant_id: number;
+  price: number;
+  newPrice: number;
+  stock_quantity: number;
+  sku: string;
+  code: string;
+  variant_active: number;
+  quantity: number;
+  newQuantity?: number;
+  color: {
+    name: string;
+    hex_color_code: string;
+  } | null;
+}
+>>>>>>> 93f3da4 (Feat: Ajustes em gerenciamento de itens)

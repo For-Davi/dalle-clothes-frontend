@@ -795,7 +795,11 @@ export const columnsClientCart: IQuasarTable[] = [
   },
 ];
 
+<<<<<<< HEAD
 export const listColumns: IQuasarTable[] = [
+=======
+export const columnsSupplierCart: IQuasarTable[] = [
+>>>>>>> 93f3da4 (Feat: Ajustes em gerenciamento de itens)
   {
     name: 'name',
     label: 'Nome',
@@ -815,12 +819,30 @@ export const listColumns: IQuasarTable[] = [
     align: 'left',
   },
   {
+<<<<<<< HEAD
     name: 'price',
     label: 'Preço',
+=======
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Quantidade',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: 'R$ Valor unitário',
+>>>>>>> 93f3da4 (Feat: Ajustes em gerenciamento de itens)
     field: 'price',
     align: 'left',
   },
   {
+<<<<<<< HEAD
     name: 'offer',
     label: 'Preço em oferta',
     field: 'offer',
@@ -836,6 +858,11 @@ export const listColumns: IQuasarTable[] = [
     name: 'color',
     label: 'Cor',
     field: 'color',
+=======
+    name: 'total',
+    label: 'R$ Total',
+    field: 'total',
+>>>>>>> 93f3da4 (Feat: Ajustes em gerenciamento de itens)
     align: 'left',
   },
   {
@@ -845,4 +872,7 @@ export const listColumns: IQuasarTable[] = [
     align: 'right',
   },
 ];
+<<<<<<< HEAD
 
+=======
+>>>>>>> 93f3da4 (Feat: Ajustes em gerenciamento de itens)
