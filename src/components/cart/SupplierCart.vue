@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import TableSupplierListProducts from '../table/TableSupplierListProducts.vue';
 import TableSupplierCart from '../table/TableSupplierCart.vue';
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 defineOptions({
     name:'SupplierCart'
 })
+
+const emit = defineEmits<{
+  'send-card': [ISupplierCartProduct[]];
+}>();
 
 const supplierCartProducts = ref<ISupplierCartProduct[]>([])
 
@@ -26,6 +30,9 @@ const removeCart = (id: number) => {
   }
 };
 
+watch(() => supplierCartProducts, () => {
+  emit('send-card', supplierCartProducts.value);
+});
 </script>
 
 <template>
