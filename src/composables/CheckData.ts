@@ -649,27 +649,33 @@ export const checkExportData = (data: {
 };
 
 export const checkEnterpriseData = (data: {
-  name: string;
-  email: string;
-  phone: string;
-  cpf: string;
-  cnpj: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  cpf: string | null;
+  cnpj: string | null;
 }): { status: boolean; message?: string } => {
-  if (data.name.trim() === '') {
+  // Garante que tudo seja string
+  const name = data.name?.trim() || '';
+  const email = data.email?.trim() || '';
+  const cpf = data.cpf?.trim() || '';
+  const cnpj = data.cnpj?.trim() || '';
+
+  if (name === '') {
     return { status: false, message: 'Deve ser informado o nome da empresa' };
   }
-  if (data.email !== '') {
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email.trim())) {
+  if (email !== '') {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       return { status: false, message: 'Informe um e-mail válido' };
     }
   }
-  if (data.cpf !== '') {
-    if (data.cpf.trim().length > 11 || data.cpf.trim().length < 11) {
+  if (cpf !== '') {
+    if (cpf.length !== 11) {
       return { status: false, message: 'Informe um CPF válido' };
     }
   }
-  if (data.cnpj !== '') {
-    if (data.cnpj.trim().length > 14 || data.cnpj.trim().length < 14) {
+  if (cnpj !== '') {
+    if (cnpj.length !== 14) {
       return { status: false, message: 'Informe um CNPJ válido' };
     }
   }
@@ -677,13 +683,15 @@ export const checkEnterpriseData = (data: {
   return { status: true };
 };
 
-export const checkProductClientData = (data: IClientCartProduct): { status: boolean, message?: string } => {
-  if(data.stock_quantity < data.quantity){
-    return { status: false, message: 'A quantidade informada excede a quantidade em estoque'}
+export const checkProductClientData = (
+  data: IClientCartProduct,
+): { status: boolean; message?: string } => {
+  if (data.stock_quantity < data.quantity) {
+    return { status: false, message: 'A quantidade informada excede a quantidade em estoque' };
   }
-  if(data.quantity === 0){
-    return { status: false, message: 'A quantidade informada é inválida' }
+  if (data.quantity === 0) {
+    return { status: false, message: 'A quantidade informada é inválida' };
   }
 
-  return { status: true }
-}
+  return { status: true };
+};

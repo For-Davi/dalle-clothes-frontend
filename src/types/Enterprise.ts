@@ -16,6 +16,7 @@ export interface Enterprise {
 }
 
 export interface DataEnterprise {
+  id?: number | null;
   name: string;
   email: string | null;
   phone: string | null;

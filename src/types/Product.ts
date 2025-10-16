@@ -26,7 +26,7 @@ export interface ProductVariant {
 export interface VModelProductVariant {
   price: string;
   cost: string;
-  offer: string;
+  offer: number;
   stockQuantity: string;
   minStockAlert: string;
   sku: string;
@@ -110,6 +110,7 @@ export interface Product {
   code: string;
   variant_active: number;
   newQuantity?: number;
+  offer: number | null;
   color: {
     name: string;
     hex_color_code: string;
@@ -274,6 +275,7 @@ export interface SearchProductVariant {
 export interface ClientCartProduct {
   product_variant_id: number;
   price: number;
+  offer: number | null;
   stock_quantity: number;
   sku: string;
   code: string;

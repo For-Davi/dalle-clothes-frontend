@@ -26,6 +26,7 @@ const { loadingEnterprise } = storeToRefs(useEnterpriseStore());
 const router = useRouter();
 
 const dataEnterprise = reactive({
+  id: null as number | null,
   name: '' as string,
   email: '' as string,
   phone: '' as string,
@@ -94,6 +95,7 @@ const checkDataEdit = async () => {
     const enterprise = response.data.enterprise;
 
     Object.assign(dataEnterprise, {
+      id: enterprise.id ?? 0,
       name: enterprise.name,
       email: enterprise.email,
       phone: enterprise.phone,

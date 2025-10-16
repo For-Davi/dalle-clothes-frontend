@@ -1,39 +1,39 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { columnsProduct } from 'src/utils/columns';
+import { listColumns } from 'src/utils/columns';
 import { useProductStore } from 'src/stores/product-store';
 import { formatToReal } from 'src/composables/Money';
 import { checkProductClientData } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
 
 defineOptions({
-    name: 'TableListProducts'
-})
+  name: 'TableListProducts',
+});
 
 const emit = defineEmits<{
-    'add-to-cart':[IClientCartProduct];
-}>()
+  'add-to-cart': [IClientCartProduct];
+}>();
 
 const { loadingProduct, listProduct } = storeToRefs(useProductStore());
 
-const filter = ref<string>('')
-const localProducts = ref<IClientCartProduct[]>([])
+const filter = ref<string>('');
+const localProducts = ref<IClientCartProduct[]>([]);
 
 const startAddCart = (product: IClientCartProduct) => {
-    const check = checkProductClientData(product)
+  const check = checkProductClientData(product);
 
-    if(check.status){
-        emit('add-to-cart', product)
+  if (check.status) {
+    emit('add-to-cart', product);
 
-        product.quantity = 0;
-    } else {
-        createErrorData(check.message || 'Erro ao adicionar produto ao carrinho')
-    }
-}
+    product.quantity = 0;
+  } else {
+    createErrorData(check.message || 'Erro ao adicionar produto ao carrinho');
+  }
+};
 const fetchProducts = async (): Promise<void> => {
   await useProductStore().getProducts();
-  localProducts.value = listProduct.value.map((p: IProduct) => ({ ...p, quantity:0, }));
+  localProducts.value = listProduct.value.map((p: IProduct) => ({ ...p, quantity: 0 }));
 };
 const getColorStyle = (hexColor: string) => {
   return {
@@ -56,10 +56,10 @@ onMounted(async () => {
 </script>
 
 <template>
-    <section>
-         <q-table
+  <section>
+    <q-table
       :rows="loadingProduct ? [] : localProducts"
-      :columns="columnsProduct"
+      :columns="listColumns"
       :filter="filter"
       :loading="loadingProduct"
       title="Lista de produtos"
@@ -67,7 +67,8 @@ onMounted(async () => {
       no-data-label="Nenhum produto para mostrar"
       virtual-scroll
       dense
-      :rows-per-page-options="[5]"
+      :rows-per-page-options="[0]"
+      style="max-height: 400px"
     >
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -117,6 +118,9 @@ onMounted(async () => {
           <q-td key="price" :props="props" class="text-left">
             {{ formatToReal(props.row.price) }}
           </q-td>
+          <q-td key="offer" :props="props" class="text-left">
+            {{ formatToReal(props.row.offer) }}
+          </q-td>
           <q-td
             key="stock_quantity"
             :props="props"
@@ -137,52 +141,51 @@ onMounted(async () => {
             </div>
           </q-td>
 
-          <q-td key="action" :props="props" >
-           <div class="flex row justify-end">
-             <q-btn
-              size="md"
-              flat
-              round
-              color="red"
-              icon="remove"
-              class="q-mr-sm"
-              :disable="props.row.stock_quantity <= 0"
-              @click="props.row.quantity--"
-            />
-                <q-input
-            outlined
-            dense
-            v-model.number="props.row.quantity"
-            input-class="text-right"
-            class="q-mr-sm"
-            style="width: 65px;"
-            />
-            <q-btn
-              size="md"
-              flat
-              round
-              color="green"
-              icon="add"
-              class="q-mr-sm"
-              :disable="props.row.stock_quantity <= 0"
-              @click="props.row.quantity++"
-            />
-            <q-btn
-              size="md"
-              flat
-              round
-              color="primary"
-              icon="add_shopping_cart"
-              :disable="props.row.stock_quantity <= 0 || props.row.quantity <= 0"
-              @click="startAddCart(props.row)">
-            <q-tooltip>
-                Adicionar ao carrinho do cliente
-            </q-tooltip>
-            </q-btn>
-           </div>
-           </q-td>
+          <q-td key="action" :props="props">
+            <div class="flex row justify-end">
+              <q-btn
+                size="md"
+                flat
+                round
+                color="red"
+                icon="remove"
+                class="q-mr-sm"
+                :disable="props.row.stock_quantity <= 0"
+                @click="props.row.quantity--"
+              />
+              <q-input
+                outlined
+                dense
+                v-model.number="props.row.quantity"
+                input-class="text-right"
+                class="q-mr-sm"
+                style="width: 65px"
+              />
+              <q-btn
+                size="md"
+                flat
+                round
+                color="green"
+                icon="add"
+                class="q-mr-sm"
+                :disable="props.row.stock_quantity <= 0"
+                @click="props.row.quantity++"
+              />
+              <q-btn
+                size="md"
+                flat
+                round
+                color="primary"
+                icon="add_shopping_cart"
+                :disable="props.row.stock_quantity <= 0 || props.row.quantity <= 0"
+                @click="startAddCart(props.row)"
+              >
+                <q-tooltip> Adicionar ao carrinho do cliente </q-tooltip>
+              </q-btn>
+            </div>
+          </q-td>
         </q-tr>
       </template>
     </q-table>
-    </section>
+  </section>
 </template>

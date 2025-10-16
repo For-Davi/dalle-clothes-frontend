@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { formatToReal } from 'src/composables/Money';
 import { columnsClientCart } from 'src/utils/columns';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 
 defineOptions({
   name: 'TablePaymentClients',
 });
 
 const props = defineProps<{
-  rows: IClientCartProduct[]
-}>()
+  rows: IClientCartProduct[];
+}>();
 
 const emit = defineEmits<{
-  'remove-from-cart':[number];
-}>()
+  'remove-from-cart': [number];
+}>();
 
 const filter = ref<string>('');
 
@@ -31,9 +31,17 @@ const getColorStyle = (hexColor: string) => {
 
 const totalValue = computed(() => {
   return props.rows.reduce((acc, p) => {
-    return acc + (p.price * (p.newQuantity || 0));
+    return acc + p.price * (p.newQuantity || 0);
   }, 0);
 });
+
+watch(
+  () => props.rows,
+  (newVal) => {
+    console.log('chegou', newVal);
+  },
+  { deep: true },
+);
 </script>
 
 <template>
@@ -47,7 +55,8 @@ const totalValue = computed(() => {
       no-data-label="Nenhum produto adicionado ao carrinho"
       virtual-scroll
       dense
-      :rows-per-page-options="[5]"
+      :rows-per-page-options="[0]"
+      style="max-height: 400px"
     >
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -56,7 +65,7 @@ const totalValue = computed(() => {
           </q-th>
         </q-tr>
       </template>
-     <template v-slot:body="props">
+      <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
@@ -68,7 +77,7 @@ const totalValue = computed(() => {
             {{ props.row.code }}
           </q-td>
           <q-td key="price" :props="props" class="text-left">
-            {{ formatToReal(props.row.price) }}
+            {{ formatToReal(props.row.offer ? props.row.offer : props.row.price) }}
           </q-td>
           <q-td key="color" :props="props" class="text-left">
             <div
@@ -81,32 +90,37 @@ const totalValue = computed(() => {
               }}</q-tooltip>
             </div>
           </q-td>
-          <q-td
-            key="quantity"
-            :props="props"
-            class="text-left"
-          >
+          <q-td key="quantity" :props="props" class="text-left">
             {{ props.row.newQuantity }}
           </q-td>
-          <q-td key="action" :props="props" >
-           <div class="flex row justify-end">
-            <q-btn
-              size="md"
-              flat
-              round
-              color="red"
-              icon="remove_shopping_cart"
-              @click="emit('remove-from-cart', props.row.product_variant_id)">
-            <q-tooltip>
-                Remover produto do carrinho
-            </q-tooltip>
-            </q-btn>
-           </div>
-           </q-td>
+          <q-td key="action" :props="props">
+            <div class="flex row justify-end">
+              <q-btn
+                size="md"
+                flat
+                round
+                color="red"
+                icon="remove_shopping_cart"
+                @click="emit('remove-from-cart', props.row.product_variant_id)"
+              >
+                <q-tooltip> Remover produto do carrinho </q-tooltip>
+              </q-btn>
+            </div>
+          </q-td>
         </q-tr>
         <q-tr :props="props" :key="`e_${props.row.index}`" class="q-virtual-scroll--with-prev">
           <q-td colspan="100%">
-            <div class="text-left text-bold"> Preço por linha: <span class="text-green text-bold">{{ formatToReal((props.row.price * props.row.newQuantity).toString()) }}</span></div>
+            <div class="text-left text-bold">
+              Preço por linha:
+              <span class="text-green text-bold">{{
+                formatToReal(
+                  (props.row.offer
+                    ? props.row.offer * props.row.newQuantity
+                    : props.row.price * props.row.newQuantity
+                  ).toString(),
+                )
+              }}</span>
+            </div>
           </q-td>
         </q-tr>
       </template>
