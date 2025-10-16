@@ -104,13 +104,13 @@ export interface DataUpdateVariant {
 
 export interface Product {
   product_variant_id: number;
-  price: number;
+  price: string;
   stock_quantity: number;
   sku: string;
   code: string;
   variant_active: number;
   newQuantity?: number;
-  offer: number | null;
+  offer: string;
   color: {
     name: string;
     hex_color_code: string;
@@ -274,8 +274,8 @@ export interface SearchProductVariant {
 
 export interface ClientCartProduct {
   product_variant_id: number;
-  price: number;
-  offer: number | null;
+  price: string;
+  offer: string | null;
   stock_quantity: number;
   sku: string;
   code: string;

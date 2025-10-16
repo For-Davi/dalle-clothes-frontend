@@ -19,7 +19,29 @@ export interface Client {
   enterprise_id: number | null;
   description: string | null;
   sex: string;
-  created_at: string;
+  created_at?: string;
+}
+
+export interface VModelClient {
+  id: number | null;
+  name: string;
+  email: string | null;
+  dateBirthday: string | null;
+  cpf: string | null;
+  cnpj: string | null;
+  stateRegistration: string | null;
+  municipalRegistration: string | null;
+  phone: string | null;
+  country: string | null;
+  state: string | null;
+  city: string | null;
+  cep: string | null;
+  neighborhood: string | null;
+  address: string | null;
+  number: string | null;
+  complement: string | null;
+  description: string | null;
+  sex: string;
 }
 
 export interface FilterClient {

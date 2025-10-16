@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import TypesReceiptsManage from 'src/components/manage/TypesReceiptsManage.vue';
 import FormReceipt from 'src/components/form/FormReceipt.vue';
 import { ref, reactive, onMounted } from 'vue';
 import { useReceiptstore } from 'src/stores/receipt-store';
@@ -8,7 +7,6 @@ import TableReceipt from 'src/components/table/TableReceipt.vue';
 
 defineOptions({ name: 'Receipts' });
 
-const showTypeReceiptManage = ref(false);
 const filterReceipt = ref('');
 const showFormReceipt = reactive<{
   open: boolean;
@@ -18,9 +16,6 @@ const showFormReceipt = reactive<{
   receiptID: null,
 });
 
-const changeShowTypeReceiptsManage = (): void => {
-  showTypeReceiptManage.value = !showTypeReceiptManage.value;
-};
 const changeShowFormReceipt = (show: boolean, receiptID: number | null = null): void => {
   Object.assign(showFormReceipt, { open: show, receiptID });
 };
@@ -45,19 +40,10 @@ onMounted(async () => {
         <q-btn
           color="white"
           text-color="black"
-          label="Nova conta"
+          label="Novo recebimento"
           icon-right="add"
           no-caps
           @click="changeShowFormReceipt(true)"
-        />
-        <q-btn
-          color="white"
-          text-color="black"
-          label="Tipos"
-          no-caps
-          icon-right="credit_card"
-          class="q-ml-sm"
-          @click="changeShowTypeReceiptsManage"
         />
       </div>
     </section>
@@ -83,10 +69,6 @@ onMounted(async () => {
     </section>
 
     <!-- Modals -->
-    <TypesReceiptsManage
-      :open="showTypeReceiptManage"
-      @update:open="changeShowTypeReceiptsManage"
-    />
     <FormReceipt :data="showFormReceipt" @update:open="changeShowFormReceipt(false)" />
   </main>
 </template>

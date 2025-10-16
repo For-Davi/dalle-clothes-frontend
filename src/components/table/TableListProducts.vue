@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { listColumns } from 'src/utils/columns';
 import { useProductStore } from 'src/stores/product-store';
@@ -14,6 +14,9 @@ defineOptions({
 const emit = defineEmits<{
   'add-to-cart': [IClientCartProduct];
 }>();
+const props = defineProps<{
+  hiddenIds?: number[];
+}>();
 
 const { loadingProduct, listProduct } = storeToRefs(useProductStore());
 
@@ -25,8 +28,6 @@ const startAddCart = (product: IClientCartProduct) => {
 
   if (check.status) {
     emit('add-to-cart', product);
-
-    product.quantity = 0;
   } else {
     createErrorData(check.message || 'Erro ao adicionar produto ao carrinho');
   }
@@ -50,6 +51,11 @@ const isStockCritical = (stock: number | string): boolean => {
   return Number(stock) === 0;
 };
 
+const filteredProducts = computed(() => {
+  if (!props.hiddenIds?.length) return localProducts.value;
+  return localProducts.value.filter((p) => !props.hiddenIds?.includes(p.product_variant_id));
+});
+
 onMounted(async () => {
   await fetchProducts();
 });
@@ -58,7 +64,7 @@ onMounted(async () => {
 <template>
   <section>
     <q-table
-      :rows="loadingProduct ? [] : localProducts"
+      :rows="loadingProduct ? [] : filteredProducts"
       :columns="listColumns"
       :filter="filter"
       :loading="loadingProduct"
@@ -119,7 +125,7 @@ onMounted(async () => {
             {{ formatToReal(props.row.price) }}
           </q-td>
           <q-td key="offer" :props="props" class="text-left">
-            {{ formatToReal(props.row.offer) }}
+            {{ props.row.offer !== '0.00' ? formatToReal(props.row.offer) : '-' }}
           </q-td>
           <q-td
             key="stock_quantity"
@@ -158,6 +164,9 @@ onMounted(async () => {
                 dense
                 v-model.number="props.row.quantity"
                 input-class="text-right"
+                mask="#"
+                fill-mask="0"
+                reverse-fill-mask
                 class="q-mr-sm"
                 style="width: 65px"
               />

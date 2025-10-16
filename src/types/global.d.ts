@@ -23,7 +23,7 @@ import type {
 import type { QuasarSelect, QuasarTable } from './Quasar';
 import type { RoleSelect } from './Role';
 import type { FilterUser, User } from './User';
-import type { FilterClient, Client } from './Client';
+import type { FilterClient, Client, VModelClient } from './Client';
 import type { Color } from './Color';
 import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
@@ -76,6 +76,7 @@ import type {
 import type { Notification } from './Notification';
 import type { DataSupplierOrder, SupplierOrder } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
+import type { VModelSalePayment } from './Payments';
 
 export {};
 
@@ -168,5 +169,9 @@ declare global {
   type INotification = Notification;
   type IEnterprise = Enterprise;
   type IDataEnterprise = DataEnterprise;
+
+  type IVModelClient = VModelClient;
+
+  type IVModelSalePayment = VModelSalePayment;
   type ISupplierCartProduct = SupplierCartProduct;
 }

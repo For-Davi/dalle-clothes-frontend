@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatToReal } from 'src/composables/Money';
 import { columnsClientCart } from 'src/utils/columns';
-import { ref, computed, watch } from 'vue';
+import { ref, watch } from 'vue';
 
 defineOptions({
   name: 'TablePaymentClients',
@@ -13,9 +13,11 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'remove-from-cart': [number];
+  'send-total': [number];
 }>();
 
 const filter = ref<string>('');
+const total = ref<number>(0);
 
 const getColorStyle = (hexColor: string) => {
   return {
@@ -29,18 +31,17 @@ const getColorStyle = (hexColor: string) => {
   };
 };
 
-const totalValue = computed(() => {
-  return props.rows.reduce((acc, p) => {
-    return acc + p.price * (p.newQuantity || 0);
-  }, 0);
-});
-
 watch(
   () => props.rows,
-  (newVal) => {
-    console.log('chegou', newVal);
+  (rows) => {
+    total.value = 0;
+    rows.forEach((p) => {
+      const unitPrice = p.offer && Number(p.offer) > 0 ? p.offer : p.price;
+      total.value += Number(unitPrice) * (p.newQuantity ?? 0);
+    });
+    emit('send-total', total.value);
   },
-  { deep: true },
+  { deep: true, immediate: true },
 );
 </script>
 
@@ -58,6 +59,15 @@ watch(
       :rows-per-page-options="[0]"
       style="max-height: 400px"
     >
+      <template v-slot:top>
+        <div class="row justify-between items-center full-width">
+          <span class="text-body1">Carrinho do cliente</span>
+          <q-space />
+          <span class="text-h6 text-green text-bold"
+            >Total: {{ formatToReal(total.toString()) }}</span
+          >
+        </div>
+      </template>
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props" class="text-h5">
@@ -77,7 +87,11 @@ watch(
             {{ props.row.code }}
           </q-td>
           <q-td key="price" :props="props" class="text-left">
-            {{ formatToReal(props.row.offer ? props.row.offer : props.row.price) }}
+            {{
+              formatToReal(
+                props.row.offer && props.row.offer > 0 ? props.row.offer : props.row.price,
+              )
+            }}
           </q-td>
           <q-td key="color" :props="props" class="text-left">
             <div
@@ -108,13 +122,13 @@ watch(
             </div>
           </q-td>
         </q-tr>
-        <q-tr :props="props" :key="`e_${props.row.index}`" class="q-virtual-scroll--with-prev">
+        <q-tr :props="props" :key="props.row.index" class="q-virtual-scroll--with-prev">
           <q-td colspan="100%">
             <div class="text-left text-bold">
               Preço por linha:
               <span class="text-green text-bold">{{
                 formatToReal(
-                  (props.row.offer
+                  (props.row.offer && props.row.offer > 0
                     ? props.row.offer * props.row.newQuantity
                     : props.row.price * props.row.newQuantity
                   ).toString(),
@@ -124,7 +138,6 @@ watch(
           </q-td>
         </q-tr>
       </template>
-      {{ totalValue }}
     </q-table>
   </section>
 </template>

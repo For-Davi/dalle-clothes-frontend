@@ -2,6 +2,10 @@ export interface Receipt {
   id: number;
   identifier: string;
   type_receipt_id: number | null;
+  type: {
+    id: number;
+    name: string;
+  };
   active: number;
   enterprise_id: number;
   description: string | null;

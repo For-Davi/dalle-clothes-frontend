@@ -655,7 +655,6 @@ export const checkEnterpriseData = (data: {
   cpf: string | null;
   cnpj: string | null;
 }): { status: boolean; message?: string } => {
-  // Garante que tudo seja string
   const name = data.name?.trim() || '';
   const email = data.email?.trim() || '';
   const cpf = data.cpf?.trim() || '';
@@ -691,6 +690,16 @@ export const checkProductClientData = (
   }
   if (data.quantity === 0) {
     return { status: false, message: 'A quantidade informada é inválida' };
+  }
+
+  return { status: true };
+};
+
+export const checkSaleProductsData = (
+  data: IClientCartProduct[],
+): { status: boolean; message?: string } => {
+  if (data.length === 0) {
+    return { status: false, message: 'O carrinho do cliente está vazio' };
   }
 
   return { status: true };

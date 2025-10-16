@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue';
+import { ref, reactive, onMounted, computed, watch } from 'vue';
 import { useClientStore } from 'src/stores/client-store';
 import { storeToRefs } from 'pinia';
 import FormClientPayment from '../fragments/payment/FormClientPayment.vue';
@@ -7,6 +7,8 @@ import Empty from '../info/Empty.vue';
 import FormClient from '../form/FormClient.vue';
 import ClientCart from '../cart/ClientCart.vue';
 import FormPayment from '../form/FormPayment.vue';
+import { checkSaleProductsData } from 'src/composables/CheckData';
+import { createErrorData } from 'src/composables/CreateNotify';
 
 defineOptions({
   name: 'PaymentStepper',
@@ -15,8 +17,56 @@ defineOptions({
 const { listClient } = storeToRefs(useClientStore());
 
 const step = ref<number>(1);
-const dataSaleForm = reactive({
-  clientId: null as number | null,
+const dataSale = reactive({
+  totalPrice: '0.00' as string,
+  products: [] as IClientCartProduct[],
+});
+const dataPayment = reactive({
+  sellerID: null as number | null,
+  change: '' as string,
+  freight: '' as string,
+  freightValue: '' as string,
+  cep: '' as string,
+  state: '' as string,
+  city: '' as string,
+  neighborhood: '' as string,
+  address: '' as string,
+  numberAddress: '' as string,
+  complement: '' as string,
+  recipientName: '' as string,
+  recipientPhone: '' as string,
+  fees: '' as string,
+  couponID: null as number | null,
+  payment: [] as Array<{
+    paymentType: string | null;
+    value: string;
+    receiptID: number | null;
+    installment: {
+      value: number;
+      amount: string;
+    } | null;
+  }>,
+});
+const dataClient = reactive({
+  id: null as number | null,
+  name: '' as string,
+  email: '' as string,
+  cpf: '' as string,
+  cnpj: '' as string,
+  stateRegistration: '' as string,
+  municipalRegistration: '' as string,
+  phone: '' as string,
+  country: '' as string,
+  state: '' as string,
+  city: '' as string,
+  cep: '' as string,
+  neighborhood: '' as string,
+  address: '' as string,
+  number: '' as string,
+  complement: '' as string,
+  description: '' as string,
+  dateBirthday: '' as string,
+  sex: '' as string,
 });
 const showFormClient = reactive<{
   open: boolean;
@@ -35,6 +85,69 @@ const changeShowFormClient = (show: boolean, clientId: null = null) => {
 };
 const fetchClients = async (): Promise<void> => {
   await useClientStore().getClients();
+};
+const checkDataEdit = (clientSelected: IClient) => {
+  if (clientSelected) {
+    const client = clientSelected;
+
+    Object.assign(dataClient, {
+      id: client.id ?? null,
+      name: client.name ?? '',
+      email: client.email ?? '',
+      phone: client.phone ?? '',
+      cpf: client.cpf ? String(client.cpf) : '',
+      cnpj: client.cnpj ? String(client.cnpj) : '',
+      stateRegistration: client.state_registration ?? '',
+      municipalRegistration: client.municipal_registration ?? '',
+      country: client.country ?? '',
+      state: client.state ?? '',
+      city: client.city ?? '',
+      cep: client.cep ? String(client.cep) : '',
+      neighborhood: client.neighborhood ?? '',
+      address: client.address ?? '',
+      number: client.number ? String(client.number) : '',
+      complement: client.complement ?? '',
+      description: client.description ?? '',
+      dateBirthday: client.date_birthday ?? '',
+      sex: client.sex === 'M' ? 'Masculino' : 'Feminino',
+    });
+  }
+};
+const resetProducts = () => {
+  Object.assign(dataSale, {
+    totalPrice: '0.00',
+    products: [],
+  });
+};
+const resetPayment = () => {
+  Object.assign(dataPayment, {
+    sellerID: null,
+    change: '',
+    freightValue: '',
+    cep: '',
+  state: '',
+  city: '',
+  neighborhood: '',
+  address: '',
+  numberAddress: '',
+    complement: '',
+    recipientName: '',
+    recipientPhone: '',
+    fees: '',
+    couponID: null,
+    payment: [],
+  });
+};
+const addTotal = (total: number) => {
+  dataSale.totalPrice = total.toString();
+};
+const checkProducts = () => {
+  const check = checkSaleProductsData(dataSale.products);
+  if (check.status) {
+    step.value = 3;
+  } else {
+    createErrorData(check.message || 'Erro ao vincular os produtos ao cliente');
+  }
 };
 
 const listClientOptions = computed(() => {
@@ -56,7 +169,13 @@ const listClientOptions = computed(() => {
   return options.filter((option) => option.label.toLowerCase().includes(needle));
 });
 const selectedClient = computed(() => {
-  return listClient.value.find((c) => c.id === dataSaleForm.clientId) || null;
+  return listClient.value.find((c) => c.id === dataClient.id) || null;
+});
+
+watch(selectedClient, (newClient) => {
+  if (newClient) {
+    checkDataEdit(newClient);
+  }
 });
 
 onMounted(async () => {
@@ -71,7 +190,7 @@ onMounted(async () => {
         <div class="flex row">
           <q-select
             outlined
-            v-model="dataSaleForm.clientId"
+            v-model="dataClient.id"
             :options="listClientOptions"
             emit-value
             map-options
@@ -86,12 +205,8 @@ onMounted(async () => {
             style="width: 100%"
           />
         </div>
-
-        <div v-if="selectedClient !== null">
-          <FormClientPayment
-            :show="selectedClient !== null ? true : false"
-            :client="selectedClient"
-          />
+        <div v-if="selectedClient">
+          <FormClientPayment v-model="dataClient" :show="selectedClient ? true : false" />
         </div>
         <div v-else class="q-mt-md">
           <Empty message="Nenhum cliente selecionado" color="bg-red-3" />
@@ -116,18 +231,38 @@ onMounted(async () => {
         icon="add_shopping_cart"
         :done="step > 2"
       >
-        <ClientCart />
+        <ClientCart v-model="dataSale.products" @add-total="addTotal" />
         <q-stepper-navigation align="right">
           <div class="flex row justify-end items-center q-gutter-x-sm">
+            <q-btn label="Resetar" color="red" no-caps unelevated outline @click="resetProducts" />
             <q-btn label="Voltar" color="primary" flat no-caps @click="step = 1" />
-            <q-btn label="Próximo" color="primary" no-caps @click="step = 3" />
+            <q-btn label="Próximo" color="primary" no-caps @click="checkProducts" />
           </div>
         </q-stepper-navigation>
       </q-step>
       <q-step :name="3" title="Preencha o formulário de venda" icon="point_of_sale">
-        <FormPayment />
+        <FormPayment :totalPrice="dataSale.totalPrice" v-model="dataPayment" />
         <q-stepper-navigation align="right">
-          <q-btn label="Tetse" color="primary" @click="step = 1" />
+          <div class="flex row justify-end items-center q-gutter-x-sm">
+            <q-btn label="Resetar" color="red" no-caps unelevated outline @click="resetPayment" />
+            <q-btn label="Voltar" flat color="primary" no-caps unelevated @click="step = 2" />
+            <q-btn
+              label="Finalizar venda"
+              color="primary"
+              no-caps
+              unelevated
+              @click="
+                console.log(
+                  'Dados da Venda:',
+                  dataSale,
+                  'Dados do Pagamento:',
+                  dataPayment,
+                  'Dados do Cliente:',
+                  dataClient,
+                )
+              "
+            />
+          </div>
         </q-stepper-navigation>
       </q-step>
     </q-stepper>
