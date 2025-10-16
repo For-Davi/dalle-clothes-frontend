@@ -38,11 +38,12 @@ const totalValue = computed(() => {
 
 <template>
   <section>
+    props.rows {{ props.rows }}
     <q-table
       :rows="props.rows"
       :columns="columnsSupplierCart"
       :filter="filter"
-      title="Carrinho do cliente"
+      title="Itens do pedido"
       row-key="index"
       no-data-label="Nenhum produto adicionado ao carrinho"
       virtual-scroll
