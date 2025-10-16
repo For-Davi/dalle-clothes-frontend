@@ -332,6 +332,7 @@ watch(open, async () => {
           <q-btn v-else color="primary" label="Atualizar" size="md" unelevated no-caps />
         </div>
       </q-card-actions>
+      dataSupplierOrder {{ dataSupplierOrder.itens }}
     </q-card>
 
     <!-- Modals -->

@@ -35,6 +35,7 @@ const open = computed({
         <TitlePage title="Gerenciamento de itens" icon="list_alt" />
       </q-card-section>
       <q-card-section class="q-pa-md">
+        selected {{ selected }}
         <SupplierCart @send-cart="makeList"/>
       </q-card-section>
       <q-card-actions align="right" >

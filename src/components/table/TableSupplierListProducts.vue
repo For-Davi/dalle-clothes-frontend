@@ -19,8 +19,7 @@ const filter = ref<string>('')
 const localProducts = ref<ISupplierCartProduct[]>([])
 
 const startAddCart = (product: ISupplierCartProduct) => {
-  emit('add-to-cart', product)
-
+ emit('add-to-cart', product)
   product.quantity = 0;
   product.newPrice = 0;
 }
@@ -117,6 +116,7 @@ onMounted(async () => {
             </div>
           </q-td>
         <q-td key="quantity" :props="props" class="text-left">
+          quantity {{ props.row.quantity }}
           <q-input
             outlined
             dense
@@ -130,6 +130,7 @@ onMounted(async () => {
             />
         </q-td>
         <q-td key="price" :props="props" class="text-left">
+          newPrice {{ props.row.newPrice }}
           <q-input
             outlined
             dense
