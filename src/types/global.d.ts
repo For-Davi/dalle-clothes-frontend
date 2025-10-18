@@ -50,7 +50,7 @@ import type {
   DataMovementProductRegister,
   ExportProduct,
   ClientCartProduct,
-  SupplierCartProduct
+  SupplierCartProduct,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -65,7 +65,7 @@ import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
 import type { TypesReceipt } from './Types';
 import type { DataMovement, ExportMovement, FilterMovement, Movement } from './Movement';
-import type { Receipt, DataReceipt } from './Receipts';
+import type { Receipt, DataReceipt, FilterReceipt } from './Receipts';
 import type {
   DataSchedule,
   FilterSchedule,
@@ -174,4 +174,6 @@ declare global {
 
   type IVModelSalePayment = VModelSalePayment;
   type ISupplierCartProduct = SupplierCartProduct;
+
+  type IFilterReceipt = FilterReceipt;
 }

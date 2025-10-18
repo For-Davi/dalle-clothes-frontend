@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useReceiptstore } from 'src/stores/receipt-store';
 import { columnsReceipts } from 'src/utils/columns';
 import ConfirmAction from 'src/components/confirm/ConfirmAction.vue';
+import { PaymentTypeLabels } from 'src/enums/payment-enum';
 
 defineOptions({
   name: 'TableReceipt',
@@ -89,7 +90,10 @@ onMounted(async () => {
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td key="name">{{ props.row.identifier }}</q-td>
-        <q-td key="type">{{ props.row.type?.name || 'Nenhum selecionado' }}</q-td>
+        <q-td key="type">{{
+          PaymentTypeLabels[props.row.type?.name as keyof typeof PaymentTypeLabels] ||
+          'Nenhum selecionado'
+        }}</q-td>
         <q-td key="active">
           <q-icon
             :name="props.row.active === 1 ? 'check_circle' : 'close'"

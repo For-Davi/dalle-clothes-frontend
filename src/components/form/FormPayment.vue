@@ -7,7 +7,7 @@ import { useEmployeeStore } from 'src/stores/employee-store';
 import { useReceiptstore } from 'src/stores/receipt-store';
 import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 import { searchCep } from 'src/services/cep-service';
-import { PaymentTypeLabels, PaymentType } from 'src/enums/payment-enum';
+import { PaymentTypeLabels } from 'src/enums/payment-enum';
 
 defineOptions({
   name: 'FormPayment',
@@ -15,6 +15,10 @@ defineOptions({
 
 const props = defineProps<{
   totalPrice: string;
+  checkPaymentsReset: boolean;
+}>();
+const emit = defineEmits<{
+  'send-missing-amount': [number];
 }>();
 
 const { listEmployee } = storeToRefs(useEmployeeStore());
@@ -27,18 +31,18 @@ const showAddress = ref(false);
 const numPayments = ref<number>(2);
 const totalPricePayment = ref<string>(props.totalPrice);
 const searchFilter = ref<string>('');
-const allowSearchCep = ref<boolean>(false)
-const loading = ref<boolean>(false)
+const allowSearchCep = ref<boolean>(false);
+const loading = ref<boolean>(false);
 const model = defineModel<IVModelSalePayment>({
   default: () => ({
     sellerID: null,
     freight: '',
     freightValue: '',
     cep: '',
-    state:'',
-    city:'',
-    neighborhood:'',
-    address:'',
+    state: '',
+    city: '',
+    neighborhood: '',
+    address: '',
     numberAddress: '',
     complement: '',
     recipientName: '',
@@ -53,8 +57,8 @@ const fetchEmployees = async (): Promise<void> => {
   await useEmployeeStore().getEmployees();
 };
 const fetchReceiptsAndTypes = async (): Promise<void> => {
-  await useReceiptstore().getReceipt();
-  await useTypesReceiptStore().getTypesReceipt();
+  await useReceiptstore().getReceipt({ active: 1 });
+  await useTypesReceiptStore().getTypesReceipt({ active: 1 });
 };
 const createPayments = (count: number) => {
   model.value.payment = [];
@@ -84,6 +88,24 @@ const getReceiptOptions = (paymentType: string | null) => {
     return options;
   }
 };
+const clearFreight = () => {
+  model.value.freightValue = '';
+  model.value.cep = '';
+  model.value.state = '';
+  model.value.city = '';
+  model.value.neighborhood = '';
+  model.value.address = '';
+  model.value.numberAddress = '';
+  model.value.complement = '';
+  model.value.recipientName = '';
+  model.value.recipientPhone = '';
+};
+const isMoneyAndHasArrayPayment = (label: string) => {
+  return label === 'MONEY' && model.value.payment.some((p) => p.paymentType === 'MONEY');
+};
+const createPaymentsAfterReset = () => {
+  createPayments(paymentTotal.value ? 1 : 2);
+};
 
 const formattedPhone = computed({
   get() {
@@ -111,19 +133,17 @@ const totalPaid = computed(() =>
   model.value.payment.reduce((sum, p) => sum + Number(p.value || 0), 0),
 );
 const missingAmount = computed(() => {
-  const hasInstallment = model.value.payment.some((p) => p.installment !== null);
-  if (hasInstallment) {
-    return 0;
-  }
+  const payments = model.value.payment;
+  const hasInstallment = payments.some((p) => p.installment !== null && p.installment.value > 1);
+  if (hasInstallment) return 0;
   const diff = Number(totalPricePayment.value) - totalPaid.value;
   return diff > 0 ? diff : 0;
 });
+
 const totalForInstallment = computed(() => {
-  const alreadyPaid = totalPaid.value;
-  const total = Number(totalPricePayment.value) - alreadyPaid;
+  const total = Number(totalPricePayment.value) - totalPaid.value;
   return total > 0 ? total : 0;
 });
-
 const getInstallmentOptions = computed(() => {
   const total = totalForInstallment.value || 0;
   const options = [];
@@ -165,18 +185,37 @@ const listEmployeeOptions = computed(() => {
   const needle = searchFilter.value.toLowerCase();
   return options.filter((option) => option.label.toLowerCase().includes(needle));
 });
-const getChange = computed(() => {
-  totalPaid.value > Number(totalPricePayment)
-    ? formatToReal((totalPaid.value - Number(totalPricePayment)).toString())
-    : ' R$ 0,00';
-});
 const getTypes = computed(() => {
-  return Object.values(PaymentType).map((type) => ({
-    label: PaymentTypeLabels[type],
-    value: type,
+  return listTypesReceipt.value.map((type: ITypesReceipt) => ({
+    label: PaymentTypeLabels[type.name as keyof typeof PaymentTypeLabels],
+    value: type.name,
   }));
 });
 
+watch(
+  () => props.checkPaymentsReset,
+  () => {
+    createPaymentsAfterReset();
+  },
+);
+watch(
+  () => missingAmount.value,
+  () => {
+    emit('send-missing-amount', missingAmount.value);
+  },
+);
+watch(
+  () => totalPaid.value,
+  () => {
+    if (totalPaid.value > Number(totalPricePayment.value)) {
+      model.value.change = (totalPaid.value - Number(totalPricePayment.value))
+        .toFixed(2)
+        .toString();
+    } else {
+      model.value.change = '0.00';
+    }
+  },
+);
 watch(
   () => model.value.cep,
   async (cep) => {
@@ -205,6 +244,7 @@ watch(
     loading.value = false;
   },
 );
+
 watch(
   [paymentTotal, paymentDivider, numPayments],
   ([isTotal, isDivider, count]) => {
@@ -214,33 +254,19 @@ watch(
       createPayments(count <= 2 ? 2 : count);
     }
   },
-  { immediate: true },
+  { immediate: true, deep: true },
 );
+
 watch(
   [() => model.value.freightValue, () => model.value.fees],
   ([freight, fees]) => {
-    const freightValue = Number(freight) || 0;
-    const feesValue = Number(fees) || 0;
-    const base = Number(props.totalPrice) || 0;
+    const freightValue = Number(freight);
+    const feesValue = Number(fees);
+    const total = Number(props.totalPrice);
 
-    totalPricePayment.value = (base + freightValue + feesValue).toString();
+    totalPricePayment.value = (total + freightValue + feesValue).toString();
   },
   { immediate: true },
-);
-watch(
-  () => showAddress.value,
-  () => {
-    model.value.freightValue = '';
-    model.value.cep = '';
-    model.value.state = '';
-    model.value.city = '';
-    model.value.neighborhood = '';
-    model.value.address = '';
-    model.value.numberAddress = '';
-    model.value.complement = '';
-    model.value.recipientName = '';
-    model.value.recipientPhone = '';
-  },
 );
 watch(
   [paymentTotal, paymentDivider],
@@ -304,7 +330,7 @@ onMounted(async () => {
 
         <section class="border-blue-light q-pa-md q-gutter-y-sm">
           <TitlePage title="Entrega" icon="local_shipping" class="q-pa-none q-ma-none" />
-          <q-toggle v-model="showAddress" label="Frete" size="lg" />
+          <q-toggle v-model="showAddress" label="Frete" size="lg" @click="clearFreight" />
           <q-input
             label="R$ Valor do frete"
             v-model="model.freightValue"
@@ -418,21 +444,21 @@ onMounted(async () => {
                 <q-icon name="numbers" color="black" size="20px" />
               </template>
             </q-input>
-          <q-input
-            v-model="model.complement"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Complemento"
-            dense
-            input-class="text-black"
-            class="input-divider"
-            :disable="showAddress === false ? true : false"
-          >
-            <template v-slot:prepend>
-              <q-icon name="numbers" color="black" size="20px" />
-            </template>
-          </q-input>
+            <q-input
+              v-model="model.complement"
+              bg-color="white"
+              label-color="black"
+              outlined
+              label="Complemento"
+              dense
+              input-class="text-black"
+              class="input-divider"
+              :disable="showAddress === false ? true : false"
+            >
+              <template v-slot:prepend>
+                <q-icon name="numbers" color="black" size="20px" />
+              </template>
+            </q-input>
           </div>
           <q-input
             v-model="model.recipientName"
@@ -469,7 +495,9 @@ onMounted(async () => {
             <span class="text-bold text-h6 text-bold text-green"
               >Total: {{ formatToReal(totalPricePayment) }}</span
             >
-            <span class="text-bold text-h6 text-bold text-blue-9">Troco: {{ getChange }}</span>
+            <span class="text-bold text-h6 text-bold text-blue-9"
+              >Troco: {{ formatToReal(model.change) }}</span
+            >
             <span class="text-bold text-h6 text-bold text-red-9"
               >Faltando: {{ formatToReal(missingAmount.toString()) }}</span
             >
@@ -527,15 +555,32 @@ onMounted(async () => {
                 dense
                 options-dense
                 map-options
-                @update:model-value="(val: IQuasarSelect<number>) => payments.paymentType = val?.label ?? null"
+                @update:model-value="
+                  (val: IQuasarSelect<string>) => (payments.paymentType = val?.value ?? null)
+                "
               >
                 <template v-slot:prepend>
                   <q-icon name="wallet" color="black" />
                 </template>
+
+                <template v-slot:option="scope">
+                  <q-item
+                    v-bind="scope.itemProps"
+                    v-if="!isMoneyAndHasArrayPayment(scope.opt.value)"
+                  >
+                    <q-item-section>
+                      <q-item-label>{{ scope.opt.label }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
               </q-select>
 
               <q-input
-                v-if="(payments.installment?.value === null && payments.installment?.amount === null) && payments.paymentType === 'Cartão de Crédito'"
+                v-if="
+                  !payments.installment ||
+                  payments.installment?.value === null ||
+                  payments.installment?.amount === null
+                "
                 label="R$ Valor"
                 v-model="payments.value"
                 bg-color="white"
@@ -554,33 +599,23 @@ onMounted(async () => {
                 </template>
               </q-input>
               <q-select
-  v-model="payments.receiptID"
-  label="Selecione o recebimento"
-  :options="getReceiptOptions(payments.paymentType)"
-  map-options
-  options-dense
-  outlined
-  dense
->
-  <template v-slot:prepend>
-    <q-icon name="payments" color="black" />
-  </template>
-
-  <!-- <template v-slot:option="scope">
-    <q-item
-      clickable
-      v-close-popup
-      dense
-      @click="payments.receiptID = scope.opt.value"
-      v-if="payments.paymentType === scope.opt.value || payments.paymentType !== null"
-    >
-      <q-item-section>
-        {{ scope.opt.label }}
-      </q-item-section>
-    </q-item>
-  </template> -->
-</q-select>
-              <div v-if="payments.paymentType === 'Cartão de Crédito'" class="q-gutter-y-sm">
+                v-model="payments.receiptID"
+                label="Selecione o recebimento"
+                :options="getReceiptOptions(payments.paymentType)"
+                map-options
+                options-dense
+                outlined
+                dense
+                @update:model-value="
+                  (val: IQuasarSelect<number>) => (payments.receiptID = val?.value ?? null)
+                "
+                :disable="payments.paymentType === null"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="payments" color="black" />
+                </template>
+              </q-select>
+              <div v-if="payments.paymentType === 'CREDIT_CARD'" class="q-gutter-y-sm">
                 <q-select
                   v-model="payments.installment"
                   label="Parcelamento"

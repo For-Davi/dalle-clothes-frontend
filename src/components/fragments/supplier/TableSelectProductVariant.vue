@@ -30,15 +30,15 @@ const open = computed({
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 form-basic" style="min-width: 98vw;">
+    <q-card class="bg-grey-2 form-basic" style="min-width: 98vw">
       <q-card-section class="q-pa-none">
         <TitlePage title="Gerenciamento de itens" icon="list_alt" />
       </q-card-section>
       <q-card-section class="q-pa-md">
         selected {{ selected }}
-        <SupplierCart @send-cart="makeList"/>
+        <SupplierCart @send-cart="makeList" />
       </q-card-section>
-      <q-card-actions align="right" >
+      <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-md">
           <q-btn
             color="red"
@@ -49,7 +49,6 @@ const open = computed({
             unelevated
             no-caps
           />
-
         </div>
       </q-card-actions>
     </q-card>

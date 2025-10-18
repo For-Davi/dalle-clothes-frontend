@@ -846,7 +846,6 @@ export const listColumns: IQuasarTable[] = [
   },
 ];
 
-
 export const columnsSupplierCart: IQuasarTable[] = [
   {
     name: 'name',

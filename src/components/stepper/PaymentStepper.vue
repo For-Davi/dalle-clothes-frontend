@@ -7,7 +7,7 @@ import Empty from '../info/Empty.vue';
 import FormClient from '../form/FormClient.vue';
 import ClientCart from '../cart/ClientCart.vue';
 import FormPayment from '../form/FormPayment.vue';
-import { checkSaleProductsData } from 'src/composables/CheckData';
+import { checkPaymentData, checkSaleProductsData } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
 
 defineOptions({
@@ -17,6 +17,8 @@ defineOptions({
 const { listClient } = storeToRefs(useClientStore());
 
 const step = ref<number>(1);
+const checkPaymentsReset = ref<boolean>(false);
+const missingAmount = ref<number>(0);
 const dataSale = reactive({
   totalPrice: '0.00' as string,
   products: [] as IClientCartProduct[],
@@ -125,11 +127,11 @@ const resetPayment = () => {
     change: '',
     freightValue: '',
     cep: '',
-  state: '',
-  city: '',
-  neighborhood: '',
-  address: '',
-  numberAddress: '',
+    state: '',
+    city: '',
+    neighborhood: '',
+    address: '',
+    numberAddress: '',
     complement: '',
     recipientName: '',
     recipientPhone: '',
@@ -137,6 +139,8 @@ const resetPayment = () => {
     couponID: null,
     payment: [],
   });
+
+  checkPaymentsReset.value = !checkPaymentsReset.value;
 };
 const addTotal = (total: number) => {
   dataSale.totalPrice = total.toString();
@@ -148,6 +152,19 @@ const checkProducts = () => {
   } else {
     createErrorData(check.message || 'Erro ao vincular os produtos ao cliente');
   }
+};
+const sendData = () => {
+  const check = checkPaymentData(dataPayment, missingAmount.value);
+  if (check.status) {
+    console.log('Dados do cliente', dataClient);
+    console.log('Dados dos produtos', dataSale);
+    console.log('Dados da venda', dataPayment);
+  } else {
+    createErrorData(check.message || 'Erro ao finalizar venda');
+  }
+};
+const setMissingAmount = (missAmount: number) => {
+  missingAmount.value = missAmount;
 };
 
 const listClientOptions = computed(() => {
@@ -171,6 +188,10 @@ const listClientOptions = computed(() => {
 const selectedClient = computed(() => {
   return listClient.value.find((c) => c.id === dataClient.id) || null;
 });
+
+const setClientID = (id: number) => {
+  dataClient.id = id;
+};
 
 watch(selectedClient, (newClient) => {
   if (newClient) {
@@ -241,32 +262,26 @@ onMounted(async () => {
         </q-stepper-navigation>
       </q-step>
       <q-step :name="3" title="Preencha o formulário de venda" icon="point_of_sale">
-        <FormPayment :totalPrice="dataSale.totalPrice" v-model="dataPayment" />
+        <FormPayment
+          :totalPrice="dataSale.totalPrice"
+          :checkPaymentsReset="checkPaymentsReset"
+          v-model="dataPayment"
+          @send-missing-amount="setMissingAmount"
+        />
         <q-stepper-navigation align="right">
           <div class="flex row justify-end items-center q-gutter-x-sm">
             <q-btn label="Resetar" color="red" no-caps unelevated outline @click="resetPayment" />
             <q-btn label="Voltar" flat color="primary" no-caps unelevated @click="step = 2" />
-            <q-btn
-              label="Finalizar venda"
-              color="primary"
-              no-caps
-              unelevated
-              @click="
-                console.log(
-                  'Dados da Venda:',
-                  dataSale,
-                  'Dados do Pagamento:',
-                  dataPayment,
-                  'Dados do Cliente:',
-                  dataClient,
-                )
-              "
-            />
+            <q-btn label="Finalizar venda" color="primary" no-caps unelevated @click="sendData" />
           </div>
         </q-stepper-navigation>
       </q-step>
     </q-stepper>
   </section>
   <!-- Modals -->
-  <FormClient :data="showFormClient" @update:open="changeShowFormClient(false)" />
+  <FormClient
+    :data="showFormClient"
+    @update:open="changeShowFormClient(false)"
+    @send-id="setClientID"
+  />
 </template>

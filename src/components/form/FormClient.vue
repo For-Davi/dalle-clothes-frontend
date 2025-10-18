@@ -20,6 +20,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  'send-id': [number];
 }>();
 
 const { loadingClient } = storeToRefs(useClientStore());
@@ -98,6 +99,7 @@ const save = async () => {
     );
     if (response?.status === 201) {
       clear();
+      emit('send-id', response.data.clients[response.data.clients.length - 1].id);
       emit('update:open');
     }
   } else {

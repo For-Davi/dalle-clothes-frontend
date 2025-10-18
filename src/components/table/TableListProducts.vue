@@ -33,7 +33,13 @@ const startAddCart = (product: IClientCartProduct) => {
   }
 };
 const fetchProducts = async (): Promise<void> => {
-  await useProductStore().getProducts();
+  await useProductStore().getProducts({
+    active: 1,
+    name: null,
+    sku: null,
+    category: null,
+    stockCritical: null,
+  });
   localProducts.value = listProduct.value.map((p: IProduct) => ({ ...p, quantity: 0 }));
 };
 const getColorStyle = (hexColor: string) => {

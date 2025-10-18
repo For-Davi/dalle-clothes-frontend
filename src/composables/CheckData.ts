@@ -704,3 +704,78 @@ export const checkSaleProductsData = (
 
   return { status: true };
 };
+
+export const checkPaymentData = (
+  data: IVModelSalePayment,
+  missingAmount: number,
+): { status: boolean; message?: string } => {
+  // VALIDAÇÃO GERAL
+  if (data.payment.length === 0) {
+    return { status: false, message: 'Insira algum pagamento' };
+  }
+  if (data.payment.some((p) => p.paymentType === null)) {
+    return { status: false, message: 'Deve ser informado a forma de pagamento' };
+  }
+
+  //VALIDAÇÃO DE PIX
+  const hasPix = data.payment.find((p) => p.paymentType === 'PIX');
+  if (hasPix) {
+    if (hasPix.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
+    }
+    if (hasPix.value.trim() === '0.00') {
+      return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE DINHEIRO
+  const hasMoney = data.payment.find((p) => p.paymentType === 'MONEY');
+  if (hasMoney) {
+    if (hasMoney.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
+    }
+    if (hasMoney.value.trim() === '0.00') {
+      return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE DÉBITO
+  const hasDebitCard = data.payment.find((p) => p.paymentType === 'DEBIT_CARD');
+  if (hasDebitCard) {
+    if (hasDebitCard.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento com cartão de débito.' };
+    }
+    if (hasDebitCard.value.trim() === '0.00') {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de débito não pode ser zero.',
+      };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE CRÉDITO
+  const hasCreditCard = data.payment.find((p) => p.paymentType === 'CREDIT_CARD');
+  if (hasCreditCard) {
+    if (hasCreditCard.value.trim() === '' && !hasCreditCard.installment) {
+      return {
+        status: false,
+        message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
+      };
+    }
+    if (hasCreditCard.value.trim() === '0.00' && !hasCreditCard.installment) {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
+      };
+    }
+  }
+
+  if (missingAmount > 0) {
+    return {
+      status: false,
+      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar a venda`,
+    };
+  }
+
+  return { status: true };
+};

@@ -7,6 +7,7 @@ import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 import { useReceiptstore } from 'src/stores/receipt-store';
 import { checkReceiptData } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
+import { PaymentTypeLabels } from 'src/enums/payment-enum';
 
 defineOptions({ name: 'FormReceipt' });
 
@@ -96,7 +97,10 @@ const changeLoading = (value: boolean) => {
 const receiptID = computed(() => props.data.receiptID);
 const optionsTypes = computed((): IQuasarSelect<number | null>[] => [
   { label: 'Nenhum selecionado', value: null },
-  ...listTypesReceipt.value.map((item) => ({ label: item.name, value: item.id })),
+  ...listTypesReceipt.value.map((item) => ({
+    label: PaymentTypeLabels[item.name as keyof typeof PaymentTypeLabels],
+    value: item.id,
+  })),
 ]);
 const optionsStatus = computed(() => [
   { label: 'Ativo', value: 1 },
