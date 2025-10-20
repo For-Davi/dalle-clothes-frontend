@@ -76,7 +76,7 @@ import type {
 import type { Notification } from './Notification';
 import type { DataSupplierOrder, SupplierOrder } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
-import type { VModelSalePayment } from './Payments';
+import type { VModelSalePayment, DataSale } from './Payments';
 
 export {};
 
@@ -176,4 +176,6 @@ declare global {
   type ISupplierCartProduct = SupplierCartProduct;
 
   type IFilterReceipt = FilterReceipt;
+
+  type IDataSale = DataSale;
 }

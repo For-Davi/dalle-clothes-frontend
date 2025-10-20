@@ -770,6 +770,12 @@ export const checkPaymentData = (
     }
   }
 
+  //VALIDAÇÃO DE RECEBIMENTO
+  const notHaveReceipt = data.payment.find((p) => p.receiptID === null);
+  if (notHaveReceipt) {
+    return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
+  }
+
   if (missingAmount > 0) {
     return {
       status: false,

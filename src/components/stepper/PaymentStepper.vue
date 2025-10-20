@@ -8,7 +8,8 @@ import FormClient from '../form/FormClient.vue';
 import ClientCart from '../cart/ClientCart.vue';
 import FormPayment from '../form/FormPayment.vue';
 import { checkPaymentData, checkSaleProductsData } from 'src/composables/CheckData';
-import { createErrorData } from 'src/composables/CreateNotify';
+import { createErrorData, createSuccess } from 'src/composables/CreateNotify';
+import { useSaleStore } from 'src/stores/sale-store';
 
 defineOptions({
   name: 'PaymentStepper',
@@ -25,9 +26,9 @@ const dataSale = reactive({
 });
 const dataPayment = reactive({
   sellerID: null as number | null,
-  change: '' as string,
+  change: '0.00' as string,
   freight: '' as string,
-  freightValue: '' as string,
+  freightValue: '0.00' as string,
   cep: '' as string,
   state: '' as string,
   city: '' as string,
@@ -37,12 +38,12 @@ const dataPayment = reactive({
   complement: '' as string,
   recipientName: '' as string,
   recipientPhone: '' as string,
-  fees: '' as string,
+  fees: '0.00' as string,
   couponID: null as number | null,
   payment: [] as Array<{
-    paymentType: string | null;
+    paymentType: string;
     value: string;
-    receiptID: number | null;
+    receiptID: number;
     installment: {
       value: number;
       amount: string;
@@ -124,8 +125,8 @@ const resetProducts = () => {
 const resetPayment = () => {
   Object.assign(dataPayment, {
     sellerID: null,
-    change: '',
-    freightValue: '',
+    change: '0.00',
+    freightValue: '0.00',
     cep: '',
     state: '',
     city: '',
@@ -135,7 +136,7 @@ const resetPayment = () => {
     complement: '',
     recipientName: '',
     recipientPhone: '',
-    fees: '',
+    fees: '0.00',
     couponID: null,
     payment: [],
   });
@@ -143,7 +144,7 @@ const resetPayment = () => {
   checkPaymentsReset.value = !checkPaymentsReset.value;
 };
 const addTotal = (total: number) => {
-  dataSale.totalPrice = total.toString();
+  dataSale.totalPrice = total.toFixed(2).toString();
 };
 const checkProducts = () => {
   const check = checkSaleProductsData(dataSale.products);
@@ -153,12 +154,32 @@ const checkProducts = () => {
     createErrorData(check.message || 'Erro ao vincular os produtos ao cliente');
   }
 };
-const sendData = () => {
+const sendData = async () => {
   const check = checkPaymentData(dataPayment, missingAmount.value);
   if (check.status) {
-    console.log('Dados do cliente', dataClient);
-    console.log('Dados dos produtos', dataSale);
-    console.log('Dados da venda', dataPayment);
+    const response = await useSaleStore().createSale({
+      clientData: dataClient,
+      dataSale: dataSale,
+      sellerID: dataPayment.sellerID,
+      change: dataPayment.change,
+      freightValue: dataPayment.freightValue,
+      cep: dataPayment.cep,
+      state: dataPayment.state,
+      city: dataPayment.city,
+      neighborhood: dataPayment.neighborhood,
+      address: dataPayment.address,
+      numberAddress: dataPayment.numberAddress,
+      complement: dataPayment.complement,
+      recipientName: dataPayment.recipientName,
+      recipientPhone: dataPayment.recipientPhone,
+      fees: dataPayment.fees,
+      couponID: dataPayment.couponID,
+      payment: dataPayment.payment,
+    });
+
+    if (response?.status === 201) {
+      createSuccess('Venda salva com sucesso!');
+    }
   } else {
     createErrorData(check.message || 'Erro ao finalizar venda');
   }

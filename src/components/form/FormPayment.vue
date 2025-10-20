@@ -80,11 +80,6 @@ const getReceiptOptions = (paymentType: string | null) => {
         value: r.id || null,
       }));
 
-    options.unshift({
-      label: 'Sem recebimento',
-      value: null,
-    });
-
     return options;
   }
 };
@@ -148,7 +143,7 @@ const getInstallmentOptions = computed(() => {
   const total = totalForInstallment.value || 0;
   const options = [];
 
-  for (let i = 2; i <= 13; i++) {
+  for (let i = 2; i <= 12; i++) {
     const installmentValue = total / i;
     const amountValue = installmentValue.toFixed(2);
 
