@@ -1,6 +1,7 @@
 export interface VModelSalePayment {
   sellerID: number | null;
   change: string;
+  freight: boolean;
   freightValue: string;
   cep: string | null;
   state: string | null;
@@ -11,6 +12,7 @@ export interface VModelSalePayment {
   complement: string;
   recipientName: string;
   recipientPhone: string;
+  observation: string | null;
   fees: string | null;
   couponID: number | null;
   payment: Array<{
@@ -26,13 +28,13 @@ export interface VModelSalePayment {
 
 export interface DataSale {
   clientData: IVModelClient;
-  dataSale: {
+  saleData: {
     totalPrice: string;
     products: IClientCartProduct[];
   };
-  sellerID: number | null;
-  change: string;
-  freightValue: string;
+  deliveryData: {
+    freight: boolean;
+    freightValue: string;
   cep: string | null;
   state: string | null;
   city: string | null;
@@ -42,7 +44,12 @@ export interface DataSale {
   complement: string | null;
   recipientName: string | null;
   recipientPhone: string | null;
-  fees: string | null;
+  observation: string | null;
+  }
+  paymentData: {
+    sellerID: number | null;
+    change: string;
+    fees: string | null;
   couponID: number | null;
   payment: Array<{
     paymentType: string;
@@ -53,4 +60,5 @@ export interface DataSale {
       amount: string;
     } | null;
   }>;
+  }
 }

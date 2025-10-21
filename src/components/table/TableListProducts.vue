@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { listColumns } from 'src/utils/columns';
+import { columnsListProductsSale } from 'src/utils/columns';
 import { useProductStore } from 'src/stores/product-store';
 import { formatToReal } from 'src/composables/Money';
 import { checkProductClientData } from 'src/composables/CheckData';
@@ -71,7 +71,7 @@ onMounted(async () => {
   <section>
     <q-table
       :rows="loadingProduct ? [] : filteredProducts"
-      :columns="listColumns"
+      :columns="columnsListProductsSale"
       :filter="filter"
       :loading="loadingProduct"
       title="Lista de produtos"
@@ -162,7 +162,7 @@ onMounted(async () => {
                 color="red"
                 icon="remove"
                 class="q-mr-sm"
-                :disable="props.row.stock_quantity <= 0"
+                :disable="props.row.stock_quantity <= 0 || props.row.quantity === 0"
                 @click="props.row.quantity--"
               />
               <q-input

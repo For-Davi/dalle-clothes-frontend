@@ -709,6 +709,28 @@ export const checkPaymentData = (
   data: IVModelSalePayment,
   missingAmount: number,
 ): { status: boolean; message?: string } => {
+  //VALIDAÇÃO DA ENTREGA
+  if(data.freight){
+    if(data.freightValue === '0.00' || data.freightValue === null && data.city?.trim() === '' && data.city?.trim() === '' && data.state?.trim() === '' && data.neighborhood?.trim() === '' && data.numberAddress?.trim() === ''){
+      return { status: false, message: 'Com o frete ativado você deve preencher os campos' }
+    }
+    if(data.freightValue === '0.00' || data.freightValue === null){
+      return { status: false, message: 'Preencha o campo do valor do frete' }
+    }
+    if(data.city?.trim() === ''){
+      return { status: false, message: 'Preencha o campo de cidade' }
+    }
+    if(data.state?.trim() === ''){
+      return { status: false, message: 'Preencha o campo de UF' }
+    }
+    if(data.neighborhood?.trim() === ''){
+      return { status: false, message: 'Preencha o campo de bairro' }
+    }
+    if(data.numberAddress?.trim() === ''){
+      return { status: false, message: 'Preencha o campo de número' }
+    }
+  }
+
   // VALIDAÇÃO GERAL
   if (data.payment.length === 0) {
     return { status: false, message: 'Insira algum pagamento' };

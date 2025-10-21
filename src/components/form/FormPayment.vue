@@ -27,8 +27,8 @@ const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 
 const paymentTotal = ref(true);
 const paymentDivider = ref(false);
-const showAddress = ref(false);
 const numPayments = ref<number>(2);
+const timer = ref<number | null>(null);
 const totalPricePayment = ref<string>(props.totalPrice);
 const searchFilter = ref<string>('');
 const allowSearchCep = ref<boolean>(false);
@@ -36,7 +36,7 @@ const loading = ref<boolean>(false);
 const model = defineModel<IVModelSalePayment>({
   default: () => ({
     sellerID: null,
-    freight: '',
+    freight: false,
     freightValue: '',
     cep: '',
     state: '',
@@ -47,6 +47,7 @@ const model = defineModel<IVModelSalePayment>({
     complement: '',
     recipientName: '',
     recipientPhone: '',
+    observation: '',
     fees: '',
     couponID: null,
     payment: [],
@@ -61,7 +62,18 @@ const fetchReceiptsAndTypes = async (): Promise<void> => {
   await useTypesReceiptStore().getTypesReceipt({ active: 1 });
 };
 const createPayments = (count: number) => {
-  model.value.payment = [];
+  if(paymentTotal.value){
+    model.value.payment = [];
+  for (let i = 0; i < count; i++) {
+    model.value.payment.push({
+      paymentType: null,
+      value: (Number(totalPricePayment.value)*100).toString(),
+      receiptID: null,
+      installment: null,
+    });
+  }
+  } else {
+    model.value.payment = [];
   for (let i = 0; i < count; i++) {
     model.value.payment.push({
       paymentType: null,
@@ -69,6 +81,7 @@ const createPayments = (count: number) => {
       receiptID: null,
       installment: null,
     });
+  }
   }
 };
 const getReceiptOptions = (paymentType: string | null) => {
@@ -101,6 +114,9 @@ const isMoneyAndHasArrayPayment = (label: string) => {
 const createPaymentsAfterReset = () => {
   createPayments(paymentTotal.value ? 1 : 2);
 };
+// const reset = () => {
+
+// }
 
 const formattedPhone = computed({
   get() {
@@ -187,6 +203,16 @@ const getTypes = computed(() => {
   }));
 });
 
+// watch(() => paymentTotal.value,
+//   () => {
+//     if (paymentTotal.value && model.value.payment.length === 1) {
+//   model.value.payment.splice(0, 1, {
+//       ...model.value.payment[0],
+//       value: props.totalPrice
+//     });
+// }
+//   }, { deep: true, immediate: true }
+// )
 watch(
   () => props.checkPaymentsReset,
   () => {
@@ -243,15 +269,23 @@ watch(
 watch(
   [paymentTotal, paymentDivider, numPayments],
   ([isTotal, isDivider, count]) => {
-    if (isTotal) {
-      createPayments(1);
-    } else if (isDivider) {
-      createPayments(count <= 2 ? 2 : count);
-    }
+    if (timer.value) clearTimeout(timer.value);
+
+    timer.value = window.setTimeout(() => {
+      if (isTotal) {
+        createPayments(1);
+      } else if (isDivider) {
+        if(count <= 2){
+          createPayments(2);
+        }
+        if(count > 10){
+          createPayments(10);
+        }
+      }
+    }, 800); 
   },
   { immediate: true, deep: true },
 );
-
 watch(
   [() => model.value.freightValue, () => model.value.fees],
   ([freight, fees]) => {
@@ -325,7 +359,7 @@ onMounted(async () => {
 
         <section class="border-blue-light q-pa-md q-gutter-y-sm">
           <TitlePage title="Entrega" icon="local_shipping" class="q-pa-none q-ma-none" />
-          <q-toggle v-model="showAddress" label="Frete" size="lg" @click="clearFreight" />
+          <q-toggle v-model="model.freight" label="Frete" size="lg" @click="clearFreight" />
           <q-input
             label="R$ Valor do frete"
             v-model="model.freightValue"
@@ -339,7 +373,7 @@ onMounted(async () => {
             fill-mask="0"
             reverse-fill-mask
             class="full-width"
-            :disable="showAddress === false ? true : false"
+            :disable="model.freight === false ? true : false"
           >
             <template v-slot:prepend>
               <q-icon name="attach_money" color="black" />
@@ -355,7 +389,7 @@ onMounted(async () => {
             input-class="text-black"
             :loading="loading"
             maxlength="8"
-            :disable="showAddress === false ? true : false"
+            :disable="model.freight === false ? true : false"
           >
             <template v-slot:prepend>
               <q-icon name="search" color="black" size="20px" />
@@ -371,7 +405,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="showAddress === false ? true : false"
+              :disable="model.freight === false ? true : false"
             >
               <template v-slot:prepend>
                 <q-icon name="map" color="black" size="20px" />
@@ -386,7 +420,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="showAddress === false ? true : false"
+              :disable="model.freight === false ? true : false"
             >
               <template v-slot:prepend>
                 <q-icon name="pin_drop" color="black" size="20px" />
@@ -401,7 +435,7 @@ onMounted(async () => {
             label="Bairro"
             dense
             input-class="text-black"
-            :disable="showAddress === false ? true : false"
+            :disable="model.freight === false ? true : false"
           >
             <template v-slot:prepend>
               <q-icon name="pin_drop" color="black" size="20px" />
@@ -415,7 +449,7 @@ onMounted(async () => {
             label="Logradouro"
             dense
             input-class="text-black"
-            :disable="showAddress === false ? true : false"
+            :disable="model.freight === false ? true : false"
           >
             <template v-slot:prepend>
               <q-icon name="pin_drop" color="black" size="20px" />
@@ -433,7 +467,7 @@ onMounted(async () => {
               class="input-divider"
               maxlength="15"
               mask="###############"
-              :disable="showAddress === false ? true : false"
+              :disable="model.freight === false ? true : false"
             >
               <template v-slot:prepend>
                 <q-icon name="numbers" color="black" size="20px" />
@@ -448,7 +482,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="showAddress === false ? true : false"
+              :disable="model.freight === false ? true : false"
             >
               <template v-slot:prepend>
                 <q-icon name="numbers" color="black" size="20px" />
@@ -463,7 +497,7 @@ onMounted(async () => {
             label="Nome do recebedor"
             dense
             input-class="text-black"
-            :disable="showAddress === false ? true : false"
+            :disable="model.freight === false ? true : false"
           >
             <template v-slot:prepend>
               <q-icon name="person" color="black" size="20px" />
@@ -477,10 +511,25 @@ onMounted(async () => {
             label="Telefone do recebedor"
             dense
             input-class="text-black"
-            :disable="showAddress === false ? true : false"
+            :disable="model.freight === false ? true : false"
           >
             <template v-slot:prepend>
               <q-icon name="phone" color="black" size="20px" />
+            </template>
+          </q-input>
+          <q-input
+            v-model="model.observation"
+            bg-color="white"
+            label-color="black"
+            outlined
+            label="Observação"
+            dense
+            input-class="text-black no-resize"
+            type="textarea"
+            :disable="model.freight === false ? true : false"
+          >
+            <template v-slot:prepend>
+              <q-icon name="description" color="black" size="20px" />
             </template>
           </q-input>
         </section>
@@ -534,7 +583,8 @@ onMounted(async () => {
             <q-input
               label="Informe a quantidade de formas de pagamento"
               type="number"
-              v-model="numPayments"
+              fill-mask="2"
+              v-model.number="numPayments"
               outlined
               dense
               input-class="text-black no-spinners"
@@ -588,6 +638,7 @@ onMounted(async () => {
                 fill-mask="0"
                 reverse-fill-mask
                 class="full-width"
+                :disable="paymentTotal"
               >
                 <template v-slot:prepend>
                   <q-icon name="attach_money" color="black" />

@@ -795,7 +795,7 @@ export const columnsClientCart: IQuasarTable[] = [
   },
 ];
 
-export const listColumns: IQuasarTable[] = [
+export const columnsListProductsSale: IQuasarTable[] = [
   {
     name: 'name',
     label: 'Nome',
@@ -822,7 +822,7 @@ export const listColumns: IQuasarTable[] = [
   },
   {
     name: 'offer',
-    label: 'Preço em oferta',
+    label: 'Oferta',
     field: 'offer',
     align: 'left',
   },
