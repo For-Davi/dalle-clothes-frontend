@@ -35,7 +35,7 @@ const dataSupplierOrder = reactive({
   dateIssue: '' as string,
   dateDeliveryExpected: '' as string,
   description: '' as string,
-  itens: [] as IProduct[],
+  itens: [] as ISupplierCartProduct[],
 });
 const selectedSupplier = ref<IQuasarSelect<number | null>>({
   label: 'Não informado',
@@ -332,7 +332,6 @@ watch(open, async () => {
           <q-btn v-else color="primary" label="Atualizar" size="md" unelevated no-caps />
         </div>
       </q-card-actions>
-      dataSupplierOrder {{ dataSupplierOrder.itens }}
     </q-card>
 
     <!-- Modals -->
