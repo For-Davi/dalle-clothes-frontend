@@ -14,7 +14,7 @@ export const showSupplierOrderService = (
 ): Promise<{
   status: number;
   data: {
-    order: unknown;
+    order: IShowOrder;
   };
 }> => api.get(`${baseUrl}/${orderID}`);
 

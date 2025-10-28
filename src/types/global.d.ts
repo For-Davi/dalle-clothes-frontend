@@ -169,4 +169,7 @@ declare global {
   type IEnterprise = Enterprise;
   type IDataEnterprise = DataEnterprise;
   type ISupplierCartProduct = SupplierCartProduct;
+  type IProductSupplierOrder = ProductSupplierOrder
+  type IShowOrder = ShowOrder
+  type ISupplierOrderItem = SupplierOrderItem
 }

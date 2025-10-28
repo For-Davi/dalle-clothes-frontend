@@ -301,3 +301,10 @@ export interface SupplierCartProduct {
     hex_color_code: string;
   } | null;
 }
+
+export interface ProductSupplierOrder {
+  id?: number
+  productVariantID: number
+  unitCost: string
+  quantityRequested: number
+}
