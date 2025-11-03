@@ -710,24 +710,29 @@ export const checkPaymentData = (
   missingAmount: number,
 ): { status: boolean; message?: string } => {
   //VALIDAÇÃO DA ENTREGA
-  if(data.freight){
-    if(data.freightValue === '0.00' || data.freightValue === null && data.city?.trim() === '' && data.city?.trim() === '' && data.state?.trim() === '' && data.neighborhood?.trim() === '' && data.numberAddress?.trim() === ''){
-      return { status: false, message: 'Com o frete ativado você deve preencher os campos' }
+  if (data.freight) {
+    if (
+      data.city?.trim() === '' &&
+      data.state?.trim() === '' &&
+      data.neighborhood?.trim() === '' &&
+      data.numberAddress?.trim() === ''
+    ) {
+      return { status: false, message: 'Com o frete ativado você deve preencher os campos' };
     }
-    if(data.freightValue === '0.00' || data.freightValue === null){
-      return { status: false, message: 'Preencha o campo do valor do frete' }
+    if (data.freightValue === null) {
+      return { status: false, message: 'Preencha o campo do valor do frete' };
     }
-    if(data.city?.trim() === ''){
-      return { status: false, message: 'Preencha o campo de cidade' }
+    if (data.city?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de cidade' };
     }
-    if(data.state?.trim() === ''){
-      return { status: false, message: 'Preencha o campo de UF' }
+    if (data.state?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de UF' };
     }
-    if(data.neighborhood?.trim() === ''){
-      return { status: false, message: 'Preencha o campo de bairro' }
+    if (data.neighborhood?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de bairro' };
     }
-    if(data.numberAddress?.trim() === ''){
-      return { status: false, message: 'Preencha o campo de número' }
+    if (data.numberAddress?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de número' };
     }
   }
 
@@ -778,7 +783,11 @@ export const checkPaymentData = (
   //VALIDAÇÃO DE CARTÃO DE CRÉDITO
   const hasCreditCard = data.payment.find((p) => p.paymentType === 'CREDIT_CARD');
   if (hasCreditCard) {
-    if (hasCreditCard.value.trim() === '' && !hasCreditCard.installment) {
+    if (
+      hasCreditCard.value.trim() === '' &&
+      hasCreditCard.installment.value === null &&
+      hasCreditCard.installment.amount?.trim() === null
+    ) {
       return {
         status: false,
         message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
@@ -788,6 +797,27 @@ export const checkPaymentData = (
       return {
         status: false,
         message: 'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
+      };
+    }
+    if (
+      hasCreditCard.installment.value !== null &&
+      hasCreditCard.installment.value > 0 &&
+      hasCreditCard.installment.amount?.trim() === null
+    ) {
+      return {
+        status: false,
+        message: 'Deve ser informado o valor da parcela caso a parcela seja maior do que 0.',
+      };
+    }
+    if (
+      hasCreditCard.installment.amount?.trim() !== null &&
+      Number(hasCreditCard.installment.amount?.trim()) > 0 &&
+      hasCreditCard.installment.value === null
+    ) {
+      return {
+        status: false,
+        message:
+          'Deve ser informado a quantidade da parcela caso o valor da parcela seja maior que 0.00.',
       };
     }
   }
@@ -805,5 +835,17 @@ export const checkPaymentData = (
     };
   }
 
+  return { status: true };
+};
+
+export const checkEmail = (email: string): { status: boolean; message?: string } => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (email.trim() === '') {
+    return { status: false, message: 'Campo de e-mail não pode ser vazio' };
+  }
+  if (!emailRegex.test(email)) {
+    return { status: false, message: 'O e-mail não é válido' };
+  }
   return { status: true };
 };

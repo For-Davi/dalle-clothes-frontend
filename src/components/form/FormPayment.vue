@@ -8,6 +8,7 @@ import { useReceiptstore } from 'src/stores/receipt-store';
 import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 import { searchCep } from 'src/services/cep-service';
 import { PaymentTypeLabels } from 'src/enums/payment-enum';
+import Loading from '../shared/Loading.vue';
 
 defineOptions({
   name: 'FormPayment',
@@ -16,6 +17,7 @@ defineOptions({
 const props = defineProps<{
   totalPrice: string;
   checkPaymentsReset: boolean;
+  loadingSale: boolean;
 }>();
 const emit = defineEmits<{
   'send-missing-amount': [number];
@@ -25,6 +27,7 @@ const { listEmployee } = storeToRefs(useEmployeeStore());
 const { listReceipt } = storeToRefs(useReceiptstore());
 const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 
+const disableValue = ref<boolean>(false);
 const paymentTotal = ref(true);
 const paymentDivider = ref(false);
 const numPayments = ref<number>(2);
@@ -62,26 +65,32 @@ const fetchReceiptsAndTypes = async (): Promise<void> => {
   await useTypesReceiptStore().getTypesReceipt({ active: 1 });
 };
 const createPayments = (count: number) => {
-  if(paymentTotal.value){
+  if (paymentTotal.value) {
     model.value.payment = [];
-  for (let i = 0; i < count; i++) {
-    model.value.payment.push({
-      paymentType: null,
-      value: (Number(totalPricePayment.value)*100).toString(),
-      receiptID: null,
-      installment: null,
-    });
-  }
+    for (let i = 0; i < count; i++) {
+      model.value.payment.push({
+        paymentType: null,
+        value: Number(totalPricePayment.value).toFixed(2).toString(),
+        receiptID: null,
+        installment: {
+          value: null,
+          amount: null,
+        },
+      });
+    }
   } else {
     model.value.payment = [];
-  for (let i = 0; i < count; i++) {
-    model.value.payment.push({
-      paymentType: null,
-      value: '',
-      receiptID: null,
-      installment: null,
-    });
-  }
+    for (let i = 0; i < count; i++) {
+      model.value.payment.push({
+        paymentType: null,
+        value: '',
+        receiptID: null,
+        installment: {
+          value: null,
+          amount: null,
+        },
+      });
+    }
   }
 };
 const getReceiptOptions = (paymentType: string | null) => {
@@ -90,10 +99,12 @@ const getReceiptOptions = (paymentType: string | null) => {
       .filter((r) => r.type?.name === paymentType)
       .map((r) => ({
         label: r.identifier,
-        value: r.id || null,
+        value: r.id,
       }));
 
     return options;
+  } else {
+    return [];
   }
 };
 const clearFreight = () => {
@@ -114,9 +125,10 @@ const isMoneyAndHasArrayPayment = (label: string) => {
 const createPaymentsAfterReset = () => {
   createPayments(paymentTotal.value ? 1 : 2);
 };
-// const reset = () => {
-
-// }
+const reset = () => {
+  model.value.freight = false;
+  paymentTotal.value = true;
+};
 
 const formattedPhone = computed({
   get() {
@@ -141,43 +153,79 @@ const formattedPhone = computed({
   },
 });
 const totalPaid = computed(() =>
-  model.value.payment.reduce((sum, p) => sum + Number(p.value || 0), 0),
+  model.value.payment.reduce(
+    (sum, p) =>
+      sum +
+      (p.installment.value !== null &&
+      p.installment.value > 0 &&
+      p.installment.amount !== null &&
+      Number(p.installment.amount) > 0
+        ? Number(p.installment.value) * Number(p.installment.amount)
+        : Number(p.value)),
+    0,
+  ),
 );
+
 const missingAmount = computed(() => {
   const payments = model.value.payment;
-  const hasInstallment = payments.some((p) => p.installment !== null && p.installment.value > 1);
-  if (hasInstallment) return 0;
+  const hasInstallment = payments.some((p) => p.installment !== null && p.installment.value! >= 1);
+  if (hasInstallment && paymentTotal.value) return 0;
   const diff = Number(totalPricePayment.value) - totalPaid.value;
-  return diff > 0 ? diff : 0;
+  if ((hasInstallment && diff <= 0.09) || diff <= 0.09) {
+    return 0;
+  } else {
+    return diff;
+  }
 });
 
 const totalForInstallment = computed(() => {
-  const total = Number(totalPricePayment.value) - totalPaid.value;
-  return total > 0 ? total : 0;
+  if (paymentTotal.value) {
+    return Number(totalPricePayment.value);
+  } else {
+    const total = Number(totalPricePayment.value) - totalPaid.value;
+    return total > 0 ? total : 0;
+  }
 });
 const getInstallmentOptions = computed(() => {
   const total = totalForInstallment.value || 0;
   const options = [];
 
-  for (let i = 2; i <= 12; i++) {
-    const installmentValue = total / i;
-    const amountValue = installmentValue.toFixed(2);
+  if (paymentTotal.value) {
+    for (let i = 2; i <= 12; i++) {
+      const installmentValue = total / i;
+      const amountValue = installmentValue.toFixed(2);
 
-    options.push({
-      label: `${i}X - R$ ${amountValue}`,
-      value: i,
-      amount: amountValue.toString(),
+      options.push({
+        label: `${i}X - R$ ${amountValue}`,
+        value: i,
+        amount: amountValue.toString(),
+      });
+    }
+    options.unshift({
+      label: `1X - R$ ${Number(totalPricePayment.value).toFixed(2)}`,
+      value: 1,
+      amount: null,
+    });
+  } else {
+    for (let i = 1; i <= 12; i++) {
+      const installmentValue = total / i;
+      const amountValue = installmentValue.toFixed(2);
+
+      options.push({
+        label: `${i}X - R$ ${amountValue}`,
+        value: i,
+        amount: amountValue.toString(),
+      });
+    }
+    options.unshift({
+      label: 'Sem parcelamento',
+      value: null,
+      amount: null,
     });
   }
-  options.unshift({
-    label: 'Sem parcelamento',
-    value: null,
-    amount: null,
-  });
 
   return options;
 });
-
 const listEmployeeOptions = computed(() => {
   const options = listEmployee.value.map((employee) => ({
     label: employee.name,
@@ -203,20 +251,109 @@ const getTypes = computed(() => {
   }));
 });
 
-// watch(() => paymentTotal.value,
-//   () => {
-//     if (paymentTotal.value && model.value.payment.length === 1) {
-//   model.value.payment.splice(0, 1, {
-//       ...model.value.payment[0],
-//       value: props.totalPrice
-//     });
-// }
-//   }, { deep: true, immediate: true }
-// )
+watch(
+  () => model.value.payment.map((p) => p.installment.value),
+  (installments) => {
+    installments.forEach((val, index) => {
+      if ((val ?? 0) > 12) {
+        model.value.payment[index].installment.value = 12;
+      }
+    });
+  },
+  { deep: true },
+);
+watch(
+  () => model.value.payment,
+  (newPayments) => {
+    newPayments.forEach((payment, index) => {
+      if (Number(payment.value) > 0 && payment.installment.value !== null) {
+        const payment = model.value.payment[index];
+        const amount = (Number(payment.value) / (payment.installment.value ?? 1)).toFixed(2);
+        payment.installment.amount = amount.toString();
+      }
+    });
+  },
+  { deep: true },
+);
+//Caso o método de pagamento mude ele ja seleciona o primeiro recebimento daquele método de pagamento e caso o método
+//seja diferente de cartão de crédito ele zera o parcelamento
+watch(
+  () => model.value.payment.map((p) => p.paymentType),
+  (newTypes, oldTypes) => {
+    newTypes.forEach((type, index) => {
+      if (type !== oldTypes[index]) {
+        const payment = model.value.payment[index];
+        const receiptOptions = getReceiptOptions(type);
+        if (receiptOptions.length > 0) {
+          payment.receiptID = receiptOptions[0].value;
+          if (type !== 'CREDIT_CARD') {
+            payment.installment = { value: null, amount: null };
+          }
+        }
+      }
+    });
+  },
+);
+
+//Caso o preço total mude com tarifas ou frete ele ja coloca esse valor no payment.value caso seja pagar total
+watch([() => totalPricePayment.value, paymentTotal], () => {
+  if (paymentTotal.value) {
+    model.value.payment.forEach((payment) => {
+      if (payment.paymentType !== 'MONEY') {
+        disableValue.value = true;
+        payment.value = Number(totalPricePayment.value).toFixed(2).toString();
+      }
+    });
+  }
+});
+//Caso o pagamento seja total e cartão de crédito ele ja coloca a parcela 1X como padrão e coloca o valor do parcelamento no campo de value
+watch(
+  () => model.value.payment.map((p) => p.paymentType),
+  (newPayment) => {
+    if (paymentTotal.value) {
+      newPayment.forEach((type, index) => {
+        const payment = model.value.payment[index];
+        if (
+          type === 'CREDIT_CARD' &&
+          (payment.installment.value === null || payment.installment.amount === null)
+        ) {
+          const defaultInstallment = getInstallmentOptions.value[0];
+          payment.installment = defaultInstallment;
+        }
+      });
+    }
+  },
+  { deep: true },
+);
+//Verifica caso o tipo de pagamento for dinheiro e o pagamento for total ele desabilita o disable do input do value
+//e zera o input para a pessoa colocar qualquer valor em dinheiro pois pode vir com troco
+//caso o valor seja diferente de dinheiro ele coloca o valor total e habilita o disable
+watch(
+  () => model.value.payment.map((p) => p.paymentType),
+  (newPaymentTypes) => {
+    if (paymentTotal.value) {
+      newPaymentTypes.forEach((type, index) => {
+        const payment = model.value.payment[index];
+
+        if (type === 'MONEY') {
+          disableValue.value = false;
+          payment.value = '';
+        } else {
+          disableValue.value = true;
+          payment.value = Number(totalPricePayment.value).toFixed(2).toString();
+        }
+      });
+    } else {
+      disableValue.value = false;
+    }
+  },
+  { deep: true },
+);
 watch(
   () => props.checkPaymentsReset,
   () => {
     createPaymentsAfterReset();
+    reset();
   },
 );
 watch(
@@ -225,6 +362,7 @@ watch(
     emit('send-missing-amount', missingAmount.value);
   },
 );
+//Cada vez que o valor pago mudar ele verifica se ele é maior que o preço total, caso seja ele possui troco
 watch(
   () => totalPaid.value,
   () => {
@@ -237,6 +375,7 @@ watch(
     }
   },
 );
+//Integração com o cep API
 watch(
   () => model.value.cep,
   async (cep) => {
@@ -265,7 +404,7 @@ watch(
     loading.value = false;
   },
 );
-
+//Validação para a criação da quantidade de pagamentos caso seja pagamento dividido ou pagamento total
 watch(
   [paymentTotal, paymentDivider, numPayments],
   ([isTotal, isDivider, count]) => {
@@ -275,17 +414,22 @@ watch(
       if (isTotal) {
         createPayments(1);
       } else if (isDivider) {
-        if(count <= 2){
+        if (count <= 1) {
+          numPayments.value = 2;
           createPayments(2);
         }
-        if(count > 10){
+        if (count > 10) {
+          numPayments.value = 10;
           createPayments(10);
+        } else {
+          createPayments(count);
         }
       }
-    }, 800); 
+    }, 450);
   },
   { immediate: true, deep: true },
 );
+//Caso o frete ou as tarifas mudem eles ja são somados ao total
 watch(
   [() => model.value.freightValue, () => model.value.fees],
   ([freight, fees]) => {
@@ -297,6 +441,7 @@ watch(
   },
   { immediate: true },
 );
+//Validação para que o usuário nao consiga deselecionar um dos dois checkbox ou os dois
 watch(
   [paymentTotal, paymentDivider],
   ([newTotal, newDivider], [oldTotal, oldDivider]) => {
@@ -335,7 +480,8 @@ onMounted(async () => {
     <q-card-section class="q-pa-none">
       <TitlePage title="Formulário de venda" icon="shopping_cart" />
     </q-card-section>
-    <q-card-section>
+    <Loading :show="props.loadingSale" />
+    <q-card-section v-if="!props.loadingSale">
       <div class="q-gutter-y-lg">
         <section class="border-blue-light q-pa-md">
           <TitlePage title="Vendedor" icon="person" class="q-pa-none q-ma-none" />
@@ -579,18 +725,20 @@ onMounted(async () => {
             <q-checkbox v-model="paymentTotal" label="Pagar total" />
             <q-checkbox v-model="paymentDivider" label="Pagar dividido" />
           </div>
-          <div v-if="paymentDivider" class="q-gutter-y-sm q-mb-sm">
+          <div v-if="paymentDivider" class="q-gutter-y-sm">
             <q-input
               label="Informe a quantidade de formas de pagamento"
               type="number"
               fill-mask="2"
+              mask="##"
               v-model.number="numPayments"
+              maxlength="2"
               outlined
               dense
               input-class="text-black no-spinners"
             />
           </div>
-          <div class="q-gutter-y-xl q-mt-sm">
+          <div class="q-gutter-y-lg q-mt-xs">
             <div class="q-gutter-y-sm" v-for="(payments, index) in model.payment" :key="index">
               <q-select
                 v-model="payments.paymentType"
@@ -619,31 +767,83 @@ onMounted(async () => {
                   </q-item>
                 </template>
               </q-select>
-
-              <q-input
-                v-if="
-                  !payments.installment ||
-                  payments.installment?.value === null ||
-                  payments.installment?.amount === null
+              <div
+                :class="
+                  paymentDivider && payments.paymentType === 'CREDIT_CARD'
+                    ? 'flex q-gutter-x-xs q-gutter-y-xs full-width'
+                    : ''
                 "
-                label="R$ Valor"
-                v-model="payments.value"
-                bg-color="white"
-                label-color="black"
-                outlined
-                dense
-                input-class="text-black no-spinners"
-                type="text"
-                mask="#.##"
-                fill-mask="0"
-                reverse-fill-mask
-                class="full-width"
-                :disable="paymentTotal"
               >
-                <template v-slot:prepend>
-                  <q-icon name="attach_money" color="black" />
-                </template>
-              </q-input>
+                <q-input
+                  label="R$ Valor"
+                  v-model="payments.value"
+                  bg-color="white"
+                  label-color="black"
+                  outlined
+                  dense
+                  input-class="text-black no-spinners"
+                  type="text"
+                  mask="#.##"
+                  fill-mask="0"
+                  reverse-fill-mask
+                  :class="
+                    paymentDivider && payments.paymentType === 'CREDIT_CARD'
+                      ? 'input-3-divider'
+                      : 'full-width'
+                  "
+                  :disable="disableValue"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="attach_money" color="black" />
+                  </template>
+                </q-input>
+                <q-input
+                  v-if="paymentDivider && payments.paymentType === 'CREDIT_CARD'"
+                  label="Quantidade de parcelas"
+                  v-model="payments.installment.value"
+                  @input="(val: string) => (payments.installment.value = val ? Number(val) : null)"
+                  type="text"
+                  bg-color="white"
+                  label-color="black"
+                  outlined
+                  dense
+                  input-class="text-black"
+                  maxlength="2"
+                  class="input-3-divider"
+                  mask="##"
+                />
+                <q-input
+                  v-if="paymentDivider && payments.paymentType === 'CREDIT_CARD'"
+                  label="R$ Valor das parcelas"
+                  v-model="payments.installment.amount"
+                  bg-color="white"
+                  label-color="black"
+                  mask="#.##"
+                  fill-mask="0"
+                  reverse-fill-mask
+                  outlined
+                  dense
+                  class="input-3-divider"
+                  style="width: 34.5%"
+                  input-class="text-black"
+                  type="text"
+                  readonly
+                />
+              </div>
+              <div
+                v-if="paymentTotal && payments.paymentType === 'CREDIT_CARD'"
+                class="q-gutter-y-sm"
+              >
+                <q-select
+                  v-model="payments.installment"
+                  label="Parcelamento"
+                  outlined
+                  dense
+                  :options="getInstallmentOptions"
+                  map-options
+                  options-dense
+                />
+              </div>
               <q-select
                 v-model="payments.receiptID"
                 label="Selecione o recebimento"
@@ -661,17 +861,6 @@ onMounted(async () => {
                   <q-icon name="payments" color="black" />
                 </template>
               </q-select>
-              <div v-if="payments.paymentType === 'CREDIT_CARD'" class="q-gutter-y-sm">
-                <q-select
-                  v-model="payments.installment"
-                  label="Parcelamento"
-                  outlined
-                  dense
-                  :options="getInstallmentOptions"
-                  map-options
-                  options-dense
-                />
-              </div>
             </div>
           </div>
         </section>

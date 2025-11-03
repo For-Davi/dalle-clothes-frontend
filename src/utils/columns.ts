@@ -896,3 +896,36 @@ export const columnsSupplierCart: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsTaxCoupon: IQuasarTable[] = [
+  {
+    name: 'item',
+    label: 'ITEM',
+    field: 'item',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'CÓDIGO',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'name',
+    label: 'NOME',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'QUANTIDADE',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'value',
+    label: 'VALOR',
+    field: 'value',
+    align: 'right',
+  },
+];

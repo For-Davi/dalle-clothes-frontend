@@ -2,13 +2,18 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, watch, computed, ref } from 'vue';
 import { searchCep } from 'src/services/cep-service';
+import { useClientStore } from 'src/stores/client-store';
+import Loading from 'src/components/shared/Loading.vue';
 
 defineOptions({
   name: 'FormClientPayment',
 });
 
 const props = defineProps<{
-  show: boolean;
+  data: {
+    show: boolean;
+    clientId: number | null;
+  };
 }>();
 
 const model = defineModel<IVModelClient>({ required: true });
@@ -16,6 +21,39 @@ const selectedIdentifier = ref<string>('CNPJ');
 const optionsIdentifier = reactive<string[]>(['CNPJ', 'CPF']);
 const allowSearchCep = ref<boolean>(false);
 const loading = ref<boolean>(false);
+const loadingCheckData = ref<boolean>(false);
+
+const checkDataEdit = async () => {
+  if (props.data.clientId) {
+    loadingCheckData.value = true;
+    const response = await useClientStore().showClient(props.data.clientId);
+    if (response?.status === 200) {
+      const client = response.data.client;
+      Object.assign(model.value, {
+        name: client.name ?? '',
+        email: client.email ?? '',
+        phone: client.phone ?? '',
+        cpf: client.cpf ? String(client.cpf) : '',
+        cnpj: client.cnpj ? String(client.cnpj) : '',
+        stateRegistration: client.state_registration ?? '',
+        municipalRegistration: client.municipal_registration ?? '',
+        country: client.country ?? '',
+        state: client.state ?? '',
+        city: client.city ?? '',
+        cep: client.cep ? String(client.cep) : '',
+        neighborhood: client.neighborhood ?? '',
+        address: client.address ?? '',
+        number: client.number ? String(client.number) : '',
+        complement: client.complement ?? '',
+        description: client.description ?? '',
+        dateBirthday: client.date_birthday ?? '',
+        sex: client.sex === 'M' ? 'Masculino' : 'Feminino',
+      });
+
+      loadingCheckData.value = false;
+    }
+  }
+};
 
 const formattedPhone = computed({
   get() {
@@ -39,6 +77,16 @@ const formattedPhone = computed({
     model.value.phone = digits;
   },
 });
+
+watch(
+  [() => props.data.show, () => props.data.clientId],
+  async ([show, clientId]) => {
+    if (show && clientId) {
+      await checkDataEdit();
+    }
+  },
+  { immediate: true },
+);
 
 watch(
   [() => model.value.cpf, () => model.value.cnpj],
@@ -108,11 +156,15 @@ watch(
 </script>
 
 <template>
-  <q-card v-if="props.show" flat class="q-mt-md">
+  <q-card v-if="props.data.show" flat class="q-mt-md flex justify-between column">
     <q-card-section class="q-pa-none">
       <TitlePage title="Formulário do cliente" icon="list_alt" />
     </q-card-section>
-    <q-card-section class="q-pa-sm">
+    <div v-if="loadingCheckData" class="flex flex-center q-ma-xl">
+      <Loading :show="loadingCheckData" />
+    </div>
+
+    <q-card-section class="q-pa-sm" v-if="!loadingCheckData">
       <q-form class="q-gutter-y-sm">
         <q-input
           v-model="model.name"

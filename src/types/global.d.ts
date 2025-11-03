@@ -51,6 +51,7 @@ import type {
   ExportProduct,
   ClientCartProduct,
   SupplierCartProduct,
+  DataProductSale,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -76,7 +77,7 @@ import type {
 import type { Notification } from './Notification';
 import type { DataSupplierOrder, SupplierOrder } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
-import type { VModelSalePayment, DataSale } from './Payments';
+import type { VModelSalePayment, DataSale, Sale, CouponData } from './Payments';
 
 export {};
 
@@ -178,4 +179,10 @@ declare global {
   type IFilterReceipt = FilterReceipt;
 
   type IDataSale = DataSale;
+
+  type IDataProductSale = DataProductSale;
+
+  type ISale = Sale;
+
+  type ICouponData = CouponData;
 }

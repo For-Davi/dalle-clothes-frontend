@@ -287,3 +287,11 @@ export interface ClientCartProduct {
     hex_color_code: string;
   } | null;
 }
+
+export interface DataProductSale {
+  productVariantID: number;
+  price: string;
+  offer: string;
+  newQuantity: number;
+  variantActive: number;
+}

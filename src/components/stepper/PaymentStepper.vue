@@ -8,15 +8,24 @@ import FormClient from '../form/FormClient.vue';
 import ClientCart from '../cart/ClientCart.vue';
 import FormPayment from '../form/FormPayment.vue';
 import { checkPaymentData, checkSaleProductsData } from 'src/composables/CheckData';
-import { createErrorData, createSuccess } from 'src/composables/CreateNotify';
+import { createErrorData } from 'src/composables/CreateNotify';
 import { useSaleStore } from 'src/stores/sale-store';
+import SaleMade from '../fragments/sale/SaleMade.vue';
 
 defineOptions({
   name: 'PaymentStepper',
 });
 
 const { listClient } = storeToRefs(useClientStore());
+const { loadingSale } = storeToRefs(useSaleStore());
 
+const showSaleMade = reactive<{
+  open: boolean;
+  saleID: number | null;
+}>({
+  open: false,
+  saleID: null,
+});
 const step = ref<number>(1);
 const checkPaymentsReset = ref<boolean>(false);
 const missingAmount = ref<number>(0);
@@ -46,9 +55,9 @@ const dataPayment = reactive({
     value: string;
     receiptID: number;
     installment: {
-      value: number;
-      amount: string;
-    } | null;
+      value: number | null;
+      amount: string | null;
+    };
   }>,
 });
 const dataClient = reactive({
@@ -79,6 +88,14 @@ const showFormClient = reactive<{
   open: false,
   clientId: null,
 });
+const showFormClientPayment = reactive<{
+  show: boolean;
+  clientId: null;
+}>({
+  show: false,
+  clientId: null,
+});
+
 const searchFilter = ref<string>('');
 
 const changeShowFormClient = (show: boolean, clientId: null = null) => {
@@ -89,33 +106,6 @@ const changeShowFormClient = (show: boolean, clientId: null = null) => {
 };
 const fetchClients = async (): Promise<void> => {
   await useClientStore().getClients();
-};
-const checkDataEdit = (clientSelected: IClient) => {
-  if (clientSelected) {
-    const client = clientSelected;
-
-    Object.assign(dataClient, {
-      id: client.id ?? null,
-      name: client.name ?? '',
-      email: client.email ?? '',
-      phone: client.phone ?? '',
-      cpf: client.cpf ? String(client.cpf) : '',
-      cnpj: client.cnpj ? String(client.cnpj) : '',
-      stateRegistration: client.state_registration ?? '',
-      municipalRegistration: client.municipal_registration ?? '',
-      country: client.country ?? '',
-      state: client.state ?? '',
-      city: client.city ?? '',
-      cep: client.cep ? String(client.cep) : '',
-      neighborhood: client.neighborhood ?? '',
-      address: client.address ?? '',
-      number: client.number ? String(client.number) : '',
-      complement: client.complement ?? '',
-      description: client.description ?? '',
-      dateBirthday: client.date_birthday ?? '',
-      sex: client.sex === 'M' ? 'Masculino' : 'Feminino',
-    });
-  }
 };
 const resetProducts = () => {
   Object.assign(dataSale, {
@@ -146,6 +136,11 @@ const resetPayment = () => {
 
   checkPaymentsReset.value = !checkPaymentsReset.value;
 };
+const resetClient = () => {
+  Object.assign(dataClient, {
+    id: null,
+  });
+};
 const addTotal = (total: number) => {
   dataSale.totalPrice = total.toFixed(2).toString();
 };
@@ -160,34 +155,71 @@ const checkProducts = () => {
 const sendData = async () => {
   const check = checkPaymentData(dataPayment, missingAmount.value);
   if (check.status) {
+    const formattedProducts: IDataProductSale[] = dataSale.products.map((p) => ({
+      productVariantID: p.product_variant_id,
+      price: p.price,
+      offer: p.offer ?? '',
+      newQuantity: p.newQuantity ?? 0,
+      variantActive: p.variant_active,
+    }));
+    const cleanedPayments = dataPayment.payment.map((p) => ({
+      ...p,
+      installment: { value: p.installment?.value ?? null, amount: p.installment?.amount ?? null },
+    }));
+
     const response = await useSaleStore().createSale({
-      clientData: dataClient,
-      saleData: dataSale,
+      clientData: dataClient.id
+        ? {
+            id: dataClient.id,
+            name: dataClient.name,
+            email: dataClient.email,
+            dateBirthday: dataClient.dateBirthday,
+            cpf: dataClient.cpf,
+            cnpj: dataClient.cnpj,
+            stateRegistration: dataClient.stateRegistration,
+            municipalRegistration: dataClient.municipalRegistration,
+            phone: dataClient.phone,
+            country: dataClient.country,
+            state: dataClient.state,
+            city: dataClient.city,
+            cep: dataClient.cep,
+            neighborhood: dataClient.neighborhood,
+            address: dataClient.address,
+            number: dataClient.number,
+            complement: dataClient.complement,
+            description: dataClient.description,
+            sex: dataClient.sex === 'Masculino' ? 'M' : 'F',
+          }
+        : null,
+      saleData: {
+        totalPrice: dataSale.totalPrice,
+        products: formattedProducts,
+      },
       deliveryData: {
         freight: dataPayment.freight,
-    freightValue: dataPayment.freightValue,
-  cep: dataPayment.cep,
-  state: dataPayment.state,
-  city: dataPayment.city,
-  neighborhood: dataPayment.neighborhood,
-  address: dataPayment.address,
-  numberAddress: dataPayment.numberAddress,
-  complement: dataPayment.complement,
-  recipientName: dataPayment.recipientName,
-  recipientPhone: dataPayment.recipientPhone,
-  observation: dataPayment.observation,
+        freightValue: dataPayment.freightValue,
+        cep: dataPayment.cep,
+        state: dataPayment.state,
+        city: dataPayment.city,
+        neighborhood: dataPayment.neighborhood,
+        address: dataPayment.address,
+        numberAddress: dataPayment.numberAddress,
+        complement: dataPayment.complement,
+        recipientName: dataPayment.recipientName,
+        recipientPhone: dataPayment.recipientPhone,
+        observation: dataPayment.observation,
       },
+      sellerID: dataPayment.sellerID,
       paymentData: {
-        sellerID: dataPayment.sellerID,
-    change: dataPayment.change,
-    fees: dataPayment.fees,
-  couponID: dataPayment.couponID,
-  payment: dataPayment.payment,
+        change: dataPayment.change,
+        fees: dataPayment.fees,
+        couponID: dataPayment.couponID,
+        payment: cleanedPayments,
       },
     });
 
     if (response?.status === 201) {
-      createSuccess('Venda salva com sucesso!');
+      changeModalOpen(true, response.data.sale.id);
     }
   } else {
     createErrorData(check.message || 'Erro ao finalizar venda');
@@ -195,6 +227,20 @@ const sendData = async () => {
 };
 const setMissingAmount = (missAmount: number) => {
   missingAmount.value = missAmount;
+};
+const newSale = () => {
+  resetClient();
+  resetProducts();
+  resetPayment();
+  searchFilter.value = 'Consumidor final';
+  changeModalOpen(false);
+  step.value = 1;
+};
+const changeModalOpen = (show: boolean, id: number | null = null) => {
+  Object.assign(showSaleMade, {
+    open: show,
+    saleID: id,
+  });
 };
 
 const listClientOptions = computed(() => {
@@ -221,11 +267,21 @@ const selectedClient = computed(() => {
 
 const setClientID = (id: number) => {
   dataClient.id = id;
+  showFormClient.open = false;
+  searchFilter.value = '';
 };
 
 watch(selectedClient, (newClient) => {
   if (newClient) {
-    checkDataEdit(newClient);
+    Object.assign(showFormClientPayment, {
+      show: true,
+      clientId: newClient.id,
+    });
+  } else {
+    Object.assign(showFormClientPayment, {
+      show: false,
+      clientId: null,
+    });
   }
 });
 
@@ -257,7 +313,7 @@ onMounted(async () => {
           />
         </div>
         <div v-if="selectedClient">
-          <FormClientPayment v-model="dataClient" :show="selectedClient ? true : false" />
+          <FormClientPayment v-model="dataClient" :data="showFormClientPayment" />
         </div>
         <div v-else class="q-mt-md">
           <Empty message="Nenhum cliente selecionado" color="bg-red-3" />
@@ -295,14 +351,38 @@ onMounted(async () => {
         <FormPayment
           :totalPrice="dataSale.totalPrice"
           :checkPaymentsReset="checkPaymentsReset"
+          :loadingSale="loadingSale"
           v-model="dataPayment"
           @send-missing-amount="setMissingAmount"
         />
-        <q-stepper-navigation align="right">
+        <q-stepper-navigation align="right" class="q-mt-xl">
           <div class="flex row justify-end items-center q-gutter-x-sm">
-            <q-btn label="Resetar" color="red" no-caps unelevated outline @click="resetPayment" />
-            <q-btn label="Voltar" flat color="primary" no-caps unelevated @click="step = 2" />
-            <q-btn label="Finalizar venda" color="primary" no-caps unelevated @click="sendData" />
+            <q-btn
+              label="Resetar"
+              color="red"
+              no-caps
+              unelevated
+              outline
+              :loading="loadingSale"
+              @click="resetPayment"
+            />
+            <q-btn
+              label="Voltar"
+              flat
+              color="primary"
+              no-caps
+              unelevated
+              :loading="loadingSale"
+              @click="step = 2"
+            />
+            <q-btn
+              label="Finalizar venda"
+              color="primary"
+              no-caps
+              unelevated
+              :loading="loadingSale"
+              @click="sendData"
+            />
           </div>
         </q-stepper-navigation>
       </q-step>
@@ -314,4 +394,5 @@ onMounted(async () => {
     @update:open="changeShowFormClient(false)"
     @send-id="setClientID"
   />
+  <SaleMade :data="showSaleMade" @new-sale="newSale" />
 </template>

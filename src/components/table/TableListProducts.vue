@@ -131,7 +131,11 @@ onMounted(async () => {
             {{ formatToReal(props.row.price) }}
           </q-td>
           <q-td key="offer" :props="props" class="text-left">
-            {{ props.row.offer !== '0.00' ? formatToReal(props.row.offer) : '-' }}
+            {{
+              props.row.offer !== '0.00' && props.row.offer !== null
+                ? formatToReal(props.row.offer)
+                : '-'
+            }}
           </q-td>
           <q-td
             key="stock_quantity"
