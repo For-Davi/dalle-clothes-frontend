@@ -56,7 +56,6 @@ const model = defineModel<IVModelSalePayment>({
     payment: [],
   }),
 });
-
 const fetchEmployees = async (): Promise<void> => {
   await useEmployeeStore().getEmployees();
 };
@@ -165,10 +164,9 @@ const totalPaid = computed(() =>
     0,
   ),
 );
-
 const missingAmount = computed(() => {
   const payments = model.value.payment;
-  const hasInstallment = payments.some((p) => p.installment !== null && p.installment.value! >= 1);
+  const hasInstallment = payments.some((p) => p.installment.value !== null && p.installment.value! >= 1 && Number(p.installment.amount) > 0);
   if (hasInstallment && paymentTotal.value) return 0;
   const diff = Number(totalPricePayment.value) - totalPaid.value;
   if ((hasInstallment && diff <= 0.09) || diff <= 0.09) {
@@ -177,17 +175,8 @@ const missingAmount = computed(() => {
     return diff;
   }
 });
-
-const totalForInstallment = computed(() => {
-  if (paymentTotal.value) {
-    return Number(totalPricePayment.value);
-  } else {
-    const total = Number(totalPricePayment.value) - totalPaid.value;
-    return total > 0 ? total : 0;
-  }
-});
 const getInstallmentOptions = computed(() => {
-  const total = totalForInstallment.value || 0;
+  const total = Number(totalPricePayment.value);
   const options = [];
 
   if (paymentTotal.value) {
@@ -204,22 +193,6 @@ const getInstallmentOptions = computed(() => {
     options.unshift({
       label: `1X - R$ ${Number(totalPricePayment.value).toFixed(2)}`,
       value: 1,
-      amount: null,
-    });
-  } else {
-    for (let i = 1; i <= 12; i++) {
-      const installmentValue = total / i;
-      const amountValue = installmentValue.toFixed(2);
-
-      options.push({
-        label: `${i}X - R$ ${amountValue}`,
-        value: i,
-        amount: amountValue.toString(),
-      });
-    }
-    options.unshift({
-      label: 'Sem parcelamento',
-      value: null,
       amount: null,
     });
   }
@@ -294,7 +267,6 @@ watch(
     });
   },
 );
-
 //Caso o preço total mude com tarifas ou frete ele ja coloca esse valor no payment.value caso seja pagar total
 watch([() => totalPricePayment.value, paymentTotal], () => {
   if (paymentTotal.value) {

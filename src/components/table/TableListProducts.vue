@@ -53,9 +53,6 @@ const getColorStyle = (hexColor: string) => {
     verticalAlign: 'middle',
   };
 };
-const isStockCritical = (stock: number | string): boolean => {
-  return Number(stock) === 0;
-};
 
 const filteredProducts = computed(() => {
   if (!props.hiddenIds?.length) return localProducts.value;
@@ -141,7 +138,7 @@ onMounted(async () => {
             key="stock_quantity"
             :props="props"
             class="text-left"
-            :class="isStockCritical(props.row.stock_quantity) ? 'text-red' : ''"
+            :class="props.row.stock_quantity === 0 ? 'text-red' : ''"
           >
             {{ props.row.stock_quantity }}
           </q-td>

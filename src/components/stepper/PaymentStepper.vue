@@ -242,6 +242,11 @@ const changeModalOpen = (show: boolean, id: number | null = null) => {
     saleID: id,
   });
 };
+const setClientID = (id: number) => {
+  dataClient.id = id;
+  showFormClient.open = false;
+  searchFilter.value = '';
+};
 
 const listClientOptions = computed(() => {
   const options = listClient.value.map((client) => ({
@@ -264,12 +269,6 @@ const listClientOptions = computed(() => {
 const selectedClient = computed(() => {
   return listClient.value.find((c) => c.id === dataClient.id) || null;
 });
-
-const setClientID = (id: number) => {
-  dataClient.id = id;
-  showFormClient.open = false;
-  searchFilter.value = '';
-};
 
 watch(selectedClient, (newClient) => {
   if (newClient) {
