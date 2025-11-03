@@ -227,11 +227,13 @@ const getTypes = computed(() => {
 watch(
   () => model.value.payment.map((p) => p.installment.value),
   (installments) => {
-    installments.forEach((val, index) => {
+    if(paymentDivider.value){
+      installments.forEach((val, index) => {
       if ((val ?? 0) > 12) {
         model.value.payment[index].installment.value = 12;
       }
     });
+    }
   },
   { deep: true },
 );
@@ -259,15 +261,12 @@ watch(
         const receiptOptions = getReceiptOptions(type);
         if (receiptOptions.length > 0) {
           payment.receiptID = receiptOptions[0].value;
-          if (type !== 'CREDIT_CARD') {
-            payment.installment = { value: null, amount: null };
-          }
         }
       }
     });
   },
 );
-//Caso o preço total mude com tarifas ou frete ele ja coloca esse valor no payment.value caso seja pagar total
+//Caso o preço total mude com tarifas ou frete e caso seja pagar total ele ja coloca esse valor no payment.value
 watch([() => totalPricePayment.value, paymentTotal], () => {
   if (paymentTotal.value) {
     model.value.payment.forEach((payment) => {
@@ -278,28 +277,6 @@ watch([() => totalPricePayment.value, paymentTotal], () => {
     });
   }
 });
-//Caso o pagamento seja total e cartão de crédito ele ja coloca a parcela 1X como padrão e coloca o valor do parcelamento no campo de value
-watch(
-  () => model.value.payment.map((p) => p.paymentType),
-  (newPayment) => {
-    if (paymentTotal.value) {
-      newPayment.forEach((type, index) => {
-        const payment = model.value.payment[index];
-        if (
-          type === 'CREDIT_CARD' &&
-          (payment.installment.value === null || payment.installment.amount === null)
-        ) {
-          const defaultInstallment = getInstallmentOptions.value[0];
-          payment.installment = defaultInstallment;
-        }
-      });
-    }
-  },
-  { deep: true },
-);
-//Verifica caso o tipo de pagamento for dinheiro e o pagamento for total ele desabilita o disable do input do value
-//e zera o input para a pessoa colocar qualquer valor em dinheiro pois pode vir com troco
-//caso o valor seja diferente de dinheiro ele coloca o valor total e habilita o disable
 watch(
   () => model.value.payment.map((p) => p.paymentType),
   (newPaymentTypes) => {
@@ -307,13 +284,24 @@ watch(
       newPaymentTypes.forEach((type, index) => {
         const payment = model.value.payment[index];
 
+        //Caso o tipo de pagamento seja dinheiro ele tira o disable e deixa nulo a quantidade de parcelas e o valor delas
         if (type === 'MONEY') {
           disableValue.value = false;
           payment.value = '';
+          payment.installment = { value: null, amount: null };
         } else {
+        //Caso o tipo seja outro ele volta o disable e coloca o valor total no input value e deixa nulo a quantidade de parcelas e o valor delas
           disableValue.value = true;
           payment.value = Number(totalPricePayment.value).toFixed(2).toString();
+          payment.installment = { value: null, amount: null };
         }
+
+        //Caso o tipo de pagamento seja cartão de crédito ele ja coloca o parcelamento de 1X como padrão 
+	if (type === 'CREDIT_CARD') {
+          const defaultInstallment = getInstallmentOptions.value[0];
+          payment.installment = defaultInstallment;
+        }
+
       });
     } else {
       disableValue.value = false;
