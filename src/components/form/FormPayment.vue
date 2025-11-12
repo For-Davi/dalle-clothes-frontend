@@ -771,7 +771,11 @@ onMounted(async () => {
                   maxlength="2"
                   class="input-3-divider"
                   mask="##"
-                />
+                  >
+                  <template v-slot:prepend>
+                    <q-icon name="fa-regular fa-credit-card" color="black" size="20px"/>
+                  </template>
+                  </q-input>
                 <q-input
                   v-if="paymentDivider && payments.paymentType === 'CREDIT_CARD'"
                   label="R$ Valor das parcelas"
@@ -788,7 +792,11 @@ onMounted(async () => {
                   input-class="text-black"
                   type="text"
                   readonly
-                />
+                  >
+                  <template v-slot:prepend>
+                    <q-icon name="credit_card" color="black"/>
+                  </template>
+                  </q-input>
               </div>
               <div
                 v-if="paymentTotal && payments.paymentType === 'CREDIT_CARD'"

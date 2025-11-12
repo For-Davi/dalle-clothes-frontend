@@ -55,16 +55,11 @@ const startExport = async (): Promise<void> => {
   emit('update:open');
 };
 const startSendToEmail = async (email: string) => {
-  const check = checkEmail(email);
-  if (check.status) {
     const response = await useSaleStore().sendCouponToEmail(props.data.saleID ?? 0, email);
 
     if (response?.status === 200) {
       createSuccess(response.data.message);
     }
-  } else {
-    createErrorData(check.message || 'Erro ao enviar e-mail');
-  }
 };
 
 const open = computed({
@@ -125,7 +120,7 @@ watch(
             color="primary"
             label="Enviar cupom por email"
             :loading="loadingSale"
-            @click="changeShowInformEmail(true, couponData?.client.email)"
+            @click="changeShowInformEmail(true, couponData?.client?.email)"
             size="md"
             unelevated
             no-caps
