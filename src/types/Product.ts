@@ -95,7 +95,6 @@ export interface DataUpdateVariant {
   cost: number;
   minStockAlert: number;
   sku: string | null;
-  code: string | null;
   active: number;
   description: string | null;
   location: string | null;
