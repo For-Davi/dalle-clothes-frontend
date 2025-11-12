@@ -169,9 +169,11 @@ declare global {
   type INotification = Notification;
   type IEnterprise = Enterprise;
   type IDataEnterprise = DataEnterprise;
-
   type IVModelClient = VModelClient;
-
   type IVModelSalePayment = VModelSalePayment;
   type ISupplierCartProduct = SupplierCartProduct;
+  type ISupplierCartProduct = SupplierCartProduct;
+  type IProductSupplierOrder = ProductSupplierOrder
+  type IShowOrder = ShowOrder
+  type ISupplierOrderItem = SupplierOrderItem
 }

@@ -704,3 +704,58 @@ export const checkSaleProductsData = (
 
   return { status: true };
 };
+
+export const checkDataSupplierOrder = (data: {
+  dateIssue:  string,
+  dateDeliveryExpected:  string,
+  items:  ISupplierCartProduct[],
+}, selectedSupplier: number | null): { status: boolean, message?: string } => {
+  if(selectedSupplier === null){
+    return { status: false, message: 'Informe um fornecedor' };
+  }
+  if (data.dateIssue.trim() !== '') {
+    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[0-2])[/](19|20)\d\d$/;
+    if (!dateRegex.test(data.dateIssue.trim())) {
+      return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
+    }
+  }
+  if (data.dateDeliveryExpected.trim() !== '') {
+    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[0-2])[/](19|20)\d\d$/;
+    if (!dateRegex.test(data.dateDeliveryExpected.trim())) {
+      return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
+    }
+  }
+  if(data.items.length === 0 ) {
+    return { status: false, message: 'Deve conter ao menos 1 item no pedido' };
+  }
+  for (let i = 0; i < data.items.length; i++) {
+      const item = data.items[i];
+      const itemNumber = i + 1;
+
+      if (item.newPrice === undefined || item.newPrice === null) {
+        return { status: false, message: `Item ${itemNumber}: Preço é obrigatório` };
+      }
+
+      if (typeof item.newPrice !== 'number' || isNaN(item.newPrice)) {
+        return { status: false, message: `Item ${itemNumber}: Preço deve ser um número válido` };
+      }
+
+      if (item.newPrice <= 0) {
+        return { status: false, message: `Item ${itemNumber}: Preço deve ser maior que 0` };
+      }
+
+      if (item.newQuantity === undefined || item.newQuantity === null) {
+        return { status: false, message: `Item ${itemNumber}: Quantidade é obrigatória` };
+      }
+
+      if (typeof item.newQuantity !== 'number' || isNaN(item.newQuantity)) {
+        return { status: false, message: `Item ${itemNumber}: Quantidade deve ser um número válido` };
+      }
+
+      if (item.newQuantity <= 0) {
+        return { status: false, message: `Item ${itemNumber}: Quantidade deve ser maior que 0` };
+      }
+    }
+
+  return { status: true }
+}
