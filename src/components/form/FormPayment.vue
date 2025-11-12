@@ -7,6 +7,7 @@ import { useEmployeeStore } from 'src/stores/employee-store';
 import { useReceiptstore } from 'src/stores/receipt-store';
 import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 import { searchCep } from 'src/services/cep-service';
+import { PaymentTypeLabels, PaymentType } from 'src/enums/payment-enum';
 
 defineOptions({
   name: 'FormPayment',
@@ -170,13 +171,11 @@ const getChange = computed(() => {
     : ' R$ 0,00';
 });
 const getTypes = computed(() => {
-  return listTypesReceipt.value.map((item) =>{
-    return {
-      label: item.name,
-      value: item.id
-    }
-  })
-})
+  return Object.values(PaymentType).map((type) => ({
+    label: PaymentTypeLabels[type],
+    value: type,
+  }));
+});
 
 watch(
   () => model.value.cep,
@@ -528,7 +527,7 @@ onMounted(async () => {
                 dense
                 options-dense
                 map-options
-                @update:model-value="(val: IQuasarSelect<number>) => payments.paymentType = val?.label ?? null" 
+                @update:model-value="(val: IQuasarSelect<number>) => payments.paymentType = val?.label ?? null"
               >
                 <template v-slot:prepend>
                   <q-icon name="wallet" color="black" />
@@ -568,9 +567,9 @@ onMounted(async () => {
   </template>
 
   <!-- <template v-slot:option="scope">
-    <q-item 
-      clickable 
-      v-close-popup 
+    <q-item
+      clickable
+      v-close-popup
       dense
       @click="payments.receiptID = scope.opt.value"
       v-if="payments.paymentType === scope.opt.value || payments.paymentType !== null"
