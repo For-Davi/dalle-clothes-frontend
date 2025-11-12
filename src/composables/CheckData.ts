@@ -759,3 +759,147 @@ export const checkDataSupplierOrder = (data: {
 
   return { status: true }
 }
+export const checkPaymentData = (
+  data: IVModelSalePayment,
+  missingAmount: number,
+): { status: boolean; message?: string } => {
+  //VALIDAÇÃO DA ENTREGA
+  if (data.freight) {
+    if (
+      data.city?.trim() === '' &&
+      data.state?.trim() === '' &&
+      data.neighborhood?.trim() === '' &&
+      data.numberAddress?.trim() === ''
+    ) {
+      return { status: false, message: 'Com o frete ativado você deve preencher os campos' };
+    }
+    if (data.freightValue === null) {
+      return { status: false, message: 'Preencha o campo do valor do frete' };
+    }
+    if (data.city?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de cidade' };
+    }
+    if (data.state?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de UF' };
+    }
+    if (data.neighborhood?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de bairro' };
+    }
+    if (data.numberAddress?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de número' };
+    }
+  }
+
+  // VALIDAÇÃO GERAL
+  if (data.payment.length === 0) {
+    return { status: false, message: 'Insira algum pagamento' };
+  }
+  if (data.payment.some((p) => p.paymentType === null)) {
+    return { status: false, message: 'Deve ser informado a forma de pagamento' };
+  }
+
+  //VALIDAÇÃO DE PIX
+  const hasPix = data.payment.find((p) => p.paymentType === 'PIX');
+  if (hasPix) {
+    if (hasPix.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
+    }
+    if (hasPix.value.trim() === '0.00') {
+      return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE DINHEIRO
+  const hasMoney = data.payment.find((p) => p.paymentType === 'MONEY');
+  if (hasMoney) {
+    if (hasMoney.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
+    }
+    if (hasMoney.value.trim() === '0.00') {
+      return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE DÉBITO
+  const hasDebitCard = data.payment.find((p) => p.paymentType === 'DEBIT_CARD');
+  if (hasDebitCard) {
+    if (hasDebitCard.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento com cartão de débito.' };
+    }
+    if (hasDebitCard.value.trim() === '0.00') {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de débito não pode ser zero.',
+      };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE CRÉDITO
+  const hasCreditCard = data.payment.find((p) => p.paymentType === 'CREDIT_CARD');
+  if (hasCreditCard) {
+    if (
+      hasCreditCard.value.trim() === '' &&
+      hasCreditCard.installment.value === null &&
+      hasCreditCard.installment.amount?.trim() === null
+    ) {
+      return {
+        status: false,
+        message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
+      };
+    }
+    if (hasCreditCard.value.trim() === '0.00' && !hasCreditCard.installment) {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
+      };
+    }
+    if (
+      hasCreditCard.installment.value !== null &&
+      hasCreditCard.installment.value > 0 &&
+      hasCreditCard.installment.amount?.trim() === null
+    ) {
+      return {
+        status: false,
+        message: 'Deve ser informado o valor da parcela caso a parcela seja maior do que 0.',
+      };
+    }
+    if (
+      hasCreditCard.installment.amount?.trim() !== null &&
+      Number(hasCreditCard.installment.amount?.trim()) > 0 &&
+      hasCreditCard.installment.value === null
+    ) {
+      return {
+        status: false,
+        message:
+          'Deve ser informado a quantidade da parcela caso o valor da parcela seja maior que 0.00.',
+      };
+    }
+  }
+
+  //VALIDAÇÃO DE RECEBIMENTO
+  const notHaveReceipt = data.payment.find((p) => p.receiptID === null);
+  if (notHaveReceipt) {
+    return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
+  }
+
+  if (missingAmount > 0) {
+    return {
+      status: false,
+      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar a venda`,
+    };
+  }
+
+  return { status: true };
+};
+
+export const checkEmail = (email: string): { status: boolean; message?: string } => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (email.trim() === '') {
+    return { status: false, message: 'Campo de e-mail não pode ser vazio' };
+  }
+  if (!emailRegex.test(email)) {
+    return { status: false, message: 'O e-mail não é válido' };
+  }
+  return { status: true };
+};

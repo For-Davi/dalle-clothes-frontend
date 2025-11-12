@@ -795,7 +795,7 @@ export const columnsClientCart: IQuasarTable[] = [
   },
 ];
 
-export const listColumns: IQuasarTable[] = [
+export const columnsListProductsSale: IQuasarTable[] = [
   {
     name: 'name',
     label: 'Nome',
@@ -822,7 +822,7 @@ export const listColumns: IQuasarTable[] = [
   },
   {
     name: 'offer',
-    label: 'Preço em oferta',
+    label: 'Oferta',
     field: 'offer',
     align: 'left',
   },
@@ -845,7 +845,6 @@ export const listColumns: IQuasarTable[] = [
     align: 'right',
   },
 ];
-
 
 export const columnsSupplierCart: IQuasarTable[] = [
   {
@@ -894,6 +893,39 @@ export const columnsSupplierCart: IQuasarTable[] = [
     name: 'action',
     label: 'Ação',
     field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsTaxCoupon: IQuasarTable[] = [
+  {
+    name: 'item',
+    label: 'ITEM',
+    field: 'item',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'CÓDIGO',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'name',
+    label: 'NOME',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'QUANTIDADE',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'value',
+    label: 'VALOR',
+    field: 'value',
     align: 'right',
   },
 ];

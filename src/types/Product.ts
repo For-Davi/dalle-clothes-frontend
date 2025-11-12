@@ -310,3 +310,11 @@ export interface ProductSupplierOrder {
   unitCost: string
   quantityRequested: number
 }
+
+export interface DataProductSale {
+  productVariantID: number;
+  price: string;
+  offer: string;
+  newQuantity: number;
+  variantActive: number;
+}

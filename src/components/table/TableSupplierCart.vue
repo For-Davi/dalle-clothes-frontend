@@ -87,11 +87,7 @@ const totalValue = computed(() => {
               }}</q-tooltip>
             </div>
           </q-td>
-          <q-td
-            key="quantity"
-            :props="props"
-            class="text-left"
-          >
+          <q-td key="quantity" :props="props" class="text-left">
             {{ props.row.newQuantity }}
           </q-td>
           <q-td key="price" :props="props" class="text-left">

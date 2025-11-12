@@ -6,15 +6,15 @@ import { useProductStore } from 'src/stores/product-store';
 import { formatToReal } from 'src/composables/Money';
 
 defineOptions({
-    name: 'TableSupplierListProducts'
-})
+  name: 'TableSupplierListProducts',
+});
 
 const items = defineModel<ISupplierCartProduct[]>('items', { required: true });
 
 const { loadingProduct, listProduct } = storeToRefs(useProductStore());
 
-const filter = ref<string>('')
-const localProducts = ref<ISupplierCartProduct[]>([])
+const filter = ref<string>('');
+const localProducts = ref<ISupplierCartProduct[]>([]);
 
 const addCart = (product: ISupplierCartProduct) => {
   items.value.push({
@@ -27,7 +27,11 @@ const addCart = (product: ISupplierCartProduct) => {
 };
 const fetchProducts = async (): Promise<void> => {
   await useProductStore().getProducts();
-  localProducts.value = listProduct.value.map((p: IProduct) => ({ ...p, quantity:0, newPrice: 0 }));
+  localProducts.value = listProduct.value.map((p: IProduct) => ({
+    ...p,
+    quantity: 0,
+    newPrice: 0,
+  }));
 };
 const getColorStyle = (hexColor: string) => {
   return {
@@ -59,7 +63,7 @@ onMounted(async () => {
       dense
       virtual-scroll
       :rows-per-page-options="[0]"
-      style="height: 400px;"
+      style="height: 400px"
     >
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -142,10 +146,16 @@ onMounted(async () => {
             reverse-fill-mask
            style="max-width: 100px;"
             />
-        </q-td>
-        <q-td key="total" :props="props" class="text-left">
-          {{ formatToReal(Number(Number(props.row.newPrice || 0) * Number(props.row.quantity || 0)).toFixed(2)) }}
-        </q-td>
+          </q-td>
+          <q-td key="total" :props="props" class="text-left">
+            {{
+              formatToReal(
+                Number(Number(props.row.newPrice || 0) * Number(props.row.quantity || 0)).toFixed(
+                  2,
+                ),
+              )
+            }}
+          </q-td>
           <q-td key="action" :props="props" class="text-left">
             <q-btn
               :disable="props.row.quantity === 0 || props.row.newPrice === 0"
@@ -159,9 +169,9 @@ onMounted(async () => {
                 Adicionar
             </q-tooltip>
             </q-btn>
-           </q-td>
+          </q-td>
         </q-tr>
       </template>
     </q-table>
-    </section>
+  </section>
 </template>

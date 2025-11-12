@@ -17,3 +17,7 @@ export interface DataReceipt {
   typesID: number | null;
   description: string | null;
 }
+
+export interface FilterReceipt {
+  active: number | null;
+}

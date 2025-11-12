@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
-import { listColumns } from 'src/utils/columns';
+import { columnsListProductsSale } from 'src/utils/columns';
 import { useProductStore } from 'src/stores/product-store';
 import { formatToReal } from 'src/composables/Money';
 import { checkProductClientData } from 'src/composables/CheckData';
@@ -33,7 +33,13 @@ const startAddCart = (product: IClientCartProduct) => {
   }
 };
 const fetchProducts = async (): Promise<void> => {
-  await useProductStore().getProducts();
+  await useProductStore().getProducts({
+    active: 1,
+    name: null,
+    sku: null,
+    category: null,
+    stockCritical: null,
+  });
   localProducts.value = listProduct.value.map((p: IProduct) => ({ ...p, quantity: 0 }));
 };
 const getColorStyle = (hexColor: string) => {
@@ -46,9 +52,6 @@ const getColorStyle = (hexColor: string) => {
     display: 'inline-block',
     verticalAlign: 'middle',
   };
-};
-const isStockCritical = (stock: number | string): boolean => {
-  return Number(stock) === 0;
 };
 
 const filteredProducts = computed(() => {
@@ -65,7 +68,7 @@ onMounted(async () => {
   <section>
     <q-table
       :rows="loadingProduct ? [] : filteredProducts"
-      :columns="listColumns"
+      :columns="columnsListProductsSale"
       :filter="filter"
       :loading="loadingProduct"
       title="Lista de produtos"
@@ -125,13 +128,17 @@ onMounted(async () => {
             {{ formatToReal(props.row.price) }}
           </q-td>
           <q-td key="offer" :props="props" class="text-left">
-            {{ props.row.offer !== '0.00' ? formatToReal(props.row.offer) : '-' }}
+            {{
+              props.row.offer !== '0.00' && props.row.offer !== null
+                ? formatToReal(props.row.offer)
+                : '-'
+            }}
           </q-td>
           <q-td
             key="stock_quantity"
             :props="props"
             class="text-left"
-            :class="isStockCritical(props.row.stock_quantity) ? 'text-red' : ''"
+            :class="props.row.stock_quantity === 0 ? 'text-red' : ''"
           >
             {{ props.row.stock_quantity }}
           </q-td>
@@ -156,7 +163,7 @@ onMounted(async () => {
                 color="red"
                 icon="remove"
                 class="q-mr-sm"
-                :disable="props.row.stock_quantity <= 0"
+                :disable="props.row.stock_quantity <= 0 || props.row.quantity === 0"
                 @click="props.row.quantity--"
               />
               <q-input

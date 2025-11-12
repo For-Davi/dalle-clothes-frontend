@@ -4,6 +4,7 @@ import {
   updateReceiptService,
   deleteReceiptService,
   showReceiptService,
+  getReceiptFilterService,
 } from 'src/services/receipt-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -23,10 +24,15 @@ export const useReceiptstore = defineStore('receipt', {
     setListReceipt(receipt: IReceipt[]) {
       receipt.map((item) => this.listReceipt.push(item));
     },
-    async getReceipt() {
+    async getReceipt(filter: IFilterReceipt | null = null) {
       try {
         this.setLoading(true);
-        const response = await getReceiptsService();
+        let response = null;
+        if (filter) {
+          response = await getReceiptFilterService(filter);
+        } else {
+          response = await getReceiptsService();
+        }
         if (response.status === 200) {
           this.clearListReceipt();
           this.setListReceipt(response.data.receipts);
