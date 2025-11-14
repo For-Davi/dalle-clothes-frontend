@@ -302,8 +302,8 @@ export interface SupplierCartProduct {
 }
 
 export interface ProductSupplierOrder {
-  id?: number
-  productVariantID: number
-  unitCost: string
-  quantityRequested: number
+  id?: number;
+  productVariantID: number;
+  unitCost: string;
+  quantityRequested: number;
 }

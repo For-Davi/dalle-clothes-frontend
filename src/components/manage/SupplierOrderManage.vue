@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { computed, reactive, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import Loading from '../shared/Loading.vue';
 import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
 import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import FormSupplierOrder from '../form/FormSupplierOrder.vue';
+import TableSupplierOrder from '../table/TableSupplierOrder.vue';
 
 defineOptions({
   name: 'SupplierOrderManage',
@@ -20,6 +21,8 @@ const emit = defineEmits<{
 
 const { listSupplierOrder, loadingSupplierOrder } = storeToRefs(useSupplierOrderStore());
 
+const showFilterSupplierOrder = ref<boolean>(false);
+const filter = ref<string>('');
 const showFormSupplierOrder = reactive<{
   open: boolean;
   orderID: number | null;
@@ -44,41 +47,68 @@ const changeShowFormSupplierOrder = (show: boolean, orderID: number | null = nul
     orderID: orderID,
   });
 };
+const fetchOrders = async (): Promise<void> => {
+  await useSupplierOrderStore().getSupplierOrders();
+};
+const changeShowFilterSupplierOrder = (): void => {
+  showFilterSupplierOrder.value = !showFilterSupplierOrder.value;
+};
 
 const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
 });
 
-watch(open, () => {
+watch(open, async () => {
   if (open.value) {
     clear();
+    await fetchOrders();
   }
 });
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 sub-page column justify-between">
+    <q-card class="bg-grey-2 sub-page column justify-between" style="min-width: 90vw">
       <q-card-section class="q-pa-none">
         <TitlePage title="Gerenciamento de pedidos" icon="fa-solid fa-list" />
       </q-card-section>
-      <q-card-section>
+      <q-card-section class="q-py-sm">
         <div v-show="!loadingSupplierOrder">
-          <TableSupplierOrder
-            v-show="listSupplierOrder.length > 0"
-            @show:show-form-supplier-order="startEdit"
-          />
-          <Empty
-            v-show="listSupplierOrder.length <= 0"
-            message="Sem pedidos cadastrados"
-            color="bg-red-3"
-            type-img="list"
-          />
+          <q-banner rounded class="bg-grey-4 q-mb-sm">
+            <div class="row q-gutter-x-sm justify-end items-center">
+              <q-input
+                label="Pesquise"
+                outlined
+                v-model="filter"
+                dense
+                style="width: 200px"
+                class="bg-white rounded-borders"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="search" size="20px" color="black" />
+                </template>
+              </q-input>
+              <q-btn
+                @click="changeShowFilterSupplierOrder"
+                round
+                color="primary"
+                icon="filter_alt"
+                unelevated
+                size="13px"
+              >
+                <!-- <q-badge v-show="hasFilter" floating color="red" rounded /> -->
+              </q-btn>
+            </div>
+          </q-banner>
+          <div v-if="listSupplierOrder.length > 0" class="column items-end">
+            <TableSupplierOrder :filter="filter" @show:show-form-supplier-order="startEdit" />
+          </div>
+          <Empty v-else message="Sem pedidos cadastrados" color="bg-red-3" type-img="list" />
         </div>
         <Loading v-show="loadingSupplierOrder" :show="loadingSupplierOrder" />
       </q-card-section>
       <q-card-actions align="right">
-        <div class="row justify-end items-center q-gutter-x-sm">
+        <div class="row justify-end items-center q-gutter-x-sm q-mr-sm">
           <q-btn
             color="red"
             label="Fechar"

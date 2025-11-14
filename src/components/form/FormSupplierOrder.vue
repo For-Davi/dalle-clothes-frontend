@@ -36,7 +36,7 @@ const dataSupplierOrder = reactive({
   dateDeliveryExpected: '' as string,
   description: '' as string,
   items: [] as ISupplierCartProduct[],
-  itemsToDelete: [] as string[]
+  itemsToDelete: [] as string[],
 });
 const selectedSupplier = ref<IQuasarSelect<number | null>>({
   label: 'Não informado',
@@ -50,7 +50,7 @@ const clear = (): void => {
     dateDeliveryExpected: '',
     description: '',
     items: [],
-    itemsToDelete: []
+    itemsToDelete: [],
   });
 
   selectedSupplier.value = {
@@ -61,18 +61,18 @@ const clear = (): void => {
 const changeShowTableSelectProductVariant = () => {
   showTableSelectProductVariant.value = !showTableSelectProductVariant.value;
 };
-const getItems = (items:ISupplierCartProduct[]): IProductSupplierOrder[] => {
+const getItems = (items: ISupplierCartProduct[]): IProductSupplierOrder[] => {
   return items.map((item) => {
     return {
-      productVariantID : item.product_variant_id,
+      productVariantID: item.product_variant_id,
       unitCost: item.newPrice,
-      quantityRequested: item.newQuantity
-    }
-  })
-}
+      quantityRequested: item.newQuantity,
+    };
+  });
+};
 const verifyString = (value: string): string | null => {
-  return value.trim() !== '' ? value : null
-}
+  return value.trim() !== '' ? value : null;
+};
 const save = async () => {
   const check = checkDataSupplierOrder(dataSupplierOrder, selectedSupplier.value.value);
   if (check.status) {
@@ -81,7 +81,7 @@ const save = async () => {
       dateIssue: dataSupplierOrder.dateIssue,
       dateDeliveryExpected: dataSupplierOrder.dateDeliveryExpected,
       items: getItems(dataSupplierOrder.items),
-      supplierID: selectedSupplier.value.value
+      supplierID: selectedSupplier.value.value,
     });
     if (response?.status === 201) {
       clear();
@@ -92,7 +92,7 @@ const save = async () => {
   }
 };
 const update = async () => {
-  const check = checkDataSupplierOrder(dataSupplierOrder,selectedSupplier.value.value);
+  const check = checkDataSupplierOrder(dataSupplierOrder, selectedSupplier.value.value);
   if (check.status) {
     const response = await useSupplierOrderStore().updateSupplierOrder({
       id: props.data.orderID!,
@@ -135,9 +135,9 @@ const checkDataEdit = async () => {
         color: variant.color
           ? {
               name: variant.color.name,
-              hex_color_code: variant.color.hex_color_code
+              hex_color_code: variant.color.hex_color_code,
             }
-          : null
+          : null,
       };
     });
 
@@ -147,7 +147,7 @@ const checkDataEdit = async () => {
       dateDeliveryExpected: order.date_delivery_expected ?? '',
       description: order.observation ?? '',
       items: mappedItems,
-      itemsToDelete: []
+      itemsToDelete: [],
     });
   }
 };
@@ -159,12 +159,12 @@ const fetchProductVariants = async (): Promise<void> => {
   await useProductStore().getProducts();
 };
 const submit = async () => {
-  if(props.data.orderID){
-    await update()
+  if (props.data.orderID) {
+    await update();
   } else {
-    await save()
+    await save();
   }
-}
+};
 
 const getListSupplierSelect = computed((): IQuasarSelect<number | null>[] => {
   const mappedSuppliers = listSupplierSelect.value.map((item) => ({
@@ -318,7 +318,14 @@ watch(open, async () => {
             unelevated
             no-caps
           />
-          <q-btn @click="submit" color="primary" :label="orderID ? 'Atualizar' : 'Salvar'" size="md" unelevated no-caps />
+          <q-btn
+            @click="submit"
+            color="primary"
+            :label="orderID ? 'Atualizar' : 'Salvar'"
+            size="md"
+            unelevated
+            no-caps
+          />
         </div>
       </q-card-actions>
     </q-card>

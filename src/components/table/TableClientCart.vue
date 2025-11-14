@@ -8,12 +8,12 @@ defineOptions({
 });
 
 const props = defineProps<{
-  rows: IClientCartProduct[]
-}>()
+  rows: IClientCartProduct[];
+}>();
 
 const emit = defineEmits<{
-  'remove-from-cart':[number];
-}>()
+  'remove-from-cart': [number];
+}>();
 
 const filter = ref<string>('');
 
@@ -31,7 +31,7 @@ const getColorStyle = (hexColor: string) => {
 
 const totalValue = computed(() => {
   return props.rows.reduce((acc, p) => {
-    return acc + (p.price * (p.newQuantity || 0));
+    return acc + p.price * (p.newQuantity || 0);
   }, 0);
 });
 </script>
@@ -56,7 +56,7 @@ const totalValue = computed(() => {
           </q-th>
         </q-tr>
       </template>
-     <template v-slot:body="props">
+      <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
@@ -81,32 +81,32 @@ const totalValue = computed(() => {
               }}</q-tooltip>
             </div>
           </q-td>
-          <q-td
-            key="quantity"
-            :props="props"
-            class="text-left"
-          >
+          <q-td key="quantity" :props="props" class="text-left">
             {{ props.row.newQuantity }}
           </q-td>
-          <q-td key="action" :props="props" >
-           <div class="flex row justify-end">
-            <q-btn
-              size="md"
-              flat
-              round
-              color="red"
-              icon="remove_shopping_cart"
-              @click="emit('remove-from-cart', props.row.product_variant_id)">
-            <q-tooltip>
-                Remover produto do carrinho
-            </q-tooltip>
-            </q-btn>
-           </div>
-           </q-td>
+          <q-td key="action" :props="props">
+            <div class="flex row justify-end">
+              <q-btn
+                size="md"
+                flat
+                round
+                color="red"
+                icon="remove_shopping_cart"
+                @click="emit('remove-from-cart', props.row.product_variant_id)"
+              >
+                <q-tooltip> Remover produto do carrinho </q-tooltip>
+              </q-btn>
+            </div>
+          </q-td>
         </q-tr>
         <q-tr :props="props" :key="`e_${props.row.index}`" class="q-virtual-scroll--with-prev">
           <q-td colspan="100%">
-            <div class="text-left text-bold"> Preço por linha: <span class="text-green text-bold">{{ formatToReal((props.row.price * props.row.newQuantity).toString()) }}</span></div>
+            <div class="text-left text-bold">
+              Preço por linha:
+              <span class="text-green text-bold">{{
+                formatToReal((props.row.price * props.row.newQuantity).toString())
+              }}</span>
+            </div>
           </q-td>
         </q-tr>
       </template>

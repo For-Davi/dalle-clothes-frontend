@@ -2,10 +2,9 @@
 import { ref, reactive, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from 'src/components/confirm/ConfirmAction.vue';
-import { useSupplierOrderStore } from '@/stores/supplier-order-store';
+import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import { columnsSupplierOrder } from 'src/utils/columns';
-import { getLabelStatusSupplierOrder } from 'src/composables/Label';
-import { formatToBrazilianDate } from 'src/composables/FormatData';
+import { getLabelStatus } from 'src/composables/Label';
 import SupplierOrderDetails from '../fragments/supplier/SupplierOrderDetails.vue';
 
 defineOptions({
@@ -71,10 +70,11 @@ onMounted(async () => {
 
 <template>
   <q-table
+    class="full-width"
     :rows="loadingSupplierOrder ? [] : listSupplierOrder"
     :columns="columnsSupplierOrder"
     :filter="props.filter"
-    title="Lista de pedidos"
+    title="Lista de produtos"
     row-key="index"
     no-data-label="Nenhum pedido para mostrar"
     virtual-scroll
@@ -90,14 +90,20 @@ onMounted(async () => {
 
     <template v-slot:body="props">
       <q-tr :props="props">
-        <q-td key="created_at">{{ props.row.created_at }}</q-td>
-        <q-td key="order">{{ props.row.order ?? '' }}</q-td>
-        <q-td key="status">{{ getLabelStatusSupplierOrder(props.row.status) }}</q-td>
-        <q-td key="date_delivery_expected">{{
-          props.row.date_delivery_expected
-            ? formatToBrazilianDate(props.row.date_delivery_expected)
-            : ''
-        }}</q-td>
+        <q-td key="order_number">{{ props.row.order_number ?? '' }}</q-td>
+        <q-td key="status"
+          ><span
+            class="text-white"
+            :style="{
+              backgroundColor: getLabelStatus(props.row.status).color,
+              borderRadius: '5px',
+              padding: '5px',
+            }"
+            >{{ getLabelStatus(props.row.status).text }}</span
+          ></q-td
+        >
+        <q-td key="date_issue">{{ props.row.date_issue ?? '' }}</q-td>
+        <q-td key="date_delivery_expected">{{ props.row.date_delivery_expected ?? '' }}</q-td>
         <q-td key="actions" :props="props">
           <q-btn
             v-show="props.row.id"
@@ -107,7 +113,20 @@ onMounted(async () => {
             round
             color="blue"
             icon="visibility"
-          />
+          >
+            <q-tooltip>Detalhes</q-tooltip>
+          </q-btn>
+          <q-btn
+            v-show="props.row.id"
+            @click="changeShowDetails(true, props.row.id)"
+            size="sm"
+            flat
+            round
+            color="green"
+            icon="list_alt"
+          >
+            <q-tooltip>Status</q-tooltip>
+          </q-btn>
           <q-btn @click="startEdit(props.row.id)" size="sm" flat round color="black" icon="edit" />
           <q-btn
             @click="startExclude(props.row.id)"

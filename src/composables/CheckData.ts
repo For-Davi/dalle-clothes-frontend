@@ -677,23 +677,28 @@ export const checkEnterpriseData = (data: {
   return { status: true };
 };
 
-export const checkProductClientData = (data: IClientCartProduct): { status: boolean, message?: string } => {
-  if(data.stock_quantity < data.quantity){
-    return { status: false, message: 'A quantidade informada excede a quantidade em estoque'}
+export const checkProductClientData = (
+  data: IClientCartProduct,
+): { status: boolean; message?: string } => {
+  if (data.stock_quantity < data.quantity) {
+    return { status: false, message: 'A quantidade informada excede a quantidade em estoque' };
   }
-  if(data.quantity === 0){
-    return { status: false, message: 'A quantidade informada é inválida' }
+  if (data.quantity === 0) {
+    return { status: false, message: 'A quantidade informada é inválida' };
   }
 
-  return { status: true }
-}
+  return { status: true };
+};
 
-export const checkDataSupplierOrder = (data: {
-  dateIssue:  string,
-  dateDeliveryExpected:  string,
-  items:  ISupplierCartProduct[],
-}, selectedSupplier: number | null): { status: boolean, message?: string } => {
-  if(selectedSupplier === null){
+export const checkDataSupplierOrder = (
+  data: {
+    dateIssue: string;
+    dateDeliveryExpected: string;
+    items: ISupplierCartProduct[];
+  },
+  selectedSupplier: number | null,
+): { status: boolean; message?: string } => {
+  if (selectedSupplier === null) {
     return { status: false, message: 'Informe um fornecedor' };
   }
   if (data.dateIssue.trim() !== '') {
@@ -708,37 +713,37 @@ export const checkDataSupplierOrder = (data: {
       return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
     }
   }
-  if(data.items.length === 0 ) {
+  if (data.items.length === 0) {
     return { status: false, message: 'Deve conter ao menos 1 item no pedido' };
   }
   for (let i = 0; i < data.items.length; i++) {
-      const item = data.items[i];
-      const itemNumber = i + 1;
+    const item = data.items[i];
+    const itemNumber = i + 1;
 
-      if (item.newPrice === undefined || item.newPrice === null) {
-        return { status: false, message: `Item ${itemNumber}: Preço é obrigatório` };
-      }
-
-      if (typeof item.newPrice !== 'number' || isNaN(item.newPrice)) {
-        return { status: false, message: `Item ${itemNumber}: Preço deve ser um número válido` };
-      }
-
-      if (item.newPrice <= 0) {
-        return { status: false, message: `Item ${itemNumber}: Preço deve ser maior que 0` };
-      }
-
-      if (item.newQuantity === undefined || item.newQuantity === null) {
-        return { status: false, message: `Item ${itemNumber}: Quantidade é obrigatória` };
-      }
-
-      if (typeof item.newQuantity !== 'number' || isNaN(item.newQuantity)) {
-        return { status: false, message: `Item ${itemNumber}: Quantidade deve ser um número válido` };
-      }
-
-      if (item.newQuantity <= 0) {
-        return { status: false, message: `Item ${itemNumber}: Quantidade deve ser maior que 0` };
-      }
+    if (item.newPrice === undefined || item.newPrice === null) {
+      return { status: false, message: `Item ${itemNumber}: Preço é obrigatório` };
     }
 
-  return { status: true }
-}
+    if (typeof item.newPrice !== 'number' || isNaN(item.newPrice)) {
+      return { status: false, message: `Item ${itemNumber}: Preço deve ser um número válido` };
+    }
+
+    if (item.newPrice <= 0) {
+      return { status: false, message: `Item ${itemNumber}: Preço deve ser maior que 0` };
+    }
+
+    if (item.newQuantity === undefined || item.newQuantity === null) {
+      return { status: false, message: `Item ${itemNumber}: Quantidade é obrigatória` };
+    }
+
+    if (typeof item.newQuantity !== 'number' || isNaN(item.newQuantity)) {
+      return { status: false, message: `Item ${itemNumber}: Quantidade deve ser um número válido` };
+    }
+
+    if (item.newQuantity <= 0) {
+      return { status: false, message: `Item ${itemNumber}: Quantidade deve ser maior que 0` };
+    }
+  }
+
+  return { status: true };
+};
