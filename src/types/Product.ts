@@ -170,6 +170,7 @@ export interface Variant {
   description: string | null;
   location: string | null;
   product_id: number | null;
+  product: IProduct | null;
   grid_item_id: number;
   grid_item: {
     id: number;

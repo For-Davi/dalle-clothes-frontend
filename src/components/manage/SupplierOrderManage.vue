@@ -7,6 +7,7 @@ import { storeToRefs } from 'pinia';
 import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import FormSupplierOrder from '../form/FormSupplierOrder.vue';
 import TableSupplierOrder from '../table/TableSupplierOrder.vue';
+import SupplierOrderDetails from '../fragments/supplier/SupplierOrderDetails.vue';
 
 defineOptions({
   name: 'SupplierOrderManage',
@@ -23,28 +24,42 @@ const { listSupplierOrder, loadingSupplierOrder } = storeToRefs(useSupplierOrder
 
 const showFilterSupplierOrder = ref<boolean>(false);
 const filter = ref<string>('');
-const showFormSupplierOrder = reactive<{
+const showDetailsSupplierOrder = reactive<{
   open: boolean;
   orderID: number | null;
 }>({
   open: false,
   orderID: null,
 });
+const showFormSupplierOrder = reactive<{
+  open: boolean;
+}>({
+  open: false,
+});
 
 const clear = () => {
-  Object.assign(showFormSupplierOrder, {
+  Object.assign(showDetailsSupplierOrder, {
     open: false,
     orderID: null,
   });
+  Object.assign(showFormSupplierOrder, {
+    open: false,
+  });
 };
 
-const startEdit = (orderID: number) => {
-  changeShowFormSupplierOrder(true, orderID);
+const showDetails = (orderID: number) => {
+  console.log(orderID);
+  changeShowDetailsSupplierOrder(true, orderID);
 };
-const changeShowFormSupplierOrder = (show: boolean, orderID: number | null = null): void => {
-  Object.assign(showFormSupplierOrder, {
+const changeShowDetailsSupplierOrder = (show: boolean, orderID: number | null = null): void => {
+  Object.assign(showDetailsSupplierOrder, {
     open: show,
     orderID: orderID,
+  });
+};
+const changeShowFormSupplierOrder = (show: boolean): void => {
+  Object.assign(showFormSupplierOrder, {
+    open: show,
   });
 };
 const fetchOrders = async (): Promise<void> => {
@@ -101,7 +116,7 @@ watch(open, async () => {
             </div>
           </q-banner>
           <div v-if="listSupplierOrder.length > 0" class="column items-end">
-            <TableSupplierOrder :filter="filter" @show:show-form-supplier-order="startEdit" />
+            <TableSupplierOrder :filter="filter" @show-details-supplier-order="showDetails" />
           </div>
           <Empty v-else message="Sem pedidos cadastrados" color="bg-red-3" type-img="list" />
         </div>
@@ -133,6 +148,10 @@ watch(open, async () => {
       <FormSupplierOrder
         :data="showFormSupplierOrder"
         @update:open="changeShowFormSupplierOrder(false)"
+      />
+      <SupplierOrderDetails
+        :data="showDetailsSupplierOrder"
+        @update:open="changeShowDetailsSupplierOrder(false)"
       />
     </q-card>
   </q-dialog>

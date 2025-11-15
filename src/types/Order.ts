@@ -19,16 +19,19 @@ export interface DataSupplierOrder {
 export interface ShowOrder {
   id: number;
   supplier_id: number;
+  supplier: ISupplier | null;
   order_number: string;
   date_delivery_expected: string | null;
   date_issue: string | null;
   enterprise_id: number;
   status: string;
   created_by: number;
+  user: IUser;
   cancellation_reason: string | null;
   date_received: string | null;
   observation: string | null;
   items: ISupplierOrderItem[];
+  created_at: string;
 }
 
 export interface SupplierOrderItem {
@@ -41,4 +44,5 @@ export interface SupplierOrderItem {
   quantity_received: number | null;
   date_received: string | null;
   finished: string | null;
+  variant: IVariant;
 }

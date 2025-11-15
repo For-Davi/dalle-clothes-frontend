@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from 'src/components/confirm/ConfirmAction.vue';
 import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import { columnsSupplierOrder } from 'src/utils/columns';
 import { getLabelStatus } from 'src/composables/Label';
-import SupplierOrderDetails from '../fragments/supplier/SupplierOrderDetails.vue';
 
 defineOptions({
   name: 'TableSupplierOrder',
@@ -21,27 +20,14 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'show:showFormSupplierOrder': [number];
+  showDetailsSupplierOrder: [number];
 }>();
 
 const { loadingSupplierOrder, listSupplierOrder } = storeToRefs(useSupplierOrderStore());
 
 const showConfirmAction = ref<boolean>(false);
 const orderMonitoring = ref<number | null>(null);
-const showDetails = reactive<{
-  open: boolean;
-  orderID: number | null;
-}>({
-  open: false,
-  orderID: null,
-});
 
-const changeShowDetails = (show: boolean, orderID: number | null = null): void => {
-  Object.assign(showDetails, {
-    open: show,
-    orderID: orderID,
-  });
-};
 const openConfirmAction = (id: number): void => {
   orderMonitoring.value = id;
   showConfirmAction.value = true;
@@ -52,9 +38,6 @@ const closeConfirmActionOk = async () => {
 };
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;
-};
-const startEdit = (id: number): void => {
-  emit('show:showFormSupplierOrder', id);
 };
 const startExclude = (id: number): void => {
   openConfirmAction(id);
@@ -107,7 +90,7 @@ onMounted(async () => {
         <q-td key="actions" :props="props">
           <q-btn
             v-show="props.row.id"
-            @click="changeShowDetails(true, props.row.id)"
+            @click="emit('showDetailsSupplierOrder', props.row.id)"
             size="sm"
             flat
             round
@@ -116,18 +99,6 @@ onMounted(async () => {
           >
             <q-tooltip>Detalhes</q-tooltip>
           </q-btn>
-          <q-btn
-            v-show="props.row.id"
-            @click="changeShowDetails(true, props.row.id)"
-            size="sm"
-            flat
-            round
-            color="green"
-            icon="list_alt"
-          >
-            <q-tooltip>Status</q-tooltip>
-          </q-btn>
-          <q-btn @click="startEdit(props.row.id)" size="sm" flat round color="black" icon="edit" />
           <q-btn
             @click="startExclude(props.row.id)"
             size="sm"
@@ -142,7 +113,6 @@ onMounted(async () => {
   </q-table>
 
   <!-- Modals -->
-  <SupplierOrderDetails :data="showDetails" @update:open="changeShowDetails(false)" />
   <ConfirmAction
     :open="showConfirmAction"
     label-action="Continuar"

@@ -17,7 +17,6 @@ defineOptions({
 const props = defineProps<{
   data: {
     open: boolean;
-    orderID: number | null;
   };
 }>();
 const emit = defineEmits<{
@@ -36,7 +35,6 @@ const dataSupplierOrder = reactive({
   dateDeliveryExpected: '' as string,
   description: '' as string,
   items: [] as ISupplierCartProduct[],
-  itemsToDelete: [] as string[],
 });
 const selectedSupplier = ref<IQuasarSelect<number | null>>({
   label: 'Não informado',
@@ -50,7 +48,6 @@ const clear = (): void => {
     dateDeliveryExpected: '',
     description: '',
     items: [],
-    itemsToDelete: [],
   });
 
   selectedSupplier.value = {
@@ -70,9 +67,6 @@ const getItems = (items: ISupplierCartProduct[]): IProductSupplierOrder[] => {
     };
   });
 };
-const verifyString = (value: string): string | null => {
-  return value.trim() !== '' ? value : null;
-};
 const save = async () => {
   const check = checkDataSupplierOrder(dataSupplierOrder, selectedSupplier.value.value);
   if (check.status) {
@@ -91,79 +85,11 @@ const save = async () => {
     createErrorData(check.message || 'Erro ao processar dados do pedido');
   }
 };
-const update = async () => {
-  const check = checkDataSupplierOrder(dataSupplierOrder, selectedSupplier.value.value);
-  if (check.status) {
-    const response = await useSupplierOrderStore().updateSupplierOrder({
-      id: props.data.orderID!,
-      supplierID: selectedSupplier.value.value,
-      dateIssue: dataSupplierOrder.dateIssue,
-      dateDeliveryExpected: dataSupplierOrder.dateDeliveryExpected,
-      orderNumber: verifyString(dataSupplierOrder.orderNumber),
-      items: getItems(dataSupplierOrder.items),
-      itemsToDelete: dataSupplierOrder.itemsToDelete,
-    });
-    if (response?.status === 200) {
-      clear();
-      emit('update:open');
-    }
-  } else {
-    createErrorData(check.message || 'Erro ao processar dados do pedido');
-  }
-};
-const checkDataEdit = async () => {
-  if (!orderID.value) return;
-
-  const response = await useSupplierOrderStore().showOrderSupplier(orderID.value);
-
-  if (response?.status === 200) {
-    const order = response.data.order as IShowOrder;
-
-    const mappedItems: ISupplierCartProduct[] = order.items.map((item: ISupplierOrderItem) => {
-      const variant = item.product_variant;
-
-      return {
-        product_variant_id: item.product_variant_id,
-        price: item.unit_cost,
-        newPrice: item.unit_cost,
-        quantity: item.quantity_requested,
-        newQuantity: item.quantity_requested,
-        stock_quantity: variant.stock_quantity,
-        sku: variant.sku,
-        code: variant.code,
-        variant_active: variant.active ? 1 : 0,
-        color: variant.color
-          ? {
-              name: variant.color.name,
-              hex_color_code: variant.color.hex_color_code,
-            }
-          : null,
-      };
-    });
-
-    Object.assign(dataSupplierOrder, {
-      orderNumber: order.order_number,
-      dateIssue: order.date_issue ?? '',
-      dateDeliveryExpected: order.date_delivery_expected ?? '',
-      description: order.observation ?? '',
-      items: mappedItems,
-      itemsToDelete: [],
-    });
-  }
-};
-
 const fetchSuppliers = async (): Promise<void> => {
   await useSupplierStore().getSuppliersSelect();
 };
 const fetchProductVariants = async (): Promise<void> => {
   await useProductStore().getProducts();
-};
-const submit = async () => {
-  if (props.data.orderID) {
-    await update();
-  } else {
-    await save();
-  }
 };
 
 const getListSupplierSelect = computed((): IQuasarSelect<number | null>[] => {
@@ -177,7 +103,6 @@ const getListSupplierSelect = computed((): IQuasarSelect<number | null>[] => {
 const isLoading = computed((): boolean => {
   return loadingSupplier.value || loadingSupplierOrder.value || loadingProduct.value;
 });
-const orderID = computed(() => props.data.orderID);
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
@@ -187,11 +112,10 @@ const getLabelItems = computed((): string => {
 });
 
 watch(open, async () => {
-  clear();
   if (open.value) {
+    clear();
     await fetchSuppliers();
     await fetchProductVariants();
-    await checkDataEdit();
   }
 });
 </script>
@@ -199,10 +123,7 @@ watch(open, async () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 form-basic">
       <q-card-section class="q-pa-none">
-        <TitlePage
-          :title="orderID ? 'Atualização de pedido' : 'Cadastro de pedido'"
-          icon="list_alt"
-        />
+        <TitlePage title="Cadastro de pedido" icon="list_alt" />
       </q-card-section>
       <Loading :show="isLoading" />
       <q-card-section class="q-pa-sm" v-show="!isLoading">
@@ -318,14 +239,7 @@ watch(open, async () => {
             unelevated
             no-caps
           />
-          <q-btn
-            @click="submit"
-            color="primary"
-            :label="orderID ? 'Atualizar' : 'Salvar'"
-            size="md"
-            unelevated
-            no-caps
-          />
+          <q-btn @click="save" color="primary" label="Salvar" size="md" unelevated no-caps />
         </div>
       </q-card-actions>
     </q-card>

@@ -5,6 +5,7 @@ import type {
   DataSupplierCatalog,
   CatalogSupplier,
   SupplierSelect,
+  Supplier,
 } from './Supplier';
 import type {
   CategorySupplier,
@@ -74,7 +75,7 @@ import type {
   ExportSchedule,
 } from './Schedules';
 import type { Notification } from './Notification';
-import type { DataSupplierOrder, SupplierOrder } from './Order';
+import type { DataSupplierOrder, SupplierOrder, ShowOrder } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
 
 export {};
