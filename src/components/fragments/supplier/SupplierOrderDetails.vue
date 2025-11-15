@@ -216,19 +216,19 @@ watch(open, async () => {
                     <div class="col-12 col-sm-6">
                       <p class="flex items-center">
                         <q-icon name="shopping_cart" class="q-mr-sm text-primary" />
-                        <b>Qtde requisitada:</b> {{ item?.quantity_requested }}
+                        <b class="q-mr-sm">Qtde requisitada:</b> {{ item?.quantity_requested }}
                       </p>
 
                       <p class="flex items-center">
                         <q-icon name="inventory" class="q-mr-sm text-primary" />
-                        <b>Qtde recebida:</b> {{ item?.quantity_received ?? '-' }}
+                        <b class="q-mr-sm">Qtde recebida:</b> {{ item?.quantity_received ?? '-' }}
                       </p>
                     </div>
 
                     <div class="col-12 col-sm-6">
                       <p class="flex items-center">
                         <q-icon name="event_available" class="q-mr-sm text-primary" />
-                        <b>Data recebimento:</b> {{ item?.date_received ?? '-' }}
+                        <b class="q-mr-sm">Data recebimento:</b> {{ item?.date_received ?? '-' }}
                       </p>
 
                       <p class="flex items-center">
@@ -237,7 +237,7 @@ watch(open, async () => {
                           class="q-mr-sm"
                           :class="item?.finished ? 'text-positive' : 'text-grey'"
                         />
-                        <b>Finalizado:</b>&nbsp; {{ item?.finished ? 'Sim' : 'Não' }}
+                        <b class="q-mr-sm">Finalizado:</b> {{ item?.finished ? 'Sim' : 'Não' }}
                       </p>
                     </div>
                   </div>
@@ -249,6 +249,12 @@ watch(open, async () => {
       </q-card-section>
       <q-card-actions v-show="!loadingSupplierOrder" class="row justify-between items-center">
         <div>
+          <q-btn color="primary" icon="list_alt" round unelevated no-caps class="q-ml-sm">
+            <q-tooltip>Status</q-tooltip>
+          </q-btn>
+          <q-btn color="secondary" icon="history" round unelevated no-caps class="q-ml-sm">
+            <q-tooltip>Histórico</q-tooltip>
+          </q-btn>
           <q-btn
             color="grey"
             icon="download"
@@ -261,22 +267,17 @@ watch(open, async () => {
           >
             <q-tooltip>Download</q-tooltip>
           </q-btn>
-          <q-btn color="secondary" icon="history" round unelevated no-caps class="q-ml-sm">
-            <q-tooltip>Histórico</q-tooltip>
-          </q-btn>
         </div>
         <div>
           <q-btn
             color="red"
             label="Fechar"
-            flat
             size="md"
             @click="open = false"
             unelevated
             no-caps
             class="q-mr-sm"
           />
-          <q-btn color="primary" label="Status" size="md" unelevated no-caps class="q-mr-sm" />
         </div>
       </q-card-actions>
     </q-card>
