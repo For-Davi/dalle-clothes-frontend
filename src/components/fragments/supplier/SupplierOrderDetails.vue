@@ -8,6 +8,9 @@ import { formatToBrazilianDate } from 'src/composables/FormatData';
 import { formatToReal } from 'src/composables/Money';
 import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import { exportOrderService } from 'src/services/supplier-order-service';
+import { nextTick } from 'vue';
+import { checkSupplierOrderReceived } from 'src/composables/CheckData';
+import { createErrorData } from 'src/composables/CreateNotify';
 
 defineOptions({
   name: 'SupplierOrderDetails',
@@ -27,9 +30,13 @@ const { loadingSupplierOrder } = storeToRefs(useSupplierOrderStore());
 
 const loading = ref<boolean>(false);
 const dataOrder = ref<IShowOrder | null>(null);
+const dateReceived = ref<string>('');
+const showSupplierOrderReceipt = ref<boolean>(false);
 
 const clear = (): void => {
   dataOrder.value = null;
+  dateReceived.value = '';
+  showSupplierOrderReceipt.value = false;
 };
 const mountData = async (): Promise<void> => {
   if (!orderID.value) return;
@@ -55,6 +62,81 @@ const download = async () => {
   await exportOrderService(orderID.value!);
   loading.value = false;
 };
+const changeShowSupplierOrderReceipt = (): void => {
+  showSupplierOrderReceipt.value = !showSupplierOrderReceipt.value;
+};
+const checkReceived = (): void => {
+  dataOrder.value?.items?.forEach((item: ISupplierOrderItem) => {
+    let received = Number(item.received ?? 0);
+
+    const requested = Number(item.quantity_requested) || 0;
+    const alreadyReceived = Number(item.quantity_received) || 0;
+    const remaining = requested - alreadyReceived;
+
+    if (isNaN(received)) received = 0;
+
+    let corrected = received;
+
+    if (received > remaining) corrected = remaining;
+    if (received < 0) corrected = 0;
+
+    if (String(corrected) !== String(item.received)) {
+      nextTick(() => {
+        item.received = String(corrected);
+      });
+    }
+  });
+};
+const closeReceived = (): void => {
+  if (!dataOrder.value?.items) return;
+
+  dataOrder.value.items.forEach((item: any) => {
+    if ('received' in item) {
+      delete item.received;
+    }
+  });
+
+  dateReceived.value = '';
+
+  changeShowSupplierOrderReceipt();
+};
+const getDataReceived = () => {
+  return (
+    dataOrder.value?.items
+      .filter(
+        (item: { id: number; received?: string }) =>
+          item.received !== undefined && Number(item.received) !== 0,
+      )
+      .map((item: { id: number; received: string }) => ({
+        id: item.id,
+        received: Number(item.received),
+      })) ?? []
+  );
+};
+const saveReceived = async (): Promise<void> => {
+  const check = checkSupplierOrderReceived(dataOrder.value?.items || [], dateReceived.value);
+  if (check.status) {
+    const response = await useSupplierOrderStore().saveReceivedOrder({
+      dateReceived: dateReceived.value,
+      items: getDataReceived(),
+    });
+    if (response?.status === 200) {
+      emit('update:open');
+    }
+  } else {
+    createErrorData(check.message || 'Erro ao processar recebimento');
+  }
+};
+const save = async () => {
+  if (showSupplierOrderReceipt.value) {
+    await saveReceived();
+  }
+};
+const needReceived = (item: ISupplierOrderItem): boolean => {
+  const remaining = (item.quantity_requested || 0) - (item.quantity_received || 0);
+
+  return remaining <= 0 ? false : true;
+};
 
 const orderID = computed(() => props.data.orderID);
 const open = computed({
@@ -70,7 +152,19 @@ const orderTotalCost = computed<number>(() => {
     return sum + (isNaN(cost) ? 0 : cost);
   }, 0);
 });
+const hasItemForReceived = computed(() => {
+  const items = dataOrder.value?.items ?? [];
 
+  return items.some((item) => needReceived(item));
+});
+
+watch(
+  () => dataOrder.value,
+  () => {
+    checkReceived();
+  },
+  { deep: true },
+);
 watch(open, async () => {
   if (open.value) {
     clear();
@@ -153,9 +247,7 @@ watch(open, async () => {
 
           <q-card flat bordered class="q-pa-md bg-white">
             <div class="text-h6 text-primary">Itens do Pedido</div>
-
             <q-separator />
-
             <q-list class="column q-gutter-y-sm">
               <q-item
                 v-for="(item, index) in dataOrder?.items ?? []"
@@ -227,11 +319,6 @@ watch(open, async () => {
 
                     <div class="col-12 col-sm-6">
                       <p class="flex items-center">
-                        <q-icon name="event_available" class="q-mr-sm text-primary" />
-                        <b class="q-mr-sm">Data recebimento:</b> {{ item?.date_received ?? '-' }}
-                      </p>
-
-                      <p class="flex items-center">
                         <q-icon
                           name="check_circle"
                           class="q-mr-sm"
@@ -240,46 +327,119 @@ watch(open, async () => {
                         <b class="q-mr-sm">Finalizado:</b> {{ item?.finished ? 'Sim' : 'Não' }}
                       </p>
                     </div>
+
+                    <div class="col-12" v-if="showSupplierOrderReceipt && needReceived(item)">
+                      <q-input
+                        outlined
+                        label="Informe a quantidade recebida"
+                        dense
+                        v-model="item.received"
+                        input-class="text-right"
+                        class="q-mr-sm"
+                        mask="##########"
+                      />
+                    </div>
                   </div>
                 </q-item-section>
               </q-item>
             </q-list>
+            <div class="col-12 q-mt-sm" v-if="showSupplierOrderReceipt">
+              <q-input
+                v-model="dateReceived"
+                bg-color="white"
+                label-color="black"
+                outlined
+                label="Data de recebimento"
+                dense
+                input-class="text-black"
+                mask="##/##/####"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="today" color="black" size="20px" />
+                </template>
+              </q-input>
+            </div>
           </q-card>
         </div>
       </q-card-section>
       <q-card-actions v-show="!loadingSupplierOrder" class="row justify-between items-center">
-        <div>
-          <q-btn color="primary" icon="list_alt" round unelevated no-caps class="q-ml-sm">
-            <q-tooltip>Status</q-tooltip>
-          </q-btn>
-          <q-btn color="secondary" icon="history" round unelevated no-caps class="q-ml-sm">
-            <q-tooltip>Histórico</q-tooltip>
-          </q-btn>
-          <q-btn
-            color="grey"
-            icon="download"
-            round
-            unelevated
-            no-caps
-            class="q-ml-sm"
-            @click="download"
-            :loading="loading"
-          >
-            <q-tooltip>Download</q-tooltip>
-          </q-btn>
+        <div class="row no-wrap">
+          <div v-if="!showSupplierOrderReceipt">
+            <q-btn color="primary" icon="list_alt" round unelevated no-caps class="q-ml-sm">
+              <q-tooltip>Status</q-tooltip>
+            </q-btn>
+            <q-btn color="secondary" icon="history" round unelevated no-caps class="q-ml-sm">
+              <q-tooltip>Histórico</q-tooltip>
+            </q-btn>
+            <q-btn
+              color="grey"
+              icon="download"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+              @click="download"
+              :loading="loading"
+            >
+              <q-tooltip>Download</q-tooltip>
+            </q-btn>
+          </div>
+          <div>
+            <q-btn
+              v-if="!showSupplierOrderReceipt && hasItemForReceived"
+              color="green"
+              icon="fa-solid fa-box-archive"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+              @click="changeShowSupplierOrderReceipt"
+            >
+              <q-tooltip>Recebimento</q-tooltip>
+            </q-btn>
+            <q-btn
+              v-if="showSupplierOrderReceipt"
+              color="red"
+              icon="close"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+              @click="closeReceived"
+            >
+              <q-tooltip>Cancelar</q-tooltip>
+            </q-btn>
+          </div>
         </div>
         <div>
           <q-btn
             color="red"
             label="Fechar"
-            size="md"
             @click="open = false"
             unelevated
             no-caps
             class="q-mr-sm"
+            :flat="showSupplierOrderReceipt"
+          />
+          <q-btn
+            v-if="showSupplierOrderReceipt"
+            @click="save"
+            color="primary"
+            label="Salvar"
+            class="q-mr-sm"
+            :loading="isLoading"
+            unelevated
+            no-caps
           />
         </div>
       </q-card-actions>
     </q-card>
+
+    <!-- Modals -->
+    <FormSupplierOrderReceipt
+      :data="showFormNewMovementProduct"
+      @update:open="changeShowFormNewMovementProduct(false)"
+      @new-request="newRequest"
+    />
   </q-dialog>
 </template>

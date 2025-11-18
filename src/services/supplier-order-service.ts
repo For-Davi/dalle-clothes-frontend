@@ -39,6 +39,16 @@ export const updateSupplierOrderService = (
   };
 }> => api.put(`${baseUrl}/`, data);
 
+export const saveReceivedOrderService = (
+  data: IDataSupplierOrderReceived,
+): Promise<{
+  status: number;
+  data: {
+    order: IShowOrder;
+    message: string;
+  };
+}> => api.put(`${baseUrl}/received`, data);
+
 export const exportOrderService = async (orderID: number) => {
   try {
     const response = await api.post(

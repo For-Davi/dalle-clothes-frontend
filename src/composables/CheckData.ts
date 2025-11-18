@@ -690,6 +690,47 @@ export const checkProductClientData = (
   return { status: true };
 };
 
+export const checkSupplierOrderReceived = (
+  items: any[],
+  dateReceived: string,
+): { status: boolean; message?: string } => {
+  const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+  console.log('dateReceived', dateReceived);
+
+  if (!regex.test(dateReceived)) {
+    return {
+      status: false,
+      message: 'Data inválida de recebimento. Use o formato dd/mm/yyyy.',
+    };
+  }
+
+  const [day, month, year] = dateReceived.split('/').map(Number);
+  const checkDate = new Date(year, month - 1, day);
+
+  const isValidDate =
+    checkDate.getFullYear() === year &&
+    checkDate.getMonth() === month - 1 &&
+    checkDate.getDate() === day;
+
+  if (!isValidDate) {
+    return { status: false, message: 'A data informada não é válida.' };
+  }
+
+  const hasReceived = items.some((item) => {
+    const received = Number(item?.received ?? 0);
+    return received > 0;
+  });
+
+  if (!hasReceived) {
+    return {
+      status: false,
+      message: 'É necessário que ao menos um item tenha quantidade recebida.',
+    };
+  }
+
+  return { status: true };
+};
+
 export const checkDataSupplierOrder = (
   data: {
     dateIssue: string;

@@ -46,3 +46,11 @@ export interface SupplierOrderItem {
   finished: string | null;
   variant: IVariant;
 }
+
+export interface DataSupplierOrderReceived {
+  dateReceived: string;
+  items: {
+    id: number;
+    received: number;
+  }[];
+}

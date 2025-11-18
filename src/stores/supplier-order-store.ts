@@ -2,6 +2,7 @@ import {
   createSupplierOrderService,
   deleteSupplierOrderService,
   getSupplierOrdersService,
+  saveReceivedOrderService,
   showSupplierOrderService,
   updateSupplierOrderService,
 } from 'src/services/supplier-order-service';
@@ -57,6 +58,21 @@ export const useSupplierOrderStore = defineStore('supplierOrder', {
           createSuccess(response.data.message);
         }
 
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async saveReceivedOrder(data: IDataSupplierOrderReceived) {
+      this.setLoading(true);
+      try {
+        const response = await saveReceivedOrderService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
         return response;
       } catch (error) {
         createError(error);

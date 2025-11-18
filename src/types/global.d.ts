@@ -75,7 +75,13 @@ import type {
   ExportSchedule,
 } from './Schedules';
 import type { Notification } from './Notification';
-import type { DataSupplierOrder, SupplierOrder, ShowOrder } from './Order';
+import type {
+  DataSupplierOrder,
+  SupplierOrder,
+  ShowOrder,
+  DataSupplierOrderReceived,
+  SupplierOrderItem,
+} from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
 
 export {};
@@ -173,4 +179,5 @@ declare global {
   type IProductSupplierOrder = ProductSupplierOrder;
   type IShowOrder = ShowOrder;
   type ISupplierOrderItem = SupplierOrderItem;
+  type IDataSupplierOrderReceived = DataSupplierOrderReceived;
 }
