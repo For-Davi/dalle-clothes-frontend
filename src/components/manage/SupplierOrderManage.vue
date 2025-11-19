@@ -51,11 +51,18 @@ const showDetails = (orderID: number) => {
   console.log(orderID);
   changeShowDetailsSupplierOrder(true, orderID);
 };
-const changeShowDetailsSupplierOrder = (show: boolean, orderID: number | null = null): void => {
+const changeShowDetailsSupplierOrder = async (
+  show: boolean,
+  orderID: number | null = null,
+): Promise<void> => {
   Object.assign(showDetailsSupplierOrder, {
     open: show,
     orderID: orderID,
   });
+
+  if (!show) {
+    await fetchOrders();
+  }
 };
 const changeShowFormSupplierOrder = (show: boolean): void => {
   Object.assign(showFormSupplierOrder, {

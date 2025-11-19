@@ -75,15 +75,7 @@ onMounted(async () => {
       <q-tr :props="props">
         <q-td key="order_number">{{ props.row.order_number ?? '' }}</q-td>
         <q-td key="status"
-          ><span
-            class="text-white"
-            :style="{
-              backgroundColor: getLabelStatus(props.row.status).color,
-              borderRadius: '5px',
-              padding: '5px',
-            }"
-            >{{ getLabelStatus(props.row.status).text }}</span
-          ></q-td
+          ><span class="text-bold">{{ getLabelStatus(props.row.status).text }}</span></q-td
         >
         <q-td key="date_issue">{{ props.row.date_issue ?? '' }}</q-td>
         <q-td key="date_delivery_expected">{{ props.row.date_delivery_expected ?? '' }}</q-td>

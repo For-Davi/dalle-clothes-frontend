@@ -52,10 +52,17 @@ const mountData = async (): Promise<void> => {
   if (!orderID.value) return;
 
   const response = await useSupplierOrderStore().showOrderSupplier(orderID.value);
+
   if (response?.status === 200) {
     dataOrder.value = response.data.order;
+
+    const status = response.data.order.status;
+
+    selectedStatus.value =
+      optionsStatus.value.find((opt) => opt.value === status) ?? optionsStatus.value[0];
   }
 };
+
 const getColorStyle = (hexColor: string) => {
   return {
     backgroundColor: hexColor || 'transparent',
@@ -135,15 +142,35 @@ const saveReceived = async (): Promise<void> => {
       items: getDataReceived(),
     });
     if (response?.status === 200) {
-      emit('update:open');
+      clear();
+      dataOrder.value = response.data.order;
     }
   } else {
     createErrorData(check.message || 'Erro ao processar recebimento');
   }
 };
+const saveStatus = async (): Promise<void> => {
+  console.log('entrou no savestatus');
+  if (dataOrder.value?.status !== selectedStatus.value.value) {
+    console.log('selectedStatus.value.value', selectedStatus.value.value);
+    const response = await useSupplierOrderStore().saveStatusOrder({
+      id: orderID.value!,
+      status: selectedStatus.value.value,
+    });
+    if (response?.status === 200) {
+      clear();
+      dataOrder.value = response.data.order;
+    }
+  } else {
+    createErrorData('Não se pode atualizar para o mesmo status');
+  }
+};
 const save = async () => {
   if (showSupplierOrderReceipt.value) {
     await saveReceived();
+  }
+  if (mode.value === 'status') {
+    await saveStatus();
   }
 };
 const needReceived = (item: ISupplierOrderItem): boolean => {
@@ -248,7 +275,7 @@ watch(open, async () => {
               <p class="flex items-center">
                 <q-icon name="flag" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Status:</b>
-                <span class="text-bold" :style="{ color: getLabelStatus(dataOrder?.status).color }">
+                <span class="text-bold">
                   {{ getLabelStatus(dataOrder?.status).text }}
                 </span>
               </p>
@@ -417,7 +444,6 @@ watch(open, async () => {
                   v-model="selectedStatus"
                   :options="optionsStatus"
                   label="Selecione o novo status"
-                  emit-value
                   map-options
                   dense
                   class="q-mb-md full-width"

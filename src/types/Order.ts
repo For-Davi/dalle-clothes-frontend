@@ -55,4 +55,9 @@ export interface DataSupplierOrderReceived {
   }[];
 }
 
+export interface DataSupplierOrderStatus {
+  id: number;
+  status: string;
+}
+
 export type ModeOrderDetails = 'details' | 'status' | 'history';

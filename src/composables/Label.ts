@@ -1,39 +1,33 @@
-export const getLabelStatus = (value: string | null): { text: string; color: string } => {
+export const getLabelStatus = (value: string | null): { text: string } => {
   switch (value) {
     case 'canceled':
       return {
         text: 'Cancelado',
-        color: 'red',
       };
 
     case 'completely_finished':
       return {
-        text: 'Completo total',
-        color: 'green',
+        text: 'Finalizado total',
       };
 
     case 'partial_finished':
       return {
-        text: 'Completo parcial',
-        color: 'yellow',
+        text: 'Finalizado parcial',
       };
 
     case 'waiting':
       return {
         text: 'Aguardando',
-        color: 'grey',
       };
 
     case 'conference':
       return {
         text: 'Conferência',
-        color: 'blue',
       };
 
     default:
       return {
         text: 'Indefinido',
-        color: 'grey',
       };
   }
 };
