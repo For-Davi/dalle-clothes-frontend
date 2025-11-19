@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
 import type {
-  FilterSupplier,
-  DataSupplierCatalog,
   CatalogSupplier,
-  SupplierSelect,
+  DataSupplierCatalog,
+  FilterSupplier,
   Supplier,
+  SupplierSelect,
 } from './Supplier';
 import type {
   CategorySupplier,
@@ -81,6 +81,7 @@ import type {
   ShowOrder,
   DataSupplierOrderReceived,
   SupplierOrderItem,
+  ModeOrderDetails,
 } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
 
@@ -180,4 +181,5 @@ declare global {
   type IShowOrder = ShowOrder;
   type ISupplierOrderItem = SupplierOrderItem;
   type IDataSupplierOrderReceived = DataSupplierOrderReceived;
+  type IModeOrderDetails = ModeOrderDetails;
 }

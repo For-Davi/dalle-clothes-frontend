@@ -32,11 +32,21 @@ const loading = ref<boolean>(false);
 const dataOrder = ref<IShowOrder | null>(null);
 const dateReceived = ref<string>('');
 const showSupplierOrderReceipt = ref<boolean>(false);
+const mode = ref<IModeOrderDetails>('details');
+const selectedStatus = ref<IQuasarSelect<string>>({
+  label: 'Aguardando',
+  value: 'waiting',
+});
 
 const clear = (): void => {
   dataOrder.value = null;
+  mode.value = 'details';
   dateReceived.value = '';
   showSupplierOrderReceipt.value = false;
+  selectedStatus.value = {
+    label: 'Aguardando',
+    value: 'waiting',
+  };
 };
 const mountData = async (): Promise<void> => {
   if (!orderID.value) return;
@@ -87,18 +97,22 @@ const checkReceived = (): void => {
     }
   });
 };
-const closeReceived = (): void => {
-  if (!dataOrder.value?.items) return;
+const close = (): void => {
+  if (showSupplierOrderReceipt.value) {
+    if (!dataOrder.value?.items) return;
 
-  dataOrder.value.items.forEach((item: any) => {
-    if ('received' in item) {
-      delete item.received;
-    }
-  });
+    dataOrder.value.items.forEach((item: any) => {
+      if ('received' in item) {
+        delete item.received;
+      }
+    });
 
-  dateReceived.value = '';
+    dateReceived.value = '';
 
-  changeShowSupplierOrderReceipt();
+    changeShowSupplierOrderReceipt();
+  } else {
+    mode.value = 'details';
+  }
 };
 const getDataReceived = () => {
   return (
@@ -137,6 +151,12 @@ const needReceived = (item: ISupplierOrderItem): boolean => {
 
   return remaining <= 0 ? false : true;
 };
+const showBlock = (value: IModeOrderDetails) => {
+  return value === mode.value;
+};
+const setMode = (value: IModeOrderDetails) => {
+  mode.value = value;
+};
 
 const orderID = computed(() => props.data.orderID);
 const open = computed({
@@ -156,6 +176,31 @@ const hasItemForReceived = computed(() => {
   const items = dataOrder.value?.items ?? [];
 
   return items.some((item) => needReceived(item));
+});
+const optionsStatus = computed(() => [
+  {
+    label: 'Aguardando',
+    value: 'waiting',
+  },
+  {
+    label: 'Conferência',
+    value: 'conference',
+  },
+  {
+    label: 'Finalizado parcial',
+    value: 'partial_finished',
+  },
+  {
+    label: 'Finalizado total',
+    value: 'completely_finished',
+  },
+  {
+    label: 'Cancelado',
+    value: 'canceled',
+  },
+]);
+const showButtonAction = computed(() => {
+  return showSupplierOrderReceipt.value || mode.value === 'status' || mode.value === 'history';
 });
 
 watch(
@@ -180,71 +225,66 @@ watch(open, async () => {
       </q-card-section>
       <Loading :show="loadingSupplierOrder" v-show="loadingSupplierOrder" />
       <q-card-section class="q-pa-md" v-show="!loadingSupplierOrder">
-        <div class="column q-gutter-md">
-          <q-card flat bordered class="q-pa-md bg-white">
-            <div class="text-h6 text-primary flex items-center">
-              <q-icon name="info" class="q-mr-sm" />
-              Informações do Pedido
+        <q-card flat bordered class="q-pa-md bg-white q-mb-sm">
+          <div class="text-h6 text-primary flex items-center">
+            <q-icon name="info" class="q-mr-sm" />
+            Informações do Pedido
+          </div>
+
+          <q-separator spaced />
+
+          <div class="row q-col-gutter-md">
+            <div class="col-12 col-sm-6">
+              <p class="flex items-center">
+                <q-icon name="confirmation_number" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Número do pedido:</b> {{ dataOrder?.order_number }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="person" class="q-mr-sm text-primary" />
+                <b>Criado por:</b> {{ dataOrder?.user?.name }} - {{ dataOrder?.user?.email }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="flag" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Status:</b>
+                <span class="text-bold" :style="{ color: getLabelStatus(dataOrder?.status).color }">
+                  {{ getLabelStatus(dataOrder?.status).text }}
+                </span>
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="notes" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Observações:</b> {{ dataOrder?.observation ?? '-' }}
+              </p>
             </div>
 
-            <q-separator spaced />
+            <div class="col-12 col-sm-6">
+              <p class="flex items-center">
+                <q-icon name="paid" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Total do pedido:</b> {{ formatToReal(orderTotalCost) }}
+              </p>
 
-            <div class="row q-col-gutter-md">
-              <div class="col-12 col-sm-6">
-                <p class="flex items-center">
-                  <q-icon name="confirmation_number" class="q-mr-sm text-primary" />
-                  <b class="q-mr-sm">Número do pedido:</b> {{ dataOrder?.order_number }}
-                </p>
+              <p class="flex items-center">
+                <q-icon name="calendar_today" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Data de emissão:</b> {{ dataOrder?.date_issue ?? '-' }}
+              </p>
 
-                <p class="flex items-center">
-                  <q-icon name="person" class="q-mr-sm text-primary" />
-                  <b>Criado por:</b> {{ dataOrder?.user?.name }} - {{ dataOrder?.user?.email }}
-                </p>
+              <p class="flex items-center">
+                <q-icon name="event" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Previsão entrega:</b>
+                {{ dataOrder?.date_delivery_expected ?? '-' }}
+              </p>
 
-                <p class="flex items-center">
-                  <q-icon name="flag" class="q-mr-sm text-primary" />
-                  <b class="q-mr-sm">Status:</b>
-                  <span
-                    class="text-bold"
-                    :style="{
-                      color: getLabelStatus(dataOrder?.status).color,
-                    }"
-                  >
-                    {{ getLabelStatus(dataOrder?.status).text }}
-                  </span>
-                </p>
-
-                <p class="flex items-center">
-                  <q-icon name="notes" class="q-mr-sm text-primary" />
-                  <b class="q-mr-sm">Observações:</b> {{ dataOrder?.observation ?? '-' }}
-                </p>
-              </div>
-
-              <div class="col-12 col-sm-6">
-                <p class="flex items-center">
-                  <q-icon name="paid" class="q-mr-sm text-primary" />
-                  <b class="q-mr-sm">Total do pedido:</b> {{ formatToReal(orderTotalCost) }}
-                </p>
-                <p class="flex items-center">
-                  <q-icon name="calendar_today" class="q-mr-sm text-primary" />
-                  <b class="q-mr-sm">Data de emissão:</b> {{ dataOrder?.date_issue ?? '-' }}
-                </p>
-
-                <p class="flex items-center">
-                  <q-icon name="event" class="q-mr-sm text-primary" />
-                  <b class="q-mr-sm">Previsão entrega:</b>
-                  {{ dataOrder?.date_delivery_expected ?? '-' }}
-                </p>
-
-                <p class="flex items-center">
-                  <q-icon name="schedule" class="q-mr-sm text-primary" />
-                  <b class="q-mr-sm">Criado em:</b>
-                  {{ formatToBrazilianDate(dataOrder?.created_at) }}
-                </p>
-              </div>
+              <p class="flex items-center">
+                <q-icon name="schedule" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Criado em:</b>
+                {{ formatToBrazilianDate(dataOrder?.created_at) }}
+              </p>
             </div>
-          </q-card>
-
+          </div>
+        </q-card>
+        <div v-if="showBlock('details')" class="column q-gutter-md">
           <q-card flat bordered class="q-pa-md bg-white">
             <div class="text-h6 text-primary">Itens do Pedido</div>
             <q-separator />
@@ -361,11 +401,48 @@ watch(open, async () => {
             </div>
           </q-card>
         </div>
+        <div v-else-if="showBlock('status')" class="column q-gutter-md">
+          <q-card flat bordered class="q-pa-md bg-white">
+            <div class="text-h6 text-primary flex items-center">
+              <q-icon name="update" class="q-mr-sm" />
+              Atualizar Status do Pedido
+            </div>
+
+            <q-separator spaced />
+
+            <div class="row q-col-gutter-md">
+              <div class="col-12">
+                <q-select
+                  outlined
+                  v-model="selectedStatus"
+                  :options="optionsStatus"
+                  label="Selecione o novo status"
+                  emit-value
+                  map-options
+                  dense
+                  class="q-mb-md full-width"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="flag" class="text-primary" />
+                  </template>
+                </q-select>
+              </div>
+            </div>
+          </q-card>
+        </div>
       </q-card-section>
       <q-card-actions v-show="!loadingSupplierOrder" class="row justify-between items-center">
         <div class="row no-wrap">
-          <div v-if="!showSupplierOrderReceipt">
-            <q-btn color="primary" icon="list_alt" round unelevated no-caps class="q-ml-sm">
+          <div v-if="!showSupplierOrderReceipt && mode === 'details'">
+            <q-btn
+              @click="setMode('status')"
+              color="primary"
+              icon="list_alt"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+            >
               <q-tooltip>Status</q-tooltip>
             </q-btn>
             <q-btn color="secondary" icon="history" round unelevated no-caps class="q-ml-sm">
@@ -386,7 +463,7 @@ watch(open, async () => {
           </div>
           <div>
             <q-btn
-              v-if="!showSupplierOrderReceipt && hasItemForReceived"
+              v-if="!showSupplierOrderReceipt && hasItemForReceived && mode === 'details'"
               color="green"
               icon="fa-solid fa-box-archive"
               round
@@ -398,14 +475,14 @@ watch(open, async () => {
               <q-tooltip>Recebimento</q-tooltip>
             </q-btn>
             <q-btn
-              v-if="showSupplierOrderReceipt"
+              v-if="showButtonAction"
               color="red"
               icon="close"
               round
               unelevated
               no-caps
               class="q-ml-sm"
-              @click="closeReceived"
+              @click="close"
             >
               <q-tooltip>Cancelar</q-tooltip>
             </q-btn>
@@ -419,10 +496,10 @@ watch(open, async () => {
             unelevated
             no-caps
             class="q-mr-sm"
-            :flat="showSupplierOrderReceipt"
+            :flat="showButtonAction"
           />
           <q-btn
-            v-if="showSupplierOrderReceipt"
+            v-if="showButtonAction"
             @click="save"
             color="primary"
             label="Salvar"
