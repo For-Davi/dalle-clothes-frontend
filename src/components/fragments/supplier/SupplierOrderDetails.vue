@@ -11,6 +11,7 @@ import { exportOrderService } from 'src/services/supplier-order-service';
 import { nextTick } from 'vue';
 import { checkSupplierOrderReceived } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
+import TableOrderHistory from 'src/components/table/TableOrderHistory.vue';
 
 defineOptions({
   name: 'SupplierOrderDetails',
@@ -30,6 +31,7 @@ const { loadingSupplierOrder } = storeToRefs(useSupplierOrderStore());
 
 const loading = ref<boolean>(false);
 const dataOrder = ref<IShowOrder | null>(null);
+const dataOrderHistory = ref<IOrderHistory[]>([]);
 const dateReceived = ref<string>('');
 const showSupplierOrderReceipt = ref<boolean>(false);
 const mode = ref<IModeOrderDetails>('details');
@@ -62,7 +64,6 @@ const mountData = async (): Promise<void> => {
       optionsStatus.value.find((opt) => opt.value === status) ?? optionsStatus.value[0];
   }
 };
-
 const getColorStyle = (hexColor: string) => {
   return {
     backgroundColor: hexColor || 'transparent',
@@ -184,6 +185,19 @@ const showBlock = (value: IModeOrderDetails) => {
 const setMode = (value: IModeOrderDetails) => {
   mode.value = value;
 };
+const fetchOrderHistory = async () => {
+  const response = await useSupplierOrderStore().getOrderHistory(orderID.value!);
+
+  if (response?.status === 200) {
+    const history = response.data.history ?? [];
+
+    history.sort((a, b) => {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
+    dataOrderHistory.value = history;
+  }
+};
 
 const orderID = computed(() => props.data.orderID);
 const open = computed({
@@ -227,9 +241,17 @@ const optionsStatus = computed(() => [
   },
 ]);
 const showButtonAction = computed(() => {
-  return showSupplierOrderReceipt.value || mode.value === 'status' || mode.value === 'history';
+  return showSupplierOrderReceipt.value || mode.value === 'status';
 });
 
+watch(
+  () => mode.value,
+  async () => {
+    if (mode.value === 'history') {
+      await fetchOrderHistory();
+    }
+  },
+);
 watch(
   () => dataOrder.value,
   () => {
@@ -456,6 +478,18 @@ watch(open, async () => {
             </div>
           </q-card>
         </div>
+        <div v-else-if="showBlock('history')" class="column q-gutter-md">
+          <q-card flat bordered class="q-pa-md bg-white">
+            <div class="text-h6 text-primary flex items-center">
+              <q-icon name="update" class="q-mr-sm" />
+              Histórico do pedido
+            </div>
+
+            <div class="col-12 q-mt-sm">
+              <TableOrderHistory :items="dataOrderHistory" />
+            </div>
+          </q-card>
+        </div>
       </q-card-section>
       <q-card-actions v-show="!loadingSupplierOrder" class="row justify-between items-center">
         <div class="row no-wrap">
@@ -471,7 +505,15 @@ watch(open, async () => {
             >
               <q-tooltip>Status</q-tooltip>
             </q-btn>
-            <q-btn color="secondary" icon="history" round unelevated no-caps class="q-ml-sm">
+            <q-btn
+              @click="setMode('history')"
+              color="secondary"
+              icon="history"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+            >
               <q-tooltip>Histórico</q-tooltip>
             </q-btn>
             <q-btn
@@ -501,7 +543,7 @@ watch(open, async () => {
               <q-tooltip>Recebimento</q-tooltip>
             </q-btn>
             <q-btn
-              v-if="showButtonAction"
+              v-if="showButtonAction || mode === 'history'"
               color="red"
               icon="close"
               round

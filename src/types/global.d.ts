@@ -83,6 +83,7 @@ import type {
   SupplierOrderItem,
   ModeOrderDetails,
   DataSupplierOrderStatus,
+  OrderHistory,
 } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
 
@@ -184,4 +185,5 @@ declare global {
   type IDataSupplierOrderReceived = DataSupplierOrderReceived;
   type IModeOrderDetails = ModeOrderDetails;
   type IDataSupplierOrderStatus = DataSupplierOrderStatus;
+  type IOrderHistory = OrderHistory;
 }

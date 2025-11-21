@@ -10,6 +10,15 @@ export const getSupplierOrdersService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const getOrderHistoryService = (
+  orderID: number,
+): Promise<{
+  status: number;
+  data: {
+    history: IOrderHistory[];
+  };
+}> => api.get(`${baseUrl}/history/${orderID}`);
+
 export const showSupplierOrderService = (
   orderID: number,
 ): Promise<{

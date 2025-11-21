@@ -60,4 +60,14 @@ export interface DataSupplierOrderStatus {
   status: string;
 }
 
+export interface OrderHistory {
+  id: number;
+  supplier_order_id: number;
+  order: ISupplierOrder;
+  changed_by: number;
+  changed: IUser;
+  created_at: string;
+  status: string;
+}
+
 export type ModeOrderDetails = 'details' | 'status' | 'history';

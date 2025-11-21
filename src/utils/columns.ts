@@ -845,3 +845,24 @@ export const columnsSupplierCart: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsOrderHistory: IQuasarTable[] = [
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'changed',
+    label: 'Usuário',
+    field: 'changed',
+    align: 'left',
+  },
+  {
+    name: 'created_at',
+    label: 'Data de atualização',
+    field: 'created_at',
+    align: 'left',
+  },
+];

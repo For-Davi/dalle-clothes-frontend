@@ -1,6 +1,7 @@
 import {
   createSupplierOrderService,
   deleteSupplierOrderService,
+  getOrderHistoryService,
   getSupplierOrdersService,
   saveReceivedOrderService,
   saveStatusOrderService,
@@ -33,6 +34,16 @@ export const useSupplierOrderStore = defineStore('supplierOrder', {
           this.clearListSupplierOrder();
           this.setListSupplieOrderr(response.data.orders);
         }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async getOrderHistory(orderID: number) {
+      try {
+        this.setLoading(true);
+        return await getOrderHistoryService(orderID);
       } catch (error) {
         createError(error);
       } finally {
