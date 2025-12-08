@@ -23,19 +23,15 @@ const getColorStyle = (hexColor: string) => {
   };
 };
 const removeCart = (id: number) => {
-  const product = items.value.find(
-    (p) => p.product_variant_id === id
-  );
+  const product = items.value.find((p) => p.product_variant_id === id);
   if (product) {
-    items.value = items.value.filter(
-      (p) => p.product_variant_id !== id
-    );
+    items.value = items.value.filter((p) => p.product_variant_id !== id);
   }
 };
 
 const totalValue = computed(() => {
   return items.value.reduce((acc, p) => {
-    return acc + (p.price * (p.newQuantity || 0));
+    return acc + p.price * (p.newQuantity || 0);
   }, 0);
 });
 </script>
@@ -65,7 +61,7 @@ const totalValue = computed(() => {
           <span class="text-body1">Itens do pedido</span>
         </div>
       </template>
-     <template v-slot:body="props">
+      <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
@@ -94,23 +90,28 @@ const totalValue = computed(() => {
             {{ formatToReal(props.row.newPrice) }}
           </q-td>
           <q-td key="total" :props="props" class="text-left">
-          {{ formatToReal(Number(Number(props.row.newPrice || 0) * Number(props.row.quantity || 0)).toFixed(2)) }}
-        </q-td>
-          <q-td key="action" :props="props" >
-           <div class="flex row justify-end">
-            <q-btn
-              size="md"
-              flat
-              round
-              color="red"
-              icon="remove_shopping_cart"
-              @click="removeCart(props.row.product_variant_id)">
-            <q-tooltip>
-                Remover
-            </q-tooltip>
-            </q-btn>
-           </div>
-           </q-td>
+            {{
+              formatToReal(
+                Number(Number(props.row.newPrice || 0) * Number(props.row.quantity || 0)).toFixed(
+                  2,
+                ),
+              )
+            }}
+          </q-td>
+          <q-td key="action" :props="props">
+            <div class="flex row justify-end">
+              <q-btn
+                size="md"
+                flat
+                round
+                color="red"
+                icon="remove_shopping_cart"
+                @click="removeCart(props.row.product_variant_id)"
+              >
+                <q-tooltip> Remover </q-tooltip>
+              </q-btn>
+            </div>
+          </q-td>
         </q-tr>
       </template>
       {{ totalValue }}

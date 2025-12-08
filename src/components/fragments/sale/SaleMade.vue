@@ -55,11 +55,11 @@ const startExport = async (): Promise<void> => {
   emit('update:open');
 };
 const startSendToEmail = async (email: string) => {
-    const response = await useSaleStore().sendCouponToEmail(props.data.saleID ?? 0, email);
+  const response = await useSaleStore().sendCouponToEmail(props.data.saleID ?? 0, email);
 
-    if (response?.status === 200) {
-      createSuccess(response.data.message);
-    }
+  if (response?.status === 200) {
+    createSuccess(response.data.message);
+  }
 };
 
 const open = computed({

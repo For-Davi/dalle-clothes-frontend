@@ -78,6 +78,13 @@ import type { Notification } from './Notification';
 import type { DataSupplierOrder, SupplierOrder } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
 import type { VModelSalePayment, DataSale, Sale, CouponData } from './Payments';
+import type {
+  Subscriptions,
+  QrCode,
+  VMPaymentSubscriptionCreditCard,
+  PaymentSubscriptionCreditCard,
+} from './Subscription';
+import type Pusher from 'pusher-js';
 
 export {};
 
@@ -174,12 +181,19 @@ declare global {
   type IVModelSalePayment = VModelSalePayment;
   type ISupplierCartProduct = SupplierCartProduct;
   type ISupplierCartProduct = SupplierCartProduct;
-  type IProductSupplierOrder = ProductSupplierOrder
-  type IShowOrder = ShowOrder
-  type ISupplierOrderItem = SupplierOrderItem
+  type IProductSupplierOrder = ProductSupplierOrder;
+  type IShowOrder = ShowOrder;
+  type ISupplierOrderItem = SupplierOrderItem;
   type IFilterReceipt = FilterReceipt;
   type IDataSale = DataSale;
   type IDataProductSale = DataProductSale;
   type ISale = Sale;
   type ICouponData = CouponData;
+  type ISubscriptions = Subscriptions;
+  type IQrCode = QrCode;
+  type IVMPaymentSubscriptionCreditCard = VMPaymentSubscriptionCreditCard;
+  type IPaymentSubscriptionCreditCard = PaymentSubscriptionCreditCard;
+  interface Window {
+    Pusher: typeof Pusher;
+  }
 }

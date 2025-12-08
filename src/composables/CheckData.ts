@@ -705,12 +705,15 @@ export const checkSaleProductsData = (
   return { status: true };
 };
 
-export const checkDataSupplierOrder = (data: {
-  dateIssue:  string,
-  dateDeliveryExpected:  string,
-  items:  ISupplierCartProduct[],
-}, selectedSupplier: number | null): { status: boolean, message?: string } => {
-  if(selectedSupplier === null){
+export const checkDataSupplierOrder = (
+  data: {
+    dateIssue: string;
+    dateDeliveryExpected: string;
+    items: ISupplierCartProduct[];
+  },
+  selectedSupplier: number | null,
+): { status: boolean; message?: string } => {
+  if (selectedSupplier === null) {
     return { status: false, message: 'Informe um fornecedor' };
   }
   if (data.dateIssue.trim() !== '') {
@@ -725,40 +728,40 @@ export const checkDataSupplierOrder = (data: {
       return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
     }
   }
-  if(data.items.length === 0 ) {
+  if (data.items.length === 0) {
     return { status: false, message: 'Deve conter ao menos 1 item no pedido' };
   }
   for (let i = 0; i < data.items.length; i++) {
-      const item = data.items[i];
-      const itemNumber = i + 1;
+    const item = data.items[i];
+    const itemNumber = i + 1;
 
-      if (item.newPrice === undefined || item.newPrice === null) {
-        return { status: false, message: `Item ${itemNumber}: Preço é obrigatório` };
-      }
-
-      if (typeof item.newPrice !== 'number' || isNaN(item.newPrice)) {
-        return { status: false, message: `Item ${itemNumber}: Preço deve ser um número válido` };
-      }
-
-      if (item.newPrice <= 0) {
-        return { status: false, message: `Item ${itemNumber}: Preço deve ser maior que 0` };
-      }
-
-      if (item.newQuantity === undefined || item.newQuantity === null) {
-        return { status: false, message: `Item ${itemNumber}: Quantidade é obrigatória` };
-      }
-
-      if (typeof item.newQuantity !== 'number' || isNaN(item.newQuantity)) {
-        return { status: false, message: `Item ${itemNumber}: Quantidade deve ser um número válido` };
-      }
-
-      if (item.newQuantity <= 0) {
-        return { status: false, message: `Item ${itemNumber}: Quantidade deve ser maior que 0` };
-      }
+    if (item.newPrice === undefined || item.newPrice === null) {
+      return { status: false, message: `Item ${itemNumber}: Preço é obrigatório` };
     }
 
-  return { status: true }
-}
+    if (typeof item.newPrice !== 'number' || isNaN(item.newPrice)) {
+      return { status: false, message: `Item ${itemNumber}: Preço deve ser um número válido` };
+    }
+
+    if (item.newPrice <= 0) {
+      return { status: false, message: `Item ${itemNumber}: Preço deve ser maior que 0` };
+    }
+
+    if (item.newQuantity === undefined || item.newQuantity === null) {
+      return { status: false, message: `Item ${itemNumber}: Quantidade é obrigatória` };
+    }
+
+    if (typeof item.newQuantity !== 'number' || isNaN(item.newQuantity)) {
+      return { status: false, message: `Item ${itemNumber}: Quantidade deve ser um número válido` };
+    }
+
+    if (item.newQuantity <= 0) {
+      return { status: false, message: `Item ${itemNumber}: Quantidade deve ser maior que 0` };
+    }
+  }
+
+  return { status: true };
+};
 export const checkPaymentData = (
   data: IVModelSalePayment,
   missingAmount: number,
@@ -901,5 +904,173 @@ export const checkEmail = (email: string): { status: boolean; message?: string }
   if (!emailRegex.test(email)) {
     return { status: false, message: 'O e-mail não é válido' };
   }
+  return { status: true };
+};
+
+export const checkPaymentCreditCardData = (
+  paymentData: IVMPaymentSubscriptionCreditCard,
+): { status: boolean; message?: string } => {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  if (
+    paymentData.creditCard.holderName.trim() === '' &&
+    paymentData.creditCard.number.trim() === '' &&
+    paymentData.creditCard.expiryMonth.trim() === '' &&
+    paymentData.creditCard.expiryYear.trim() === '' &&
+    paymentData.creditCard.ccv.trim() === '' &&
+    paymentData.creditCardHolderInfo.name.trim() === '' &&
+    paymentData.creditCardHolderInfo.email.trim() === '' &&
+    paymentData.creditCardHolderInfo.cpfCnpj.trim() === '' &&
+    paymentData.creditCardHolderInfo.postalCode.trim() === '' &&
+    paymentData.creditCardHolderInfo.addressNumber.trim() === '' &&
+    paymentData.creditCardHolderInfo.addressComplement?.trim() === '' &&
+    paymentData.creditCardHolderInfo.phone.trim() === ''
+  ) {
+    return { status: false, message: 'Preencha o formulário' };
+  }
+  if (!paymentData.subscriptionID) {
+    return { status: false, message: 'Deve ser informado o ID da assinatura' };
+  }
+  if (paymentData.creditCard.holderName.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome impresso no cartão de crédito' };
+  }
+  if (paymentData.creditCard.holderName.trim().length < 3) {
+    return { status: false, message: 'O nome impresso no cartão deve ser válido' };
+  }
+  if (paymentData.creditCard.holderName.trim().length > 30) {
+    return {
+      status: false,
+      message: 'O nome impresso no cartão não pode ultrapassar 30 caracteres',
+    };
+  }
+  if (paymentData.creditCard.number.trim() === '') {
+    return { status: false, message: 'Deve ser informado o número do cartão de crédito' };
+  }
+  if (paymentData.creditCard.number.trim().length < 16) {
+    return { status: false, message: 'Informe um número de cartão válido' };
+  }
+  if (paymentData.creditCard.number.trim().length > 16) {
+    return { status: false, message: 'O número do cartão não pode ultrapassar 16 caracteres' };
+  }
+  if (paymentData.creditCard.expiryMonth.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado o mês de vencimento do cartão de crédito',
+    };
+  }
+  if (paymentData.creditCard.expiryMonth.trim().length < 2) {
+    return { status: false, message: 'O mês de vencimento do cartão deve conter 2 dígitos' };
+  }
+  if (paymentData.creditCard.expiryMonth.trim().length > 2) {
+    return {
+      status: false,
+      message: 'O mês de vencimento do cartão não pode ultrapassar 2 dígitos',
+    };
+  }
+  if (
+    Number(paymentData.creditCard.expiryMonth.trim()) < 1 ||
+    Number(paymentData.creditCard.expiryMonth.trim()) > 12
+  ) {
+    return { status: false, message: 'O mês de vencimento do cartão não é válido' };
+  }
+  if (paymentData.creditCard.expiryYear.trim().length < 4) {
+    return { status: false, message: 'O ano de vencimento do cartão deve conter 4 dígitos' };
+  }
+  if (paymentData.creditCard.expiryYear.trim().length > 4) {
+    return {
+      status: false,
+      message: 'O ano de vencimento do cartão não pode ultrapassar 4 dígitos',
+    };
+  }
+  if (Number(paymentData.creditCard.expiryYear.trim()) < currentYear) {
+    return { status: false, message: 'O ano de vencimento não pode ser menor que o ano atual' };
+  }
+  if (
+    Number(paymentData.creditCard.expiryYear.trim()) === currentYear &&
+    (Number(paymentData.creditCard.expiryMonth.trim()) === currentMonth ||
+      Number(paymentData.creditCard.expiryYear.trim()) < currentMonth)
+  ) {
+    return { status: false, message: 'O cartão informado está vencido' };
+  }
+  if (paymentData.creditCard.ccv.trim() === '') {
+    return { status: false, message: 'Deve ser informado o CCV/CVC do cartão' };
+  }
+  if (
+    paymentData.creditCard.ccv.trim().length < 3 ||
+    paymentData.creditCard.ccv.trim().length > 3
+  ) {
+    return { status: false, message: 'Informado um CCV/CVC válido' };
+  }
+  if (paymentData.creditCardHolderInfo.name.trim() === '') {
+    return { status: false, message: 'Deve ser informado o nome do titular do cartão' };
+  }
+  if (paymentData.creditCardHolderInfo.name.trim().length < 3) {
+    return { status: false, message: 'Informe um nome válido' };
+  }
+  if (paymentData.creditCardHolderInfo.name.trim().length > 100) {
+    return {
+      status: false,
+      message: 'O nome do titular do cartão não pode ultrapassar 100 caracteres',
+    };
+  }
+  if (paymentData.creditCardHolderInfo.email.trim() === '') {
+    return { status: false, message: 'Deve ser informado o email do titular do cartão' };
+  }
+  if (!emailRegex.test(paymentData.creditCardHolderInfo.email.trim())) {
+    return { status: false, message: 'O e-mail não é válido' };
+  }
+  if (paymentData.creditCardHolderInfo.email.trim().length > 100) {
+    return {
+      status: false,
+      message: 'O email impresso no cartão não pode ultrapassar 100 caracteres',
+    };
+  }
+  if (
+    (paymentData.creditCardHolderInfo.cpfCnpj.trim().length < 14 &&
+      paymentData.creditCardHolderInfo.cpfCnpj.trim().length < 11) ||
+    paymentData.creditCardHolderInfo.cpfCnpj.trim().length === 12 ||
+    paymentData.creditCardHolderInfo.cpfCnpj.trim().length === 13 ||
+    paymentData.creditCardHolderInfo.cpfCnpj.trim().length > 14
+  ) {
+    return { status: false, message: 'Digite um CPF ou CNPJ válido' };
+  }
+  if (paymentData.creditCardHolderInfo.postalCode.trim() === '') {
+    return { status: false, message: 'Deve ser informado o cep' };
+  }
+  if (paymentData.creditCardHolderInfo.postalCode.trim().length < 8) {
+    return { status: false, message: 'O cep informado não pode ter menos de 8 caracteres' };
+  }
+  if (paymentData.creditCardHolderInfo.postalCode.trim().length > 8) {
+    return { status: false, message: 'O cep informado não pode ter mais de 8 caracteres' };
+  }
+  if (paymentData.creditCardHolderInfo.addressNumber.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado o número de endereço do titular do cartão',
+    };
+  }
+  if (paymentData.creditCardHolderInfo.addressNumber.trim().length > 16) {
+    return {
+      status: false,
+      message: 'O número de endereço informado não pode ultrapassar 16 caracteres',
+    };
+  }
+  if ((paymentData.creditCardHolderInfo.addressComplement?.trim() ?? '').length > 100) {
+    return {
+      status: false,
+      message: 'O complemento informado não pode ultrapassar 100 caracteres',
+    };
+  }
+  if (paymentData.creditCardHolderInfo.phone.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado o número de telefone do titular do cartão',
+    };
+  }
+  if (paymentData.creditCardHolderInfo.phone.trim().length < 11) {
+    return { status: false, message: 'Insira um número de telefone válido' };
+  }
+
   return { status: true };
 };

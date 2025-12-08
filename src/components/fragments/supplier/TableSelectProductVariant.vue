@@ -30,7 +30,7 @@ const open = computed({
         <TitlePage title="Gerenciamento de itens" icon="list_alt" />
       </q-card-section>
       <q-card-section class="q-pa-md">
-        <SupplierCart v-model:items="selected"/>
+        <SupplierCart v-model:items="selected" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-md">

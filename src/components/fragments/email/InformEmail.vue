@@ -23,11 +23,11 @@ const email = ref<string>('');
 const useEmailClient = ref<boolean>(false);
 
 const startToSend = () => {
-  const check = checkEmail(email.value)
+  const check = checkEmail(email.value);
   if (check.status) {
     open.value = false;
-  emit('send-email', email.value);
-  clear();
+    emit('send-email', email.value);
+    clear();
   } else {
     createErrorData(check.message || 'Erro ao enviar e-mail');
   }
@@ -77,7 +77,11 @@ watch(
               <q-icon name="mail" color="black" size="20px" />
             </template>
           </q-input>
-          <q-checkbox v-if="props.data.clientEmail !== null" label="Utilizar email do cliente" v-model="useEmailClient"/>
+          <q-checkbox
+            v-if="props.data.clientEmail !== null"
+            label="Utilizar email do cliente"
+            v-model="useEmailClient"
+          />
         </q-form>
       </q-card-section>
       <q-card-actions align="right">
