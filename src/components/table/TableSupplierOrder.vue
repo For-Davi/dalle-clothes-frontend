@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from 'src/components/confirm/ConfirmAction.vue';
-import { useSupplierOrderStore } from '@/stores/supplier-order-store';
+import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import { columnsSupplierOrder } from 'src/utils/columns';
-import { getLabelStatusSupplierOrder } from 'src/composables/Label';
-import { formatToBrazilianDate } from 'src/composables/FormatData';
-import SupplierOrderDetails from '../fragments/supplier/SupplierOrderDetails.vue';
+import { getLabelStatus } from 'src/composables/Label';
 
 defineOptions({
   name: 'TableSupplierOrder',
@@ -22,27 +20,14 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  'show:showFormSupplierOrder': [number];
+  showDetailsSupplierOrder: [number];
 }>();
 
 const { loadingSupplierOrder, listSupplierOrder } = storeToRefs(useSupplierOrderStore());
 
 const showConfirmAction = ref<boolean>(false);
 const orderMonitoring = ref<number | null>(null);
-const showDetails = reactive<{
-  open: boolean;
-  orderID: number | null;
-}>({
-  open: false,
-  orderID: null,
-});
 
-const changeShowDetails = (show: boolean, orderID: number | null = null): void => {
-  Object.assign(showDetails, {
-    open: show,
-    orderID: orderID,
-  });
-};
 const openConfirmAction = (id: number): void => {
   orderMonitoring.value = id;
   showConfirmAction.value = true;
@@ -53,9 +38,6 @@ const closeConfirmActionOk = async () => {
 };
 const closeConfirmAction = (): void => {
   showConfirmAction.value = false;
-};
-const startEdit = (id: number): void => {
-  emit('show:showFormSupplierOrder', id);
 };
 const startExclude = (id: number): void => {
   openConfirmAction(id);
@@ -71,10 +53,11 @@ onMounted(async () => {
 
 <template>
   <q-table
+    class="full-width"
     :rows="loadingSupplierOrder ? [] : listSupplierOrder"
     :columns="columnsSupplierOrder"
     :filter="props.filter"
-    title="Lista de pedidos"
+    title="Lista de produtos"
     row-key="index"
     no-data-label="Nenhum pedido para mostrar"
     virtual-scroll
@@ -90,25 +73,24 @@ onMounted(async () => {
 
     <template v-slot:body="props">
       <q-tr :props="props">
-        <q-td key="created_at">{{ props.row.created_at }}</q-td>
-        <q-td key="order">{{ props.row.order ?? '' }}</q-td>
-        <q-td key="status">{{ getLabelStatusSupplierOrder(props.row.status) }}</q-td>
-        <q-td key="date_delivery_expected">{{
-          props.row.date_delivery_expected
-            ? formatToBrazilianDate(props.row.date_delivery_expected)
-            : ''
-        }}</q-td>
+        <q-td key="order_number">{{ props.row.order_number ?? '' }}</q-td>
+        <q-td key="status"
+          ><span class="text-bold">{{ getLabelStatus(props.row.status).text }}</span></q-td
+        >
+        <q-td key="date_issue">{{ props.row.date_issue ?? '' }}</q-td>
+        <q-td key="date_delivery_expected">{{ props.row.date_delivery_expected ?? '' }}</q-td>
         <q-td key="actions" :props="props">
           <q-btn
             v-show="props.row.id"
-            @click="changeShowDetails(true, props.row.id)"
+            @click="emit('showDetailsSupplierOrder', props.row.id)"
             size="sm"
             flat
             round
             color="blue"
             icon="visibility"
-          />
-          <q-btn @click="startEdit(props.row.id)" size="sm" flat round color="black" icon="edit" />
+          >
+            <q-tooltip>Detalhes</q-tooltip>
+          </q-btn>
           <q-btn
             @click="startExclude(props.row.id)"
             size="sm"
@@ -123,7 +105,6 @@ onMounted(async () => {
   </q-table>
 
   <!-- Modals -->
-  <SupplierOrderDetails :data="showDetails" @update:open="changeShowDetails(false)" />
   <ConfirmAction
     :open="showConfirmAction"
     label-action="Continuar"

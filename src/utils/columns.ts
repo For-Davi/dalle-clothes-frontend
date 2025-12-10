@@ -719,21 +719,21 @@ export const columnsSupplierLinkedProducts: IQuasarTable[] = [
 
 export const columnsSupplierOrder: IQuasarTable[] = [
   {
-    name: 'created_at',
-    label: 'Data de criação',
-    field: 'created_at',
-    align: 'left',
-  },
-  {
-    name: 'order',
+    name: 'order_number',
     label: 'Nº Identificador',
-    field: 'order',
+    field: 'order_number',
     align: 'left',
   },
   {
     name: 'status',
     label: 'Status',
     field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'date_issue',
+    label: 'Data de emissão',
+    field: 'date_issue',
     align: 'left',
   },
   {
@@ -927,5 +927,26 @@ export const columnsTaxCoupon: IQuasarTable[] = [
     label: 'VALOR',
     field: 'value',
     align: 'right',
+  },
+];
+
+export const columnsOrderHistory: IQuasarTable[] = [
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'changed',
+    label: 'Usuário',
+    field: 'changed',
+    align: 'left',
+  },
+  {
+    name: 'created_at',
+    label: 'Data de atualização',
+    field: 'created_at',
+    align: 'left',
   },
 ];

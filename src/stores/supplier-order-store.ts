@@ -1,7 +1,10 @@
 import {
   createSupplierOrderService,
   deleteSupplierOrderService,
+  getOrderHistoryService,
   getSupplierOrdersService,
+  saveReceivedOrderService,
+  saveStatusOrderService,
   showSupplierOrderService,
   updateSupplierOrderService,
 } from 'src/services/supplier-order-service';
@@ -37,6 +40,16 @@ export const useSupplierOrderStore = defineStore('supplierOrder', {
         this.setLoading(false);
       }
     },
+    async getOrderHistory(orderID: number) {
+      try {
+        this.setLoading(true);
+        return await getOrderHistoryService(orderID);
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
     async showOrderSupplier(orderID: number) {
       try {
         this.setLoading(true);
@@ -57,6 +70,36 @@ export const useSupplierOrderStore = defineStore('supplierOrder', {
           createSuccess(response.data.message);
         }
 
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async saveReceivedOrder(data: IDataSupplierOrderReceived) {
+      this.setLoading(true);
+      try {
+        const response = await saveReceivedOrderService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async saveStatusOrder(data: IDataSupplierOrderStatus) {
+      this.setLoading(true);
+      try {
+        const response = await saveStatusOrderService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
         return response;
       } catch (error) {
         createError(error);

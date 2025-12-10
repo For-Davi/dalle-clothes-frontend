@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatToReal } from 'src/composables/Money';
 import { columnsClientCart } from 'src/utils/columns';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 defineOptions({
   name: 'TablePaymentClients',
@@ -43,6 +43,11 @@ watch(
   },
   { deep: true, immediate: true },
 );
+const totalValue = computed(() => {
+  return props.rows.reduce((acc, p) => {
+    return acc + p.price * (p.newQuantity || 0);
+  }, 0);
+});
 </script>
 
 <template>
@@ -127,12 +132,7 @@ watch(
             <div class="text-left text-bold">
               Preço por linha:
               <span class="text-green text-bold">{{
-                formatToReal(
-                  (props.row.offer && props.row.offer > 0
-                    ? props.row.offer * props.row.newQuantity
-                    : props.row.price * props.row.newQuantity
-                  ).toString(),
-                )
+                formatToReal((props.row.price * props.row.newQuantity).toString())
               }}</span>
             </div>
           </q-td>

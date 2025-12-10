@@ -2,62 +2,79 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, watch, computed, ref } from 'vue';
 import { searchCep } from 'src/services/cep-service';
-import { useClientStore } from 'src/stores/client-store';
-import Loading from 'src/components/shared/Loading.vue';
 
 defineOptions({
   name: 'FormClientPayment',
 });
 
 const props = defineProps<{
-  data: {
-    show: boolean;
-    clientId: number | null;
-  };
+  show: boolean;
+  client: IClient | null;
 }>();
 
-const model = defineModel<IVModelClient>({ required: true });
+const dataClient = reactive({
+  clientId: null as number | null,
+  name: '' as string,
+  email: '' as string,
+  cpf: '' as string,
+  cnpj: '' as string,
+  stateRegistration: '' as string,
+  municipalRegistration: '' as string,
+  phone: '' as string,
+  country: '' as string,
+  state: '' as string,
+  city: '' as string,
+  cep: '' as string,
+  neighborhood: '' as string,
+  address: '' as string,
+  number: '' as string,
+  complement: '' as string,
+  description: '' as string,
+  dateBirthday: '' as string,
+  sex: '' as string,
+});
 const selectedIdentifier = ref<string>('CNPJ');
 const optionsIdentifier = reactive<string[]>(['CNPJ', 'CPF']);
 const allowSearchCep = ref<boolean>(false);
 const loading = ref<boolean>(false);
-const loadingCheckData = ref<boolean>(false);
 
-const checkDataEdit = async () => {
-  if (props.data.clientId) {
-    loadingCheckData.value = true;
-    const response = await useClientStore().showClient(props.data.clientId);
-    if (response?.status === 200) {
-      const client = response.data.client;
-      Object.assign(model.value, {
-        name: client.name ?? '',
-        email: client.email ?? '',
-        phone: client.phone ?? '',
-        cpf: client.cpf ? String(client.cpf) : '',
-        cnpj: client.cnpj ? String(client.cnpj) : '',
-        stateRegistration: client.state_registration ?? '',
-        municipalRegistration: client.municipal_registration ?? '',
-        country: client.country ?? '',
-        state: client.state ?? '',
-        city: client.city ?? '',
-        cep: client.cep ? String(client.cep) : '',
-        neighborhood: client.neighborhood ?? '',
-        address: client.address ?? '',
-        number: client.number ? String(client.number) : '',
-        complement: client.complement ?? '',
-        description: client.description ?? '',
-        dateBirthday: client.date_birthday ?? '',
-        sex: client.sex === 'M' ? 'Masculino' : 'Feminino',
-      });
+const checkDataEdit = () => {
+  if (props.client) {
+    const client = props.client;
 
-      loadingCheckData.value = false;
+    Object.assign(dataClient, {
+      clientId: clientId.value ?? null,
+      name: client.name ?? '',
+      email: client.email ?? '',
+      phone: client.phone ?? '',
+      cpf: client.cpf ? String(client.cpf) : '',
+      cnpj: client.cnpj ? String(client.cnpj) : '',
+      stateRegistration: client.state_registration ?? '',
+      municipalRegistration: client.municipal_registration ?? '',
+      country: client.country ?? '',
+      state: client.state ?? '',
+      city: client.city ?? '',
+      cep: client.cep ? String(client.cep) : '',
+      neighborhood: client.neighborhood ?? '',
+      address: client.address ?? '',
+      number: client.number ? String(client.number) : '',
+      complement: client.complement ?? '',
+      description: client.description ?? '',
+      dateBirthday: client.date_birthday ?? '',
+      sex: client.sex === 'M' ? 'Masculino' : 'Feminino',
+    });
+
+    if (client.cpf !== null) {
+      selectedIdentifier.value = 'CPF';
+    } else {
+      selectedIdentifier.value = 'CNPJ';
     }
   }
 };
 
 const formattedPhone = computed({
   get() {
-    const phone = (model.value.phone || '').replace(/\D/g, '');
+    const phone = (dataClient.phone || '').replace(/\D/g, '');
 
     if (phone.length === 10) {
       return `(${phone.substring(0, 2)}) ${phone.substring(2, 6)}-${phone.substring(6)}`;
@@ -74,60 +91,30 @@ const formattedPhone = computed({
       return;
     }
 
-    model.value.phone = digits;
+    dataClient.phone = digits;
   },
 });
+const clientId = computed(() => props.client?.id);
 
 watch(
-  [() => props.data.show, () => props.data.clientId],
-  async ([show, clientId]) => {
-    if (show && clientId) {
-      await checkDataEdit();
-    }
-  },
-  { immediate: true },
-);
-
-watch(
-  [() => model.value.cpf, () => model.value.cnpj],
-  ([cpf, cnpj]) => {
-    if (cpf) {
-      selectedIdentifier.value = 'CPF';
-    } else if (cnpj) {
-      selectedIdentifier.value = 'CNPJ';
-    }
-  },
-  { immediate: true },
-);
-watch(selectedIdentifier, (newVal) => {
-  if (newVal === 'CPF') {
-    model.value.cnpj = '';
-  }
-  if (newVal === 'CNPJ') {
-    model.value.cpf = '';
-  }
-});
-watch(
-  () => model.value.cep,
-  async (cep: string | null) => {
-    model.value.cep = model.value.cep?.toString().replace(/\D/g, '') || '';
+  () => dataClient.cep,
+  async (cep: string) => {
+    dataClient.cep = dataClient.cep.replace(/\D/g, '');
     if (allowSearchCep.value) {
-      if (cep) {
-        if (cep.toString().trim().length === 8) {
-          loading.value = true;
-          const response = await searchCep(cep.toString());
-          if (response.status === 200) {
-            model.value.neighborhood = response.data.bairro;
-            model.value.state = response.data.estado;
-            model.value.city = response.data.localidade;
-            model.value.address = response.data.logradouro;
-          }
-        } else {
-          model.value.neighborhood = '';
-          model.value.state = '';
-          model.value.city = '';
-          model.value.address = '';
+      if (cep.trim().length === 8) {
+        loading.value = true;
+        const response = await searchCep(cep);
+        if (response.status === 200) {
+          dataClient.neighborhood = response.data.bairro;
+          dataClient.state = response.data.estado;
+          dataClient.city = response.data.localidade;
+          dataClient.address = response.data.logradouro;
         }
+      } else {
+        dataClient.neighborhood = '';
+        dataClient.state = '';
+        dataClient.city = '';
+        dataClient.address = '';
       }
     } else {
       allowSearchCep.value = true;
@@ -136,38 +123,41 @@ watch(
   },
 );
 watch(
-  () => model.value.country,
-  (country: string | null) => {
-    if (country) {
-      if (country.trim().length > 0) {
-        model.value.country = model.value.country?.replace(/\d+/g, '') || '';
-      }
+  () => dataClient.country,
+  (country: string) => {
+    if (country.trim().length > 0) {
+      dataClient.country = dataClient.country.replace(/\d+/g, '');
     }
   },
 );
 watch(
-  [() => model.value.cpf, () => model.value.cnpj, () => model.value.number],
+  [() => dataClient.cpf, () => dataClient.cnpj, () => dataClient.number],
   ([cpf, cnpj, numberAdress]) => {
-    model.value.cpf = cpf?.replace(/\D/g, '') || '';
-    model.value.cnpj = cnpj?.toString().replace(/\D/g, '') || '';
-    model.value.number = numberAdress?.toString().replace(/\D/g, '') || '';
+    dataClient.cpf = cpf.replace(/\D/g, '');
+    dataClient.cnpj = cnpj.replace(/\D/g, '');
+    dataClient.number = numberAdress.replace(/\D/g, '');
   },
+);
+watch(
+  () => props.client,
+  (client) => {
+    if (client) {
+      checkDataEdit();
+    }
+  },
+  { immediate: true },
 );
 </script>
 
 <template>
-  <q-card v-if="props.data.show" flat class="q-mt-md flex justify-between column">
+  <q-card v-if="props.show" flat class="q-mt-md">
     <q-card-section class="q-pa-none">
       <TitlePage title="Formulário do cliente" icon="list_alt" />
     </q-card-section>
-    <div v-if="loadingCheckData" class="flex flex-center q-ma-xl">
-      <Loading :show="loadingCheckData" />
-    </div>
-
-    <q-card-section class="q-pa-sm" v-if="!loadingCheckData">
+    <q-card-section class="q-pa-sm">
       <q-form class="q-gutter-y-sm">
         <q-input
-          v-model="model.name"
+          v-model="dataClient.name"
           bg-color="white"
           label-color="black"
           outlined
@@ -180,7 +170,7 @@ watch(
           </template>
         </q-input>
         <q-select
-          v-model="model.sex"
+          v-model="dataClient.sex"
           :options="['Masculino', 'Feminino']"
           label="Selecione o gênero"
           outlined
@@ -191,14 +181,14 @@ watch(
         >
           <template v-slot:prepend>
             <q-icon
-              :name="model.sex === 'Masculino' ? 'male' : 'female'"
+              :name="dataClient.sex === 'Masculino' ? 'male' : 'female'"
               color="black"
               size="20px"
             />
           </template>
         </q-select>
         <q-input
-          v-model="model.email"
+          v-model="dataClient.email"
           bg-color="white"
           label-color="black"
           outlined
@@ -212,7 +202,7 @@ watch(
           </template>
         </q-input>
         <q-input
-          v-model="model.dateBirthday"
+          v-model="dataClient.dateBirthday"
           bg-color="white"
           label-color="black"
           outlined
@@ -256,7 +246,7 @@ watch(
           </q-select>
           <q-input
             v-if="selectedIdentifier === 'CNPJ'"
-            v-model="model.cnpj"
+            v-model="dataClient.cnpj"
             bg-color="white"
             label-color="black"
             outlined
@@ -272,7 +262,7 @@ watch(
           </q-input>
           <q-input
             v-else
-            v-model="model.cpf"
+            v-model="dataClient.cpf"
             bg-color="white"
             label-color="black"
             outlined
@@ -289,7 +279,7 @@ watch(
         </div>
         <div class="row justify-between" v-show="selectedIdentifier === 'CNPJ'">
           <q-input
-            v-model="model.stateRegistration"
+            v-model="dataClient.stateRegistration"
             bg-color="white"
             label-color="black"
             outlined
@@ -304,7 +294,7 @@ watch(
             </template>
           </q-input>
           <q-input
-            v-model="model.municipalRegistration"
+            v-model="dataClient.municipalRegistration"
             bg-color="white"
             label-color="black"
             outlined
@@ -320,7 +310,7 @@ watch(
           </q-input>
         </div>
         <q-input
-          v-model="model.cep"
+          v-model="dataClient.cep"
           bg-color="white"
           label-color="black"
           outlined
@@ -335,7 +325,7 @@ watch(
           </template>
         </q-input>
         <q-input
-          v-model="model.country"
+          v-model="dataClient.country"
           bg-color="white"
           label-color="black"
           outlined
@@ -349,7 +339,7 @@ watch(
         </q-input>
         <div class="row justify-between">
           <q-input
-            v-model="model.state"
+            v-model="dataClient.state"
             bg-color="white"
             label-color="black"
             outlined
@@ -363,7 +353,7 @@ watch(
             </template>
           </q-input>
           <q-input
-            v-model="model.city"
+            v-model="dataClient.city"
             bg-color="white"
             label-color="black"
             outlined
@@ -378,7 +368,7 @@ watch(
           </q-input>
         </div>
         <q-input
-          v-model="model.neighborhood"
+          v-model="dataClient.neighborhood"
           bg-color="white"
           label-color="black"
           outlined
@@ -391,7 +381,7 @@ watch(
           </template>
         </q-input>
         <q-input
-          v-model="model.address"
+          v-model="dataClient.address"
           bg-color="white"
           label-color="black"
           outlined
@@ -405,7 +395,7 @@ watch(
         </q-input>
         <div class="row justify-between">
           <q-input
-            v-model="model.number"
+            v-model="dataClient.number"
             bg-color="white"
             label-color="black"
             outlined
@@ -421,7 +411,7 @@ watch(
             </template>
           </q-input>
           <q-input
-            v-model="model.complement"
+            v-model="dataClient.complement"
             bg-color="white"
             label-color="black"
             outlined
@@ -436,7 +426,7 @@ watch(
           </q-input>
         </div>
         <q-input
-          v-model="model.description"
+          v-model="dataClient.description"
           bg-color="white"
           label-color="black"
           outlined

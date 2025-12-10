@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { columnsListProductsSale } from 'src/utils/columns';
+import { columnsProduct } from 'src/utils/columns';
 import { useProductStore } from 'src/stores/product-store';
 import { formatToReal } from 'src/composables/Money';
 import { checkProductClientData } from 'src/composables/CheckData';
@@ -14,9 +14,6 @@ defineOptions({
 const emit = defineEmits<{
   'add-to-cart': [IClientCartProduct];
 }>();
-const props = defineProps<{
-  hiddenIds?: number[];
-}>();
 
 const { loadingProduct, listProduct } = storeToRefs(useProductStore());
 
@@ -28,18 +25,14 @@ const startAddCart = (product: IClientCartProduct) => {
 
   if (check.status) {
     emit('add-to-cart', product);
+
+    product.quantity = 0;
   } else {
     createErrorData(check.message || 'Erro ao adicionar produto ao carrinho');
   }
 };
 const fetchProducts = async (): Promise<void> => {
-  await useProductStore().getProducts({
-    active: 1,
-    name: null,
-    sku: null,
-    category: null,
-    stockCritical: null,
-  });
+  await useProductStore().getProducts();
   localProducts.value = listProduct.value.map((p: IProduct) => ({ ...p, quantity: 0 }));
 };
 const getColorStyle = (hexColor: string) => {
@@ -53,11 +46,9 @@ const getColorStyle = (hexColor: string) => {
     verticalAlign: 'middle',
   };
 };
-
-const filteredProducts = computed(() => {
-  if (!props.hiddenIds?.length) return localProducts.value;
-  return localProducts.value.filter((p) => !props.hiddenIds?.includes(p.product_variant_id));
-});
+const isStockCritical = (stock: number | string): boolean => {
+  return Number(stock) === 0;
+};
 
 onMounted(async () => {
   await fetchProducts();
@@ -67,8 +58,8 @@ onMounted(async () => {
 <template>
   <section>
     <q-table
-      :rows="loadingProduct ? [] : filteredProducts"
-      :columns="columnsListProductsSale"
+      :rows="loadingProduct ? [] : localProducts"
+      :columns="columnsProduct"
       :filter="filter"
       :loading="loadingProduct"
       title="Lista de produtos"
@@ -76,8 +67,7 @@ onMounted(async () => {
       no-data-label="Nenhum produto para mostrar"
       virtual-scroll
       dense
-      :rows-per-page-options="[0]"
-      style="max-height: 400px"
+      :rows-per-page-options="[5]"
     >
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -127,18 +117,11 @@ onMounted(async () => {
           <q-td key="price" :props="props" class="text-left">
             {{ formatToReal(props.row.price) }}
           </q-td>
-          <q-td key="offer" :props="props" class="text-left">
-            {{
-              props.row.offer !== '0.00' && props.row.offer !== null
-                ? formatToReal(props.row.offer)
-                : '-'
-            }}
-          </q-td>
           <q-td
             key="stock_quantity"
             :props="props"
             class="text-left"
-            :class="props.row.stock_quantity === 0 ? 'text-red' : ''"
+            :class="isStockCritical(props.row.stock_quantity) ? 'text-red' : ''"
           >
             {{ props.row.stock_quantity }}
           </q-td>
@@ -163,7 +146,7 @@ onMounted(async () => {
                 color="red"
                 icon="remove"
                 class="q-mr-sm"
-                :disable="props.row.stock_quantity <= 0 || props.row.quantity === 0"
+                :disable="props.row.stock_quantity <= 0"
                 @click="props.row.quantity--"
               />
               <q-input
@@ -171,9 +154,6 @@ onMounted(async () => {
                 dense
                 v-model.number="props.row.quantity"
                 input-class="text-right"
-                mask="#"
-                fill-mask="0"
-                reverse-fill-mask
                 class="q-mr-sm"
                 style="width: 65px"
               />

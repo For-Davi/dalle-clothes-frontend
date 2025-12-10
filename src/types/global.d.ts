@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { EmployeeTable, FilterEmployee, EmployeeTable, Employee } from './Employee';
 import type {
-  FilterSupplier,
-  DataSupplierCatalog,
   CatalogSupplier,
+  DataSupplierCatalog,
+  FilterSupplier,
+  Supplier,
   SupplierSelect,
 } from './Supplier';
 import type {
@@ -75,7 +76,16 @@ import type {
   ExportSchedule,
 } from './Schedules';
 import type { Notification } from './Notification';
-import type { DataSupplierOrder, SupplierOrder } from './Order';
+import type {
+  DataSupplierOrder,
+  SupplierOrder,
+  ShowOrder,
+  DataSupplierOrderReceived,
+  SupplierOrderItem,
+  ModeOrderDetails,
+  DataSupplierOrderStatus,
+  OrderHistory,
+} from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
 import type { VModelSalePayment, DataSale, Sale, CouponData } from './Payments';
 
@@ -174,9 +184,13 @@ declare global {
   type IVModelSalePayment = VModelSalePayment;
   type ISupplierCartProduct = SupplierCartProduct;
   type ISupplierCartProduct = SupplierCartProduct;
-  type IProductSupplierOrder = ProductSupplierOrder
-  type IShowOrder = ShowOrder
-  type ISupplierOrderItem = SupplierOrderItem
+  type IProductSupplierOrder = ProductSupplierOrder;
+  type IShowOrder = ShowOrder;
+  type ISupplierOrderItem = SupplierOrderItem;
+  type IDataSupplierOrderReceived = DataSupplierOrderReceived;
+  type IModeOrderDetails = ModeOrderDetails;
+  type IDataSupplierOrderStatus = DataSupplierOrderStatus;
+  type IOrderHistory = OrderHistory;
   type IFilterReceipt = FilterReceipt;
   type IDataSale = DataSale;
   type IDataProductSale = DataProductSale;
