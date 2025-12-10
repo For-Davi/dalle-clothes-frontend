@@ -85,6 +85,12 @@ const back = () => {
     },
   });
 };
+const createChannelPayment = () => {
+  echo.channel('payments').listen('.payment.made', () => {
+    useSubscriptionStore().setLoading(false);
+    step.value = 3;
+  });
+};
 
 const stepTitle = computed(() => {
   if (type.value === 'credit') return 'Formulário do cartão de crédito';
@@ -93,10 +99,7 @@ const stepTitle = computed(() => {
 });
 
 onMounted(() => {
-  echo.channel('payments').listen('.payment.made', () => {
-    useSubscriptionStore().setLoading(false);
-    step.value = 3;
-  });
+  createChannelPayment();
 });
 
 onUnmounted(() => {
