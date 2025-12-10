@@ -151,9 +151,7 @@ const saveReceived = async (): Promise<void> => {
   }
 };
 const saveStatus = async (): Promise<void> => {
-  console.log('entrou no savestatus');
   if (dataOrder.value?.status !== selectedStatus.value.value) {
-    console.log('selectedStatus.value.value', selectedStatus.value.value);
     const response = await useSupplierOrderStore().saveStatusOrder({
       id: orderID.value!,
       status: selectedStatus.value.value,

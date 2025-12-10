@@ -61,13 +61,6 @@ const selectedClient = computed(() => {
 onMounted(async () => {
   await fetchClients();
 });
-
-watch(
-  () => dataSaleForm.clientId,
-  () => {
-    console.log('ID DO CLIENTE', dataSaleForm.clientId);
-  },
-);
 </script>
 
 <template>
