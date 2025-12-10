@@ -1,8 +1,45 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
+import { storeToRefs } from 'pinia';
+import { useSubscriptionStore } from 'src/stores/subscription-store';
+import { computed, onMounted, reactive } from 'vue';
+import SubscriptionPayment from 'src/components/subscription/SubscriptionPayment.vue';
 
 defineOptions({
   name: 'Subscription',
+});
+
+const { listSubscription } = storeToRefs(useSubscriptionStore());
+
+const showSubscriptionPayment = reactive<{
+  open: boolean;
+  subscriptionID: number | null;
+}>({
+  open: false,
+  subscriptionID: null,
+});
+const changeShowSubscriptionPayment = (show: boolean, subscriptionID: number | null = null) => {
+  Object.assign(showSubscriptionPayment, {
+    open: show,
+    subscriptionID: subscriptionID,
+  });
+};
+
+const getSubscriptions = async () => {
+  await useSubscriptionStore().getSubscriptions();
+};
+
+const basicSubscriptionId = computed(() => {
+  const basic = listSubscription.value.find((basic) => basic.name === 'basic');
+  return basic ? basic.id : null;
+});
+const premiumSubscriptionId = computed(() => {
+  const premium = listSubscription.value.find((premium) => premium.name === 'premium');
+  return premium ? premium.id : null;
+});
+
+onMounted(async () => {
+  await getSubscriptions();
 });
 </script>
 <template>
@@ -41,6 +78,7 @@ defineOptions({
               color="green"
               unelevated
               class="full-width"
+              @click="changeShowSubscriptionPayment(true, basicSubscriptionId)"
             />
             <q-btn
               icon-right="verified"
@@ -80,6 +118,7 @@ defineOptions({
               color="blue"
               unelevated
               class="full-width"
+              @click="changeShowSubscriptionPayment(true, premiumSubscriptionId)"
             />
             <q-btn
               icon-right="verified"
@@ -93,5 +132,10 @@ defineOptions({
         </q-card>
       </div>
     </section>
+    <!-- Modals -->
+    <SubscriptionPayment
+      :data="showSubscriptionPayment"
+      @update:open="changeShowSubscriptionPayment(false)"
+    />
   </main>
 </template>
