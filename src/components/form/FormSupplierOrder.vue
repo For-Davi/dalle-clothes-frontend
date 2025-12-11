@@ -3,12 +3,12 @@ import { computed, reactive, ref, watch } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
-// import { checkDataSupplier } from 'src/composables/CheckData';
-// import { createErrorData } from 'src/composables/CreateNotify';
 import { useSupplierStore } from 'src/stores/supplier-store';
-import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import { useProductStore } from 'src/stores/product-store';
 import TableSelectProductVariant from '../fragments/supplier/TableSelectProductVariant.vue';
+import { checkDataSupplierOrder } from 'src/composables/CheckData';
+import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
+import { createErrorData } from 'src/composables/CreateNotify';
 
 defineOptions({
   name: 'FormSupplierOrder',
@@ -17,7 +17,6 @@ defineOptions({
 const props = defineProps<{
   data: {
     open: boolean;
-    orderID: number | null;
   };
 }>();
 const emit = defineEmits<{
@@ -35,7 +34,7 @@ const dataSupplierOrder = reactive({
   dateIssue: '' as string,
   dateDeliveryExpected: '' as string,
   description: '' as string,
-  itens: [] as IProduct[],
+  items: [] as ISupplierCartProduct[],
 });
 const selectedSupplier = ref<IQuasarSelect<number | null>>({
   label: 'Não informado',
@@ -48,7 +47,7 @@ const clear = (): void => {
     dateIssue: '',
     dateDeliveryExpected: '',
     description: '',
-    itens: [],
+    items: [],
   });
 
   selectedSupplier.value = {
@@ -59,116 +58,33 @@ const clear = (): void => {
 const changeShowTableSelectProductVariant = () => {
   showTableSelectProductVariant.value = !showTableSelectProductVariant.value;
 };
-// const save = async () => {
-//   const check = checkDataSupplier(dataSupplierOrder);
-//   if (check.status) {
-//     const response = await useSupplierStore().createSupplier(
-//       dataSupplier.name,
-//       dataSupplier.email.trim() !== '' ? dataSupplier.email : null,
-//       dataSupplier.phone.trim() !== '' ? dataSupplier.phone : null,
-//       dataSupplier.cpf.trim() !== '' ? Number(dataSupplier.cpf) : null,
-//       dataSupplier.cnpj.trim() !== '' ? Number(dataSupplier.cnpj) : null,
-//       dataSupplier.stateRegistration.trim() !== '' ? dataSupplier.stateRegistration : null,
-//       dataSupplier.municipalRegistration.trim() !== '' ? dataSupplier.municipalRegistration : null,
-//       dataSupplier.site.trim() !== '' ? dataSupplier.site : null,
-//       dataSupplier.country.trim() !== '' ? dataSupplier.country : null,
-//       dataSupplier.state.trim() !== '' ? dataSupplier.state : null,
-//       dataSupplier.city.trim() !== '' ? dataSupplier.city : null,
-//       dataSupplier.cep.trim() !== '' ? Number(dataSupplier.cep) : null,
-//       dataSupplier.neighborhood.trim() !== '' ? dataSupplier.neighborhood : null,
-//       dataSupplier.address.trim() !== '' ? dataSupplier.address : null,
-//       dataSupplier.number.trim() !== '' ? Number(dataSupplier.number) : null,
-//       dataSupplier.complement.trim() !== '' ? dataSupplier.complement : null,
-//       dataSupplier.description.trim() !== '' ? dataSupplier.description : null,
-//       selectedCategory.value.value,
-//     );
-//     if (response?.status === 201) {
-//       clear();
-//       emit('update:open');
-//     }
-//   } else {
-//     createErrorData(check.message || 'Erro ao processar dados do fornecedor');
-//   }
-// };
-// const update = async () => {
-//   const check = checkDataSupplier(dataSupplier);
-//   if (check.status) {
-//     const response = await useSupplierStore().updateSupplier(
-//       supplierId.value ?? 0,
-//       dataSupplier.name,
-//       dataSupplier.email.trim() !== '' ? dataSupplier.email : null,
-//       dataSupplier.phone.trim() !== '' ? dataSupplier.phone : null,
-//       dataSupplier.cpf.trim() !== '' ? Number(dataSupplier.cpf) : null,
-//       dataSupplier.cnpj.trim() !== '' ? Number(dataSupplier.cnpj) : null,
-//       dataSupplier.stateRegistration.trim() !== '' ? dataSupplier.stateRegistration : null,
-//       dataSupplier.municipalRegistration.trim() !== '' ? dataSupplier.municipalRegistration : null,
-//       dataSupplier.site.trim() !== '' ? dataSupplier.site : null,
-//       dataSupplier.country.trim() !== '' ? dataSupplier.country : null,
-//       dataSupplier.state.trim() !== '' ? dataSupplier.state : null,
-//       dataSupplier.city.trim() !== '' ? dataSupplier.city : null,
-//       dataSupplier.cep.trim() !== '' ? Number(dataSupplier.cep) : null,
-//       dataSupplier.neighborhood.trim() !== '' ? dataSupplier.neighborhood : null,
-//       dataSupplier.address.trim() !== '' ? dataSupplier.address : null,
-//       dataSupplier.number.trim() !== '' ? Number(dataSupplier.number) : null,
-//       dataSupplier.complement.trim() !== '' ? dataSupplier.complement : null,
-//       dataSupplier.description.trim() !== '' ? dataSupplier.description : null,
-//       selectedCategory.value.value,
-//       selectedStatus.value.value,
-//     );
-//     if (response?.status === 200) {
-//       clear();
-//       emit('update:open');
-//     }
-//   } else {
-//     createErrorData(check.message || 'Erro ao processar dados do fornecedor');
-//   }
-// };
-// const checkDataEdit = async () => {
-//   if (supplierId.value) {
-//     const response = await useSupplierStore().showSupplier(supplierId.value);
-//     if (response?.status === 200) {
-//       const supplier = response.data.supplier;
-
-//       Object.assign(dataSupplier, {
-//         name: supplier.name ?? '',
-//         email: supplier.email ?? '',
-//         phone: supplier.phone ?? '',
-//         cpf: supplier.cpf ? String(supplier.cpf) : '',
-//         cnpj: supplier.cnpj ? String(supplier.cnpj) : '',
-//         stateRegistration: supplier.state_registration ?? '',
-//         municipalRegistration: supplier.municipal_registration ?? '',
-//         site: supplier.site ?? '',
-//         country: supplier.country ?? '',
-//         state: supplier.state ?? '',
-//         city: supplier.city ?? '',
-//         cep: supplier.cep ? String(supplier.cep) : '',
-//         neighborhood: supplier.neighborhood ?? '',
-//         address: supplier.address ?? '',
-//         number: supplier.number ? String(supplier.number) : '',
-//         complement: supplier.complement ?? '',
-//         description: supplier.description ?? '',
-//       });
-
-//       const selectedCategoryItem = listCategorySupplier.value.find(
-//         (item) => item.id === supplier.category_supplier_id,
-//       );
-//       selectedCategory.value = selectedCategoryItem
-//         ? { label: selectedCategoryItem?.name, value: selectedCategoryItem?.id }
-//         : { label: 'Sem categoria', value: null };
-
-//       selectedStatus.value =
-//         supplier.active === 0
-//           ? {
-//               label: 'Inativo',
-//               value: 0,
-//             }
-//           : {
-//               label: 'Ativo',
-//               value: 1,
-//             };
-//     }
-//   }
-// };
+const getItems = (items: ISupplierCartProduct[]): IProductSupplierOrder[] => {
+  return items.map((item) => {
+    return {
+      productVariantID: item.product_variant_id,
+      unitCost: item.newPrice,
+      quantityRequested: item.newQuantity,
+    };
+  });
+};
+const save = async () => {
+  const check = checkDataSupplierOrder(dataSupplierOrder, selectedSupplier.value.value);
+  if (check.status) {
+    const response = await useSupplierOrderStore().createSupplierOrder({
+      orderNumber: dataSupplierOrder.orderNumber,
+      dateIssue: dataSupplierOrder.dateIssue,
+      dateDeliveryExpected: dataSupplierOrder.dateDeliveryExpected,
+      items: getItems(dataSupplierOrder.items),
+      supplierID: selectedSupplier.value.value,
+    });
+    if (response?.status === 201) {
+      clear();
+      emit('update:open');
+    }
+  } else {
+    createErrorData(check.message || 'Erro ao processar dados do pedido');
+  }
+};
 const fetchSuppliers = async (): Promise<void> => {
   await useSupplierStore().getSuppliersSelect();
 };
@@ -187,21 +103,19 @@ const getListSupplierSelect = computed((): IQuasarSelect<number | null>[] => {
 const isLoading = computed((): boolean => {
   return loadingSupplier.value || loadingSupplierOrder.value || loadingProduct.value;
 });
-const orderID = computed(() => props.data.orderID);
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
 });
-const getLabelItens = computed((): string => {
-  return `Total de itens: ${dataSupplierOrder.itens.length}`;
+const getLabelItems = computed((): string => {
+  return `Total de itens: ${dataSupplierOrder.items.length}`;
 });
 
 watch(open, async () => {
-  clear();
   if (open.value) {
+    clear();
     await fetchSuppliers();
     await fetchProductVariants();
-    // await checkDataEdit();
   }
 });
 </script>
@@ -209,10 +123,7 @@ watch(open, async () => {
   <q-dialog v-model="open">
     <q-card class="bg-grey-2 form-basic">
       <q-card-section class="q-pa-none">
-        <TitlePage
-          :title="orderID ? 'Atualização de pedido' : 'Cadastro de pedido'"
-          icon="list_alt"
-        />
+        <TitlePage title="Cadastro de pedido" icon="list_alt" />
       </q-card-section>
       <Loading :show="isLoading" />
       <q-card-section class="q-pa-sm" v-show="!isLoading">
@@ -279,7 +190,7 @@ watch(open, async () => {
             bg-color="white"
             label-color="black"
             outlined
-            :label="getLabelItens"
+            :label="getLabelItems"
             dense
             input-class="text-black"
             class="full-width"
@@ -328,8 +239,7 @@ watch(open, async () => {
             unelevated
             no-caps
           />
-          <q-btn v-if="!orderID" color="primary" label="Salvar" size="md" unelevated no-caps />
-          <q-btn v-else color="primary" label="Atualizar" size="md" unelevated no-caps />
+          <q-btn @click="save" color="primary" label="Salvar" size="md" unelevated no-caps />
         </div>
       </q-card-actions>
       dataSupplierOrder {{ dataSupplierOrder.itens }}
@@ -337,7 +247,7 @@ watch(open, async () => {
 
     <!-- Modals -->
     <TableSelectProductVariant
-      v-model:selected="dataSupplierOrder.itens"
+      v-model:selected="dataSupplierOrder.items"
       :list="listProduct"
       :loading="isLoading"
       :open="showTableSelectProductVariant"

@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from 'src/components/shared/Loading.vue';
-import { searchCep } from 'src/services/cep-service';
+import { getLabelStatus } from 'src/composables/Label';
+import { formatToBrazilianDate } from 'src/composables/FormatData';
+import { formatToReal } from 'src/composables/Money';
+import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
+import { exportOrderService } from 'src/services/supplier-order-service';
+import { nextTick } from 'vue';
+import { checkSupplierOrderReceived } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
-import { useClientStore } from 'src/stores/client-store';
-import { checkDataClient } from 'src/composables/CheckData';
+import TableOrderHistory from 'src/components/table/TableOrderHistory.vue';
 
 defineOptions({
   name: 'SupplierOrderDetails',
@@ -22,566 +27,551 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { loadingClient } = storeToRefs(useClientStore());
+const { loadingSupplierOrder } = storeToRefs(useSupplierOrderStore());
 
 const loading = ref<boolean>(false);
-const dataClient = reactive({
-  name: '' as string,
-  email: '' as string,
-  cpf: '' as string,
-  cnpj: '' as string,
-  stateRegistration: '' as string,
-  municipalRegistration: '' as string,
-  phone: '' as string,
-  country: '' as string,
-  state: '' as string,
-  city: '' as string,
-  cep: '' as string,
-  neighborhood: '' as string,
-  address: '' as string,
-  number: '' as string,
-  complement: '' as string,
-  description: '' as string,
-  dateBirthday: '' as string,
-  sex: '' as string,
+const dataOrder = ref<IShowOrder | null>(null);
+const dataOrderHistory = ref<IOrderHistory[]>([]);
+const dateReceived = ref<string>('');
+const showSupplierOrderReceipt = ref<boolean>(false);
+const mode = ref<IModeOrderDetails>('details');
+const selectedStatus = ref<IQuasarSelect<string>>({
+  label: 'Aguardando',
+  value: 'waiting',
 });
-const selectedIdentifier = ref<string>('CNPJ');
-const optionsIdentifier = reactive<string[]>(['CNPJ', 'CPF']);
-const allowSearchCep = ref<boolean>(false);
 
 const clear = (): void => {
-  Object.assign(dataClient, {
-    name: '',
-    email: '',
-    phone: '',
-    cpf: '',
-    cnpj: '',
-    stateRegistration: '',
-    municipalRegistration: '',
-    country: '',
-    state: '',
-    city: '',
-    cep: '',
-    neighborhood: '',
-    address: '',
-    number: '',
-    complement: '',
-    description: '',
-    dateBirthday: '',
-    sex: 'Masculino',
-  });
-
-  allowSearchCep.value = false;
+  dataOrder.value = null;
+  mode.value = 'details';
+  dateReceived.value = '';
+  showSupplierOrderReceipt.value = false;
+  selectedStatus.value = {
+    label: 'Aguardando',
+    value: 'waiting',
+  };
 };
-const save = async () => {
-  const check = checkDataClient(dataClient);
-  if (check.status) {
-    const response = await useClientStore().createClient(
-      dataClient.name,
-      dataClient.email.trim() !== '' ? dataClient.email : null,
-      dataClient.phone.trim() !== '' ? dataClient.phone : null,
-      dataClient.dateBirthday.trim() !== '' ? dataClient.dateBirthday : null,
-      dataClient.cpf.trim() !== '' ? Number(dataClient.cpf) : null,
-      dataClient.cnpj.trim() !== '' ? Number(dataClient.cnpj) : null,
-      dataClient.stateRegistration.trim() !== '' ? dataClient.stateRegistration : null,
-      dataClient.municipalRegistration.trim() !== '' ? dataClient.municipalRegistration : null,
-      dataClient.country.trim() !== '' ? dataClient.country : null,
-      dataClient.state.trim() !== '' ? dataClient.state : null,
-      dataClient.city.trim() !== '' ? dataClient.city : null,
-      dataClient.cep.trim() !== '' ? Number(dataClient.cep) : null,
-      dataClient.neighborhood.trim() !== '' ? dataClient.neighborhood : null,
-      dataClient.address.trim() !== '' ? dataClient.address : null,
-      dataClient.number.trim() !== '' ? Number(dataClient.number) : null,
-      dataClient.complement.trim() !== '' ? dataClient.complement : null,
-      dataClient.description.trim() !== '' ? dataClient.description : null,
-      dataClient.sex === 'Masculino' ? 'M' : 'F',
-    );
-    if (response?.status === 201) {
-      clear();
-      emit('update:open');
-    }
-  } else {
-    createErrorData(check.message || 'Erro ao processar dados do cliente');
+const mountData = async (): Promise<void> => {
+  if (!orderID.value) return;
+
+  const response = await useSupplierOrderStore().showOrderSupplier(orderID.value);
+
+  if (response?.status === 200) {
+    dataOrder.value = response.data.order;
+
+    const status = response.data.order.status;
+
+    selectedStatus.value =
+      optionsStatus.value.find((opt) => opt.value === status) ?? optionsStatus.value[0];
   }
 };
-const update = async () => {
-  const check = checkDataClient(dataClient);
-  if (check.status) {
-    const response = await useClientStore().updateClient(
-      clientId.value ?? 0,
-      dataClient.name,
-      dataClient.email.trim() !== '' ? dataClient.email : null,
-      dataClient.phone.trim() !== '' ? dataClient.phone : null,
-      dataClient.dateBirthday.trim() !== '' ? dataClient.dateBirthday : null,
-      dataClient.cpf.trim() !== '' ? Number(dataClient.cpf) : null,
-      dataClient.cnpj.trim() !== '' ? Number(dataClient.cnpj) : null,
-      dataClient.stateRegistration.trim() !== '' ? dataClient.stateRegistration : null,
-      dataClient.municipalRegistration.trim() !== '' ? dataClient.municipalRegistration : null,
-      dataClient.country.trim() !== '' ? dataClient.country : null,
-      dataClient.state.trim() !== '' ? dataClient.state : null,
-      dataClient.city.trim() !== '' ? dataClient.city : null,
-      dataClient.cep.trim() !== '' ? Number(dataClient.cep) : null,
-      dataClient.neighborhood.trim() !== '' ? dataClient.neighborhood : null,
-      dataClient.address.trim() !== '' ? dataClient.address : null,
-      dataClient.number.trim() !== '' ? Number(dataClient.number) : null,
-      dataClient.complement.trim() !== '' ? dataClient.complement : null,
-      dataClient.description.trim() !== '' ? dataClient.description : null,
-      dataClient.sex === 'Masculino' ? 'M' : 'F',
-    );
-    if (response?.status === 200) {
-      clear();
-      emit('update:open');
-    }
-  } else {
-    createErrorData(check.message || 'Erro ao processar dados do cliente');
-  }
+const getColorStyle = (hexColor: string) => {
+  return {
+    backgroundColor: hexColor || 'transparent',
+    width: '15px',
+    height: '15px',
+    border: '1px solid #ddd',
+    borderRadius: '50%',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  };
 };
-const checkDataEdit = async () => {
-  if (clientId.value) {
-    const response = await useClientStore().showClient(clientId.value);
-    if (response?.status === 200) {
-      const client = response.data.client;
+const download = async () => {
+  loading.value = true;
+  await exportOrderService(orderID.value!);
+  loading.value = false;
+};
+const changeShowSupplierOrderReceipt = (): void => {
+  showSupplierOrderReceipt.value = !showSupplierOrderReceipt.value;
+};
+const checkReceived = (): void => {
+  dataOrder.value?.items?.forEach((item: ISupplierOrderItem) => {
+    let received = Number(item.received ?? 0);
 
-      Object.assign(dataClient, {
-        name: client.name ?? '',
-        email: client.email ?? '',
-        phone: client.phone ?? '',
-        cpf: client.cpf ? String(client.cpf) : '',
-        cnpj: client.cnpj ? String(client.cnpj) : '',
-        stateRegistration: client.state_registration ?? '',
-        municipalRegistration: client.municipal_registration ?? '',
-        country: client.country ?? '',
-        state: client.state ?? '',
-        city: client.city ?? '',
-        cep: client.cep ? String(client.cep) : '',
-        neighborhood: client.neighborhood ?? '',
-        address: client.address ?? '',
-        number: client.number ? String(client.number) : '',
-        complement: client.complement ?? '',
-        description: client.description ?? '',
-        dateBirthday: client.date_birthday ?? '',
-        sex: client.sex === 'M' ? 'Masculino' : 'Feminino',
+    const requested = Number(item.quantity_requested) || 0;
+    const alreadyReceived = Number(item.quantity_received) || 0;
+    const remaining = requested - alreadyReceived;
+
+    if (isNaN(received)) received = 0;
+
+    let corrected = received;
+
+    if (received > remaining) corrected = remaining;
+    if (received < 0) corrected = 0;
+
+    if (String(corrected) !== String(item.received)) {
+      nextTick(() => {
+        item.received = String(corrected);
       });
     }
+  });
+};
+const close = (): void => {
+  if (showSupplierOrderReceipt.value) {
+    if (!dataOrder.value?.items) return;
+
+    dataOrder.value.items.forEach((item: any) => {
+      if ('received' in item) {
+        delete item.received;
+      }
+    });
+
+    dateReceived.value = '';
+
+    changeShowSupplierOrderReceipt();
+  } else {
+    mode.value = 'details';
   }
 };
-const isLoading = computed((): boolean => {
-  return loadingClient.value;
-});
-const clientId = computed(() => props.data.orderID);
-const formattedPhone = computed({
-  get() {
-    const phone = (dataClient.phone || '').replace(/\D/g, '');
-
-    if (phone.length === 10) {
-      return `(${phone.substring(0, 2)}) ${phone.substring(2, 6)}-${phone.substring(6)}`;
+const getDataReceived = () => {
+  return (
+    dataOrder.value?.items
+      .filter(
+        (item: { id: number; received?: string }) =>
+          item.received !== undefined && Number(item.received) !== 0,
+      )
+      .map((item: { id: number; received: string }) => ({
+        id: item.id,
+        received: Number(item.received),
+      })) ?? []
+  );
+};
+const saveReceived = async (): Promise<void> => {
+  const check = checkSupplierOrderReceived(dataOrder.value?.items || [], dateReceived.value);
+  if (check.status) {
+    const response = await useSupplierOrderStore().saveReceivedOrder({
+      dateReceived: dateReceived.value,
+      items: getDataReceived(),
+    });
+    if (response?.status === 200) {
+      clear();
+      dataOrder.value = response.data.order;
     }
-    if (phone.length === 11) {
-      return `(${phone.substring(0, 2)}) ${phone.substring(2, 7)}-${phone.substring(7)}`;
+  } else {
+    createErrorData(check.message || 'Erro ao processar recebimento');
+  }
+};
+const saveStatus = async (): Promise<void> => {
+  console.log('entrou no savestatus');
+  if (dataOrder.value?.status !== selectedStatus.value.value) {
+    console.log('selectedStatus.value.value', selectedStatus.value.value);
+    const response = await useSupplierOrderStore().saveStatusOrder({
+      id: orderID.value!,
+      status: selectedStatus.value.value,
+    });
+    if (response?.status === 200) {
+      clear();
+      dataOrder.value = response.data.order;
     }
-    return phone;
-  },
-  set(value) {
-    const digits = (value || '').replace(/\D/g, '');
+  } else {
+    createErrorData('Não se pode atualizar para o mesmo status');
+  }
+};
+const save = async () => {
+  if (showSupplierOrderReceipt.value) {
+    await saveReceived();
+  }
+  if (mode.value === 'status') {
+    await saveStatus();
+  }
+};
+const needReceived = (item: ISupplierOrderItem): boolean => {
+  const remaining = (item.quantity_requested || 0) - (item.quantity_received || 0);
 
-    if (digits.length > 11) {
-      return;
-    }
+  return remaining <= 0 ? false : true;
+};
+const showBlock = (value: IModeOrderDetails) => {
+  return value === mode.value;
+};
+const setMode = (value: IModeOrderDetails) => {
+  mode.value = value;
+};
+const fetchOrderHistory = async () => {
+  const response = await useSupplierOrderStore().getOrderHistory(orderID.value!);
 
-    dataClient.phone = digits;
-  },
-});
+  if (response?.status === 200) {
+    const history = response.data.history ?? [];
+
+    history.sort((a, b) => {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
+    dataOrderHistory.value = history;
+  }
+};
+
+const orderID = computed(() => props.data.orderID);
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
 });
+const orderTotalCost = computed<number>(() => {
+  if (!dataOrder.value || !dataOrder.value.items || dataOrder.value.items.length === 0) {
+    return 0;
+  }
+  return dataOrder.value.items.reduce((sum: number, item: any) => {
+    const cost = parseFloat(item.total_cost || 0);
+    return sum + (isNaN(cost) ? 0 : cost);
+  }, 0);
+});
+const hasItemForReceived = computed(() => {
+  const items = dataOrder.value?.items ?? [];
+
+  return items.some((item) => needReceived(item));
+});
+const optionsStatus = computed(() => [
+  {
+    label: 'Aguardando',
+    value: 'waiting',
+  },
+  {
+    label: 'Conferência',
+    value: 'conference',
+  },
+  {
+    label: 'Finalizado parcial',
+    value: 'partial_finished',
+  },
+  {
+    label: 'Finalizado total',
+    value: 'completely_finished',
+  },
+  {
+    label: 'Cancelado',
+    value: 'canceled',
+  },
+]);
+const showButtonAction = computed(() => {
+  return showSupplierOrderReceipt.value || mode.value === 'status';
+});
 
 watch(
-  () => dataClient.cep,
-  async (cep: string) => {
-    dataClient.cep = dataClient.cep.replace(/\D/g, '');
-    if (allowSearchCep.value) {
-      if (cep.trim().length === 8) {
-        loading.value = true;
-        const response = await searchCep(cep);
-        if (response.status === 200) {
-          dataClient.neighborhood = response.data.bairro;
-          dataClient.state = response.data.estado;
-          dataClient.city = response.data.localidade;
-          dataClient.address = response.data.logradouro;
-        }
-      } else {
-        dataClient.neighborhood = '';
-        dataClient.state = '';
-        dataClient.city = '';
-        dataClient.address = '';
-      }
-    } else {
-      allowSearchCep.value = true;
-    }
-    loading.value = false;
-  },
-);
-watch(
-  () => dataClient.country,
-  (country: string) => {
-    if (country.trim().length > 0) {
-      dataClient.country = dataClient.country.replace(/\d+/g, '');
+  () => mode.value,
+  async () => {
+    if (mode.value === 'history') {
+      await fetchOrderHistory();
     }
   },
 );
 watch(
-  [() => dataClient.cpf, () => dataClient.cnpj, () => dataClient.number],
-  ([cpf, cnpj, numberAdress]) => {
-    dataClient.cpf = cpf.replace(/\D/g, '');
-    dataClient.cnpj = cnpj.replace(/\D/g, '');
-    dataClient.number = numberAdress.replace(/\D/g, '');
+  () => dataOrder.value,
+  () => {
+    checkReceived();
   },
-);
-watch(
-  selectedIdentifier,
-  (identifier: string) => {
-    if (identifier === 'CPF') {
-      dataClient.cnpj = '';
-      dataClient.municipalRegistration = '';
-      dataClient.stateRegistration = '';
-    } else {
-      dataClient.cpf = '';
-    }
-  },
-  { immediate: true },
+  { deep: true },
 );
 watch(open, async () => {
-  clear();
   if (open.value) {
-    await checkDataEdit();
+    clear();
+    await mountData();
   }
 });
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 form-basic">
+    <q-card class="bg-grey-2 form-basic" style="max-width: 700px; width: 95vw">
       <q-card-section class="q-pa-none">
-        <TitlePage
-          :title="clientId ? 'Atualização de cliente' : 'Cadastro de cliente'"
-          icon="list_alt"
-        />
+        <TitlePage title="Detalhes do pedido" icon="list_alt" />
       </q-card-section>
-      <Loading :show="loadingClient" />
-      <q-card-section class="q-pa-sm" v-show="!loadingClient">
-        <q-form class="q-gutter-y-sm">
-          <q-input
-            v-model="dataClient.name"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Nome do fornecedor"
-            dense
-            input-class="text-black"
-          >
-            <template v-slot:prepend>
-              <q-icon name="person" color="black" size="20px" />
-            </template>
-          </q-input>
-          <q-select
-            v-model="dataClient.sex"
-            :options="['Masculino', 'Feminino']"
-            label="Selecione o gênero"
-            outlined
-            dense
-            options-dense
-            bg-color="white"
-            label-color="black"
-          >
-            <template v-slot:prepend>
-              <q-icon
-                :name="dataClient.sex === 'Masculino' ? 'male' : 'female'"
-                color="black"
-                size="20px"
-              />
-            </template>
-          </q-select>
-          <q-input
-            v-model="dataClient.email"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="E-mail do fornecedor"
-            dense
-            input-class="text-black"
-            autocomplete="new-email"
-          >
-            <template v-slot:prepend>
-              <q-icon name="mail" color="black" size="20px" />
-            </template>
-          </q-input>
-          <q-input
-            v-model="dataClient.dateBirthday"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Data de nascimento"
-            dense
-            input-class="text-black"
-            mask="##/##/####"
-          >
-            <template v-slot:prepend>
-              <q-icon name="today" color="black" size="20px" />
-            </template>
-          </q-input>
-          <q-input
-            v-model="formattedPhone"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Telefone do cliente"
-            dense
-            input-class="text-black"
-          >
-            <template v-slot:prepend>
-              <q-icon name="phone" color="black" size="20px" />
-            </template>
-          </q-input>
-          <div class="row justify-between">
-            <q-select
-              v-model="selectedIdentifier"
-              :options="optionsIdentifier"
-              label="Selecione o documento"
-              outlined
-              dense
-              options-dense
-              bg-color="white"
-              label-color="black"
-              class="input-divider"
-            >
-              <template v-slot:prepend>
-                <q-icon name="info" color="black" size="20px" />
-              </template>
-            </q-select>
-            <q-input
-              v-if="selectedIdentifier === 'CNPJ'"
-              v-model="dataClient.cnpj"
-              bg-color="white"
-              label-color="black"
-              outlined
-              label="Digite o CNPJ"
-              dense
-              input-class="text-black"
-              class="input-divider"
-              maxlength="14"
-            >
-              <template v-slot:prepend>
-                <q-icon name="badge" color="black" size="20px" />
-              </template>
-            </q-input>
-            <q-input
-              v-else
-              v-model="dataClient.cpf"
-              bg-color="white"
-              label-color="black"
-              outlined
-              label="Digite o CPF"
-              dense
-              input-class="text-black"
-              class="input-divider"
-              maxlength="11"
-            >
-              <template v-slot:prepend>
-                <q-icon name="badge" color="black" size="20px" />
-              </template>
-            </q-input>
+      <Loading :show="loadingSupplierOrder" v-show="loadingSupplierOrder" />
+      <q-card-section class="q-pa-md" v-show="!loadingSupplierOrder">
+        <q-card flat bordered class="q-pa-md bg-white q-mb-sm">
+          <div class="text-h6 text-primary flex items-center">
+            <q-icon name="info" class="q-mr-sm" />
+            Informações do Pedido
           </div>
-          <div class="row justify-between" v-show="selectedIdentifier === 'CNPJ'">
-            <q-input
-              v-model="dataClient.stateRegistration"
-              bg-color="white"
-              label-color="black"
-              outlined
-              label="Inscrição estadual"
-              dense
-              input-class="text-black"
-              class="input-divider"
-              maxlength="30"
-            >
-              <template v-slot:prepend>
-                <q-icon name="flag" color="black" size="20px" />
-              </template>
-            </q-input>
-            <q-input
-              v-model="dataClient.municipalRegistration"
-              bg-color="white"
-              label-color="black"
-              outlined
-              label="Inscrição municipal"
-              dense
-              input-class="text-black"
-              class="input-divider"
-              maxlength="30"
-            >
-              <template v-slot:prepend>
-                <q-icon name="flag" color="black" size="20px" />
-              </template>
-            </q-input>
+
+          <q-separator spaced />
+
+          <div class="row q-col-gutter-md">
+            <div class="col-12 col-sm-6">
+              <p class="flex items-center">
+                <q-icon name="confirmation_number" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Número do pedido:</b> {{ dataOrder?.order_number }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="person" class="q-mr-sm text-primary" />
+                <b>Criado por:</b> {{ dataOrder?.user?.name }} - {{ dataOrder?.user?.email }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="flag" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Status:</b>
+                <span class="text-bold">
+                  {{ getLabelStatus(dataOrder?.status).text }}
+                </span>
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="notes" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Observações:</b> {{ dataOrder?.observation ?? '-' }}
+              </p>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <p class="flex items-center">
+                <q-icon name="paid" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Total do pedido:</b> {{ formatToReal(orderTotalCost) }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="calendar_today" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Data de emissão:</b> {{ dataOrder?.date_issue ?? '-' }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="event" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Previsão entrega:</b>
+                {{ dataOrder?.date_delivery_expected ?? '-' }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="schedule" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Criado em:</b>
+                {{ formatToBrazilianDate(dataOrder?.created_at) }}
+              </p>
+            </div>
           </div>
-          <q-input
-            v-model="dataClient.cep"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Digite o CEP"
-            dense
-            input-class="text-black"
-            :loading="loading"
-            maxlength="8"
-          >
-            <template v-slot:prepend>
-              <q-icon name="search" color="black" size="20px" />
-            </template>
-          </q-input>
-          <q-input
-            v-model="dataClient.country"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="País"
-            dense
-            input-class="text-black"
-          >
-            <template v-slot:prepend>
-              <q-icon name="south_america" color="black" size="20px" />
-            </template>
-          </q-input>
-          <div class="row justify-between">
-            <q-input
-              v-model="dataClient.state"
-              bg-color="white"
-              label-color="black"
-              outlined
-              label="UF"
-              dense
-              input-class="text-black"
-              class="input-divider"
-            >
-              <template v-slot:prepend>
-                <q-icon name="map" color="black" size="20px" />
-              </template>
-            </q-input>
-            <q-input
-              v-model="dataClient.city"
-              bg-color="white"
-              label-color="black"
-              outlined
-              label="Cidade"
-              dense
-              input-class="text-black"
-              class="input-divider"
-            >
-              <template v-slot:prepend>
-                <q-icon name="pin_drop" color="black" size="20px" />
-              </template>
-            </q-input>
-          </div>
-          <q-input
-            v-model="dataClient.neighborhood"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Bairro"
-            dense
-            input-class="text-black"
-          >
-            <template v-slot:prepend>
-              <q-icon name="pin_drop" color="black" size="20px" />
-            </template>
-          </q-input>
-          <q-input
-            v-model="dataClient.address"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Logradouro"
-            dense
-            input-class="text-black"
-          >
-            <template v-slot:prepend>
-              <q-icon name="pin_drop" color="black" size="20px" />
-            </template>
-          </q-input>
-          <div class="row justify-between">
-            <q-input
-              v-model="dataClient.number"
-              bg-color="white"
-              label-color="black"
-              outlined
-              label="Número"
-              dense
-              input-class="text-black"
-              class="input-divider"
-              maxlength="15"
-              mask="###############"
-            >
-              <template v-slot:prepend>
-                <q-icon name="numbers" color="black" size="20px" />
-              </template>
-            </q-input>
-            <q-input
-              v-model="dataClient.complement"
-              bg-color="white"
-              label-color="black"
-              outlined
-              label="Complemento"
-              dense
-              input-class="text-black"
-              class="input-divider"
-            >
-              <template v-slot:prepend>
-                <q-icon name="numbers" color="black" size="20px" />
-              </template>
-            </q-input>
-          </div>
-          <q-input
-            v-model="dataClient.description"
-            bg-color="white"
-            label-color="black"
-            outlined
-            label="Descrição"
-            dense
-            input-class="text-black no-resize"
-            type="textarea"
-          >
-            <template v-slot:prepend>
-              <q-icon name="description" color="black" size="20px" />
-            </template>
-          </q-input>
-        </q-form>
+        </q-card>
+        <div v-if="showBlock('details')" class="column q-gutter-md">
+          <q-card flat bordered class="q-pa-md bg-white">
+            <div class="text-h6 text-primary">Itens do Pedido</div>
+            <q-separator />
+            <q-list class="column q-gutter-y-sm">
+              <q-item
+                v-for="(item, index) in dataOrder?.items ?? []"
+                :key="index"
+                class="q-py-md border-full-grey-light rounded-borders"
+              >
+                <q-item-section>
+                  <div class="row q-col-gutter-sm">
+                    <div class="col-12 col-sm-6">
+                      <p class="flex items-center">
+                        <q-icon name="shopping_bag" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Produto:</b> {{ item?.variant?.product?.name }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="view_module" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Grade:</b> {{ item?.variant?.grid_item?.size }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="qr_code_2" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Código:</b> {{ item?.variant?.code }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="label" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">SKU:</b> {{ item?.variant?.sku }}
+                      </p>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                      <p class="flex items-center">
+                        <q-icon name="palette" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Cor:</b>
+                        <span
+                          class="cursor-pointer"
+                          :style="getColorStyle(item?.variant?.color?.hex_color_code)"
+                        >
+                          <q-tooltip>{{ item?.variant?.color?.name }}</q-tooltip>
+                        </span>
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="payments" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Custo unitário:</b> {{ formatToReal(item?.unit_cost) }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="paid" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Total:</b>{{ formatToReal(item?.total_cost) }}
+                      </p>
+                    </div>
+
+                    <div class="col-12">
+                      <q-separator spaced />
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                      <p class="flex items-center">
+                        <q-icon name="shopping_cart" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Qtde requisitada:</b> {{ item?.quantity_requested }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="inventory" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Qtde recebida:</b> {{ item?.quantity_received ?? '-' }}
+                      </p>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                      <p class="flex items-center">
+                        <q-icon
+                          name="check_circle"
+                          class="q-mr-sm"
+                          :class="item?.finished ? 'text-positive' : 'text-grey'"
+                        />
+                        <b class="q-mr-sm">Finalizado:</b> {{ item?.finished ? 'Sim' : 'Não' }}
+                      </p>
+                    </div>
+
+                    <div class="col-12" v-if="showSupplierOrderReceipt && needReceived(item)">
+                      <q-input
+                        outlined
+                        label="Informe a quantidade recebida"
+                        dense
+                        v-model="item.received"
+                        input-class="text-right"
+                        class="q-mr-sm"
+                        mask="##########"
+                      />
+                    </div>
+                  </div>
+                </q-item-section>
+              </q-item>
+            </q-list>
+            <div class="col-12 q-mt-sm" v-if="showSupplierOrderReceipt">
+              <q-input
+                v-model="dateReceived"
+                bg-color="white"
+                label-color="black"
+                outlined
+                label="Data de recebimento"
+                dense
+                input-class="text-black"
+                mask="##/##/####"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="today" color="black" size="20px" />
+                </template>
+              </q-input>
+            </div>
+          </q-card>
+        </div>
+        <div v-else-if="showBlock('status')" class="column q-gutter-md">
+          <q-card flat bordered class="q-pa-md bg-white">
+            <div class="text-h6 text-primary flex items-center">
+              <q-icon name="update" class="q-mr-sm" />
+              Atualizar Status do Pedido
+            </div>
+
+            <q-separator spaced />
+
+            <div class="row q-col-gutter-md">
+              <div class="col-12">
+                <q-select
+                  outlined
+                  v-model="selectedStatus"
+                  :options="optionsStatus"
+                  label="Selecione o novo status"
+                  map-options
+                  dense
+                  class="q-mb-md full-width"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="flag" class="text-primary" />
+                  </template>
+                </q-select>
+              </div>
+            </div>
+          </q-card>
+        </div>
+        <div v-else-if="showBlock('history')" class="column q-gutter-md">
+          <q-card flat bordered class="q-pa-md bg-white">
+            <div class="text-h6 text-primary flex items-center">
+              <q-icon name="update" class="q-mr-sm" />
+              Histórico do pedido
+            </div>
+
+            <div class="col-12 q-mt-sm">
+              <TableOrderHistory :items="dataOrderHistory" />
+            </div>
+          </q-card>
+        </div>
       </q-card-section>
-      <q-card-actions align="right" v-show="!loadingClient">
-        <div class="row justify-end items-center q-gutter-x-sm">
+      <q-card-actions v-show="!loadingSupplierOrder" class="row justify-between items-center">
+        <div class="row no-wrap">
+          <div v-if="!showSupplierOrderReceipt && mode === 'details'">
+            <q-btn
+              @click="setMode('status')"
+              color="primary"
+              icon="list_alt"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+            >
+              <q-tooltip>Status</q-tooltip>
+            </q-btn>
+            <q-btn
+              @click="setMode('history')"
+              color="secondary"
+              icon="history"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+            >
+              <q-tooltip>Histórico</q-tooltip>
+            </q-btn>
+            <q-btn
+              color="grey"
+              icon="download"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+              @click="download"
+              :loading="loading"
+            >
+              <q-tooltip>Download</q-tooltip>
+            </q-btn>
+          </div>
+          <div>
+            <q-btn
+              v-if="!showSupplierOrderReceipt && hasItemForReceived && mode === 'details'"
+              color="green"
+              icon="fa-solid fa-box-archive"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+              @click="changeShowSupplierOrderReceipt"
+            >
+              <q-tooltip>Recebimento</q-tooltip>
+            </q-btn>
+            <q-btn
+              v-if="showButtonAction || mode === 'history'"
+              color="red"
+              icon="close"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+              @click="close"
+            >
+              <q-tooltip>Cancelar</q-tooltip>
+            </q-btn>
+          </div>
+        </div>
+        <div>
           <q-btn
             color="red"
             label="Fechar"
-            size="md"
-            flat
             @click="open = false"
             unelevated
             no-caps
+            class="q-mr-sm"
+            :flat="showButtonAction"
           />
           <q-btn
-            v-if="!clientId"
+            v-if="showButtonAction"
             @click="save"
             color="primary"
             label="Salvar"
-            size="md"
-            :loading="isLoading"
-            unelevated
-            no-caps
-          />
-          <q-btn
-            v-else
-            @click="update"
-            color="primary"
-            label="Atualizar"
-            size="md"
+            class="q-mr-sm"
             :loading="isLoading"
             unelevated
             no-caps
@@ -589,5 +579,12 @@ watch(open, async () => {
         </div>
       </q-card-actions>
     </q-card>
+
+    <!-- Modals -->
+    <FormSupplierOrderReceipt
+      :data="showFormNewMovementProduct"
+      @update:open="changeShowFormNewMovementProduct(false)"
+      @new-request="newRequest"
+    />
   </q-dialog>
 </template>

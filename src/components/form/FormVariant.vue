@@ -84,7 +84,6 @@ const update = async (): Promise<void> => {
     minStockAlert: Number(dataVariant.minStockAlert),
     offer: parseFloat(dataVariant.offer),
     sku: dataVariant.sku.trim().length === 0 ? null : dataVariant.sku,
-    code: dataVariant.code.trim().length === 0 ? null : dataVariant.code,
     active: Number(dataVariant.active),
     description: dataVariant.description.trim().length === 0 ? null : dataVariant.description,
     location: dataVariant.location.trim().length === 0 ? null : dataVariant.location,
@@ -262,6 +261,7 @@ watch(open, async () => {
             outlined
             label="Código"
             dense
+            disable
             input-class="text-black no-resize"
           >
             <template v-slot:prepend>

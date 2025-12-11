@@ -95,7 +95,6 @@ export interface DataUpdateVariant {
   cost: number;
   minStockAlert: number;
   sku: string | null;
-  code: string | null;
   active: number;
   description: string | null;
   location: string | null;
@@ -172,6 +171,7 @@ export interface Variant {
   description: string | null;
   location: string | null;
   product_id: number | null;
+  product: IProduct | null;
   grid_item_id: number;
   grid_item: {
     id: number;

@@ -4,7 +4,7 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import SupplierCart from 'src/components/cart/SupplierCart.vue';
 
 defineOptions({
-  name: 'TableTag',
+  name: 'TableSelectProductVariant',
 });
 
 const props = defineProps<{
