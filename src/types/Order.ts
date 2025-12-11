@@ -44,6 +44,7 @@ export interface SupplierOrderItem {
   quantity_received: number | null;
   date_received: string | null;
   finished: string | null;
+  received: string;
   variant: IVariant;
 }
 

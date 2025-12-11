@@ -17,7 +17,7 @@ export interface Supplier {
   number: number | null;
   complement: string | null;
   active: number;
-  categore_supplier_id: number | null;
+  supplier_category_id: number | null;
   enterprise_id: number | null;
   description: string | null;
   created_at: string;

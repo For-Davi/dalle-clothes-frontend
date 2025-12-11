@@ -166,6 +166,9 @@ const submit = async () => {
   }
 };
 
+const orderID = computed(() => {
+  return props.data.orderID;
+});
 const getListSupplierSelect = computed((): IQuasarSelect<number | null>[] => {
   const mappedSuppliers = listSupplierSelect.value.map((item) => ({
     label: item.name,
@@ -190,6 +193,7 @@ watch(open, async () => {
     clear();
     await fetchSuppliers();
     await fetchProductVariants();
+    await checkDataEdit();
   }
 });
 </script>

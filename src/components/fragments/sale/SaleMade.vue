@@ -7,8 +7,7 @@ import TaxCoupon from '../taxcoupon/TaxCoupon.vue';
 import { useSaleStore } from 'src/stores/sale-store';
 import { storeToRefs } from 'pinia';
 import { exportSaleService } from 'src/services/sale-service';
-import { checkEmail } from 'src/composables/CheckData';
-import { createErrorData, createSuccess } from 'src/composables/CreateNotify';
+import { createSuccess } from 'src/composables/CreateNotify';
 
 defineOptions({
   name: 'SaleMade',

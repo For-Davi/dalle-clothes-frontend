@@ -84,7 +84,9 @@ const changeShowSupplierOrderReceipt = (): void => {
   showSupplierOrderReceipt.value = !showSupplierOrderReceipt.value;
 };
 const checkReceived = (): void => {
+  console.log('dataOrder', dataOrder.value);
   dataOrder.value?.items?.forEach((item: ISupplierOrderItem) => {
+    console.log('item', item);
     let received = Number(item.received ?? 0);
 
     const requested = Number(item.quantity_requested) || 0;
@@ -296,7 +298,7 @@ watch(open, async () => {
                 <q-icon name="flag" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Status:</b>
                 <span class="text-bold">
-                  {{ getLabelStatus(dataOrder?.status).text }}
+                  {{ getLabelStatus(dataOrder?.status ?? null).text }}
                 </span>
               </p>
 
@@ -309,7 +311,8 @@ watch(open, async () => {
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="paid" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Total do pedido:</b> {{ formatToReal(orderTotalCost) }}
+                <b class="q-mr-sm">Total do pedido:</b>
+                {{ formatToReal(orderTotalCost.toString()) }}
               </p>
 
               <p class="flex items-center">
@@ -326,7 +329,7 @@ watch(open, async () => {
               <p class="flex items-center">
                 <q-icon name="schedule" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Criado em:</b>
-                {{ formatToBrazilianDate(dataOrder?.created_at) }}
+                {{ formatToBrazilianDate(dataOrder?.created_at!) }}
               </p>
             </div>
           </div>
@@ -371,7 +374,7 @@ watch(open, async () => {
                         <b class="q-mr-sm">Cor:</b>
                         <span
                           class="cursor-pointer"
-                          :style="getColorStyle(item?.variant?.color?.hex_color_code)"
+                          :style="getColorStyle(item?.variant?.color?.hex_color_code ?? '')"
                         >
                           <q-tooltip>{{ item?.variant?.color?.name }}</q-tooltip>
                         </span>

@@ -181,7 +181,7 @@ const checkDataEdit = async () => {
       });
 
       const selectedCategoryItem = listCategorySupplier.value.find(
-        (item) => item.id === supplier.category_supplier_id,
+        (item) => item.id === supplier.supplier_category_id,
       );
       selectedCategory.value = selectedCategoryItem
         ? { label: selectedCategoryItem?.name, value: selectedCategoryItem?.id }
