@@ -909,7 +909,7 @@ export const checkDataSupplierOrder = (
 };
 
 export const checkSupplierOrderReceived = (
-  items: any[],
+  items: ISupplierOrderItem[],
   dateReceived: string,
 ): { status: boolean; message?: string } => {
   const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;

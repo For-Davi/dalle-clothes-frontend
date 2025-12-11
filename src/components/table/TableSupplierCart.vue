@@ -31,7 +31,10 @@ const getColorStyle = (hexColor: string) => {
 
 const totalValue = computed(() => {
   return props.rows.reduce((acc, p) => {
-    return acc + p.price * (p.newQuantity || 0);
+    const price = Number(p.price) || 0;
+    const qty = Number(p.newQuantity) || 0;
+
+    return acc + price * qty;
   }, 0);
 });
 </script>

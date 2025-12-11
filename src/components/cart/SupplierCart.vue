@@ -21,10 +21,12 @@ const addCart = (product: ISupplierCartProduct) => {
   });
 };
 const removeCart = (id: number) => {
-  const product = supplierCartProducts.value.find((p) => p.product_variant_id === id);
+  const product = supplierCartProducts.value.find(
+    (p: { product_variant_id: number }) => p.product_variant_id === id,
+  );
   if (product) {
     supplierCartProducts.value = supplierCartProducts.value.filter(
-      (p) => p.product_variant_id !== id,
+      (p: { product_variant_id: number }) => p.product_variant_id !== id,
     );
   }
 };

@@ -42,9 +42,11 @@ export interface SupplierOrderItem {
   unit_cost: string;
   quantity_requested: number;
   quantity_received: number | null;
+  received: string;
   date_received: string | null;
   finished: string | null;
   variant: IVariant;
+  product: IProduct;
 }
 
 export interface DataSupplierOrderReceived {

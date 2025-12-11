@@ -166,14 +166,21 @@ const totalPaid = computed(() =>
 );
 const missingAmount = computed(() => {
   const payments = model.value.payment;
-  const hasInstallment = payments.some((p) => p.installment.value !== null && p.installment.value! >= 1 && Number(p.installment.amount) > 0);
+
+  const hasInstallment = payments.some(
+    (p) =>
+      p.installment.value !== null && p.installment.value >= 1 && Number(p.installment.amount) > 0,
+  );
+
   if (hasInstallment && paymentTotal.value) return 0;
+
   const diff = Number(totalPricePayment.value) - totalPaid.value;
+
   if ((hasInstallment && diff <= 0.09) || diff <= 0.09) {
     return 0;
-  } else {
-    return diff;
   }
+
+  return diff;
 });
 const getInstallmentOptions = computed(() => {
   const total = Number(totalPricePayment.value);
@@ -227,12 +234,12 @@ const getTypes = computed(() => {
 watch(
   () => model.value.payment.map((p) => p.installment.value),
   (installments) => {
-    if(paymentDivider.value){
+    if (paymentDivider.value) {
       installments.forEach((val, index) => {
-      if ((val ?? 0) > 12) {
-        model.value.payment[index].installment.value = 12;
-      }
-    });
+        if ((val ?? 0) > 12) {
+          model.value.payment[index].installment.value = 12;
+        }
+      });
     }
   },
   { deep: true },
@@ -290,18 +297,17 @@ watch(
           payment.value = '';
           payment.installment = { value: null, amount: null };
         } else {
-        //Caso o tipo seja outro ele volta o disable e coloca o valor total no input value e deixa nulo a quantidade de parcelas e o valor delas
+          //Caso o tipo seja outro ele volta o disable e coloca o valor total no input value e deixa nulo a quantidade de parcelas e o valor delas
           disableValue.value = true;
           payment.value = Number(totalPricePayment.value).toFixed(2).toString();
           payment.installment = { value: null, amount: null };
         }
 
-        //Caso o tipo de pagamento seja cartão de crédito ele ja coloca o parcelamento de 1X como padrão 
-	if (type === 'CREDIT_CARD') {
+        //Caso o tipo de pagamento seja cartão de crédito ele ja coloca o parcelamento de 1X como padrão
+        if (type === 'CREDIT_CARD') {
           const defaultInstallment = getInstallmentOptions.value[0];
           payment.installment = defaultInstallment;
         }
-
       });
     } else {
       disableValue.value = false;

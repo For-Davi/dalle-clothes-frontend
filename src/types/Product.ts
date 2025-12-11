@@ -110,6 +110,7 @@ export interface Product {
   variant_active: number;
   newQuantity?: number;
   offer: string;
+  name: string;
   color: {
     name: string;
     hex_color_code: string;

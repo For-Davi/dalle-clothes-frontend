@@ -47,9 +47,8 @@ const clear = () => {
   });
 };
 
-const showDetails = (orderID: number) => {
-  console.log(orderID);
-  changeShowDetailsSupplierOrder(true, orderID);
+const showDetails = async (orderID: number) => {
+  await changeShowDetailsSupplierOrder(true, orderID);
 };
 const changeShowDetailsSupplierOrder = async (
   show: boolean,

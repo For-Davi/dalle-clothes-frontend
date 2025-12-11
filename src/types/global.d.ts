@@ -53,6 +53,8 @@ import type {
   ClientCartProduct,
   SupplierCartProduct,
   DataProductSale,
+  Product,
+  ProductSupplierOrder,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -85,6 +87,7 @@ import type {
   ModeOrderDetails,
   DataSupplierOrderStatus,
   OrderHistory,
+  ProductSupplierOrder,
 } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
 import type { VModelSalePayment, DataSale, Sale, CouponData } from './Payments';
@@ -180,19 +183,19 @@ declare global {
   type INotification = Notification;
   type IEnterprise = Enterprise;
   type IDataEnterprise = DataEnterprise;
-
   type IVModelClient = VModelClient;
-
   type IVModelSalePayment = VModelSalePayment;
   type ISupplierCartProduct = SupplierCartProduct;
-
   type IFilterReceipt = FilterReceipt;
-
   type IDataSale = DataSale;
-
   type IDataProductSale = DataProductSale;
-
   type ISale = Sale;
-
   type ICouponData = CouponData;
+  type IModeOrderDetails = ModeOrderDetails;
+  type ISupplierOrderItem = SupplierOrderItem;
+  type IProductSupplierOrder = ProductSupplierOrder;
+  type IOrderHistory = OrderHistory;
+  type IShowOrder = ShowOrder;
+  type IDataSupplierOrderStatus = DataSupplierOrderStatus;
+  type IDataSupplierOrderReceived = DataSupplierOrderReceived;
 }

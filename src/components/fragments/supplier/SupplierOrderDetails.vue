@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
@@ -99,7 +100,7 @@ const checkReceived = (): void => {
     if (received < 0) corrected = 0;
 
     if (String(corrected) !== String(item.received)) {
-      nextTick(() => {
+      void nextTick(() => {
         item.received = String(corrected);
       });
     }
@@ -125,16 +126,14 @@ const close = (): void => {
 const getDataReceived = () => {
   return (
     dataOrder.value?.items
-      .filter(
-        (item: { id: number; received?: string }) =>
-          item.received !== undefined && Number(item.received) !== 0,
-      )
-      .map((item: { id: number; received: string }) => ({
-        id: item.id,
+      .filter((item) => item.received !== undefined && Number(item.received) !== 0)
+      .map((item) => ({
+        id: item.product_variant_id,
         received: Number(item.received),
       })) ?? []
   );
 };
+
 const saveReceived = async (): Promise<void> => {
   const check = checkSupplierOrderReceived(dataOrder.value?.items || [], dateReceived.value);
   if (check.status) {
@@ -208,8 +207,8 @@ const orderTotalCost = computed<number>(() => {
   if (!dataOrder.value || !dataOrder.value.items || dataOrder.value.items.length === 0) {
     return 0;
   }
-  return dataOrder.value.items.reduce((sum: number, item: any) => {
-    const cost = parseFloat(item.total_cost || 0);
+  return dataOrder.value.items.reduce((sum: number, item: ISupplierOrderItem) => {
+    const cost = parseFloat(item.total_cost || '0');
     return sum + (isNaN(cost) ? 0 : cost);
   }, 0);
 });
@@ -298,7 +297,7 @@ watch(open, async () => {
                 <q-icon name="flag" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Status:</b>
                 <span class="text-bold">
-                  {{ getLabelStatus(dataOrder?.status).text }}
+                  {{ getLabelStatus(dataOrder?.status ?? '').text }}
                 </span>
               </p>
 
@@ -311,7 +310,8 @@ watch(open, async () => {
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="paid" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Total do pedido:</b> {{ formatToReal(orderTotalCost) }}
+                <b class="q-mr-sm">Total do pedido:</b>
+                {{ formatToReal(orderTotalCost.toString()) }}
               </p>
 
               <p class="flex items-center">
@@ -328,7 +328,7 @@ watch(open, async () => {
               <p class="flex items-center">
                 <q-icon name="schedule" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Criado em:</b>
-                {{ formatToBrazilianDate(dataOrder?.created_at) }}
+                {{ formatToBrazilianDate(dataOrder?.created_at!) }}
               </p>
             </div>
           </div>
@@ -373,7 +373,7 @@ watch(open, async () => {
                         <b class="q-mr-sm">Cor:</b>
                         <span
                           class="cursor-pointer"
-                          :style="getColorStyle(item?.variant?.color?.hex_color_code)"
+                          :style="getColorStyle(item?.variant?.color?.hex_color_code ?? '')"
                         >
                           <q-tooltip>{{ item?.variant?.color?.name }}</q-tooltip>
                         </span>
@@ -572,19 +572,12 @@ watch(open, async () => {
             color="primary"
             label="Salvar"
             class="q-mr-sm"
-            :loading="isLoading"
+            :loading="loadingSupplierOrder"
             unelevated
             no-caps
           />
         </div>
       </q-card-actions>
     </q-card>
-
-    <!-- Modals -->
-    <FormSupplierOrderReceipt
-      :data="showFormNewMovementProduct"
-      @update:open="changeShowFormNewMovementProduct(false)"
-      @new-request="newRequest"
-    />
   </q-dialog>
 </template>
