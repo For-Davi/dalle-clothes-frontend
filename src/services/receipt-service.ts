@@ -18,6 +18,15 @@ export const showReceiptService = (
   };
 }> => api.get(`${baseUrl}/${receiptID}`);
 
+export const getReceiptFilterService = (
+  filter: IFilterReceipt,
+): Promise<{
+  status: number;
+  data: {
+    receipts: IReceipt[];
+  };
+}> => api.post(`${baseUrl}/filter`, filter);
+
 export const createReceiptService = (
   receipt: IDataReceipt,
 ): Promise<{

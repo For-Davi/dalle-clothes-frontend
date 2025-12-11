@@ -242,6 +242,7 @@ watch(open, async () => {
           <q-btn @click="save" color="primary" label="Salvar" size="md" unelevated no-caps />
         </div>
       </q-card-actions>
+      dataSupplierOrder {{ dataSupplierOrder.itens }}
     </q-card>
 
     <!-- Modals -->

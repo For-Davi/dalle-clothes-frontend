@@ -649,27 +649,32 @@ export const checkExportData = (data: {
 };
 
 export const checkEnterpriseData = (data: {
-  name: string;
-  email: string;
-  phone: string;
-  cpf: string;
-  cnpj: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  cpf: string | null;
+  cnpj: string | null;
 }): { status: boolean; message?: string } => {
-  if (data.name.trim() === '') {
+  const name = data.name?.trim() || '';
+  const email = data.email?.trim() || '';
+  const cpf = data.cpf?.trim() || '';
+  const cnpj = data.cnpj?.trim() || '';
+
+  if (name === '') {
     return { status: false, message: 'Deve ser informado o nome da empresa' };
   }
-  if (data.email !== '') {
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(data.email.trim())) {
+  if (email !== '') {
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       return { status: false, message: 'Informe um e-mail válido' };
     }
   }
-  if (data.cpf !== '') {
-    if (data.cpf.trim().length > 11 || data.cpf.trim().length < 11) {
+  if (cpf !== '') {
+    if (cpf.length !== 11) {
       return { status: false, message: 'Informe um CPF válido' };
     }
   }
-  if (data.cnpj !== '') {
-    if (data.cnpj.trim().length > 14 || data.cnpj.trim().length < 14) {
+  if (cnpj !== '') {
+    if (cnpj.length !== 14) {
       return { status: false, message: 'Informe um CNPJ válido' };
     }
   }
@@ -690,101 +695,157 @@ export const checkProductClientData = (
   return { status: true };
 };
 
-export const checkSupplierOrderReceived = (
-  items: any[],
-  dateReceived: string,
+export const checkSaleProductsData = (
+  data: IClientCartProduct[],
 ): { status: boolean; message?: string } => {
-  const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-  console.log('dateReceived', dateReceived);
-
-  if (!regex.test(dateReceived)) {
-    return {
-      status: false,
-      message: 'Data inválida de recebimento. Use o formato dd/mm/yyyy.',
-    };
+  if (data.length === 0) {
+    return { status: false, message: 'O carrinho do cliente está vazio' };
   }
 
-  const [day, month, year] = dateReceived.split('/').map(Number);
-  const checkDate = new Date(year, month - 1, day);
+  return { status: true };
+};
 
-  const isValidDate =
-    checkDate.getFullYear() === year &&
-    checkDate.getMonth() === month - 1 &&
-    checkDate.getDate() === day;
-
-  if (!isValidDate) {
-    return { status: false, message: 'A data informada não é válida.' };
+export const checkPaymentData = (
+  data: IVModelSalePayment,
+  missingAmount: number,
+): { status: boolean; message?: string } => {
+  //VALIDAÇÃO DA ENTREGA
+  if (data.freight) {
+    if (
+      data.city?.trim() === '' &&
+      data.state?.trim() === '' &&
+      data.neighborhood?.trim() === '' &&
+      data.numberAddress?.trim() === ''
+    ) {
+      return { status: false, message: 'Com o frete ativado você deve preencher os campos' };
+    }
+    if (data.freightValue === null) {
+      return { status: false, message: 'Preencha o campo do valor do frete' };
+    }
+    if (data.city?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de cidade' };
+    }
+    if (data.state?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de UF' };
+    }
+    if (data.neighborhood?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de bairro' };
+    }
+    if (data.numberAddress?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de número' };
+    }
   }
 
-  const hasReceived = items.some((item) => {
-    const received = Number(item?.received ?? 0);
-    return received > 0;
-  });
+  // VALIDAÇÃO GERAL
+  if (data.payment.length === 0) {
+    return { status: false, message: 'Insira algum pagamento' };
+  }
+  if (data.payment.some((p) => p.paymentType === null)) {
+    return { status: false, message: 'Deve ser informado a forma de pagamento' };
+  }
 
-  if (!hasReceived) {
+  //VALIDAÇÃO DE PIX
+  const hasPix = data.payment.find((p) => p.paymentType === 'PIX');
+  if (hasPix) {
+    if (hasPix.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
+    }
+    if (hasPix.value.trim() === '0.00') {
+      return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE DINHEIRO
+  const hasMoney = data.payment.find((p) => p.paymentType === 'MONEY');
+  if (hasMoney) {
+    if (hasMoney.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
+    }
+    if (hasMoney.value.trim() === '0.00') {
+      return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE DÉBITO
+  const hasDebitCard = data.payment.find((p) => p.paymentType === 'DEBIT_CARD');
+  if (hasDebitCard) {
+    if (hasDebitCard.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento com cartão de débito.' };
+    }
+    if (hasDebitCard.value.trim() === '0.00') {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de débito não pode ser zero.',
+      };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE CRÉDITO
+  const hasCreditCard = data.payment.find((p) => p.paymentType === 'CREDIT_CARD');
+  if (hasCreditCard) {
+    if (
+      hasCreditCard.value.trim() === '' &&
+      hasCreditCard.installment.value === null &&
+      hasCreditCard.installment.amount?.trim() === null
+    ) {
+      return {
+        status: false,
+        message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
+      };
+    }
+    if (hasCreditCard.value.trim() === '0.00' && !hasCreditCard.installment) {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
+      };
+    }
+    if (
+      hasCreditCard.installment.value !== null &&
+      hasCreditCard.installment.value > 0 &&
+      hasCreditCard.installment.amount?.trim() === null
+    ) {
+      return {
+        status: false,
+        message: 'Deve ser informado o valor da parcela caso a parcela seja maior do que 0.',
+      };
+    }
+    if (
+      hasCreditCard.installment.amount?.trim() !== null &&
+      Number(hasCreditCard.installment.amount?.trim()) > 0 &&
+      hasCreditCard.installment.value === null
+    ) {
+      return {
+        status: false,
+        message:
+          'Deve ser informado a quantidade da parcela caso o valor da parcela seja maior que 0.00.',
+      };
+    }
+  }
+
+  //VALIDAÇÃO DE RECEBIMENTO
+  const notHaveReceipt = data.payment.find((p) => p.receiptID === null);
+  if (notHaveReceipt) {
+    return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
+  }
+
+  if (missingAmount > 0) {
     return {
       status: false,
-      message: 'É necessário que ao menos um item tenha quantidade recebida.',
+      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar a venda`,
     };
   }
 
   return { status: true };
 };
 
-export const checkDataSupplierOrder = (
-  data: {
-    dateIssue: string;
-    dateDeliveryExpected: string;
-    items: ISupplierCartProduct[];
-  },
-  selectedSupplier: number | null,
-): { status: boolean; message?: string } => {
-  if (selectedSupplier === null) {
-    return { status: false, message: 'Informe um fornecedor' };
+export const checkEmail = (email: string): { status: boolean; message?: string } => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (email.trim() === '') {
+    return { status: false, message: 'Campo de e-mail não pode ser vazio' };
   }
-  if (data.dateIssue.trim() !== '') {
-    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[0-2])[/](19|20)\d\d$/;
-    if (!dateRegex.test(data.dateIssue.trim())) {
-      return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
-    }
+  if (!emailRegex.test(email)) {
+    return { status: false, message: 'O e-mail não é válido' };
   }
-  if (data.dateDeliveryExpected.trim() !== '') {
-    const dateRegex = /^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[0-2])[/](19|20)\d\d$/;
-    if (!dateRegex.test(data.dateDeliveryExpected.trim())) {
-      return { status: false, message: 'Informe uma data válida no formato dd/mm/yyyy' };
-    }
-  }
-  if (data.items.length === 0) {
-    return { status: false, message: 'Deve conter ao menos 1 item no pedido' };
-  }
-  for (let i = 0; i < data.items.length; i++) {
-    const item = data.items[i];
-    const itemNumber = i + 1;
-
-    if (item.newPrice === undefined || item.newPrice === null) {
-      return { status: false, message: `Item ${itemNumber}: Preço é obrigatório` };
-    }
-
-    if (typeof item.newPrice !== 'number' || isNaN(item.newPrice)) {
-      return { status: false, message: `Item ${itemNumber}: Preço deve ser um número válido` };
-    }
-
-    if (item.newPrice <= 0) {
-      return { status: false, message: `Item ${itemNumber}: Preço deve ser maior que 0` };
-    }
-
-    if (item.newQuantity === undefined || item.newQuantity === null) {
-      return { status: false, message: `Item ${itemNumber}: Quantidade é obrigatória` };
-    }
-
-    if (typeof item.newQuantity !== 'number' || isNaN(item.newQuantity)) {
-      return { status: false, message: `Item ${itemNumber}: Quantidade deve ser um número válido` };
-    }
-
-    if (item.newQuantity <= 0) {
-      return { status: false, message: `Item ${itemNumber}: Quantidade deve ser maior que 0` };
-    }
-  }
-
   return { status: true };
 };

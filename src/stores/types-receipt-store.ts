@@ -1,11 +1,9 @@
 import {
   getTypesReceiptService,
-  createTypesReceiptService,
-  updateTypesReceiptService,
-  deleteTypesReceiptService,
+  getTypesReceiptFilterService,
 } from 'src/services/types-receipt-service';
 import { defineStore } from 'pinia';
-import { createError, createSuccess } from 'src/composables/CreateNotify';
+import { createError } from 'src/composables/CreateNotify';
 
 export const useTypesReceiptStore = defineStore('typesReceipt', {
   state: () => ({
@@ -22,69 +20,21 @@ export const useTypesReceiptStore = defineStore('typesReceipt', {
     setListTypesReceipt(types: ITypesReceipt[]) {
       types.map((item) => this.listTypesReceipt.push(item));
     },
-    async getTypesReceipt() {
+    async getTypesReceipt(filter: IFilterReceipt | null = null) {
       try {
         this.setLoading(true);
-        const response = await getTypesReceiptService();
+        let response = null;
+        if (filter) {
+          response = await getTypesReceiptFilterService(filter);
+        } else {
+          response = await getTypesReceiptService();
+        }
         if (response.status === 200) {
           this.clearListTypesReceipt();
           this.setListTypesReceipt(response.data.types);
         }
       } catch (error) {
         createError(error);
-      } finally {
-        this.setLoading(false);
-      }
-    },
-    async createTypesReceipt(name: string) {
-      this.setLoading(true);
-      try {
-        const response = await createTypesReceiptService(name);
-        if (response.status === 201) {
-          this.clearListTypesReceipt();
-          this.setListTypesReceipt(response.data.types);
-          createSuccess(response.data.message);
-        }
-
-        return response;
-      } catch (error) {
-        createError(error);
-        return undefined;
-      } finally {
-        this.setLoading(false);
-      }
-    },
-    async updateTypesReceipt(id: number, name: string) {
-      this.setLoading(true);
-      try {
-        const response = await updateTypesReceiptService(id, name);
-        if (response.status === 200) {
-          this.clearListTypesReceipt();
-          this.setListTypesReceipt(response.data.types);
-          createSuccess(response.data.message);
-        }
-
-        return response;
-      } catch (error) {
-        createError(error);
-        return undefined;
-      } finally {
-        this.setLoading(false);
-      }
-    },
-    async deleteTypesReceipt(id: number) {
-      this.setLoading(true);
-      try {
-        const response = await deleteTypesReceiptService(id);
-        if (response.status === 200) {
-          this.clearListTypesReceipt();
-          this.setListTypesReceipt(response.data.types);
-          createSuccess(response.data.message);
-        }
-        return response;
-      } catch (error) {
-        createError(error);
-        return undefined;
       } finally {
         this.setLoading(false);
       }

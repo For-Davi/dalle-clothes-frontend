@@ -24,7 +24,7 @@ import type {
 import type { QuasarSelect, QuasarTable } from './Quasar';
 import type { RoleSelect } from './Role';
 import type { FilterUser, User } from './User';
-import type { FilterClient, Client } from './Client';
+import type { FilterClient, Client, VModelClient } from './Client';
 import type { Color } from './Color';
 import type { Grid, GridGroup, GridItem, GridItemCreate } from './Grid';
 import type { CreateGrid, UpdateGrid } from './Payload';
@@ -52,6 +52,7 @@ import type {
   ExportProduct,
   ClientCartProduct,
   SupplierCartProduct,
+  DataProductSale,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -66,7 +67,7 @@ import type { Image, MediaItem } from './Image';
 import type { ProfilePassword, ProfileData } from './Profile';
 import type { TypesReceipt } from './Types';
 import type { DataMovement, ExportMovement, FilterMovement, Movement } from './Movement';
-import type { Receipt, DataReceipt } from './Receipts';
+import type { Receipt, DataReceipt, FilterReceipt } from './Receipts';
 import type {
   DataSchedule,
   FilterSchedule,
@@ -86,6 +87,7 @@ import type {
   OrderHistory,
 } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
+import type { VModelSalePayment, DataSale, Sale, CouponData } from './Payments';
 
 export {};
 
@@ -178,12 +180,19 @@ declare global {
   type INotification = Notification;
   type IEnterprise = Enterprise;
   type IDataEnterprise = DataEnterprise;
+
+  type IVModelClient = VModelClient;
+
+  type IVModelSalePayment = VModelSalePayment;
   type ISupplierCartProduct = SupplierCartProduct;
-  type IProductSupplierOrder = ProductSupplierOrder;
-  type IShowOrder = ShowOrder;
-  type ISupplierOrderItem = SupplierOrderItem;
-  type IDataSupplierOrderReceived = DataSupplierOrderReceived;
-  type IModeOrderDetails = ModeOrderDetails;
-  type IDataSupplierOrderStatus = DataSupplierOrderStatus;
-  type IOrderHistory = OrderHistory;
+
+  type IFilterReceipt = FilterReceipt;
+
+  type IDataSale = DataSale;
+
+  type IDataProductSale = DataProductSale;
+
+  type ISale = Sale;
+
+  type ICouponData = CouponData;
 }

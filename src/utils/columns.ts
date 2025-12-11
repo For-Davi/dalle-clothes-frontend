@@ -795,6 +795,57 @@ export const columnsClientCart: IQuasarTable[] = [
   },
 ];
 
+export const columnsListProductsSale: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: 'Preço',
+    field: 'price',
+    align: 'left',
+  },
+  {
+    name: 'offer',
+    label: 'Oferta',
+    field: 'offer',
+    align: 'left',
+  },
+  {
+    name: 'stock_quantity',
+    label: 'Estoque',
+    field: 'stock_quantity',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
 export const columnsSupplierCart: IQuasarTable[] = [
   {
     name: 'name',
@@ -846,23 +897,35 @@ export const columnsSupplierCart: IQuasarTable[] = [
   },
 ];
 
-export const columnsOrderHistory: IQuasarTable[] = [
+export const columnsTaxCoupon: IQuasarTable[] = [
   {
-    name: 'status',
-    label: 'Status',
-    field: 'status',
+    name: 'item',
+    label: 'ITEM',
+    field: 'item',
     align: 'left',
   },
   {
-    name: 'changed',
-    label: 'Usuário',
-    field: 'changed',
+    name: 'code',
+    label: 'CÓDIGO',
+    field: 'code',
     align: 'left',
   },
   {
-    name: 'created_at',
-    label: 'Data de atualização',
-    field: 'created_at',
+    name: 'name',
+    label: 'NOME',
+    field: 'name',
     align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'QUANTIDADE',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'value',
+    label: 'VALOR',
+    field: 'value',
+    align: 'right',
   },
 ];

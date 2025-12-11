@@ -26,7 +26,7 @@ export interface ProductVariant {
 export interface VModelProductVariant {
   price: string;
   cost: string;
-  offer: string;
+  offer: number;
   stockQuantity: string;
   minStockAlert: string;
   sku: string;
@@ -103,12 +103,13 @@ export interface DataUpdateVariant {
 
 export interface Product {
   product_variant_id: number;
-  price: number;
+  price: string;
   stock_quantity: number;
   sku: string;
   code: string;
   variant_active: number;
   newQuantity?: number;
+  offer: string;
   color: {
     name: string;
     hex_color_code: string;
@@ -273,7 +274,8 @@ export interface SearchProductVariant {
 
 export interface ClientCartProduct {
   product_variant_id: number;
-  price: number;
+  price: string;
+  offer: string | null;
   stock_quantity: number;
   sku: string;
   code: string;
@@ -286,25 +288,10 @@ export interface ClientCartProduct {
   } | null;
 }
 
-export interface SupplierCartProduct {
-  product_variant_id: number;
-  price: number;
-  newPrice: number;
-  stock_quantity: number;
-  sku: string;
-  code: string;
-  variant_active: number;
-  quantity: number;
-  newQuantity?: number;
-  color: {
-    name: string;
-    hex_color_code: string;
-  } | null;
-}
-
-export interface ProductSupplierOrder {
-  id?: number;
+export interface DataProductSale {
   productVariantID: number;
-  unitCost: string;
-  quantityRequested: number;
+  price: string;
+  offer: string;
+  newQuantity: number;
+  variantActive: number;
 }

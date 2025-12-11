@@ -9,37 +9,11 @@ export const getTypesReceiptService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
-export const createTypesReceiptService = (
-  name: string,
+export const getTypesReceiptFilterService = (
+  filter: IFilterReceipt,
 ): Promise<{
   status: number;
   data: {
-    message: string;
     types: ITypesReceipt[];
   };
-}> => api.post(`${baseUrl}/`, { name });
-
-export const updateTypesReceiptService = (
-  id: number,
-  name: string,
-): Promise<{
-  status: number;
-  data: {
-    message: string;
-    types: ITypesReceipt[];
-  };
-}> =>
-  api.put(`${baseUrl}/`, {
-    id,
-    name,
-  });
-
-export const deleteTypesReceiptService = (
-  id: number,
-): Promise<{
-  status: number;
-  data: {
-    message: string;
-    types: ITypesReceipt[];
-  };
-}> => api.delete(`${baseUrl}/${id}`);
+}> => api.post(`${baseUrl}/filter`, filter);
