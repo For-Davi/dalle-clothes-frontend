@@ -1,5 +1,10 @@
 export const actionsStock: { label: string; icon: string; type: IActionStock }[] = [
   {
+    label: 'Configurações',
+    icon: 'settings',
+    type: 'settings',
+  },
+  {
     label: 'Exportar',
     icon: 'download',
     type: 'export',

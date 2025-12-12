@@ -65,8 +65,11 @@ export const useSettingsStore = defineStore('settings', {
           this.setSystem(response.data.system);
           createSuccess(response.data.message);
         }
+
+        return response;
       } catch (error) {
         createError(error);
+        return null;
       } finally {
         this.setLoading(false);
       }

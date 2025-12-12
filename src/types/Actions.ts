@@ -5,6 +5,7 @@ export type ActionStock =
   | 'color'
   | 'transaction'
   | 'tag'
+  | 'settings'
   | 'category';
 
 export type ActionsMovement = 'history' | 'category' | 'export';
