@@ -209,4 +209,5 @@ declare global {
   type IShowOrder = ShowOrder;
   type IDataSupplierOrderStatus = DataSupplierOrderStatus;
   type IDataSupplierOrderReceived = DataSupplierOrderReceived;
+  type IVMPaymentSubscriptionCreditCard = VMPaymentSubscriptionCreditCard;
 }
