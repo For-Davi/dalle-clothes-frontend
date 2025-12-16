@@ -15,7 +15,7 @@ defineOptions({
 const props = defineProps<{ open: boolean }>();
 const emit = defineEmits<{ 'update:open': [void] }>();
 const currentPage = ref<number>(1);
-const maxPerPage = ref<number>(8);
+const maxPerPage = ref<number>(20);
 
 const notificationMonitoring = ref<number | null>(null);
 const route = useRoute();

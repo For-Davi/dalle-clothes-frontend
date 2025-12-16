@@ -7,10 +7,16 @@ defineOptions({
   name: 'TitlePage',
 });
 
-const props = defineProps<{
-  title: string;
-  icon: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    titleSize?: string;
+    icon: string;
+  }>(),
+  {
+    titleSize: 'text-h5',
+  },
+);
 
 const { appearanceSetting } = storeToRefs(useSettingsStore());
 
@@ -28,7 +34,7 @@ const getTitleColor = computed(() => {
       <q-icon :name="props.icon" :style="getTitleColor ? { color: getTitleColor } : '#0D47A1'" />
       <span
         :style="getTitleColor ? { color: getTitleColor } : '#0D47A1'"
-        class="text-weight-medium text-h5"
+        :class="`text-weight-medium ${props.titleSize}`"
         >{{ props.title }}</span
       >
     </q-toolbar-title>
