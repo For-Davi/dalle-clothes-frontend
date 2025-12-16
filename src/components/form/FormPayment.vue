@@ -166,12 +166,10 @@ const totalPaid = computed(() =>
 );
 const missingAmount = computed(() => {
   const payments = model.value.payment;
-
   const hasInstallment = payments.some(
     (p) =>
-      p.installment.value !== null && p.installment.value >= 1 && Number(p.installment.amount) > 0,
+      p.installment.value !== null && p.installment.value! >= 1 && Number(p.installment.amount) > 0,
   );
-
   if (hasInstallment && paymentTotal.value) return 0;
 
   const diff = Number(totalPricePayment.value) - totalPaid.value;
@@ -777,7 +775,11 @@ onMounted(async () => {
                   maxlength="2"
                   class="input-3-divider"
                   mask="##"
-                />
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="fa-regular fa-credit-card" color="black" size="20px" />
+                  </template>
+                </q-input>
                 <q-input
                   v-if="paymentDivider && payments.paymentType === 'CREDIT_CARD'"
                   label="R$ Valor das parcelas"
@@ -794,7 +796,11 @@ onMounted(async () => {
                   input-class="text-black"
                   type="text"
                   readonly
-                />
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="credit_card" color="black" />
+                  </template>
+                </q-input>
               </div>
               <div
                 v-if="paymentTotal && payments.paymentType === 'CREDIT_CARD'"

@@ -7,13 +7,7 @@ defineOptions({
   name: 'TableSupplierCart',
 });
 
-const props = defineProps<{
-  rows: IClientCartProduct[];
-}>();
-
-const emit = defineEmits<{
-  'remove-from-cart': [number];
-}>();
+const items = defineModel<ISupplierCartProduct[]>('items', { required: true });
 
 const filter = ref<string>('');
 
@@ -28,22 +22,24 @@ const getColorStyle = (hexColor: string) => {
     verticalAlign: 'middle',
   };
 };
+const removeCart = (id: number) => {
+  const product = items.value.find((p) => p.product_variant_id === id);
+  if (product) {
+    items.value = items.value.filter((p) => p.product_variant_id !== id);
+  }
+};
 
 const totalValue = computed(() => {
-  return props.rows.reduce((acc, p) => {
-    const price = Number(p.price) || 0;
-    const qty = Number(p.newQuantity) || 0;
-
-    return acc + price * qty;
+  return items.value.reduce((acc, p) => {
+    return acc + p.price * (p.newQuantity || 0);
   }, 0);
 });
 </script>
 
 <template>
   <section>
-    props.rows {{ props.rows }}
     <q-table
-      :rows="props.rows"
+      :rows="items"
       :columns="columnsSupplierCart"
       :filter="filter"
       title="Itens do pedido"
@@ -59,6 +55,11 @@ const totalValue = computed(() => {
             <span class="text-body2 text-bold">{{ col.label }}</span>
           </q-th>
         </q-tr>
+      </template>
+      <template v-slot:top>
+        <div class="row justify-between items-center full-width">
+          <span class="text-body1">Itens do pedido</span>
+        </div>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -105,7 +106,7 @@ const totalValue = computed(() => {
                 round
                 color="red"
                 icon="remove_shopping_cart"
-                @click="emit('remove-from-cart', props.row.product_variant_id)"
+                @click="removeCart(props.row.product_variant_id)"
               >
                 <q-tooltip> Remover </q-tooltip>
               </q-btn>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, ref, watch } from 'vue';
+import { createErrorData } from 'src/composables/CreateNotify';
+import { checkEmail } from 'src/composables/CheckData';
 
 defineOptions({
   name: 'InformEmail',
@@ -21,9 +23,14 @@ const email = ref<string>('');
 const useEmailClient = ref<boolean>(false);
 
 const startToSend = () => {
-  open.value = false;
-  emit('send-email', email.value);
-  clear();
+  const check = checkEmail(email.value);
+  if (check.status) {
+    open.value = false;
+    emit('send-email', email.value);
+    clear();
+  } else {
+    createErrorData(check.message || 'Erro ao enviar e-mail');
+  }
 };
 const clear = () => {
   email.value = '';
@@ -70,7 +77,11 @@ watch(
               <q-icon name="mail" color="black" size="20px" />
             </template>
           </q-input>
-          <q-checkbox label="Utilizar email do cliente" v-model="useEmailClient" />
+          <q-checkbox
+            v-if="props.data.clientEmail !== null"
+            label="Utilizar email do cliente"
+            v-model="useEmailClient"
+          />
         </q-form>
       </q-card-section>
       <q-card-actions align="right">

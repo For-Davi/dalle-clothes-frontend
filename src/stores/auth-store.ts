@@ -16,8 +16,8 @@ import { useSettingsStore } from './setting-store';
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     loadingAuth: false as boolean,
-    user: useStorage('themplus_user', {} as IUser | null),
-    token: useStorage('themplus_token', null as string | null),
+    user: useStorage('dalle_manage_user', {} as IUser | null),
+    token: useStorage('dalle_manage_token', null as string | null),
     enterpriseCreated: useStorage('enterprise_created', null as string | null),
     enterprisePosition: useStorage('enterprise_position', 'client' as string),
     enterpriseName: useStorage('enterprise_name', null as string | null),

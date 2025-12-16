@@ -289,6 +289,29 @@ export interface ClientCartProduct {
   } | null;
 }
 
+export interface SupplierCartProduct {
+  product_variant_id: number;
+  price: number;
+  newPrice: number;
+  stock_quantity: number;
+  sku: string;
+  code: string;
+  variant_active: number;
+  quantity: number;
+  newQuantity?: number;
+  color: {
+    name: string;
+    hex_color_code: string;
+  } | null;
+}
+
+export interface ProductSupplierOrder {
+  id?: number;
+  productVariantID: number;
+  unitCost: string;
+  quantityRequested: number;
+}
+
 export interface DataProductSale {
   productVariantID: number;
   price: string;

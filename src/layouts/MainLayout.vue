@@ -736,45 +736,6 @@ const getBackgroundSelectedSideMenu = computed(() => {
               clickable
               v-ripple
               class="text-white"
-              :to="{ name: 'subscription' }"
-              :active="isActive('subscription')"
-              active-class="text-bold"
-              :style="
-                isActive('subscription')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="credit_card"
-                  :style="{
-                    color: isActive('subscription')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('subscription')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Assinatura
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
               :to="{ name: 'help' }"
               :active="isActive('help')"
               active-class="text-bold"
