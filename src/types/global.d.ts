@@ -97,7 +97,6 @@ import type {
   VMPaymentSubscriptionCreditCard,
   PaymentSubscriptionCreditCard,
 } from './Subscription';
-import type Pusher from 'pusher-js';
 
 export {};
 
@@ -210,4 +209,7 @@ declare global {
   type IDataSupplierOrderStatus = DataSupplierOrderStatus;
   type IDataSupplierOrderReceived = DataSupplierOrderReceived;
   type IVMPaymentSubscriptionCreditCard = VMPaymentSubscriptionCreditCard;
+  type IPaymentSubscriptionCreditCard = PaymentSubscriptionCreditCard;
+  type ISubscriptions = Subscriptions;
+  type IQrCode = QrCode;
 }

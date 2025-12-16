@@ -33,8 +33,10 @@ const showDetailsSupplierOrder = reactive<{
 });
 const showFormSupplierOrder = reactive<{
   open: boolean;
+  orderID: number | null;
 }>({
   open: false,
+  orderID: null,
 });
 
 const clear = () => {

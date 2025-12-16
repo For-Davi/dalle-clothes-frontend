@@ -17,6 +17,7 @@ defineOptions({
 const props = defineProps<{
   data: {
     open: boolean;
+    orderID: number | null;
   };
 }>();
 const emit = defineEmits<{
@@ -61,13 +62,11 @@ const changeShowTableSelectProductVariant = () => {
   showTableSelectProductVariant.value = !showTableSelectProductVariant.value;
 };
 const getItems = (items: ISupplierCartProduct[]): IProductSupplierOrder[] => {
-  return items.map((item) => {
-    return {
-      productVariantID: item.product_variant_id,
-      unitCost: item.newPrice,
-      quantityRequested: item.newQuantity,
-    };
-  });
+  return items.map((item) => ({
+    productVariantID: item.product_variant_id,
+    unitCost: item.newPrice.toFixed(2),
+    quantityRequested: item.newQuantity ?? 0,
+  }));
 };
 const verifyString = (value: string): string | null => {
   return value.trim() !== '' ? value : null;
@@ -116,20 +115,21 @@ const checkDataEdit = async () => {
   const response = await useSupplierOrderStore().showOrderSupplier(orderID.value);
 
   if (response?.status === 200) {
-    const order = response.data.order as IShowOrder;
+    const order = response.data.order;
 
     const mappedItems: ISupplierCartProduct[] = order.items.map((item: ISupplierOrderItem) => {
       const variant = item.product_variant;
+      const unitCost = Number(item.unit_cost);
 
       return {
         product_variant_id: item.product_variant_id,
-        price: item.unit_cost,
-        newPrice: item.unit_cost,
+        price: unitCost,
+        newPrice: unitCost,
         quantity: item.quantity_requested,
         newQuantity: item.quantity_requested,
         stock_quantity: variant.stock_quantity,
-        sku: variant.sku,
-        code: variant.code,
+        sku: variant.sku ?? '',
+        code: variant.code ?? '',
         variant_active: variant.active ? 1 : 0,
         color: variant.color
           ? {
@@ -150,7 +150,6 @@ const checkDataEdit = async () => {
     });
   }
 };
-
 const fetchSuppliers = async (): Promise<void> => {
   await useSupplierStore().getSuppliersSelect();
 };
@@ -183,12 +182,16 @@ const open = computed({
 const getLabelItems = computed((): string => {
   return `Total de itens: ${dataSupplierOrder.items.length}`;
 });
+const orderID = computed((): number | null => {
+  return props.data.orderID;
+});
 
 watch(open, async () => {
   if (open.value) {
     clear();
     await fetchSuppliers();
     await fetchProductVariants();
+    await checkDataEdit();
   }
 });
 </script>

@@ -27,12 +27,21 @@ const addCart = (product: ISupplierCartProduct) => {
 };
 const fetchProducts = async (): Promise<void> => {
   await useProductStore().getProducts();
+
   localProducts.value = listProduct.value.map((p: IProduct) => ({
-    ...p,
+    product_variant_id: p.product_variant_id,
+    price: Number(p.price),
+    newPrice: Number(p.price),
+    stock_quantity: p.stock_quantity,
+    sku: p.sku ?? '',
+    code: p.code ?? '',
+    variant_active: p.variant_active,
     quantity: 0,
-    newPrice: 0,
+    newQuantity: 0,
+    color: p.color,
   }));
 };
+
 const getColorStyle = (hexColor: string) => {
   return {
     backgroundColor: hexColor || 'transparent',

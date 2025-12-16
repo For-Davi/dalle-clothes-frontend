@@ -166,20 +166,23 @@ const totalPaid = computed(() =>
 );
 const missingAmount = computed(() => {
   const payments = model.value.payment;
+
   const hasInstallment = payments.some(
     (p) =>
-      p.installment.value !== null && p.installment.value! >= 1 && Number(p.installment.amount) > 0,
+      p.installment.value !== null && p.installment.value >= 1 && Number(p.installment.amount) > 0,
   );
+
   if (hasInstallment && paymentTotal.value) return 0;
 
   const diff = Number(totalPricePayment.value) - totalPaid.value;
 
-  if ((hasInstallment && diff <= 0.09) || diff <= 0.09) {
+  if (diff <= 0.09) {
     return 0;
   }
 
   return diff;
 });
+
 const getInstallmentOptions = computed(() => {
   const total = Number(totalPricePayment.value);
   const options = [];
