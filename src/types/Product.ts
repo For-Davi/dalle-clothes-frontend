@@ -102,6 +102,7 @@ export interface DataUpdateVariant {
 }
 
 export interface Product {
+  id: number;
   product_variant_id: number;
   price: string;
   stock_quantity: number;

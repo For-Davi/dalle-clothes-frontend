@@ -101,7 +101,7 @@ watch(open, () => {
   <q-dialog v-model="open" persistent>
     <q-card class="bg-grey-2 form-basic column justify-between">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Filtro de fornecedores" icon="person" />
+        <TitlePage title="Filtro de clientes" icon="person" />
       </q-card-section>
       <q-card-section class="q-pa-sm">
         <q-form class="q-gutter-y-sm">

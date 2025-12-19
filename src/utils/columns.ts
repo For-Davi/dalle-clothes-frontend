@@ -950,3 +950,18 @@ export const columnsOrderHistory: IQuasarTable[] = [
     align: 'left',
   },
 ];
+
+export const columnsDashboardQuantityRegister: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Quantidade',
+    field: 'quantity',
+    align: 'right',
+  },
+];

@@ -71,7 +71,7 @@ const hasFilter = computed(() => {
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Usuários" icon="person" />
+      <TitlePage class="col-7" title="Clientes" icon="person" />
       <div>
         <q-btn
           @click="changeShowFormClient(true)"

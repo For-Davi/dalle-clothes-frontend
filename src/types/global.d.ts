@@ -97,6 +97,7 @@ import type {
   VMPaymentSubscriptionCreditCard,
   PaymentSubscriptionCreditCard,
 } from './Subscription';
+import type { DashboardData, RecordsData, FilterDashboard } from './Dashboard';
 
 export {};
 
@@ -212,4 +213,7 @@ declare global {
   type IPaymentSubscriptionCreditCard = PaymentSubscriptionCreditCard;
   type ISubscriptions = Subscriptions;
   type IQrCode = QrCode;
+  type IDashboardData = DashboardData;
+  type IRecordsData = RecordsData;
+  type IFilterDashboard = FilterDashboard;
 }
