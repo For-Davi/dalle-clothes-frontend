@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Chart } from 'chart.js/auto';
 import type { ChartConfiguration, ChartDataset } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
 
 defineOptions({ name: 'GraphicBar' });
@@ -48,8 +49,18 @@ const initChart = () => {
           display: !!props.title,
           text: props.title,
         },
+        datalabels: {
+          anchor: 'center',
+          align: props.indexAxis === 'y' ? 'center' : 'top',
+          color: '#001F3D',
+          font: { weight: 'bold', size: 14 },
+          formatter: (value) => {
+            return `R$ ${value.toFixed(2)}`;
+          },
+        },
       },
     },
+    plugins: [ChartDataLabels],
   };
 
   chart = new Chart(canvas.value, config);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { columnsDashboardQuantityRegister } from 'src/utils/columns';
 import { useDashboardStore } from 'src/stores/dashboard-store';
@@ -15,12 +15,18 @@ const props = defineProps<{
 const { loadingDashboard } = storeToRefs(useDashboardStore());
 
 const filter = ref<string>('');
+
+const sortedRecords = computed(() => {
+  return [...props.records].sort((a, b) => {
+    return a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' });
+  });
+});
 </script>
 <template>
   <section style="min-height: 300px">
     <q-table
       v-show="!loadingDashboard"
-      :rows="loadingDashboard ? [] : props.records"
+      :rows="loadingDashboard ? [] : sortedRecords"
       :columns="columnsDashboardQuantityRegister"
       :filter="filter"
       :loading="loadingDashboard"

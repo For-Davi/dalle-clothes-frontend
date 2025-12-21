@@ -6,7 +6,11 @@ defineOptions({
 const props = defineProps<{
   title: string | null;
   data: number | string;
-  data2?: number | string | undefined;
+  data2?: number | string | null;
+  tooltip?: string | null;
+  tooltip2?: string | null;
+  dataClass?: string | null;
+  dataClass2?: string | null;
 }>();
 </script>
 
@@ -22,22 +26,28 @@ const props = defineProps<{
       </div>
       <div
         :class="
-          props.data2
-            ? 'flex justify-center text-h6 text-weight-medium text-green-8'
+          props.dataClass
+            ? props.dataClass
             : 'flex justify-center text-h4 text-weight-medium text-green-8 q-mt-md'
         "
       >
         {{ props.data }}
+        <q-tooltip v-if="props.tooltip">
+          {{ props.tooltip }}
+        </q-tooltip>
       </div>
       <q-separator v-if="props.data2" class="q-ma-xs" />
       <div
         :class="
-          props.data2
-            ? 'flex justify-center text-h6 text-weight-medium text-red-8'
+          props.dataClass2
+            ? props.dataClass2
             : 'flex justify-center text-h4 text-weight-medium text-red-8'
         "
       >
         {{ props.data2 }}
+        <q-tooltip v-if="props.tooltip2">
+          {{ props.tooltip2 }}
+        </q-tooltip>
       </div>
     </q-card-section>
   </q-card>

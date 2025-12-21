@@ -14,14 +14,13 @@ import type { ChartDataset } from 'chart.js';
 import Loading from 'src/components/shared/Loading.vue';
 import FilterDashboard from 'src/components/filter/FilterDashboard.vue';
 
-defineOptions({
-  name: 'Dashboard',
-});
+defineOptions({ name: 'Dashboard' });
 
 const { dashboardInfo, loadingDashboard } = storeToRefs(useDashboardStore());
 
 const screenWidth = ref(window.innerWidth);
-const showFilterDashboard = ref<boolean>(false);
+const showFilterDashboard = ref(false);
+
 const filter = reactive<IFilterDashboard>({
   startDate: '',
   endDate: '',
@@ -34,54 +33,55 @@ const filter = reactive<IFilterDashboard>({
 const getDashboardInfo = async () => {
   await useDashboardStore().getDashboardInfo();
 };
-const changeShowFilterDashboard = (): void => {
+
+const changeShowFilterDashboard = () => {
   showFilterDashboard.value = !showFilterDashboard.value;
 };
-const actionFilter = async (data: 'close' | IFilterDashboard): Promise<void> => {
+
+const actionFilter = async (data: 'close' | IFilterDashboard) => {
   changeShowFilterDashboard();
 
   if (data !== 'close') {
-    Object.assign(filter, {
-      startDate: data.startDate,
-      endDate: data.endDate,
-      seller: data.seller,
-      category: data.category,
-      product: data.product,
-      typeReceipt: data.typeReceipt,
-    });
+    Object.assign(filter, data);
     await useDashboardStore().getDashboardInfo(filter);
   }
 };
+
 const updateWidth = () => {
   screenWidth.value = window.innerWidth;
 };
 
-const hasFilter = computed(() => {
-  return (
-    filter.startDate !== '' ||
-    filter.endDate !== '' ||
-    filter.seller !== null ||
-    filter.category !== null ||
-    filter.product !== null ||
-    filter.typeReceipt !== null
-  );
-});
 const monitorWidth = computed(() => screenWidth.value);
-const categoriesLabel = computed(() => {
-  return dashboardInfo.value.categories_most_sold?.length
+
+const hasFilter = computed(() =>
+  Object.values(filter).some((value) => value !== null && value !== ''),
+);
+
+const sortLabelsAndValuesDesc = (labels: string[], values: number[]) => {
+  return labels
+    .map((label, index) => ({
+      label,
+      value: values[index],
+    }))
+    .sort((a, b) => b.value - a.value);
+};
+
+const categoriesLabel = computed(() =>
+  dashboardInfo.value.categories_most_sold?.length
     ? dashboardInfo.value.categories_most_sold.map((cat) => cat.name)
-    : ['...'];
-});
-const categoriesData = computed(() => {
-  return dashboardInfo.value.categories_most_sold?.length
+    : ['...'],
+);
+
+const categoriesData = computed(() =>
+  dashboardInfo.value.categories_most_sold?.length
     ? dashboardInfo.value.categories_most_sold.map((cat) => cat.total_quantity)
-    : [1];
-});
+    : [1],
+);
+
 const typeReceiptLabel = computed(() => {
   const receipts = dashboardInfo.value?.receipts_value;
-  if (!receipts || Object.keys(receipts).length === 0) {
-    return ['...'];
-  }
+  if (!receipts || Object.keys(receipts).length === 0) return ['...'];
+
   return Object.values(receipts).map(
     (receipt) => PaymentTypeLabels[receipt.name as PaymentType] ?? receipt.name,
   );
@@ -89,11 +89,11 @@ const typeReceiptLabel = computed(() => {
 
 const typeReceiptData = computed(() => {
   const receipts = dashboardInfo.value?.receipts_value;
-  if (!receipts || Object.keys(receipts).length === 0) {
-    return [1];
-  }
+  if (!receipts || Object.keys(receipts).length === 0) return [1];
+
   return Object.values(receipts).map((receipt) => receipt.total_quantity);
 });
+
 const allSalesPeriodsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
   const info = dashboardInfo.value.sales_months_info;
 
@@ -101,105 +101,64 @@ const allSalesPeriodsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
     return [
       {
         type: 'bar',
-        label: `Valor das vendas em ... (R$)`,
+        label: 'Valor das vendas em ... (R$)',
         data: [0],
         stack: 'total',
       },
-      {
-        type: 'bar',
-        label: `Qtd das vendas em ...`,
-        data: [0],
-      },
     ];
 
-  const datasets: ChartDataset<'bar' | 'line'>[] = [];
-
-  Object.values(info.total ?? {}).forEach((item) => {
-    datasets.push({
-      type: 'bar',
-      label: `Valor das vendas em ${item.label} (R$)`,
-      data: item.data,
-      stack: 'total',
-    });
-  });
-  Object.values(info.quantity ?? {}).forEach((item) => {
-    datasets.push({
-      type: 'line',
-      label: `Qtd das vendas em ${item.label}`,
-      data: item.data,
-    });
-  });
-
-  return datasets;
+  return Object.values(info.total ?? {}).map((item) => ({
+    type: 'bar',
+    label: `Valor das vendas em ${item.label} (R$)`,
+    data: item.data,
+    stack: 'total',
+  }));
 });
 const allSalesProductsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
   const products = dashboardInfo.value.products;
+
   if (!products?.labels?.length)
     return [
       {
         type: 'bar',
         label: 'Valor total (R$)',
         data: [0],
-        backgroundColor: 'rgba(34, 197, 94, 0.8)',
-      },
-      {
-        type: 'line',
-        label: 'Unidades vendidas',
-        data: [0],
-        backgroundColor: 'rgba(54, 162, 235, 0.7)',
-        borderColor: 'rgba(2, 62, 138, 1)',
+        backgroundColor: 'rgba(187, 220, 229, 0.8)',
       },
     ];
+
+  const sorted = sortLabelsAndValuesDesc(products.labels, products.value);
 
   return [
     {
       type: 'bar',
       label: 'Valor total (R$)',
-      data: products.value,
-      backgroundColor: 'rgba(34, 197, 94, 0.8)',
-    },
-    {
-      type: 'line',
-      label: 'Unidades vendidas',
-      data: products.quantity,
-      backgroundColor: 'rgba(54, 162, 235, 0.7)',
-      borderColor: 'rgba(2, 62, 138, 1)',
-      tension: 0.4,
+      data: sorted.map((item) => item.value),
+      backgroundColor: 'rgba(187, 220, 229, 0.8)',
     },
   ];
 });
 const allSalesSellerDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
   const sellers = dashboardInfo.value.sellers;
+
   if (!sellers?.labels?.length)
     return [
       {
         type: 'bar',
         label: 'Valor das vendas (R$)',
         data: [0],
-        backgroundColor: 'rgba(20, 184, 166, 0.8)',
-      },
-      {
-        type: 'bar',
-        label: 'Quantidade de vendas',
-        data: [0],
-        backgroundColor: 'rgba(51, 45, 86, 0.8)',
-        tension: 0.4,
+        backgroundColor: 'rgba(145, 200, 228, 0.8)',
       },
     ];
+
+  const sorted = sortLabelsAndValuesDesc(sellers.labels, sellers.value);
 
   return [
     {
       type: 'bar',
       label: 'Valor das vendas (R$)',
-      data: sellers.value,
-      backgroundColor: 'rgba(20, 184, 166, 0.8)',
-    },
-    {
-      type: 'bar',
-      label: 'Quantidade de vendas',
-      data: sellers.quantity,
-      backgroundColor: 'rgba(51, 45, 86, 0.8)',
-      tension: 0.4,
+      data: sorted.map((item) => item.value),
+      backgroundColor: 'rgba(145, 200, 228, 0.8)',
     },
   ];
 });
@@ -213,6 +172,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', updateWidth);
 });
 </script>
+
 <template>
   <main class="q-pa-lg">
     <section>
@@ -266,6 +226,10 @@ onUnmounted(() => {
                   ? formatToReal(dashboardInfo.movements_out_value)
                   : 'R$ 0,00'
               "
+              tooltip="Entrada"
+              tooltip2="Saída"
+              dataClass="flex justify-center text-h5 text-weight-medium text-green-8"
+              dataClass2="flex justify-center text-h5 text-weight-medium text-red-8"
               class="q-pa-xs"
             />
             <DashboardCard
