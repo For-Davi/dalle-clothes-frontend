@@ -1080,7 +1080,6 @@ export const checkSupplierOrderReceived = (
   dateReceived: string,
 ): { status: boolean; message?: string } => {
   const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-  console.log('dateReceived', dateReceived);
 
   if (!regex.test(dateReceived)) {
     return {
@@ -1111,6 +1110,47 @@ export const checkSupplierOrderReceived = (
       status: false,
       message: 'É necessário que ao menos um item tenha quantidade recebida.',
     };
+  }
+
+  return { status: true };
+};
+
+export const checkDashboardFilter = (
+  data: IFilterDashboard,
+): { status: boolean; message?: string } => {
+  const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+
+  if (data.startDate !== '' && !regex.test(data.startDate)) {
+    return { status: false, message: 'Data inválida. Use o formato dd/mm/yyyy' };
+  }
+  if (data.endDate !== '' && !regex.test(data.endDate)) {
+    return { status: false, message: 'Data inválida. Use o formato dd/mm/yyyy' };
+  }
+  if (data.startDate !== '') {
+    const [day, month, year] = data.startDate.split('/').map(Number);
+    const checkDate = new Date(year, month - 1, day);
+
+    const isValidDate =
+      checkDate.getFullYear() === year &&
+      checkDate.getMonth() === month - 1 &&
+      checkDate.getDate() === day;
+
+    if (!isValidDate) {
+      return { status: false, message: 'A data informada não é válida.' };
+    }
+  }
+  if (data.endDate !== '') {
+    const [day, month, year] = data.endDate.split('/').map(Number);
+    const checkDate = new Date(year, month - 1, day);
+
+    const isValidDate =
+      checkDate.getFullYear() === year &&
+      checkDate.getMonth() === month - 1 &&
+      checkDate.getDate() === day;
+
+    if (!isValidDate) {
+      return { status: false, message: 'A data informada não é válida.' };
+    }
   }
 
   return { status: true };

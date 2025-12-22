@@ -10,23 +10,17 @@ const props = defineProps<{
   couponData: ICouponData | null;
 }>();
 
-const formatToBrazilianDate = (dateStr: string) => {
-  if (!dateStr) return '';
+const formatToBrazilianDateTime = (value?: string | null) => {
+  if (!value) return '';
 
-  const isoStr = dateStr.split(' ')[0].split('-').reverse().join('-') + 'T' + dateStr.split(' ')[1];
+  const localValue = value.replace('Z', '');
 
-  const date = new Date(isoStr);
+  const date = new Date(localValue);
 
-  const brTime = new Date(date.getTime() - 3 * 60 * 60 * 1000);
+  const pad = (n: number) => String(n).padStart(2, '0');
 
-  const day = String(brTime.getDate()).padStart(2, '0');
-  const month = String(brTime.getMonth() + 1).padStart(2, '0');
-  const year = brTime.getFullYear();
-  const hours = String(brTime.getHours()).padStart(2, '0');
-  const minutes = String(brTime.getMinutes()).padStart(2, '0');
-  const seconds = String(brTime.getSeconds()).padStart(2, '0');
-
-  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}
+          ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 };
 </script>
 
@@ -39,7 +33,7 @@ const formatToBrazilianDate = (dateStr: string) => {
             props.couponData?.enterprise.name.toUpperCase()
           }}</span>
           <span class="text-bold text-h6">{{
-            formatToBrazilianDate(props.couponData?.sale.date ?? '')
+            formatToBrazilianDateTime(props.couponData?.sale.date)
           }}</span>
         </div>
         <span

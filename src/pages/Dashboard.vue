@@ -13,6 +13,8 @@ import type { PaymentType } from 'src/enums/payment-enum';
 import type { ChartDataset } from 'chart.js';
 import Loading from 'src/components/shared/Loading.vue';
 import FilterDashboard from 'src/components/filter/FilterDashboard.vue';
+import { checkDashboardFilter } from 'src/composables/CheckData';
+import { createErrorData } from 'src/composables/CreateNotify';
 
 defineOptions({ name: 'Dashboard' });
 
@@ -42,8 +44,20 @@ const actionFilter = async (data: 'close' | IFilterDashboard) => {
   changeShowFilterDashboard();
 
   if (data !== 'close') {
-    Object.assign(filter, data);
-    await useDashboardStore().getDashboardInfo(filter);
+    const check = checkDashboardFilter(data);
+    if (check.status) {
+      Object.assign(filter, data);
+      const isEmptyFilter =
+        !filter.startDate &&
+        !filter.endDate &&
+        !filter.seller &&
+        !filter.category &&
+        !filter.product &&
+        !filter.typeReceipt;
+      await useDashboardStore().getDashboardInfo(isEmptyFilter ? null : filter);
+    } else {
+      createErrorData(check.message || 'Erro ao validar dados da filtragem');
+    }
   }
 };
 
@@ -102,7 +116,7 @@ const allSalesPeriodsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
       {
         type: 'bar',
         label: 'Valor das vendas em ... (R$)',
-        data: [0],
+        data: [],
         stack: 'total',
       },
     ];
@@ -122,7 +136,7 @@ const allSalesProductsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => 
       {
         type: 'bar',
         label: 'Valor total (R$)',
-        data: [0],
+        data: [],
         backgroundColor: 'rgba(187, 220, 229, 0.8)',
       },
     ];
@@ -146,7 +160,7 @@ const allSalesSellerDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
       {
         type: 'bar',
         label: 'Valor das vendas (R$)',
-        data: [0],
+        data: [],
         backgroundColor: 'rgba(145, 200, 228, 0.8)',
       },
     ];

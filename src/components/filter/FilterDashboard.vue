@@ -192,23 +192,6 @@ const optionsTypesReceipts = computed(() => {
     })),
   ];
 });
-const startDateDisplay = computed({
-  get() {
-    return dataDashboard.startDate ? dataDashboard.startDate.replace('-', '/') : '';
-  },
-  set(value: string) {
-    dataDashboard.startDate = value ? value.replace('/', '-') : '';
-  },
-});
-
-const endDateDisplay = computed({
-  get() {
-    return dataDashboard.endDate ? dataDashboard.endDate.replace('-', '/') : '';
-  },
-  set(value: string) {
-    dataDashboard.endDate = value ? value.replace('/', '-') : '';
-  },
-});
 
 watch(open, async () => {
   if (open.value) {
@@ -231,12 +214,12 @@ watch(open, async () => {
         <Loading :show="isLoading" />
         <q-form v-show="!isLoading" class="q-gutter-y-sm">
           <q-input
-            v-model="startDateDisplay"
+            v-model="dataDashboard.startDate"
             bg-color="white"
             label-color="black"
             outlined
             label="Filtre pela data inicial"
-            mask="##/####"
+            mask="##/##/####"
             dense
             input-class="text-black"
           >
@@ -245,12 +228,12 @@ watch(open, async () => {
             </template>
           </q-input>
           <q-input
-            v-model="endDateDisplay"
+            v-model="dataDashboard.endDate"
             bg-color="white"
             label-color="black"
             outlined
             label="Filtre pela data final"
-            mask="##/####"
+            mask="##/##/####"
             dense
             input-class="text-black"
           >
