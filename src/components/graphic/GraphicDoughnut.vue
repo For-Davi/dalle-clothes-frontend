@@ -70,12 +70,6 @@ const buildChart = () => {
   chartInstance.value = new Chart(chartCanvas.value, config);
 };
 
-onMounted(() => {
-  if (props.data && props.data.length > 0) {
-    buildChart();
-  }
-});
-
 watch(
   () => [props.label, props.data],
   (newValues) => {
@@ -92,6 +86,11 @@ watch(
   { deep: true },
 );
 
+onMounted(() => {
+  if (props.data && props.data.length > 0) {
+    buildChart();
+  }
+});
 onUnmounted(() => {
   if (chartInstance.value) {
     chartInstance.value.destroy();

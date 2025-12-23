@@ -77,10 +77,6 @@ const calculatedHeight = computed(() => {
   return Number(props.height);
 });
 
-onMounted(() => {
-  initChart();
-});
-
 watch(
   () => props.datasets,
   (newDatasets) => {
@@ -95,6 +91,9 @@ watch(
   { deep: true },
 );
 
+onMounted(() => {
+  initChart();
+});
 onUnmounted(() => {
   chart?.destroy();
 });
