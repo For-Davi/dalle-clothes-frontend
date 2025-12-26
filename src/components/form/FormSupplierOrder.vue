@@ -80,6 +80,8 @@ const save = async () => {
       dateDeliveryExpected: dataSupplierOrder.dateDeliveryExpected,
       items: getItems(dataSupplierOrder.items),
       supplierID: selectedSupplier.value.value,
+      observation:
+        dataSupplierOrder.description.trim().length > 0 ? dataSupplierOrder.description : null,
     });
     if (response?.status === 201) {
       clear();
@@ -98,6 +100,8 @@ const update = async () => {
       dateIssue: dataSupplierOrder.dateIssue,
       dateDeliveryExpected: dataSupplierOrder.dateDeliveryExpected,
       orderNumber: verifyString(dataSupplierOrder.orderNumber),
+      observation:
+        dataSupplierOrder.description.trim().length > 0 ? dataSupplierOrder.description : null,
       items: getItems(dataSupplierOrder.items),
       itemsToDelete: dataSupplierOrder.itemsToDelete,
     });

@@ -14,6 +14,7 @@ export interface DataSupplierOrder {
   dateIssue: string;
   items: IProductSupplierOrder[];
   itemsToDelete?: string[];
+  observation: string | null;
 }
 
 export interface ShowOrder {
