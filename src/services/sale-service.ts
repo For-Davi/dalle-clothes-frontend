@@ -3,12 +3,19 @@ import { createError } from 'src/composables/CreateNotify';
 
 const baseUrl = 'sale';
 
+export const getSalesService = (): Promise<{
+  status: number;
+  data: {
+    sales: ISales[];
+  };
+}> => api.get(`${baseUrl}/`);
+
 export const createSaleService = (
   data: IDataSale,
 ): Promise<{
   status: number;
   data: {
-    sale: ISale;
+    sale: ISaleMade;
   };
 }> => api.post(`${baseUrl}/`, data);
 
@@ -33,7 +40,6 @@ export const sendCouponToEmailService = (
 
 export const exportSaleService = async (saleID: number) => {
   try {
-    console.log('id da venda', saleID);
     const response = await api.post(
       `${baseUrl}/export`,
       {

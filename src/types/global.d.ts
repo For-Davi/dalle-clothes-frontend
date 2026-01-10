@@ -90,7 +90,16 @@ import type {
   ProductSupplierOrder,
 } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
-import type { VModelSalePayment, DataSale, Sale, CouponData } from './Payments';
+import type {
+  VModelSalePayment,
+  DataSale,
+  SaleMade,
+  CouponData,
+  SaleDelivery,
+  SaleItens,
+  SalePaymentsMethods,
+  Sales,
+} from './Payments';
 import type {
   Subscriptions,
   QrCode,
@@ -200,7 +209,7 @@ declare global {
   type IFilterReceipt = FilterReceipt;
   type IDataSale = DataSale;
   type IDataProductSale = DataProductSale;
-  type ISale = Sale;
+  type ISaleMade = SaleMade;
   type ICouponData = CouponData;
   type IModeOrderDetails = ModeOrderDetails;
   type ISupplierOrderItem = SupplierOrderItem;
@@ -216,4 +225,8 @@ declare global {
   type IDashboardData = DashboardData;
   type IRecordsData = RecordsData;
   type IFilterDashboard = FilterDashboard;
+  type ISaleItens = SaleItens;
+  type ISalePaymentsMethods = SalePaymentsMethods;
+  type ISaleDelivery = SaleDelivery;
+  type ISales = Sales;
 }

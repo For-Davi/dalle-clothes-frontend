@@ -965,3 +965,30 @@ export const columnsDashboardQuantityRegister: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsSales: IQuasarTable[] = [
+  {
+    name: 'date',
+    label: 'Data',
+    field: 'date',
+    align: 'left',
+  },
+  {
+    name: 'form_payment',
+    label: 'Forma de pagamento',
+    field: 'form_payment',
+    align: 'center',
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    field: 'total',
+    align: 'right',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];

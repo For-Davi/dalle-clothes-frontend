@@ -63,7 +63,16 @@ export interface DataSale {
   };
 }
 
-export interface Sale {
+export interface Sales {
+  id: number;
+  enterprise_id: number;
+  total: number;
+  change: number;
+  date: string;
+  sale_payments_methods: ISalePaymentsMethods[];
+}
+
+export interface SaleMade {
   id: number;
   enterprise_id: number;
   seller_id: number | null;
@@ -72,6 +81,55 @@ export interface Sale {
   total: string;
   change: string;
   date: string;
+}
+export interface Sale {
+  id: number;
+  enterprise_id: number;
+  seller_id: number | null;
+  client_id: number | null;
+  fees: number;
+  total: number;
+  change: number;
+  date: string;
+  sale_itens: ISaleItens[];
+  sale_payments_methods: ISalePaymentsMethods[];
+  sale_delivery: ISaleDelivery;
+}
+
+export interface SaleItens {
+  id: number;
+  sale_id: number;
+  product_variant_id: number;
+  product_variant_name: string;
+  product_sku: string | null;
+  product_price: number;
+  quantity: number;
+  total: number;
+}
+
+export interface SalePaymentsMethods {
+  sale_id: number;
+  payment_method_id: number;
+  receipt_id: number | null;
+  receipt_name: string;
+  installments: number;
+  type: { name: string };
+  value: number;
+}
+
+export interface SaleDelivery {
+  sale_id: number;
+  freight_value: number;
+  cep: string | null;
+  state: string | null;
+  city: string | null;
+  neighborhood: string | null;
+  address: string | null;
+  number_address: string | null;
+  complement: string | null;
+  recipient_name: string;
+  recipient_phone: string;
+  observation: string;
 }
 
 export interface CouponData {

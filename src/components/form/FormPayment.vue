@@ -269,6 +269,8 @@ watch(
         const receiptOptions = getReceiptOptions(type);
         if (receiptOptions.length > 0) {
           payment.receiptID = receiptOptions[0].value;
+        } else {
+          payment.receiptID = null;
         }
       }
     });

@@ -4,12 +4,13 @@ import {
   createSaleService,
   showSaleService,
   sendCouponToEmailService,
+  getSalesService,
 } from 'src/services/sale-service';
 
 export const useSaleStore = defineStore('sale', {
   state: () => ({
     loadingSale: false as boolean,
-    listSale: [] as IReceipt[],
+    listSale: [] as ISales[],
   }),
   actions: {
     clearListSale() {
@@ -18,8 +19,23 @@ export const useSaleStore = defineStore('sale', {
     setLoading(loading: boolean) {
       this.loadingSale = loading;
     },
-    setListSale(sale: IReceipt[]) {
+    setListSale(sale: ISales[]) {
       sale.map((item) => this.listSale.push(item));
+    },
+    async getSales() {
+      try {
+        this.setLoading(true);
+        const response = await getSalesService();
+
+        if (response.status === 200) {
+          this.clearListSale();
+          this.setListSale(response.data.sales);
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
     },
     async showSale(saleID: number) {
       try {
