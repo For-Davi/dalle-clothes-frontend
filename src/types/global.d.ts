@@ -99,6 +99,7 @@ import type {
   SaleItens,
   SalePaymentsMethods,
   Sales,
+  Sale,
 } from './Payments';
 import type {
   Subscriptions,
@@ -229,4 +230,5 @@ declare global {
   type ISalePaymentsMethods = SalePaymentsMethods;
   type ISaleDelivery = SaleDelivery;
   type ISales = Sales;
+  type ISale = Sale;
 }

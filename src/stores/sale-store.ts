@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { createError } from 'src/composables/CreateNotify';
 import {
   createSaleService,
+  showSaleCouponDataService,
   showSaleService,
   sendCouponToEmailService,
   getSalesService,
@@ -10,21 +11,32 @@ import {
 export const useSaleStore = defineStore('sale', {
   state: () => ({
     loadingSale: false as boolean,
+    loadingListSale: false as boolean,
     listSale: [] as ISales[],
+    Sale: {} as ISale,
   }),
   actions: {
     clearListSale() {
       this.listSale.splice(0, this.listSale.length);
     },
+    clearSale() {
+      this.Sale = {} as ISale;
+    },
     setLoading(loading: boolean) {
       this.loadingSale = loading;
     },
-    setListSale(sale: ISales[]) {
-      sale.map((item) => this.listSale.push(item));
+    setLoadingList(loading: boolean) {
+      this.loadingListSale = loading;
+    },
+    setListSale(sales: ISales[]) {
+      this.listSale = sales.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    },
+    setSale(sale: ISale) {
+      this.Sale = sale;
     },
     async getSales() {
       try {
-        this.setLoading(true);
+        this.setLoadingList(true);
         const response = await getSalesService();
 
         if (response.status === 200) {
@@ -34,13 +46,27 @@ export const useSaleStore = defineStore('sale', {
       } catch (error) {
         createError(error);
       } finally {
-        this.setLoading(false);
+        this.setLoadingList(false);
       }
     },
     async showSale(saleID: number) {
       try {
         this.setLoading(true);
-        return await showSaleService(saleID);
+        const response = await showSaleService(saleID);
+        if (response.status === 200) {
+          this.clearSale();
+          this.setSale(response.data.sale);
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async showSaleCouponData(saleID: number) {
+      try {
+        this.setLoading(true);
+        return await showSaleCouponDataService(saleID);
       } catch (error) {
         createError(error);
       } finally {

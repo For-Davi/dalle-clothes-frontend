@@ -44,7 +44,7 @@ const changeShowInformEmail = (show: boolean, clientEmail: string | null = null)
   });
 };
 const getSale = async () => {
-  const response = await useSaleStore().showSale(props.data.saleID ?? 0);
+  const response = await useSaleStore().showSaleCouponData(props.data.saleID ?? 0);
 
   if (response?.status === 200) {
     couponData.value = response.data.couponData;

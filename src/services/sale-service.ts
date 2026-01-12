@@ -24,9 +24,18 @@ export const showSaleService = (
 ): Promise<{
   status: number;
   data: {
-    couponData: ICouponData;
+    sale: ISale;
   };
 }> => api.get(`${baseUrl}/${saleID}`);
+
+export const showSaleCouponDataService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    couponData: ICouponData;
+  };
+}> => api.get(`${baseUrl}/coupon/${saleID}`);
 
 export const sendCouponToEmailService = (
   saleID: number,

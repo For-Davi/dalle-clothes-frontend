@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import { columnsSales } from 'src/utils/columns';
 import { storeToRefs } from 'pinia';
 import { useSaleStore } from 'src/stores/sale-store';
@@ -19,17 +19,20 @@ const props = withDefaults(
     filter: '',
   },
 );
-const emit = defineEmits<{
-  'show:showFormUser': [number];
-}>();
 
-const { loadingSale, listSale } = storeToRefs(useSaleStore());
+const { loadingListSale, listSale } = storeToRefs(useSaleStore());
 
 const userMonitoring = ref<number | null>(null);
-const showSaleDetails = ref<boolean>(false);
+const showSaleDetails = reactive({
+  open: false as boolean,
+  saleID: null as number | null,
+});
 
-const changeShowSaleDetails = () => {
-  showSaleDetails.value = !showSaleDetails.value;
+const changeShowSaleDetails = (open: boolean, saleID: number | null = null): void => {
+  Object.assign(showSaleDetails, {
+    open,
+    saleID,
+  });
 };
 const formatToBrazilianDateTime = (value?: string | null) => {
   if (!value) return '';
@@ -46,9 +49,6 @@ const formatToBrazilianDateTime = (value?: string | null) => {
 const getPaymentTypeLabel = (type: string) => {
   return PaymentTypeLabels[type as PaymentType] ?? type;
 };
-const startEdit = (id: number) => {
-  emit('show:showFormUser', id);
-};
 const fetchSales = async (): Promise<void> => {
   await useSaleStore().getSales();
 };
@@ -60,10 +60,10 @@ onMounted(async () => {
 <template>
   <section>
     <q-table
-      :rows="loadingSale ? [] : listSale"
+      :rows="loadingListSale ? [] : listSale"
       :columns="columnsSales"
       :filter="props.filter"
-      :loading="loadingSale"
+      :loading="loadingListSale"
       title="Lista de vendas"
       row-key="index"
       no-data-label="Nenhuma venda para mostrar"
@@ -110,7 +110,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
-              @click="changeShowSaleDetails"
+              @click="changeShowSaleDetails(true, props.row.id)"
               :disable="userMonitoring === props.row.id"
               size="sm"
               flat
@@ -132,5 +132,5 @@ onMounted(async () => {
     </q-table>
   </section>
   <!-- Modals -->
-  <SaleDetails :data="{ open: showSaleDetails }" @update:open="changeShowSaleDetails" />
+  <SaleDetails :data="showSaleDetails" @update:open="changeShowSaleDetails(false)" />
 </template>

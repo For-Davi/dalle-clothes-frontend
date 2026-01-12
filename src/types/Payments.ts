@@ -86,7 +86,9 @@ export interface Sale {
   id: number;
   enterprise_id: number;
   seller_id: number | null;
+  seller_name: string | null;
   client_id: number | null;
+  client_name: string | null;
   fees: number;
   total: number;
   change: number;
@@ -100,11 +102,15 @@ export interface SaleItens {
   id: number;
   sale_id: number;
   product_variant_id: number;
-  product_variant_name: string;
+  product_name: string;
   product_sku: string | null;
   product_price: number;
   quantity: number;
   total: number;
+  grid: string;
+  code: string;
+  color: string;
+  color_name: string;
 }
 
 export interface SalePaymentsMethods {
@@ -113,7 +119,8 @@ export interface SalePaymentsMethods {
   receipt_id: number | null;
   receipt_name: string;
   installments: number;
-  type: { name: string };
+  type: string;
+  receipt: string;
   value: number;
 }
 
