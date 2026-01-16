@@ -992,3 +992,75 @@ export const columnsSales: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsReturn: IQuasarTable[] = [
+  {
+    name: 'date',
+    label: 'Data',
+    field: 'date',
+    align: 'left',
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'created_by',
+    label: 'Criado por',
+    field: 'created_by',
+    align: 'left',
+  },
+  {
+    name: 'updated_by',
+    label: 'Atualizado por',
+    field: 'updated_by',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsSaleProduct: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Quantidade',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: 'Preço',
+    field: 'price',
+    align: 'left',
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    field: 'total',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];

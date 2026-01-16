@@ -28,6 +28,15 @@ export const showSaleService = (
   };
 }> => api.get(`${baseUrl}/${saleID}`);
 
+export const getSaleItensService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    saleItens: ISaleItens[];
+  };
+}> => api.get(`${baseUrl}/product/${saleID}`);
+
 export const showSaleCouponDataService = (
   saleID: number,
 ): Promise<{

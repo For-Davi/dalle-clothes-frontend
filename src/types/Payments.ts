@@ -106,6 +106,7 @@ export interface SaleItens {
   product_sku: string | null;
   product_price: number;
   quantity: number;
+  returnQuantity?: number;
   total: number;
   grid: string;
   code: string;

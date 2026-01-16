@@ -2,13 +2,13 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import Loading from 'src/components/shared/Loading.vue';
-import TableOrderHistory from 'src/components/table/TableOrderHistory.vue';
 import { formatToReal } from 'src/composables/Money';
-import { computed, watch } from 'vue';
+import { computed, watch, reactive } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSaleStore } from 'src/stores/sale-store';
 import type { PaymentType } from 'src/enums/payment-enum';
 import { PaymentTypeLabels } from 'src/enums/payment-enum';
+import ReturnManage from 'src/components/manage/ReturnManage.vue';
 
 defineOptions({
   name: 'SaleDetails',
@@ -25,6 +25,11 @@ const emit = defineEmits<{
 }>();
 
 const { loadingSale, Sale } = storeToRefs(useSaleStore());
+
+const showReturnManage = reactive({
+  open: false as boolean,
+  saleID: null as number | null,
+});
 
 const getSale = async () => {
   if (saleID.value) {
@@ -76,6 +81,12 @@ const formatBrazilianCellphone = (value: string): string => {
   if (!phone) return '';
 
   return phone.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+};
+const changeShowReturnManage = (open: boolean, saleID: number | null = null): void => {
+  Object.assign(showReturnManage, {
+    open,
+    saleID,
+  });
 };
 
 const saleID = computed(() => props.data.saleID);
@@ -274,7 +285,7 @@ watch(open, async () => {
             </div>
           </div>
         </q-card>
-        <div v-if="true" class="column q-gutter-md">
+        <div class="column q-gutter-md">
           <q-card flat bordered class="q-pa-md bg-white">
             <div class="text-h6 text-primary q-pa-xs">
               <q-icon name="shopping_cart" class="q-mr-sm" />Itens da Venda
@@ -346,49 +357,22 @@ watch(open, async () => {
                 </q-item-section>
               </q-item>
             </q-list>
-            <div class="col-12 q-mt-sm" v-if="false">testando</div>
-          </q-card>
-        </div>
-        <div v-else-if="false" class="column q-gutter-md">
-          <q-card flat bordered class="q-pa-md bg-white">
-            <div class="text-h6 text-primary flex items-center">
-              <q-icon name="update" class="q-mr-sm" />
-              Atualizar Status do Pedido
-            </div>
-
-            <q-separator spaced />
-
-            <div class="row q-col-gutter-md">
-              <div class="col-12">testando</div>
-            </div>
-          </q-card>
-        </div>
-        <div v-else-if="false" class="column q-gutter-md">
-          <q-card flat bordered class="q-pa-md bg-white">
-            <div class="text-h6 text-primary flex items-center">
-              <q-icon name="update" class="q-mr-sm" />
-              Histórico do pedido
-            </div>
-
-            <div class="col-12 q-mt-sm">
-              <TableOrderHistory :items="[]" />
-            </div>
           </q-card>
         </div>
       </q-card-section>
-      <q-card-actions v-show="true" class="row justify-between items-center">
+      <q-card-actions class="row justify-between items-center">
         <div class="row no-wrap">
-          <div v-if="true">
+          <div>
             <q-btn
-              @click="console.log('status')"
+              @click="changeShowReturnManage(true, props.data.saleID)"
               color="primary"
-              icon="list_alt"
+              icon="assignment_return"
               round
               unelevated
               no-caps
               class="q-ml-sm"
             >
-              <q-tooltip>Status</q-tooltip>
+              <q-tooltip>Devoluções</q-tooltip>
             </q-btn>
             <q-btn
               @click="console.log('history')"
@@ -413,32 +397,6 @@ watch(open, async () => {
               <q-tooltip>Download</q-tooltip>
             </q-btn>
           </div>
-          <div>
-            <q-btn
-              v-if="false"
-              color="green"
-              icon="fa-solid fa-box-archive"
-              round
-              unelevated
-              no-caps
-              class="q-ml-sm"
-              @click="console.log('lasdjaksl')"
-            >
-              <q-tooltip>Recebimento</q-tooltip>
-            </q-btn>
-            <q-btn
-              v-if="false"
-              color="red"
-              icon="close"
-              round
-              unelevated
-              no-caps
-              class="q-ml-sm"
-              @click="emit('update:open')"
-            >
-              <q-tooltip>Cancelar</q-tooltip>
-            </q-btn>
-          </div>
         </div>
         <div>
           <q-btn
@@ -453,4 +411,6 @@ watch(open, async () => {
       </q-card-actions>
     </q-card>
   </q-dialog>
+  <!-- Modals -->
+  <ReturnManage :data="showReturnManage" @update:open="changeShowReturnManage(false)" />
 </template>

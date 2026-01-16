@@ -22,7 +22,7 @@ const props = withDefaults(
 
 const { loadingListSale, listSale } = storeToRefs(useSaleStore());
 
-const userMonitoring = ref<number | null>(null);
+const saleMonitoring = ref<number | null>(null);
 const showSaleDetails = reactive({
   open: false as boolean,
   saleID: null as number | null,
@@ -105,13 +105,13 @@ onMounted(async () => {
               </q-list>
             </div>
           </q-td>
-          <q-td key="total" :props="props" class="text-right text-h4">
+          <q-td key="total" :props="props" class="text-right">
             {{ formatToReal(props.row.total) }}
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
               @click="changeShowSaleDetails(true, props.row.id)"
-              :disable="userMonitoring === props.row.id"
+              :disable="saleMonitoring === props.row.id"
               size="sm"
               flat
               round

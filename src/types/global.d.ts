@@ -100,6 +100,7 @@ import type {
   SalePaymentsMethods,
   Sales,
   Sale,
+  ModeSaleDetails,
 } from './Payments';
 import type {
   Subscriptions,
@@ -108,6 +109,7 @@ import type {
   PaymentSubscriptionCreditCard,
 } from './Subscription';
 import type { DashboardData, RecordsData, FilterDashboard } from './Dashboard';
+import type { ReturnData, ReturnItens } from './Return';
 
 export {};
 
@@ -231,4 +233,7 @@ declare global {
   type ISaleDelivery = SaleDelivery;
   type ISales = Sales;
   type ISale = Sale;
+  type IModeSaleDetails = ModeSaleDetails;
+  type IReturnData = ReturnData;
+  type IReturnItens = ReturnItens;
 }

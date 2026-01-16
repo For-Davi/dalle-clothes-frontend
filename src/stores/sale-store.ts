@@ -6,18 +6,24 @@ import {
   showSaleService,
   sendCouponToEmailService,
   getSalesService,
+  getSaleItensService,
 } from 'src/services/sale-service';
 
 export const useSaleStore = defineStore('sale', {
   state: () => ({
     loadingSale: false as boolean,
     loadingListSale: false as boolean,
-    listSale: [] as ISales[],
+    loadingListSaleProducts: false as boolean,
     Sale: {} as ISale,
+    listSale: [] as ISales[],
+    listSaleProducts: [] as ISaleItens[],
   }),
   actions: {
     clearListSale() {
       this.listSale.splice(0, this.listSale.length);
+    },
+    clearListSaleProducts() {
+      this.listSaleProducts.splice(0, this.listSaleProducts.length);
     },
     clearSale() {
       this.Sale = {} as ISale;
@@ -28,11 +34,17 @@ export const useSaleStore = defineStore('sale', {
     setLoadingList(loading: boolean) {
       this.loadingListSale = loading;
     },
+    setLoadingListProduct(loading: boolean) {
+      this.loadingListSaleProducts = loading;
+    },
     setListSale(sales: ISales[]) {
       this.listSale = sales.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     },
     setSale(sale: ISale) {
       this.Sale = sale;
+    },
+    setSaleProduct(saleProduct: ISaleItens[]) {
+      saleProduct.map((item) => this.listSaleProducts.push(item));
     },
     async getSales() {
       try {
@@ -61,6 +73,20 @@ export const useSaleStore = defineStore('sale', {
         createError(error);
       } finally {
         this.setLoading(false);
+      }
+    },
+    async getSaleItens(saleID: number) {
+      try {
+        this.setLoadingListProduct(true);
+        const response = await getSaleItensService(saleID);
+        if (response.status === 200) {
+          this.clearListSaleProducts();
+          this.setSaleProduct(response.data.saleItens);
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoadingListProduct(false);
       }
     },
     async showSaleCouponData(saleID: number) {

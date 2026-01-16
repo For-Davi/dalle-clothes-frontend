@@ -1155,3 +1155,26 @@ export const checkDashboardFilter = (
 
   return { status: true };
 };
+
+export const checkDataToAddReturnProducts = (
+  data: IReturnItens,
+): { status: boolean; message?: string } => {
+  if (data.quantity < data.returnQuantity) {
+    return {
+      status: false,
+      message:
+        'A quantidade adicionada para devolução não pode ser maior que a quantidade comprada',
+    };
+  }
+  if (data.returnQuantity < 0) {
+    return {
+      status: false,
+      message: 'A quantidade adicionada para devolução não pode ser menor que 0',
+    };
+  }
+  if (data.returnQuantity === 0) {
+    return { status: false, message: 'Informe a quantidade que foi devolvida' };
+  }
+
+  return { status: true };
+};
