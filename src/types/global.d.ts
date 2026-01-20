@@ -216,4 +216,5 @@ declare global {
   type IDashboardData = DashboardData;
   type IRecordsData = RecordsData;
   type IFilterDashboard = FilterDashboard;
+  type IColorMountVariant = ColorMountVariant;
 }

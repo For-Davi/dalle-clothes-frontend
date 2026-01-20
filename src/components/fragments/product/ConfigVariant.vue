@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useColorStore } from 'src/stores/color-store';
 import { storeToRefs } from 'pinia';
 
@@ -30,6 +30,40 @@ const getColorStyle = (hexColor: string) => {
     verticalAlign: 'middle',
   };
 };
+const onUpdateColors = (selectedIds: number[], item: IVModelProductVariant) => {
+  item.colors = selectedIds.map((id) => {
+    const existing = item.colors.find((c: IColor) => c.id === id);
+    const color = listColor.value.find((c) => c.id === id);
+
+    return (
+      existing ?? {
+        id,
+        name: color?.name ?? '',
+        hex: color?.hex_color_code ?? '#000000',
+        stock: 0,
+        min_alert: 0,
+      }
+    );
+  });
+};
+const hasItemColor = computed(() => {
+  return listVariants.value.some((variant) => variant.colors && variant.colors.length > 0);
+});
+
+watch(
+  () => hasItemColor.value,
+  (hasItemColor) => {
+    if (hasItemColor) {
+      listVariants.value.forEach((item) => {
+        if (item.colors && item.colors.length > 0) {
+          item.stockQuantity = '0';
+          item.minStockAlert = '0';
+        }
+      });
+    }
+  },
+  { immediate: true },
+);
 
 const open = computed({
   get: () => props.open,
@@ -104,6 +138,7 @@ const open = computed({
                 <div class="row justify-between items-center">
                   <q-input
                     v-model="item.stockQuantity"
+                    :disable="item.colors && item.colors.length > 0"
                     bg-color="white"
                     label-color="black"
                     outlined
@@ -119,6 +154,7 @@ const open = computed({
                   </q-input>
                   <q-input
                     v-model="item.minStockAlert"
+                    :disable="item.colors && item.colors.length > 0"
                     bg-color="white"
                     label-color="black"
                     outlined
@@ -200,7 +236,6 @@ const open = computed({
                   </template>
                 </q-input>
                 <q-select
-                  v-model="item.colors"
                   outlined
                   bg-color="white"
                   label-color="black"
@@ -211,12 +246,14 @@ const open = computed({
                   label="Cores"
                   dense
                   options-selected-class="bg-green-1 text-black"
+                  emit-value
+                  map-options
+                  :model-value="item.colors.map((c: IColor) => c.id)"
+                  @update:model-value="(val) => onUpdateColors(val, item)"
                 >
                   <template v-slot:option="scope">
                     <q-item v-bind="scope.itemProps">
-                      <q-item-section avatar>
-                        <q-icon :name="scope.opt.icon" />
-                      </q-item-section>
+                      <q-item-section avatar> <q-icon :name="scope.opt.icon" /> </q-item-section>
                       <q-item-section>
                         <q-item-label class="row items-center q-gutter-x-sm">
                           <div
@@ -229,6 +266,49 @@ const open = computed({
                     </q-item>
                   </template>
                 </q-select>
+                <div v-if="item.colors.length" class="q-mt-sm column bg-grey-3">
+                  <div
+                    v-for="color in item.colors"
+                    :key="color.id"
+                    class="row items-center q-gutter-md q-pa-sm rounded-borders q-mt-sm"
+                  >
+                    <div
+                      class="rounded-borders"
+                      style="width: 24px; height: 24px"
+                      :style="{ backgroundColor: color.hex }"
+                    ></div>
+
+                    <div class="text-weight-medium">
+                      {{ color.name }}
+                    </div>
+
+                    <q-input
+                      v-model.number="color.stock"
+                      mask="###############"
+                      dense
+                      outlined
+                      label="Estoque"
+                      input-class="text-black no-spinners"
+                      bg-color="white"
+                      label-color="black"
+                    />
+
+                    <q-input
+                      v-model.number="color.min_alert"
+                      mask="###############"
+                      dense
+                      outlined
+                      label="Alerta mínimo"
+                      input-class="text-black no-spinners"
+                      bg-color="white"
+                      label-color="black"
+                    />
+                    <q-icon v-if="color.stock <= 0" name="report" color="red" size="sm">
+                      <q-tooltip>Estoque baixo</q-tooltip>
+                    </q-icon>
+                  </div>
+                </div>
+
                 <q-input
                   v-model="item.description"
                   bg-color="white"
