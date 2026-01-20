@@ -66,10 +66,12 @@ export interface DataSale {
 export interface Sales {
   id: number;
   enterprise_id: number;
+  status: string;
+  seller_name: string;
+  client_name: string;
   total: number;
   change: number;
   date: string;
-  sale_payments_methods: ISalePaymentsMethods[];
 }
 
 export interface SaleMade {

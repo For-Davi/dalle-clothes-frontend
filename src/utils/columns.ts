@@ -974,16 +974,28 @@ export const columnsSales: IQuasarTable[] = [
     align: 'left',
   },
   {
-    name: 'form_payment',
-    label: 'Forma de pagamento',
-    field: 'form_payment',
-    align: 'center',
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'seller_name',
+    label: 'Vendedor',
+    field: 'seller_name',
+    align: 'left',
+  },
+  {
+    name: 'client_name',
+    label: 'Cliente',
+    field: 'client_name',
+    align: 'left',
   },
   {
     name: 'total',
     label: 'Total',
     field: 'total',
-    align: 'right',
+    align: 'left',
   },
   {
     name: 'action',
@@ -1062,5 +1074,107 @@ export const columnsSaleProduct: IQuasarTable[] = [
     label: 'Ações',
     field: 'action',
     align: 'right',
+  },
+];
+
+export const columnsShiftProduct: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: 'Preço',
+    field: 'price',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Quantidade',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    field: 'total',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsCommissions: IQuasarTable[] = [
+  {
+    name: 'date',
+    label: 'Data',
+    field: 'date',
+    align: 'left',
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'type',
+    label: 'Tipo',
+    field: 'type',
+    align: 'left',
+  },
+  {
+    name: 'product_name',
+    label: 'Produto',
+    field: 'product_name',
+    align: 'left',
+  },
+  {
+    name: 'seller_name',
+    label: 'Vendedor',
+    field: 'seller_name',
+    align: 'left',
+  },
+  {
+    name: 'seller_email',
+    label: 'Email do vendedor',
+    field: 'seller_email',
+    align: 'left',
+  },
+  {
+    name: 'percentage',
+    label: 'Porcentagem da comissão',
+    field: 'percentage',
+    align: 'left',
+  },
+  {
+    name: 'commission_value',
+    label: 'Valor da comissão',
+    field: 'commission_value',
+    align: 'left',
   },
 ];

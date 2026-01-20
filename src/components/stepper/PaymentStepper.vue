@@ -156,6 +156,7 @@ const sendData = async () => {
   const check = checkPaymentData(dataPayment, missingAmount.value);
   if (check.status) {
     const formattedProducts: IDataProductSale[] = dataSale.products.map((p) => ({
+      productID: p.product_id,
       productVariantID: p.product_variant_id,
       price: p.price,
       offer: p.offer ?? '',

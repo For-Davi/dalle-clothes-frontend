@@ -23,9 +23,10 @@ const filter = ref<string>('');
       :rows="props.rows"
       :columns="columnsSaleProduct"
       :filter="filter"
-      title="Lista de produtos para devolução"
+      title="Lista de produtos de devolvidos"
       row-key="index"
       no-data-label="Nenhum produto adicionado para devolução"
+      dense
       virtual-scroll
       :rows-per-page-options="[10]"
     >
@@ -38,7 +39,7 @@ const filter = ref<string>('');
       </template>
       <template v-slot:top>
         <div class="row justify-between items-center full-width">
-          <span class="text-body1">Lista de produtos para devolução</span>
+          <span class="text-body1">Lista de produtos de devolvidos</span>
           <q-space />
           <q-input
             v-model="filter"

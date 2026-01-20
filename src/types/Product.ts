@@ -103,6 +103,7 @@ export interface DataUpdateVariant {
 
 export interface Product {
   id: number;
+  product_id: number;
   product_variant_id: number;
   price: string;
   stock_quantity: number;
@@ -275,6 +276,7 @@ export interface SearchProductVariant {
 }
 
 export interface ClientCartProduct {
+  product_id: number;
   product_variant_id: number;
   price: string;
   offer: string | null;
@@ -314,6 +316,7 @@ export interface ProductSupplierOrder {
 }
 
 export interface DataProductSale {
+  productID: number;
   productVariantID: number;
   price: string;
   offer: string;

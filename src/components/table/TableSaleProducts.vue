@@ -48,6 +48,7 @@ const addToReturn = (product: IReturnItens) => {
       title="Lista de produtos da venda"
       row-key="index"
       no-data-label="Nenhum produto para mostrar"
+      dense
       virtual-scroll
       :rows-per-page-options="[10]"
     >

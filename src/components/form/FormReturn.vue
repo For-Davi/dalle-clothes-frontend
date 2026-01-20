@@ -8,6 +8,7 @@ import { storeToRefs } from 'pinia';
 import { useSaleStore } from 'src/stores/sale-store';
 import { formatToReal } from 'src/composables/Money';
 import TableListProducts from '../table/TableListProducts.vue';
+import TableShiftItems from '../table/TableShiftItems.vue';
 
 defineOptions({
   name: 'FormReturn',
@@ -26,6 +27,7 @@ const emit = defineEmits<{
 const quantity = ref<number>(1);
 const returnData = ref<IReturnData[]>([]);
 const localProducts = ref<ISaleItens[]>([]);
+const shiftLocalProducts = ref<IClientCartProduct[]>([]);
 
 const { listSaleProducts, loadingListSaleProducts } = storeToRefs(useSaleStore());
 
@@ -77,6 +79,13 @@ const removeFromReturnTable = (id: number, index: number) => {
 
   if (productIndex !== -1) {
     returnData.value[index].products.splice(productIndex, 1);
+  }
+};
+const removeFromShiftTable = (id: number) => {
+  const index = shiftLocalProducts.value.findIndex((p) => p.product_variant_id === id);
+
+  if (index !== -1) {
+    shiftLocalProducts.value.splice(index, 1);
   }
 };
 const close = () => {
@@ -132,7 +141,7 @@ const optionsReasons = computed(() => {
       value: 'INCOMPATIBLE',
     },
     {
-      label: 'Desistência / arrependimento',
+      label: 'Desistência/Arrependimento',
       value: 'REGRET',
     },
     {
@@ -146,14 +155,58 @@ const optionsReasons = computed(() => {
   ];
 });
 const refundValue = computed(() => {
-  return returnData.value.reduce((total, item) => {
+  const returnTotal = returnData.value.reduce((total, item) => {
     const subtotal = item.products.reduce((sum, product) => {
       return sum + product.product_price * product.returnQuantity;
     }, 0);
 
     return total + subtotal;
   }, 0);
+
+  const shiftTotal = shiftLocalProducts.value.reduce((total, product) => {
+    const price =
+      product.offer !== '0.00' && product.offer !== null ? product.offer : product.price;
+    return total + Number(price) * product.quantity;
+  }, 0);
+
+  const total = returnTotal - shiftTotal;
+
+  if (total < 0) {
+    return 0;
+  }
+  return total;
 });
+const differenceRefundValue = computed(() => {
+  const returnTotal = returnData.value.reduce((total, item) => {
+    const subtotal = item.products.reduce((sum, product) => {
+      return sum + product.product_price * product.returnQuantity;
+    }, 0);
+
+    return total + subtotal;
+  }, 0);
+
+  const shiftTotal = shiftLocalProducts.value.reduce((total, product) => {
+    const price =
+      product.offer !== '0.00' && product.offer !== null ? product.offer : product.price;
+    return total + Number(price) * product.quantity;
+  }, 0);
+
+  const total = returnTotal - shiftTotal;
+
+  if (total > 0) {
+    return 0;
+  }
+  return total;
+});
+const addToShiftTable = (product: IClientCartProduct) => {
+  const hasReturnProducts = returnData.value.some((item) => item.products.length === 0);
+  if (hasReturnProducts || !product.quantity || product.quantity === 0) {
+    createErrorData('Adicione ao menos um produto para devolução antes de inserir itens na troca');
+  } else {
+    shiftLocalProducts.value.push(product);
+  }
+};
+const cartIds = computed(() => shiftLocalProducts.value.map((p) => p.product_variant_id));
 
 watch(
   () => quantity,
@@ -198,7 +251,7 @@ watch(
         <div class="q-gutter-y-lg">
           <q-input
             v-model="quantity"
-            label="Quantidade de itens para devolução"
+            label="Quantidade de itens que foram devolvidos"
             type="number"
             outlined
             dense
@@ -254,12 +307,26 @@ watch(
                 class="q-mb-lg q-mt-lg"
               />
             </div>
-            <TableListProducts class="q-mt-md" />
-            <div class="flex justify-end q-pa-sm">
-              <span class="text-h5 text-green-8 text-weight-medium"
-                >Estorno: {{ formatToReal(refundValue) }}
-              </span>
-            </div>
+          </div>
+          <div class="q-mt-xl">
+            <TableListProducts
+              class="q-mt-md"
+              :hidden-ids="cartIds"
+              @add-to-cart="addToShiftTable"
+            />
+            <TableShiftItems
+              class="q-mt-md"
+              :rows="shiftLocalProducts"
+              @remove-from-shift="removeFromShiftTable"
+            />
+          </div>
+          <div class="flex justify-end q-pa-sm q-gutter-x-lg">
+            <span class="text-h5 text-green-8 text-weight-medium"
+              >Estorno: {{ formatToReal(refundValue) }}
+            </span>
+            <span class="text-h5 text-red-8 text-weight-medium"
+              >Diferença a pagar: {{ formatToReal(differenceRefundValue) }}
+            </span>
           </div>
         </div>
       </q-card-section>

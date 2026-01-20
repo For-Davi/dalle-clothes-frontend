@@ -55,6 +55,7 @@ import type {
   DataProductSale,
   Product,
   ProductSupplierOrder,
+  ListProduct,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -109,7 +110,8 @@ import type {
   PaymentSubscriptionCreditCard,
 } from './Subscription';
 import type { DashboardData, RecordsData, FilterDashboard } from './Dashboard';
-import type { ReturnData, ReturnItens } from './Return';
+import type { ReturnData, ReturnItens, DataCreateReturn } from './Return';
+import type { Commission } from './Commission';
 
 export {};
 
@@ -236,4 +238,7 @@ declare global {
   type IModeSaleDetails = ModeSaleDetails;
   type IReturnData = ReturnData;
   type IReturnItens = ReturnItens;
+  type IDataCreateReturn = DataCreateReturn;
+  type IListProduct = ListProduct;
+  type ICommission = Commission;
 }

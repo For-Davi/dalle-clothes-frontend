@@ -3,7 +3,6 @@ export interface ReturnData {
   reason: string;
   description: string;
 }
-
 export interface ReturnItens {
   product_variant_id: number;
   product_name: string;
@@ -12,4 +11,10 @@ export interface ReturnItens {
   quantity: number;
   returnQuantity: number;
   total: number;
+}
+export interface DataCreateReturn {
+  saleID: number;
+  returnData: IReturnData[];
+  returnValue: number;
+  shiftProducts: IClientCartProduct[];
 }

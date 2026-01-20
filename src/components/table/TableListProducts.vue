@@ -29,7 +29,7 @@ const startAddCart = (product: IClientCartProduct) => {
   if (check.status) {
     emit('add-to-cart', product);
   } else {
-    createErrorData(check.message || 'Erro ao adicionar produto ao carrinho');
+    createErrorData(check.message || 'Erro ao adicionar produto');
   }
 };
 const fetchProducts = async (): Promise<void> => {
@@ -184,7 +184,9 @@ onMounted(async () => {
                 color="green"
                 icon="add"
                 class="q-mr-sm"
-                :disable="props.row.stock_quantity <= 0"
+                :disable="
+                  props.row.stock_quantity <= 0 || props.row.quantity >= props.row.stock_quantity
+                "
                 @click="props.row.quantity++"
               />
               <q-btn
@@ -193,7 +195,11 @@ onMounted(async () => {
                 round
                 color="primary"
                 icon="add_shopping_cart"
-                :disable="props.row.stock_quantity <= 0 || props.row.quantity <= 0"
+                :disable="
+                  props.row.stock_quantity <= 0 ||
+                  props.row.quantity <= 0 ||
+                  props.row.quantity > props.row.stock_quantity
+                "
                 @click="startAddCart(props.row)"
               >
                 <q-tooltip> Adicionar ao carrinho do cliente </q-tooltip>

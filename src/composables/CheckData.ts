@@ -683,7 +683,7 @@ export const checkEnterpriseData = (data: {
 };
 
 export const checkProductClientData = (
-  data: IClientCartProduct,
+  data: IListProduct,
 ): { status: boolean; message?: string } => {
   if (data.stock_quantity < data.quantity) {
     return { status: false, message: 'A quantidade informada excede a quantidade em estoque' };
@@ -1178,3 +1178,46 @@ export const checkDataToAddReturnProducts = (
 
   return { status: true };
 };
+
+export const checkDataCreateReturn = (
+  data: IDataCreateReturn,
+): { status: boolean; message?: string } => {
+  const allReturnData = data.returnData.map((item) => item);
+  const allReturnDataProducts = data.returnData.flatMap((returnItem) => returnItem.products);
+  if (!data.saleID) {
+    return {
+      status: false,
+      message: 'Deve ser informado o id da venda',
+    };
+  }
+  if (allReturnData.length === 0) {
+    return {
+      status: false,
+      message: 'Preencha com os dados necessários',
+    };
+  }
+  if (allReturnDataProducts.length === 0) {
+    return {
+      status: false,
+      message: 'Informe os produtos que o cliente devolveu',
+    };
+  }
+  if (!data.returnValue) {
+    return { status: false, message: 'Informe o valor a ser estornado' };
+  }
+  if (isNaN(data.returnValue)) {
+    return { status: false, message: 'Informe um valor válido para ser estornado' };
+  }
+  if (data.returnValue < 0) {
+    return { status: false, message: 'O valor de estorno não pode ser abaixo de 0' };
+  }
+
+  return { status: true };
+};
+
+// export const checkDataReturn = (
+//   data:
+// ): { status: boolean; message?: string } => {
+
+//  return { status: true }
+// }

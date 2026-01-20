@@ -9,6 +9,7 @@ import { useSaleStore } from 'src/stores/sale-store';
 import type { PaymentType } from 'src/enums/payment-enum';
 import { PaymentTypeLabels } from 'src/enums/payment-enum';
 import ReturnManage from 'src/components/manage/ReturnManage.vue';
+import CommissionManage from 'src/components/manage/CommissionManage.vue';
 
 defineOptions({
   name: 'SaleDetails',
@@ -27,6 +28,10 @@ const emit = defineEmits<{
 const { loadingSale, Sale } = storeToRefs(useSaleStore());
 
 const showReturnManage = reactive({
+  open: false as boolean,
+  saleID: null as number | null,
+});
+const showCommissionManage = reactive({
   open: false as boolean,
   saleID: null as number | null,
 });
@@ -88,6 +93,12 @@ const changeShowReturnManage = (open: boolean, saleID: number | null = null): vo
     saleID,
   });
 };
+const changeShowCommissionManage = (open: boolean, saleID: number | null = null): void => {
+  Object.assign(showCommissionManage, {
+    open,
+    saleID,
+  });
+};
 
 const saleID = computed(() => props.data.saleID);
 const open = computed({
@@ -138,51 +149,6 @@ watch(open, async () => {
                 <q-icon name="paid" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Faturas:</b> {{ formatToReal(Sale.fees) }}
               </p>
-
-              <div class="q-mt-md">
-                <p class="flex items-center">
-                  <q-icon name="credit_card" class="q-mr-sm text-primary" />
-                  <b class="q-mr-sm">Pagamentos:</b>
-                </p>
-
-                <q-list
-                  separator
-                  bordered
-                  style="max-height: 200px; overflow-y: auto"
-                  class="q-mt-sm"
-                >
-                  <q-item
-                    dense
-                    v-for="(payment, index) in Sale.sale_payments_methods"
-                    :key="index"
-                    class="q-pa-sm"
-                  >
-                    <q-item-section>
-                      <q-item-label>{{ getPaymentTypeLabel(payment.type) }}</q-item-label>
-                    </q-item-section>
-
-                    <q-item-section
-                      v-if="payment.installments"
-                      class="text-center"
-                      style="max-width: 50px"
-                    >
-                      <q-item-label>{{ payment.installments }}X</q-item-label>
-                    </q-item-section>
-
-                    <q-item-section side>
-                      <q-item-label class="text-weight-medium">
-                        {{ formatToReal(payment.value) }}
-                      </q-item-label>
-                    </q-item-section>
-
-                    <q-item-section side>
-                      <q-item-label>
-                        {{ payment.receipt }}
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </q-list>
-              </div>
             </div>
 
             <div class="col-12 col-sm-6">
@@ -202,6 +168,39 @@ watch(open, async () => {
                 <q-icon name="calendar_today" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Data de criação:</b> {{ formatToBrazilianDateTime(Sale.date) }}
               </p>
+            </div>
+
+            <div class="col-12 q-px-md q-py-none">
+              <div>
+                <p class="flex items-center">
+                  <q-icon name="credit_card" class="q-mr-sm text-primary" />
+                  <b class="q-mr-sm">Pagamentos:</b>
+                </p>
+
+                <q-list separator bordered class="q-mt-sm">
+                  <q-item dense v-for="(payment, index) in Sale.sale_payments_methods" :key="index">
+                    <q-item-section class="text-left">
+                      <q-item-label>{{ getPaymentTypeLabel(payment.type) }}</q-item-label>
+                    </q-item-section>
+
+                    <q-item-section v-if="payment.installments" class="text-center">
+                      <q-item-label>{{ payment.installments }}X</q-item-label>
+                    </q-item-section>
+
+                    <q-item-section>
+                      <q-item-label class="text-weight-medium text-center">
+                        {{ formatToReal(payment.value) }}
+                      </q-item-label>
+                    </q-item-section>
+
+                    <q-item-section side>
+                      <q-item-label class="text-weight-medium text-right">
+                        {{ payment.receipt }}
+                      </q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </q-list>
+              </div>
             </div>
           </div>
         </q-card>
@@ -377,24 +376,35 @@ watch(open, async () => {
             <q-btn
               @click="console.log('history')"
               color="secondary"
-              icon="history"
+              icon="payments"
               round
               unelevated
               no-caps
               class="q-ml-sm"
             >
-              <q-tooltip>Histórico</q-tooltip>
+              <q-tooltip>Estorno</q-tooltip>
             </q-btn>
             <q-btn
-              color="grey"
-              icon="download"
+              color="positive"
+              icon="redeem"
+              round
+              unelevated
+              no-caps
+              class="q-ml-sm"
+              @click="changeShowCommissionManage(true, props.data.saleID)"
+            >
+              <q-tooltip>Comissões</q-tooltip>
+            </q-btn>
+            <q-btn
+              color="red"
+              icon="money_off"
               round
               unelevated
               no-caps
               class="q-ml-sm"
               @click="console.log('lasdjaksl')"
             >
-              <q-tooltip>Download</q-tooltip>
+              <q-tooltip>Cancelamento</q-tooltip>
             </q-btn>
           </div>
         </div>
@@ -413,4 +423,5 @@ watch(open, async () => {
   </q-dialog>
   <!-- Modals -->
   <ReturnManage :data="showReturnManage" @update:open="changeShowReturnManage(false)" />
+  <CommissionManage :data="showCommissionManage" @update:open="changeShowCommissionManage(false)" />
 </template>
