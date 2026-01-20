@@ -474,6 +474,12 @@ export const columnsProduct: IQuasarTable[] = [
     align: 'left',
   },
   {
+    name: 'grid',
+    label: 'Grade',
+    field: 'grid',
+    align: 'left',
+  },
+  {
     name: 'action',
     label: 'Ação',
     field: 'action',

@@ -139,6 +139,18 @@ onMounted(async () => {
               }}</q-tooltip>
             </div>
           </q-td>
+          <q-td key="grid" :props="props" class="text-left">
+            {{ props.row.grid_item ? props.row.grid_item.size : '' }}
+            <q-icon name="info" class="q-ml-sm">
+              <q-tooltip>
+                {{
+                  props.row.grid_item && props.row.grid_item.grid_group
+                    ? props.row.grid_item.grid_group.name
+                    : ''
+                }}
+              </q-tooltip>
+            </q-icon>
+          </q-td>
 
           <q-td key="action" :props="props">
             <q-btn

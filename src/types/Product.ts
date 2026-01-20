@@ -116,6 +116,7 @@ export interface Product {
     name: string;
     hex_color_code: string;
   } | null;
+  grid_item: IGridItem | null;
 }
 
 export interface ShowProduct {
