@@ -3,8 +3,9 @@ import { api } from 'src/boot/axios';
 const baseUrl = 'user';
 
 export const doLoginService = (
-  email: string,
-  password: string,
+  email: string | null,
+  password: string | null,
+  token: string | null,
 ): Promise<{
   status: number;
   data: {
@@ -12,7 +13,7 @@ export const doLoginService = (
     enterprise_name: string;
     token: string;
   };
-}> => api.post('/login', { email, password });
+}> => api.post('/login', { email, password, token });
 
 export const doResetService = (
   email: string,

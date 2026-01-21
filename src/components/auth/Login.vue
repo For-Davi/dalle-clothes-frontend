@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { Notify } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from 'src/stores/auth-store';
@@ -16,6 +17,9 @@ const emit = defineEmits<{
 }>();
 
 const { loadingAuth } = storeToRefs(useAuthStore());
+
+const route = useRoute();
+const router = useRouter();
 
 const isPwd = ref<boolean>(true);
 const dataLogin = reactive({
@@ -43,6 +47,38 @@ const login = async () => {
     });
   }
 };
+const loginWithGoogle = () => {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+  window.location.href = `${baseUrl}/auth/google/redirect`;
+};
+
+watch(
+  () => route.query,
+  async (newQuery) => {
+    const token = newQuery.token as string | undefined;
+    const hasError = 'error' in newQuery;
+
+    if (hasError) {
+      Notify.create({
+        message: 'Erro ao autenticar com o Google. Tente novamente.',
+        type: 'negative',
+      });
+
+      await router.replace({ query: {} });
+      return;
+    }
+
+    if (token) {
+      try {
+        await useAuthStore().doLogin(null, null, token);
+      } finally {
+        await router.replace({ query: {} });
+      }
+    }
+  },
+  { immediate: true },
+);
 
 onMounted(() => {
   clear();
@@ -111,6 +147,15 @@ onMounted(() => {
         unelevated
         no-caps
         class="full-width"
+      />
+      <q-btn
+        @click="loginWithGoogle"
+        outline
+        color="grey-8"
+        label="Entrar com Google"
+        icon="img:https://authjs.dev/img/providers/google.svg"
+        no-caps
+        class="full-width q-mt-sm"
       />
       <div class="row justify-end items-center">
         <span class="q-mt-sm q-mr-md">Não tem uma conta?</span>
