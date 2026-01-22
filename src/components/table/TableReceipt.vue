@@ -73,6 +73,7 @@ onMounted(async () => {
     :rows="loadingReceipt ? [] : listReceipt"
     :columns="columnsReceipts"
     :filter="props.filter"
+    :loading="loadingReceipt"
     title="Lista de recebimentos"
     row-key="index"
     no-data-label="Nenhum recebimento para mostrar"

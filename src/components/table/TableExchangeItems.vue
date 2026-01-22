@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import { columnsShiftProduct } from 'src/utils/columns';
 
 defineOptions({
-  name: 'TableShiftItems',
+  name: 'TableExchangeItems',
 });
 
 const props = defineProps<{

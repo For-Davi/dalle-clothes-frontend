@@ -10,6 +10,8 @@ export interface ReturnItens {
   product_price: number;
   quantity: number;
   returnQuantity: number;
+  color: string;
+  color_name: string;
   total: number;
 }
 export interface DataCreateReturn {

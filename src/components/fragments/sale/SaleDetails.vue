@@ -414,6 +414,7 @@ watch(open, async () => {
             label="Fechar"
             @click="open = false"
             unelevated
+            flat
             no-caps
             class="q-mr-sm"
           />

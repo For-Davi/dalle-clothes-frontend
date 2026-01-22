@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
 import { columnsCommissions } from 'src/utils/columns';
 import { useCommissionStore } from 'src/stores/commission-store';
 import { formatToReal } from 'src/composables/Money';
+import type { QTableProps } from 'quasar';
 
 defineOptions({
   name: 'TableCategoryTransaction',
@@ -12,23 +13,37 @@ defineOptions({
 
 const props = defineProps<{
   saleID: number | null;
-}>();
-const emit = defineEmits<{
-  'show:showFormCategoryTransaction': [ICategoryTransaction];
+  filter: string;
 }>();
 
 const { loadingCommission, listCommission } = storeToRefs(useCommissionStore());
 
-const filter = ref<string>('');
-
-const fetchCategories = async (): Promise<void> => {
+const fetchCommissions = async (): Promise<void> => {
   if (props.saleID) {
     await useCommissionStore().getComissionsSelect(props.saleID);
   }
 };
+const filterMethod: QTableProps['filterMethod'] = (rows, terms) => {
+  const search = String(terms).toLowerCase();
+
+  return rows.filter((row: ICommission) => {
+    const formattedDate = row.created_at.toLowerCase();
+
+    return (
+      formattedDate.includes(search) ||
+      row.status.toLowerCase().includes(search) ||
+      row.type.toLowerCase().includes(search) ||
+      row.product_name.toLowerCase().includes(search) ||
+      row.seller_name.toLowerCase().includes(search) ||
+      row.seller_email?.toLowerCase().includes(search) ||
+      String(row.percentage ?? '').includes(search) ||
+      String(row.commission_value ?? '').includes(search)
+    );
+  });
+};
 
 onMounted(async () => {
-  await fetchCategories();
+  await fetchCommissions();
 });
 </script>
 <template>
@@ -37,10 +52,11 @@ onMounted(async () => {
       v-show="!loadingCommission"
       :rows="loadingCommission ? [] : listCommission"
       :columns="columnsCommissions"
-      :filter="filter"
+      :filter="props.filter"
+      :filter-method="filterMethod"
       :loading="loadingCommission"
       title="Lista de comissões"
-      row-key="index"
+      row-key="created_at"
       no-data-label="Nenhuma comissão para mostrar"
       virtual-scroll
       :rows-per-page-options="[6]"
@@ -55,30 +71,21 @@ onMounted(async () => {
           </q-th>
         </q-tr>
       </template>
-      <template v-slot:top>
-        <div class="row justify-between items-center full-width">
-          <span class="text-body1">Lista de comissões</span>
-          <q-space />
-          <q-input
-            v-show="listCommission.length > 0"
-            v-model="filter"
-            outlined
-            dense
-            label="Pesquisar"
-            :class="!$q.screen.lt.md ? '' : 'q-mt-sm'"
-          >
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-        </div>
-      </template>
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="date" :props="props" class="text-left">
-            {{ props.row.date }}
+            {{ props.row.created_at }}
           </q-td>
-          <q-td key="status" :props="props" class="text-left"> teste </q-td>
+          <q-td key="status" :props="props" class="text-left">
+            <q-icon
+              :name="props.row.status === 'Ativa' ? 'check_circle' : 'close'"
+              :color="props.row.status === 'Ativa' ? 'green' : 'red'"
+              class="cursor-pointer"
+              size="17px"
+            >
+              <q-tooltip class="bg-grey-3 text-bold text-black">{{ props.row.status }}</q-tooltip>
+            </q-icon>
+          </q-td>
           <q-td key="type" :props="props" class="text-left">
             {{ props.row.type }}
           </q-td>
@@ -96,17 +103,6 @@ onMounted(async () => {
           </q-td>
           <q-td key="commission_value" :props="props" class="text-left">
             {{ formatToReal(props.row.commission_value) }}
-          </q-td>
-          <q-td key="actions" :props="props">
-            <q-btn @click="console.log(props.row)" size="sm" flat round color="black" icon="edit" />
-            <q-btn
-              @click="console.log(props.row.id)"
-              size="sm"
-              flat
-              round
-              color="red"
-              icon="delete"
-            />
           </q-td>
         </q-tr>
       </template>

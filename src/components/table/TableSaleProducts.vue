@@ -30,11 +30,24 @@ const addToReturn = (product: IReturnItens) => {
       product_price: product.product_price,
       quantity: product.quantity,
       returnQuantity: product.returnQuantity,
+      color: product.color,
+      color_name: product.color_name,
       total: product.total,
     });
   } else {
     createErrorData(check.message || 'Erro ao adicionar produto para a tabela de devolução');
   }
+};
+const getColorStyle = (hexColor: string) => {
+  return {
+    backgroundColor: hexColor || 'transparent',
+    width: '24px',
+    height: '24px',
+    border: '1px solid #ddd',
+    borderRadius: '50%',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  };
 };
 </script>
 
@@ -93,6 +106,17 @@ const addToReturn = (product: IReturnItens) => {
           </q-td>
           <q-td key="price" :props="props" class="text-left">
             {{ formatToReal(props.row.product_price) }}
+          </q-td>
+          <q-td key="color" :props="props" class="text-left">
+            <div
+              v-if="props.row.color"
+              class="cursor-pointer"
+              :style="getColorStyle(props.row.color)"
+            >
+              <q-tooltip class="bg-grey-3 text-bold text-black">{{
+                props.row.color_name
+              }}</q-tooltip>
+            </div>
           </q-td>
           <q-td key="total" :props="props" class="text-left">
             {{ formatToReal(props.row.total) }}

@@ -1064,6 +1064,12 @@ export const columnsSaleProduct: IQuasarTable[] = [
     align: 'left',
   },
   {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
     name: 'total',
     label: 'Total',
     field: 'total',

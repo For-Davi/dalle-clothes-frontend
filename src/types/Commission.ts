@@ -1,10 +1,10 @@
 export interface Commission {
-  date: string;
+  created_at: string;
   status: string;
   type: string;
   product_name: string;
   seller_name: string;
-  seller_email: string;
-  percentage: number;
-  commission_value: number;
+  seller_email?: string | null;
+  percentage?: number | null;
+  commission_value?: number | null;
 }

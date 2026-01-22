@@ -8,7 +8,7 @@ import { storeToRefs } from 'pinia';
 import { useSaleStore } from 'src/stores/sale-store';
 import { formatToReal } from 'src/composables/Money';
 import TableListProducts from '../table/TableListProducts.vue';
-import TableShiftItems from '../table/TableShiftItems.vue';
+import TableExchangeItems from '../table/TableExchangeItems.vue';
 
 defineOptions({
   name: 'FormReturn',
@@ -27,7 +27,7 @@ const emit = defineEmits<{
 const quantity = ref<number>(1);
 const returnData = ref<IReturnData[]>([]);
 const localProducts = ref<ISaleItens[]>([]);
-const shiftLocalProducts = ref<IClientCartProduct[]>([]);
+const exchangeProducts = ref<IClientCartProduct[]>([]);
 
 const { listSaleProducts, loadingListSaleProducts } = storeToRefs(useSaleStore());
 
@@ -81,11 +81,11 @@ const removeFromReturnTable = (id: number, index: number) => {
     returnData.value[index].products.splice(productIndex, 1);
   }
 };
-const removeFromShiftTable = (id: number) => {
-  const index = shiftLocalProducts.value.findIndex((p) => p.product_variant_id === id);
+const removeFromExchangeTable = (id: number) => {
+  const index = exchangeProducts.value.findIndex((p) => p.product_variant_id === id);
 
   if (index !== -1) {
-    shiftLocalProducts.value.splice(index, 1);
+    exchangeProducts.value.splice(index, 1);
   }
 };
 const close = () => {
@@ -163,7 +163,7 @@ const refundValue = computed(() => {
     return total + subtotal;
   }, 0);
 
-  const shiftTotal = shiftLocalProducts.value.reduce((total, product) => {
+  const shiftTotal = exchangeProducts.value.reduce((total, product) => {
     const price =
       product.offer !== '0.00' && product.offer !== null ? product.offer : product.price;
     return total + Number(price) * product.quantity;
@@ -185,7 +185,7 @@ const differenceRefundValue = computed(() => {
     return total + subtotal;
   }, 0);
 
-  const shiftTotal = shiftLocalProducts.value.reduce((total, product) => {
+  const shiftTotal = exchangeProducts.value.reduce((total, product) => {
     const price =
       product.offer !== '0.00' && product.offer !== null ? product.offer : product.price;
     return total + Number(price) * product.quantity;
@@ -198,15 +198,15 @@ const differenceRefundValue = computed(() => {
   }
   return total;
 });
-const addToShiftTable = (product: IClientCartProduct) => {
+const addToExchangeTable = (product: IClientCartProduct) => {
   const hasReturnProducts = returnData.value.some((item) => item.products.length === 0);
   if (hasReturnProducts || !product.quantity || product.quantity === 0) {
     createErrorData('Adicione ao menos um produto para devolução antes de inserir itens na troca');
   } else {
-    shiftLocalProducts.value.push(product);
+    exchangeProducts.value.push(product);
   }
 };
-const cartIds = computed(() => shiftLocalProducts.value.map((p) => p.product_variant_id));
+const cartIds = computed(() => exchangeProducts.value.map((p) => p.product_variant_id));
 
 watch(
   () => quantity,
@@ -214,6 +214,9 @@ watch(
     if (props.data.open) {
       if (quantity.value <= 0) {
         quantity.value = 1;
+      }
+      if (quantity.value > 13) {
+        quantity.value = 13;
       }
       returnData.value = [];
       createReturnData(quantity.value);
@@ -243,7 +246,7 @@ watch(
 
 <template>
   <q-dialog v-model="open">
-    <q-card style="width: 900px; max-width: 98vw" class="bg-grey-2 form-basic">
+    <q-card style="min-width: 70vw" class="bg-grey-2 form-basic">
       <q-card-section class="q-pa-none">
         <TitlePage title="Formulário de devolução" icon="assignment_return" />
       </q-card-section>
@@ -312,12 +315,12 @@ watch(
             <TableListProducts
               class="q-mt-md"
               :hidden-ids="cartIds"
-              @add-to-cart="addToShiftTable"
+              @add-to-cart="addToExchangeTable"
             />
-            <TableShiftItems
+            <TableExchangeItems
               class="q-mt-md"
-              :rows="shiftLocalProducts"
-              @remove-from-shift="removeFromShiftTable"
+              :rows="exchangeProducts"
+              @remove-from-shift="removeFromExchangeTable"
             />
           </div>
           <div class="flex justify-end q-pa-sm q-gutter-x-lg">
