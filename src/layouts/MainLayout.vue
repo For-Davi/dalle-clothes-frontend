@@ -190,45 +190,6 @@ const getBackgroundSelectedSideMenu = computed(() => {
               clickable
               v-ripple
               class="text-white"
-              :to="{ name: 'fidelity' }"
-              :active="isActive('fidelity')"
-              active-class="text-bold"
-              :style="
-                isActive('fidelity')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="favorite"
-                  :style="{
-                    color: isActive('fidelity')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('fidelity')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Fidelidade
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
               :to="{ name: 'client' }"
               :active="isActive('client')"
               active-class="text-bold"
@@ -264,7 +225,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
                 </span>
               </q-item-section>
             </q-item>
-            <q-item
+            <!-- <q-item
               clickable
               v-ripple
               class="text-white"
@@ -302,8 +263,8 @@ const getBackgroundSelectedSideMenu = computed(() => {
                   Loja
                 </span>
               </q-item-section>
-            </q-item>
-            <q-item
+            </q-item> -->
+            <!-- <q-item
               clickable
               v-ripple
               class="text-white"
@@ -341,7 +302,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
                   Cupons
                 </span>
               </q-item-section>
-            </q-item>
+            </q-item> -->
             <q-item
               clickable
               v-ripple
@@ -654,7 +615,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
                 </span>
               </q-item-section>
             </q-item>
-            <q-item
+            <!-- <q-item
               clickable
               v-ripple
               class="text-white"
@@ -692,7 +653,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
                   Agenda
                 </span>
               </q-item-section>
-            </q-item>
+            </q-item> -->
             <q-item
               clickable
               v-ripple

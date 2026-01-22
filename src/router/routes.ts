@@ -36,16 +36,16 @@ const routes: RouteRecordRaw[] = [
         name: 'delivery',
         component: () => import('src/pages/Delivery.vue'),
       },
-      {
-        path: 'store',
-        name: 'store',
-        component: () => import('src/pages/Store.vue'),
-      },
-      {
-        path: 'coupon',
-        name: 'coupon',
-        component: () => import('src/pages/Coupon.vue'),
-      },
+      // {
+      //   path: 'store',
+      //   name: 'store',
+      //   component: () => import('src/pages/Store.vue'),
+      // },
+      // {
+      //   path: 'coupon',
+      //   name: 'coupon',
+      //   component: () => import('src/pages/Coupon.vue'),
+      // },
       {
         path: 'stock',
         name: 'stock',
@@ -71,26 +71,26 @@ const routes: RouteRecordRaw[] = [
         name: 'client',
         component: () => import('src/pages/Client.vue'),
       },
-      {
-        path: 'earnings',
-        name: 'earnings',
-        component: () => import('src/pages/Earning.vue'),
-      },
+      // {
+      //   path: 'earnings',
+      //   name: 'earnings',
+      //   component: () => import('src/pages/Earning.vue'),
+      // },
       {
         path: 'supplier',
         name: 'supplier',
         component: () => import('src/pages/Supplier.vue'),
       },
-      {
-        path: 'diary',
-        name: 'diary',
-        component: () => import('src/pages/Diary.vue'),
-      },
-      {
-        path: 'fidelity',
-        name: 'fidelity',
-        component: () => import('src/pages/Fidelity.vue'),
-      },
+      // {
+      //   path: 'diary',
+      //   name: 'diary',
+      //   component: () => import('src/pages/Diary.vue'),
+      // },
+      // {
+      //   path: 'fidelity',
+      //   name: 'fidelity',
+      //   component: () => import('src/pages/Fidelity.vue'),
+      // },
       {
         path: 'subscription',
         name: 'subscription',
