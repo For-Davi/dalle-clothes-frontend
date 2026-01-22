@@ -5,12 +5,14 @@ import Navbar from 'src/components/general/Navbar.vue';
 import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
 import Inbox from 'src/components/general/Inbox.vue';
+import ContactHelper from 'src/components/info/ContactHelper.vue';
 
 const route = useRoute();
 
 const { appearanceSetting } = storeToRefs(useSettingsStore());
 
 const showInbox = ref<boolean>(false);
+const showContactHelper = ref<boolean>(false);
 const miniState = ref<boolean>(false);
 const drawer = ref<boolean>(false);
 
@@ -20,6 +22,9 @@ const isActive = (routeName: string) => {
 
 const changeShowInbox = () => {
   showInbox.value = !showInbox.value;
+};
+const changeShowContactHelper = () => {
+  showContactHelper.value = !showContactHelper.value;
 };
 
 const getColorIconNotSelectedSideMenu = computed(() => {
@@ -52,7 +57,10 @@ const getBackgroundSelectedSideMenu = computed(() => {
   <div>
     <q-layout view="hHh Lpr lff" container style="height: 100vh">
       <q-header class="bg-blue-10">
-        <Navbar @update:open-inbox="changeShowInbox" />
+        <Navbar
+          @update:open-inbox="changeShowInbox"
+          @update:open-contact-helper="changeShowContactHelper"
+        />
       </q-header>
 
       <q-drawer
@@ -744,6 +752,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
       </q-page-container>
       <!-- Notification -->
       <Inbox :open="showInbox" @update:open="changeShowInbox" />
+      <ContactHelper :open="showContactHelper" @update:open="changeShowContactHelper" />
     </q-layout>
   </div>
 </template>

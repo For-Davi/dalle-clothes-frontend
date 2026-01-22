@@ -13,9 +13,9 @@ defineOptions({
 const emit = defineEmits<{
   'update:openFormPerfil': [void];
   'update:openFormEnterprise': [void];
-  'update:openEmailInfo': [void];
   'update:changeOpenMenu': [void];
   'update:openInbox': [void];
+  'update:openContactHelper': [void];
 }>();
 
 const { appearanceSetting } = storeToRefs(useSettingsStore());
@@ -28,6 +28,9 @@ const changeOpenFormFeedback = (): void => {
 };
 const startOpenInbox = (): void => {
   emit('update:openInbox');
+};
+const startOpenContactHelper = (): void => {
+  emit('update:openContactHelper');
 };
 
 const getBackgroundNavbar = computed(() => {
@@ -61,7 +64,7 @@ const countNotificationsNoRead = computed((): number => {
       <div class="row justify-end">
         <div v-if="!$q.screen.lt.md">
           <q-btn
-            @click="emit('update:openEmailInfo')"
+            @click="startOpenContactHelper"
             flat
             icon-right="fa-solid fa-headset"
             rounded
@@ -100,7 +103,7 @@ const countNotificationsNoRead = computed((): number => {
             :style="getColorIconNavbar ? { color: getColorIconNavbar } : undefined"
           >
             <q-list>
-              <q-item clickable v-ripple @click="emit('update:openEmailInfo')">
+              <q-item clickable v-ripple @click="startOpenContactHelper">
                 <q-item-section avatar>
                   <q-avatar>
                     <q-icon name="chat" />

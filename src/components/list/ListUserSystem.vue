@@ -104,7 +104,7 @@ onMounted(async () => {
 
               <div class="row items-center q-mb-sm">
                 <q-icon name="business" color="secondary" size="xs" class="q-mr-sm" />
-                <div class="text-grey-8">{{ props.row.department_name }}</div>
+                <div class="text-grey-8">{{ props.row.department_name ?? 'Não informado' }}</div>
               </div>
 
               <q-separator inset class="q-my-sm" />
