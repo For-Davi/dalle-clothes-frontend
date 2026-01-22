@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useColorStore } from 'src/stores/color-store';
 import { storeToRefs } from 'pinia';
+import { useProductStore } from 'src/stores/product-store';
+import { Notify } from 'quasar';
 
 defineOptions({
   name: 'ConfigVariant',
@@ -18,6 +20,8 @@ const emit = defineEmits<{
 const listVariants = defineModel<IVModelProductVariant[]>('listVariants', { required: true });
 
 const { listColor } = storeToRefs(useColorStore());
+
+const loadingValidCode = ref<boolean>(false);
 
 const getColorStyle = (hexColor: string) => {
   return {
@@ -46,8 +50,38 @@ const onUpdateColors = (selectedIds: number[], item: IVModelProductVariant) => {
     );
   });
 };
+const checkCodes = async () => {
+  loadingValidCode.value = true;
+  const codes: string[] = listVariants.value
+    .filter((variant) => variant.code && variant.code.trim() !== '')
+    .map((variant) => variant.code!.trim());
+
+  const response = await useProductStore().checkCodes(codes);
+  if (response?.status === 200) {
+    if (response.data.available) {
+      Notify.create({
+        type: 'positive',
+        message: response.data.message,
+      });
+    } else {
+      Notify.create({
+        type: 'negative',
+        message: response.data.message,
+      });
+    }
+  } else {
+    Notify.create({
+      type: 'negative',
+      message: 'Erro ao validar os códigos',
+    });
+  }
+  loadingValidCode.value = false;
+};
 const hasItemColor = computed(() => {
   return listVariants.value.some((variant) => variant.colors && variant.colors.length > 0);
+});
+const showCheckCode = computed(() => {
+  return listVariants.value.some((variant) => variant.code && variant.code.trim() !== '');
 });
 
 watch(
@@ -362,7 +396,25 @@ const open = computed({
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
-          <q-btn @click="open = false" color="red" label="Fechar" size="md" unelevated no-caps />
+          <q-btn
+            @click="open = false"
+            color="red"
+            label="Fechar"
+            flat
+            size="md"
+            unelevated
+            no-caps
+          />
+          <q-btn
+            v-if="showCheckCode"
+            @click="checkCodes"
+            :loading="loadingValidCode"
+            color="primary"
+            label="Validar códigos"
+            size="md"
+            unelevated
+            no-caps
+          />
         </div>
       </q-card-actions>
     </q-card>

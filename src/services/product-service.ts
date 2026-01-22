@@ -155,6 +155,16 @@ export const updateProductBasicService = (
   };
 }> => api.put(`${baseUrl}/basic/`, data);
 
+export const checkCodesService = (
+  data: string[],
+): Promise<{
+  status: number;
+  data: {
+    available: boolean;
+    message: string;
+  };
+}> => api.post(`${baseUrl}/variant/check-codes`, { codes: data });
+
 export const createMovementVariantService = (
   data: IDataMovementProductRegister,
 ): Promise<{

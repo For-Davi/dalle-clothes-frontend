@@ -1,4 +1,5 @@
 import {
+  checkCodesService,
   createMovementVariantService,
   createProductService,
   deleteProductService,
@@ -142,6 +143,19 @@ export const useProductStore = defineStore('product', {
         if (response.status === 200) {
           createSuccess(response.data.message);
         }
+
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async checkCodes(data: string[]) {
+      try {
+        this.setLoading(true);
+        const response = await checkCodesService(data);
 
         return response;
       } catch (error) {
