@@ -116,6 +116,7 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
 
   const variants =
     dataVariant.value?.map((item: IVModelProductVariant) => {
+      console.log('item', item);
       return {
         price: parseFloat(item.price),
         cost: parseFloat(item.cost),
@@ -128,13 +129,17 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
         description: item.description.trim().length === 0 ? null : item.description,
         gridItemID: item.gridItem.id,
         location: item.location.trim().length === 0 ? null : item.location,
-        colors: item.colors.map((color: IColor) => {
+        colors: item.colors.map((color: IColorMountVariant) => {
           return {
             id: color.id,
+            stockQuantity: color.stock,
+            minStockAlert: color.min_alert,
           };
         }),
       };
     }) || [];
+
+  console.log('dataVariant.value', dataVariant.value);
 
   const tags =
     dataTags.value?.map((item) => {

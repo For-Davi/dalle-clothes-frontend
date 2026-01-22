@@ -32,10 +32,10 @@ export const useAuthStore = defineStore('auth', {
     setLoading(loading: boolean) {
       this.loadingAuth = loading;
     },
-    async doLogin(email: string, password: string) {
+    async doLogin(email: string | null, password: string | null, token: string | null = null) {
       try {
         this.setLoading(true);
-        const response = await doLoginService(email, password);
+        const response = await doLoginService(email, password, token);
         if (response.status === 200) {
           this.setUser(response.data.user);
           this.setToken(response.data.token);

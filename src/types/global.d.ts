@@ -230,6 +230,7 @@ declare global {
   type IDashboardData = DashboardData;
   type IRecordsData = RecordsData;
   type IFilterDashboard = FilterDashboard;
+  type IColorMountVariant = ColorMountVariant;
   type ISaleItens = SaleItens;
   type ISalePaymentsMethods = SalePaymentsMethods;
   type ISaleDelivery = SaleDelivery;

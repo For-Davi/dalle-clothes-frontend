@@ -18,6 +18,7 @@ export interface GridItem {
   order: number;
   active: number;
   grid_group_id: number;
+  grid_group: IGridGroup | null;
   enterprise_id: number;
 }
 

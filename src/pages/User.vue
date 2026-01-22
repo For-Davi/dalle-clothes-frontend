@@ -2,7 +2,7 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, ref } from 'vue';
 import DepartmentManage from 'src/components/manage/DepartmentManage.vue';
-import TableUserSystem from 'src/components/table/TableUserSystem.vue';
+import ListUserSystem from 'src/components/list/ListUserSystem.vue';
 import FormUser from 'src/components/form/FormUser.vue';
 import FilterUser from 'src/components/filter/FilterUser.vue';
 import { useUserStore } from 'src/stores/user-store';
@@ -127,7 +127,7 @@ const hasFilter = computed((): boolean => {
           </q-btn>
         </div>
       </q-banner>
-      <TableUserSystem :filter="search" @show:show-form-user="startEditUser" />
+      <ListUserSystem :filter="search" @show:show-form-user="startEditUser" />
     </section>
 
     <!-- Modals -->

@@ -50,6 +50,13 @@ const startExclude = (id: number) => {
 const fetchMovements = async (): Promise<void> => {
   await useMovementStore().getMovements();
 };
+const formatDateToBR = (date: string): string => {
+  if (!date) return '';
+
+  const [year, month, day] = date.replace(/-/g, '/').split('/');
+
+  return `${day}/${month}/${year}`;
+};
 
 onMounted(async () => {
   await fetchMovements();
@@ -79,7 +86,7 @@ onMounted(async () => {
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="date" :props="props" class="text-left">
-            {{ props.row.date.replace(/-/g, '/') }}
+            {{ formatDateToBR(props.row.date.replace(/-/g, '/')) }}
           </q-td>
           <q-td
             key="type"
