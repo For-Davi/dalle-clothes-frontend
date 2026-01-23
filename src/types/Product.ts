@@ -2,10 +2,14 @@ import type { QuasarSelect } from './Quasar';
 
 export type ProductModalTabs = 'basic' | 'tag' | 'media' | 'variant' | 'advanced' | 'log';
 
-interface ProductColor {
+export interface ProductColor {
   id: number;
   name: string;
   hexColorCode: string;
+  code: string;
+  sku: string;
+  stock: number;
+  min_alert: number;
 }
 export interface ProductVariant {
   price: string;
@@ -320,4 +324,9 @@ export interface DataProductSale {
   offer: string;
   newQuantity: number;
   variantActive: number;
+}
+
+export interface DataCheckCodeAndSku {
+  skus: string[];
+  codes: string[];
 }

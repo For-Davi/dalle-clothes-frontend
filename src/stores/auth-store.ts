@@ -145,7 +145,7 @@ export const useAuthStore = defineStore('auth', {
         return response;
       } catch (error) {
         createError(error);
-        console.log('ERRO', error);
+        console.error('ERRO', error);
         return null;
       } finally {
         this.setLoading(false);

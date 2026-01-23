@@ -36,27 +36,78 @@ const getColorStyle = (hexColor: string) => {
 };
 const onUpdateColors = (selectedIds: number[], item: IVModelProductVariant) => {
   item.colors = selectedIds.map((id) => {
-    const existing = item.colors.find((c: IColor) => c.id === id);
+    const existing = item.colors.find((c: IProductColor) => c.id === id);
     const color = listColor.value.find((c) => c.id === id);
 
     return (
       existing ?? {
         id,
         name: color?.name ?? '',
-        hex: color?.hex_color_code ?? '#000000',
+        hexColorCode: color?.hex_color_code ?? '#000000',
         stock: 0,
         min_alert: 0,
+        code: '',
+        sku: '',
       }
     );
   });
 };
-const checkCodes = async () => {
+const checkCodesAndSkus = async () => {
   loadingValidCode.value = true;
-  const codes: string[] = listVariants.value
-    .filter((variant) => variant.code && variant.code.trim() !== '')
-    .map((variant) => variant.code!.trim());
 
-  const response = await useProductStore().checkCodes(codes);
+  const codes: string[] = [];
+  const skus: string[] = [];
+
+  listVariants.value.forEach((variant) => {
+    if (variant.colors && variant.colors.length > 0) {
+      variant.colors.forEach((color) => {
+        if (color.code && color.code.trim() !== '') {
+          codes.push(color.code.trim());
+        }
+
+        if (color.sku && color.sku.trim() !== '') {
+          skus.push(color.sku.trim());
+        }
+      });
+    } else {
+      if (variant.code && variant.code.trim() !== '') {
+        codes.push(variant.code.trim());
+      }
+
+      if (variant.sku && variant.sku.trim() !== '') {
+        skus.push(variant.sku.trim());
+      }
+    }
+  });
+
+  const uniqueCodes = new Set(codes);
+  if (uniqueCodes.size !== codes.length) {
+    Notify.create({
+      type: 'negative',
+      message:
+        'Existem códigos duplicados. Remova ou altere os códigos repetidos antes de validar.',
+    });
+
+    loadingValidCode.value = false;
+    return;
+  }
+
+  const uniqueSkus = new Set(skus);
+  if (uniqueSkus.size !== skus.length) {
+    Notify.create({
+      type: 'negative',
+      message: 'Existem SKUs duplicados. Remova ou altere os SKUs repetidos antes de validar.',
+    });
+
+    loadingValidCode.value = false;
+    return;
+  }
+
+  const response = await useProductStore().checkCodesAndSkus({
+    codes: codes,
+    skus: skus,
+  });
+
   if (response?.status === 200) {
     if (response.data.available) {
       Notify.create({
@@ -64,24 +115,55 @@ const checkCodes = async () => {
         message: response.data.message,
       });
     } else {
+      const usedCodes = response.data.used_codes ?? [];
+      const usedSkus = response.data.used_skus ?? [];
+
+      let message = '';
+
+      if (usedCodes.length > 0) {
+        message += `Códigos em uso: ${usedCodes.join(', ')}`;
+      }
+
+      if (usedSkus.length > 0) {
+        if (message !== '') message += ' | ';
+        message += `SKUs em uso: ${usedSkus.join(', ')}`;
+      }
+
       Notify.create({
         type: 'negative',
-        message: response.data.message,
+        message: message || response.data.message,
+        timeout: 7000,
+        multiLine: true,
       });
     }
   } else {
     Notify.create({
       type: 'negative',
-      message: 'Erro ao validar os códigos',
+      message: 'Erro ao validar os códigos e SKUs',
     });
   }
+
   loadingValidCode.value = false;
 };
+
 const hasItemColor = computed(() => {
   return listVariants.value.some((variant) => variant.colors && variant.colors.length > 0);
 });
 const showCheckCode = computed(() => {
-  return listVariants.value.some((variant) => variant.code && variant.code.trim() !== '');
+  return listVariants.value.some((variant) => {
+    const hasVariantCode = typeof variant.code === 'string' && variant.code.trim() !== '';
+
+    const hasColorCode =
+      Array.isArray(variant.colors) &&
+      variant.colors.some((color) => typeof color.code === 'string' && color.code.trim() !== '');
+
+    return hasVariantCode || hasColorCode;
+  });
+});
+
+const open = computed({
+  get: () => props.open,
+  set: () => emit('update:open'),
 });
 
 watch(
@@ -92,17 +174,14 @@ watch(
         if (item.colors && item.colors.length > 0) {
           item.stockQuantity = '0';
           item.minStockAlert = '0';
+          item.code = '';
+          item.sku = '';
         }
       });
     }
   },
   { immediate: true },
 );
-
-const open = computed({
-  get: () => props.open,
-  set: () => emit('update:open'),
-});
 </script>
 <template>
   <q-dialog v-model="open">
@@ -113,6 +192,7 @@ const open = computed({
       <q-card-section class="q-pa-sm">
         <q-scroll-area style="height: 500px" class="full-width row justify-center items-center">
           <q-list bordered separator>
+            showCheckCode {{ showCheckCode }}
             <q-item v-for="(item, index) in listVariants" :key="index">
               <q-form class="q-gutter-y-sm column full-width">
                 <q-banner dense class="text-white bg-grey-9 q-px-md" rounded>
@@ -242,6 +322,7 @@ const open = computed({
                   @update:model-value="
                     (val: string | number | null) => (item.sku = String(val).toUpperCase())
                   "
+                  :disable="item.colors && item.colors.length > 0"
                   bg-color="white"
                   label-color="black"
                   outlined
@@ -258,6 +339,7 @@ const open = computed({
                   @update:model-value="
                     (val: string | number | null) => (item.code = String(val).toUpperCase())
                   "
+                  :disable="item.colors && item.colors.length > 0"
                   bg-color="white"
                   label-color="black"
                   outlined
@@ -282,7 +364,7 @@ const open = computed({
                   options-selected-class="bg-green-1 text-black"
                   emit-value
                   map-options
-                  :model-value="item.colors.map((c: IColor) => c.id)"
+                  :model-value="item.colors.map((c: IProductColor) => c.id)"
                   @update:model-value="(val) => onUpdateColors(val, item)"
                 >
                   <template v-slot:option="scope">
@@ -300,47 +382,100 @@ const open = computed({
                     </q-item>
                   </template>
                 </q-select>
-                <div v-if="item.colors.length" class="q-mt-sm column bg-grey-3">
-                  <div
+                <div v-if="item.colors.length" class="q-mt-md column q-gutter-sm">
+                  <q-card
                     v-for="color in item.colors"
                     :key="color.id"
-                    class="row items-center q-gutter-md q-pa-sm rounded-borders q-mt-sm"
+                    flat
+                    bordered
+                    class="q-pa-sm"
                   >
-                    <div
-                      class="rounded-borders"
-                      style="width: 24px; height: 24px"
-                      :style="{ backgroundColor: color.hex }"
-                    ></div>
+                    <!-- Cabeçalho da cor -->
+                    <div class="row items-center q-gutter-sm q-mb-sm">
+                      <div
+                        class="rounded-borders"
+                        style="width: 20px; height: 20px"
+                        :style="{ backgroundColor: color.hexColorCode }"
+                      />
 
-                    <div class="text-weight-medium">
-                      {{ color.name }}
+                      <div class="text-subtitle2 text-weight-medium">
+                        {{ color.name }}
+                      </div>
+
+                      <q-space />
+
+                      <!-- Status de estoque -->
+                      <q-badge v-if="color.stock <= color.min_alert" color="red" outline>
+                        Estoque baixo
+                      </q-badge>
+
+                      <q-badge v-else color="green" outline> OK </q-badge>
                     </div>
 
-                    <q-input
-                      v-model.number="color.stock"
-                      mask="###############"
-                      dense
-                      outlined
-                      label="Estoque"
-                      input-class="text-black no-spinners"
-                      bg-color="white"
-                      label-color="black"
-                    />
+                    <!-- Campos -->
+                    <div class="row q-col-gutter-sm">
+                      <!-- Estoque -->
+                      <div class="col-12 col-sm-3">
+                        <q-input
+                          v-model.number="color.stock"
+                          type="number"
+                          dense
+                          outlined
+                          label="Estoque"
+                          input-class="text-black no-spinners"
+                        />
+                      </div>
 
-                    <q-input
-                      v-model.number="color.min_alert"
-                      mask="###############"
-                      dense
-                      outlined
-                      label="Alerta mínimo"
-                      input-class="text-black no-spinners"
-                      bg-color="white"
-                      label-color="black"
-                    />
-                    <q-icon v-if="color.stock <= 0" name="report" color="red" size="sm">
-                      <q-tooltip>Estoque baixo</q-tooltip>
-                    </q-icon>
-                  </div>
+                      <!-- Alerta mínimo -->
+                      <div class="col-12 col-sm-3">
+                        <q-input
+                          v-model.number="color.min_alert"
+                          type="number"
+                          dense
+                          outlined
+                          label="Alerta mínimo"
+                          input-class="text-black no-spinners"
+                        />
+                      </div>
+
+                      <!-- Código -->
+                      <div class="col-12 col-sm-3">
+                        <q-input
+                          v-model="color.code"
+                          @update:model-value="
+                            (val: string | number | null) =>
+                              (color.code = String(val).toUpperCase())
+                          "
+                          outlined
+                          dense
+                          label="Código"
+                          input-class="text-black"
+                        >
+                          <template #prepend>
+                            <q-icon name="grid_4x4" size="18px" />
+                          </template>
+                        </q-input>
+                      </div>
+
+                      <!-- SKU -->
+                      <div class="col-12 col-sm-3">
+                        <q-input
+                          v-model="color.sku"
+                          @update:model-value="
+                            (val: string | number | null) => (color.sku = String(val).toUpperCase())
+                          "
+                          outlined
+                          dense
+                          label="SKU"
+                          input-class="text-black"
+                        >
+                          <template #prepend>
+                            <q-icon name="dialpad" size="18px" />
+                          </template>
+                        </q-input>
+                      </div>
+                    </div>
+                  </q-card>
                 </div>
 
                 <q-input
@@ -407,7 +542,7 @@ const open = computed({
           />
           <q-btn
             v-if="showCheckCode"
-            @click="checkCodes"
+            @click="checkCodesAndSkus()"
             :loading="loadingValidCode"
             color="primary"
             label="Validar códigos"

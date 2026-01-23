@@ -155,15 +155,17 @@ export const updateProductBasicService = (
   };
 }> => api.put(`${baseUrl}/basic/`, data);
 
-export const checkCodesService = (
-  data: string[],
+export const checkCodesAndSkusService = (
+  data: IDataCheckCodeAndSku,
 ): Promise<{
   status: number;
   data: {
     available: boolean;
+    used_codes: string[];
+    used_skus: string[];
     message: string;
   };
-}> => api.post(`${baseUrl}/variant/check-codes`, { codes: data });
+}> => api.post(`${baseUrl}/variant/check-codes`, data);
 
 export const createMovementVariantService = (
   data: IDataMovementProductRegister,

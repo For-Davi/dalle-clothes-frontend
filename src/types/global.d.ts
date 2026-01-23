@@ -55,6 +55,8 @@ import type {
   DataProductSale,
   Product,
   ProductSupplierOrder,
+  VModelProductVariant,
+  ProductColor,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -217,4 +219,6 @@ declare global {
   type IRecordsData = RecordsData;
   type IFilterDashboard = FilterDashboard;
   type IColorMountVariant = ColorMountVariant;
+  type IProductColor = ProductColor;
+  type IDataCheckCodeAndSku = DataCheckCodeAndSku;
 }

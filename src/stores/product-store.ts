@@ -1,5 +1,5 @@
 import {
-  checkCodesService,
+  checkCodesAndSkusService,
   createMovementVariantService,
   createProductService,
   deleteProductService,
@@ -152,10 +152,10 @@ export const useProductStore = defineStore('product', {
         this.setLoading(false);
       }
     },
-    async checkCodes(data: string[]) {
+    async checkCodesAndSkus(data: IDataCheckCodeAndSku) {
       try {
         this.setLoading(true);
-        const response = await checkCodesService(data);
+        const response = await checkCodesAndSkusService(data);
 
         return response;
       } catch (error) {

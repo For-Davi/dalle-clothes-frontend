@@ -71,11 +71,11 @@ const routes: RouteRecordRaw[] = [
         name: 'client',
         component: () => import('src/pages/Client.vue'),
       },
-      // {
-      //   path: 'earnings',
-      //   name: 'earnings',
-      //   component: () => import('src/pages/Earning.vue'),
-      // },
+      {
+        path: 'earnings',
+        name: 'earnings',
+        component: () => import('src/pages/Earning.vue'),
+      },
       {
         path: 'supplier',
         name: 'supplier',

@@ -12,4 +12,6 @@ export interface ColorMountVariant {
   hex: string;
   min_alert: number;
   stock: number;
+  code: string;
+  sku: string;
 }

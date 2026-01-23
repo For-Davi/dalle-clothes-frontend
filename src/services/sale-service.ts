@@ -33,7 +33,6 @@ export const sendCouponToEmailService = (
 
 export const exportSaleService = async (saleID: number) => {
   try {
-    console.log('id da venda', saleID);
     const response = await api.post(
       `${baseUrl}/export`,
       {

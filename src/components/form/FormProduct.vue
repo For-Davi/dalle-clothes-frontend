@@ -116,7 +116,6 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
 
   const variants =
     dataVariant.value?.map((item: IVModelProductVariant) => {
-      console.log('item', item);
       return {
         price: parseFloat(item.price),
         cost: parseFloat(item.cost),
@@ -134,12 +133,12 @@ const mountCreateDataProduct = (): IDataCreateProduct => {
             id: color.id,
             stockQuantity: color.stock,
             minStockAlert: color.min_alert,
+            code: color.code.trim().length === 0 ? null : color.code,
+            sku: color.sku.trim().length === 0 ? null : color.sku,
           };
         }),
       };
     }) || [];
-
-  console.log('dataVariant.value', dataVariant.value);
 
   const tags =
     dataTags.value?.map((item) => {
@@ -327,7 +326,6 @@ const update = async (): Promise<void> => {
     await updateMedia();
   }
 };
-
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
   await exclude();
