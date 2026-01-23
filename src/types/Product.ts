@@ -14,6 +14,8 @@ export interface ProductColor {
 export interface ProductVariant {
   price: string;
   cost: string;
+  offer: string;
+  location: string;
   stockQuantity: string;
   minStockAlert: string;
   sku: string;
@@ -30,7 +32,7 @@ export interface ProductVariant {
 export interface VModelProductVariant {
   price: string;
   cost: string;
-  offer: number;
+  offer: string;
   stockQuantity: string;
   minStockAlert: string;
   sku: string;

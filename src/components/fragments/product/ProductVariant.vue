@@ -40,6 +40,7 @@ const generateVariants = (): void => {
   const newVariants = selectedGrid.items.map((item) => ({
     price: '0',
     cost: '0',
+    offer: '0',
     stockQuantity: '0',
     minStockAlert: '0',
     sku: '',
