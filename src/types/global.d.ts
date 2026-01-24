@@ -110,8 +110,15 @@ import type {
   PaymentSubscriptionCreditCard,
 } from './Subscription';
 import type { DashboardData, RecordsData, FilterDashboard } from './Dashboard';
-import type { ReturnData, ReturnItens, DataCreateReturn } from './Return';
+import type {
+  ReturnData,
+  DataReturnItens,
+  DataCreateReturn,
+  ReturnItens,
+  DataCreateReturnLinked,
+} from './Return';
 import type { Commission } from './Commission';
+import type { ExchangeData } from './Exchange';
 
 export {};
 
@@ -238,8 +245,11 @@ declare global {
   type ISale = Sale;
   type IModeSaleDetails = ModeSaleDetails;
   type IReturnData = ReturnData;
-  type IReturnItens = ReturnItens;
+  type IDataReturnItens = DataReturnItens;
   type IDataCreateReturn = DataCreateReturn;
   type IListProduct = ListProduct;
   type ICommission = Commission;
+  type IExchangeData = ExchangeData;
+  type IReturnItens = ReturnItens;
+  type IDataCreateReturnLinked = DataCreateReturnLinked;
 }

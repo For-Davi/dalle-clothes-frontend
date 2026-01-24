@@ -21,12 +21,18 @@ const emit = defineEmits<{
 const showFormReturn = reactive({
   open: false as boolean,
   saleID: null as number | null,
+  returnID: null as number | null,
 });
 
-const changeShowFormReturn = (open: boolean, saleID: number | null = null) => {
+const changeShowFormReturn = (
+  open: boolean,
+  saleID: number | null = null,
+  returnID: number | null = null,
+) => {
   Object.assign(showFormReturn, {
     open,
     saleID,
+    returnID,
   });
 };
 
@@ -43,7 +49,7 @@ const open = computed({
         <TitlePage title="Devoluções" icon="fa-solid fa-box" />
       </q-card-section>
       <q-card-section>
-        <TableReturn />
+        <TableReturn :sale-i-d="props.data.saleID" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">

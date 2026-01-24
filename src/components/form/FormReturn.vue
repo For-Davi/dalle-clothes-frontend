@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import TitlePage from '../shared/TitlePage.vue';
-import TableSaleProducts from '../table/TableSaleProducts.vue';
+import TableForReturnSaleOrReturnProducts from '../table/TableForReturnSaleOrReturnProducts.vue';
 import TableReturnProducts from '../table/TableReturnProducts.vue';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { storeToRefs } from 'pinia';
 import { useSaleStore } from 'src/stores/sale-store';
+import { useReturnStore } from 'src/stores/return-store';
+import { useEmployeeStore } from 'src/stores/employee-store';
 import { formatToReal } from 'src/composables/Money';
 import TableListProducts from '../table/TableListProducts.vue';
 import TableExchangeItems from '../table/TableExchangeItems.vue';
@@ -18,6 +20,7 @@ const props = defineProps<{
   data: {
     open: boolean;
     saleID: number | null;
+    returnID: number | null;
   };
 }>();
 const emit = defineEmits<{
@@ -26,19 +29,39 @@ const emit = defineEmits<{
 
 const quantity = ref<number>(1);
 const returnData = ref<IReturnData[]>([]);
-const localProducts = ref<ISaleItens[]>([]);
+const localProducts = ref<ISaleItens[] | IDataReturnItens[]>([]);
 const exchangeProducts = ref<IClientCartProduct[]>([]);
+const sellerID = ref<number | null>(null);
+const searchFilter = ref<string>('');
 
 const { listSaleProducts, loadingListSaleProducts } = storeToRefs(useSaleStore());
+const { listReturnItems, loadingReturn } = storeToRefs(useReturnStore());
+const { listEmployee } = storeToRefs(useEmployeeStore());
 
 const fetchProduct = async () => {
-  if (props.data.saleID) {
-    await useSaleStore().getSaleItens(props.data.saleID);
+  if (props.data.returnID) {
+    return;
+  } else {
+    if (props.data.saleID) {
+      await useSaleStore().getSaleItens(props.data.saleID);
+    }
   }
   localProducts.value = listSaleProducts.value.map((p: ISaleItens) => ({
     ...p,
     returnQuantity: 0,
   }));
+};
+const fetchReturnProduct = async () => {
+  if (props.data.returnID) {
+    await useReturnStore().getReturnItems(props.data.returnID);
+  }
+  localProducts.value = listReturnItems.value.map((p: IDataReturnItens) => ({
+    ...p,
+    returnQuantity: 0,
+  }));
+};
+const fetchSellers = async () => {
+  await useEmployeeStore().getEmployees();
 };
 const createReturnData = (count: number) => {
   for (let i = 0; i < count; i++) {
@@ -49,7 +72,7 @@ const createReturnData = (count: number) => {
     });
   }
 };
-const addToReturnTable = (product: IReturnItens, index: number) => {
+const addToReturnTable = (product: IDataReturnItens, index: number) => {
   const products = returnData.value[index].products;
 
   const existing = products.find(
@@ -70,6 +93,14 @@ const addToReturnTable = (product: IReturnItens, index: number) => {
       ...product,
       returnQuantity: product.returnQuantity,
     });
+  }
+};
+const addToExchangeTable = (product: IClientCartProduct) => {
+  const hasReturnProducts = returnData.value.some((item) => item.products.length === 0);
+  if (hasReturnProducts || !product.quantity || product.quantity === 0) {
+    createErrorData('Adicione ao menos um produto para devolução antes de inserir itens na troca');
+  } else {
+    exchangeProducts.value.push(product);
   }
 };
 const removeFromReturnTable = (id: number, index: number) => {
@@ -102,55 +133,51 @@ const optionsReasons = computed(() => {
   return [
     {
       label: 'Produto com defeito',
-      value: 'DEFECT',
+      value: 'defect',
     },
     {
       label: 'Produto violado',
-      value: 'VIOLATED',
+      value: 'violated',
     },
     {
       label: 'Produto diferente do padrão',
-      value: 'OUT_OF_STANDARD',
+      value: 'out_of_standard',
     },
     {
       label: 'Produto errado enviado',
-      value: 'WRONG_SENT',
-    },
-    {
-      label: 'Produto não recebido',
-      value: 'NOT_RECEIVED',
+      value: 'wrong_sent',
     },
     {
       label: 'Atraso na entrega',
-      value: 'DELIVERY_DELAY',
+      value: 'delivery_delay',
     },
     {
       label: 'Produto errado comprado',
-      value: 'WRONG_BOUGHT',
+      value: 'wrong_bought',
     },
     {
       label: 'Insatisfação do cliente',
-      value: 'DISSATISFACTION',
+      value: 'dissatisfaction',
     },
     {
       label: 'Compra duplicada',
-      value: 'DUPLICATE_ORDER',
+      value: 'duplicate_order',
     },
     {
       label: 'Incompatibilidade',
-      value: 'INCOMPATIBLE',
+      value: 'incompatible',
     },
     {
       label: 'Desistência/Arrependimento',
-      value: 'REGRET',
+      value: 'regret',
     },
     {
       label: 'Problemas com pagamento',
-      value: 'PAYMENT_ISSUE',
+      value: 'payment_issue',
     },
     {
       label: 'Não informado',
-      value: null,
+      value: 'not_informed',
     },
   ];
 });
@@ -198,14 +225,24 @@ const differenceRefundValue = computed(() => {
   }
   return total;
 });
-const addToExchangeTable = (product: IClientCartProduct) => {
-  const hasReturnProducts = returnData.value.some((item) => item.products.length === 0);
-  if (hasReturnProducts || !product.quantity || product.quantity === 0) {
-    createErrorData('Adicione ao menos um produto para devolução antes de inserir itens na troca');
-  } else {
-    exchangeProducts.value.push(product);
+const listEmployeeOptions = computed(() => {
+  const options = listEmployee.value.map((employee) => ({
+    label: employee.name,
+    value: employee.id || null,
+  }));
+
+  options.unshift({
+    label: 'Nenhum vendedor selecionado',
+    value: null,
+  });
+
+  if (!searchFilter.value || searchFilter.value.toLowerCase() === 'nenhum vendedor selecionado') {
+    return options;
   }
-};
+
+  const needle = searchFilter.value.toLowerCase();
+  return options.filter((option) => option.label.toLowerCase().includes(needle));
+});
 const cartIds = computed(() => exchangeProducts.value.map((p) => p.product_variant_id));
 
 watch(
@@ -215,8 +252,8 @@ watch(
       if (quantity.value <= 0) {
         quantity.value = 1;
       }
-      if (quantity.value > 13) {
-        quantity.value = 13;
+      if (quantity.value > 12) {
+        quantity.value = 12;
       }
       returnData.value = [];
       createReturnData(quantity.value);
@@ -239,6 +276,8 @@ watch(
   async () => {
     if (props.data.open) {
       await fetchProduct();
+      await fetchReturnProduct();
+      await fetchSellers();
     }
   },
 );
@@ -248,10 +287,22 @@ watch(
   <q-dialog v-model="open">
     <q-card style="min-width: 70vw" class="bg-grey-2 form-basic">
       <q-card-section class="q-pa-none">
-        <TitlePage title="Formulário de devolução" icon="assignment_return" />
+        <TitlePage
+          :title="
+            props.data.returnID !== null
+              ? 'Formulário de vinculação de devolução'
+              : 'Formulário de devolução'
+          "
+          icon="assignment_return"
+        />
       </q-card-section>
       <q-card-section>
         <div class="q-gutter-y-lg">
+          <TitlePage
+            title="Itens devolvidos do cliente"
+            icon="assignment_return"
+            class="q-pa-none"
+          />
           <q-input
             v-model="quantity"
             label="Quantidade de itens que foram devolvidos"
@@ -264,15 +315,16 @@ watch(
 
           <div class="q-mb-lg" v-for="(item, index) in returnData" :key="index">
             <div class="q-gutter-y-sm">
-              <TableSaleProducts
+              <TableForReturnSaleOrReturnProducts
                 :rows="localProducts"
-                :loading="loadingListSaleProducts"
-                @add-to-return="(product) => addToReturnTable(product, index)"
+                :loading="props.data.returnID ? loadingReturn : loadingListSaleProducts"
+                :type="props.data.returnID !== null ? 'linked' : 'return'"
+                @add-to-return="(product: IDataReturnItens) => addToReturnTable(product, index)"
               />
               <TableReturnProducts
                 v-model="item.products"
                 :rows="item.products"
-                @remove-from-return="(id) => removeFromReturnTable(id, index)"
+                @remove-from-return="(id: number) => removeFromReturnTable(id, index)"
               />
               <q-select
                 v-model="item.reason"
@@ -312,6 +364,25 @@ watch(
             </div>
           </div>
           <div class="q-mt-xl">
+            <TitlePage title="Troca de itens" icon="assignment_return" class="q-pa-none" />
+            <q-select
+              class="q-mb-lg bg-white"
+              outlined
+              v-model="sellerID"
+              label="Selecione o vendedor que efetuou a troca"
+              :options="listEmployeeOptions"
+              emit-value
+              map-options
+              hide-selected
+              dense
+              options-dense
+              use-input
+              fill-input
+              clearable
+              input-debounce="1"
+              @input-value="(val: string) => (searchFilter = val)"
+              style="width: 100%"
+            />
             <TableListProducts
               class="q-mt-md"
               :hidden-ids="cartIds"
@@ -337,7 +408,14 @@ watch(
         <div class="row justify-end items-center q-gutter-x-sm">
           <q-btn color="red" label="Fechar" size="md" @click="close" unelevated no-caps flat />
           <q-btn
-            @click="console.log(returnData)"
+            @click="
+              console.log({
+                returnData: returnData,
+                exchangeProducts: exchangeProducts,
+                saleID: props.data.saleID,
+                returnID: props.data.returnID,
+              })
+            "
             color="primary"
             label="Salvar"
             size="md"

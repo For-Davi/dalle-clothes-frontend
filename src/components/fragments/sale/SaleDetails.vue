@@ -335,13 +335,7 @@ watch(open, async () => {
                         <b class="q-mr-sm">Custo unitário:</b
                         >{{ formatToReal(product.product_price) }}
                       </p>
-                    </div>
 
-                    <div class="col-12">
-                      <q-separator spaced />
-                    </div>
-
-                    <div class="col-12 col-sm-6">
                       <p class="flex items-center">
                         <q-icon name="shopping_cart" class="q-mr-sm text-primary" />
                         <b class="q-mr-sm">Qtde comprada:</b> {{ product.quantity }}
@@ -351,6 +345,9 @@ watch(open, async () => {
                         <q-icon name="inventory" class="q-mr-sm text-primary" />
                         <b class="q-mr-sm">Total:</b> {{ formatToReal(product.total) }}
                       </p>
+                    </div>
+                    <div class="col-12">
+                      <q-separator spaced v-if="index < Sale.sale_itens.length - 1" />
                     </div>
                   </div>
                 </q-item-section>

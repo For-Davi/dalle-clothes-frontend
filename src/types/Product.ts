@@ -105,6 +105,7 @@ export interface Product {
   id: number;
   product_id: number;
   product_variant_id: number;
+  product_name: string;
   price: string;
   stock_quantity: number;
   sku: string;
@@ -279,6 +280,7 @@ export interface SearchProductVariant {
 export interface ClientCartProduct {
   product_id: number;
   product_variant_id: number;
+  product_name: string;
   price: string;
   offer: string | null;
   stock_quantity: number;

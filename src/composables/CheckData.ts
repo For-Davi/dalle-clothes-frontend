@@ -1157,7 +1157,7 @@ export const checkDashboardFilter = (
 };
 
 export const checkDataToAddReturnProducts = (
-  data: IReturnItens,
+  data: IDataReturnItens,
 ): { status: boolean; message?: string } => {
   if (data.quantity < data.returnQuantity) {
     return {
@@ -1202,13 +1202,13 @@ export const checkDataCreateReturn = (
       message: 'Informe os produtos que o cliente devolveu',
     };
   }
-  if (!data.returnValue) {
+  if (!data.exchangeData.exchangeValue) {
     return { status: false, message: 'Informe o valor a ser estornado' };
   }
-  if (isNaN(data.returnValue)) {
+  if (isNaN(data.exchangeData.exchangeValue)) {
     return { status: false, message: 'Informe um valor válido para ser estornado' };
   }
-  if (data.returnValue < 0) {
+  if (data.exchangeData.exchangeValue < 0) {
     return { status: false, message: 'O valor de estorno não pode ser abaixo de 0' };
   }
 

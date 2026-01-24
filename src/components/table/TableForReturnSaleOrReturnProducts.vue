@@ -6,21 +6,22 @@ import { checkDataToAddReturnProducts } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
 
 defineOptions({
-  name: 'TableSaleProducts',
+  name: 'TableForReturnSaleOrReturnProducts',
 });
 
 const props = defineProps<{
-  rows: ISaleItens[];
+  rows: ISaleItens[] | IDataReturnItens[];
   loading: boolean;
+  type: 'return' | 'linked';
 }>();
 
 const emit = defineEmits<{
-  'add-to-return': [IReturnItens];
+  'add-to-return': [IDataReturnItens];
 }>();
 
 const filter = ref<string>('');
 
-const addToReturn = (product: IReturnItens) => {
+const addToReturn = (product: IDataReturnItens) => {
   const check = checkDataToAddReturnProducts(product);
   if (check.status) {
     emit('add-to-return', {
@@ -58,7 +59,6 @@ const getColorStyle = (hexColor: string) => {
       :columns="columnsSaleProduct"
       :filter="filter"
       :loading="props.loading"
-      title="Lista de produtos da venda"
       row-key="index"
       no-data-label="Nenhum produto para mostrar"
       dense
@@ -74,7 +74,9 @@ const getColorStyle = (hexColor: string) => {
       </template>
       <template v-slot:top>
         <div class="row justify-between items-center full-width">
-          <span class="text-body1">Lista de produtos da venda</span>
+          <span class="text-body1">{{
+            props.type === 'return' ? 'Lista de produtos da venda' : 'Lista de produtos da troca'
+          }}</span>
           <q-space />
           <q-input
             v-show="props.rows.length > 0"

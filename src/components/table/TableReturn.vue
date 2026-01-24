@@ -1,12 +1,34 @@
 <script setup lang="ts">
 import { columnsReturn } from 'src/utils/columns';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
+import FormReturn from '../form/FormReturn.vue';
 
 defineOptions({
   name: 'TableReturn',
 });
 
+const props = defineProps<{
+  saleID?: number | null;
+}>();
+
 const filter = ref<string>('');
+const showFormReturn = reactive({
+  open: false as boolean,
+  saleID: null as number | null,
+  returnID: null as number | null,
+});
+
+const changeShowFormReturn = (
+  open: boolean,
+  saleID: number | null = null,
+  returnID: number | null = null,
+) => {
+  Object.assign(showFormReturn, {
+    open,
+    saleID,
+    returnID,
+  });
+};
 </script>
 
 <template>
@@ -14,6 +36,14 @@ const filter = ref<string>('');
     <q-table
       :rows="[
         {
+          id: 1,
+          date: '14/01/2026 14:56:01',
+          status: 'Aprovada',
+          created_by: 'Roberto Miranda',
+          updated_by: 'Vitor Magalhães',
+        },
+        {
+          id: 2,
           date: '14/01/2026 14:56:01',
           status: 'Aprovada',
           created_by: 'Roberto Miranda',
@@ -52,11 +82,19 @@ const filter = ref<string>('');
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
-              @click="console.log(true, props.row.id)"
+              @click="changeShowFormReturn(true, saleID, props.row.id)"
               size="sm"
               flat
               round
               color="black"
+              icon="arrow_circle_right"
+            />
+            <q-btn
+              @click="console.log(true, props.row.id)"
+              size="sm"
+              flat
+              round
+              color="primary"
               icon="visibility"
             />
             <q-btn
@@ -72,4 +110,6 @@ const filter = ref<string>('');
       </template>
     </q-table>
   </section>
+  <!-- Modals -->
+  <FormReturn :data="showFormReturn" @update:open="changeShowFormReturn(false)" />
 </template>
