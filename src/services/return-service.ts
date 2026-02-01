@@ -1,6 +1,24 @@
 import { api } from 'boot/axios';
 
-const baseUrl = 'return';
+const baseUrl = 'returns';
+
+export const getReturnService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    returns: IReturns[];
+  };
+}> => api.get(`${baseUrl}/${saleID}`);
+
+export const showReturnService = (
+  returnID: number,
+): Promise<{
+  status: number;
+  data: {
+    return: IReturn;
+  };
+}> => api.get(`${baseUrl}/return/${returnID}`);
 
 export const getReturnItemsService = (
   returnID: number,
@@ -9,4 +27,31 @@ export const getReturnItemsService = (
   data: {
     products: IDataReturnItens[];
   };
-}> => api.get(`${baseUrl}/${returnID}`);
+}> => api.get(`${baseUrl}/linked/${returnID}`);
+
+export const createReturnService = (
+  data: IDataCreateReturn,
+): Promise<{
+  status: number;
+  data: {
+    returns: IReturns[];
+    message: string;
+  };
+}> => api.post(`${baseUrl}/`, data);
+
+export const updateReturnService = (
+  id: number,
+  saleID: number,
+  status: string,
+): Promise<{
+  status: number;
+  data: {
+    returns: IReturns[];
+    message: string;
+  };
+}> =>
+  api.put(`${baseUrl}/`, {
+    id,
+    saleID,
+    status,
+  });

@@ -11,6 +11,8 @@ import { useEmployeeStore } from 'src/stores/employee-store';
 import { formatToReal } from 'src/composables/Money';
 import TableListProducts from '../table/TableListProducts.vue';
 import TableExchangeItems from '../table/TableExchangeItems.vue';
+import { checkDataCreateReturn } from 'src/composables/CheckData';
+import Loading from '../shared/Loading.vue';
 
 defineOptions({
   name: 'FormReturn',
@@ -32,33 +34,31 @@ const returnData = ref<IReturnData[]>([]);
 const localProducts = ref<ISaleItens[] | IDataReturnItens[]>([]);
 const exchangeProducts = ref<IClientCartProduct[]>([]);
 const sellerID = ref<number | null>(null);
+const generatesCredit = ref<1 | 0>(0);
 const searchFilter = ref<string>('');
 
 const { listSaleProducts, loadingListSaleProducts } = storeToRefs(useSaleStore());
 const { listReturnItems, loadingReturn } = storeToRefs(useReturnStore());
 const { listEmployee } = storeToRefs(useEmployeeStore());
 
-const fetchProduct = async () => {
-  if (props.data.returnID) {
-    return;
-  } else {
-    if (props.data.saleID) {
-      await useSaleStore().getSaleItens(props.data.saleID);
-    }
+const fetchSaleProduct = async () => {
+  if (props.data.saleID) {
+    await useSaleStore().getSaleItens(props.data.saleID);
+    localProducts.value = listSaleProducts.value.map((p: ISaleItens) => ({
+      ...p,
+      returnQuantity: 0,
+    }));
   }
-  localProducts.value = listSaleProducts.value.map((p: ISaleItens) => ({
-    ...p,
-    returnQuantity: 0,
-  }));
 };
+
 const fetchReturnProduct = async () => {
   if (props.data.returnID) {
     await useReturnStore().getReturnItems(props.data.returnID);
+    localProducts.value = listReturnItems.value.map((p: IDataReturnItens) => ({
+      ...p,
+      returnQuantity: 0,
+    }));
   }
-  localProducts.value = listReturnItems.value.map((p: IDataReturnItens) => ({
-    ...p,
-    returnQuantity: 0,
-  }));
 };
 const fetchSellers = async () => {
   await useEmployeeStore().getEmployees();
@@ -123,6 +123,31 @@ const close = () => {
   open.value = false;
   returnData.value = [];
   quantity.value = 1;
+};
+const save = async () => {
+  const payload: IDataCreateReturn = {
+    saleID: props.data.saleID!,
+    returnID: props.data.returnID,
+    sellerID: sellerID.value,
+    returnData: returnData.value,
+    exchangeData: {
+      generatesCredit: generatesCredit.value,
+      exchangeValue: refundValue.value,
+      differenceValue: differenceRefundValue.value,
+    },
+    exchangeProducts: exchangeProducts.value,
+  };
+
+  const check = checkDataCreateReturn(payload);
+
+  if (check.status) {
+    const response = await useReturnStore().createReturn(payload);
+    if (response?.status === 201) {
+      close();
+    }
+  } else {
+    createErrorData(check.message || 'Erro ao enviar dados da devolução');
+  }
 };
 
 const open = computed({
@@ -223,13 +248,15 @@ const differenceRefundValue = computed(() => {
   if (total > 0) {
     return 0;
   }
-  return total;
+  return Math.abs(total);
 });
 const listEmployeeOptions = computed(() => {
-  const options = listEmployee.value.map((employee) => ({
-    label: employee.name,
-    value: employee.id || null,
-  }));
+  const options = listEmployee.value
+    .map((employee) => ({
+      label: employee.name,
+      value: employee.id || null,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'));
 
   options.unshift({
     label: 'Nenhum vendedor selecionado',
@@ -275,8 +302,11 @@ watch(
   () => props.data.open,
   async () => {
     if (props.data.open) {
-      await fetchProduct();
-      await fetchReturnProduct();
+      if (props.data.returnID) {
+        await fetchReturnProduct();
+      } else {
+        await fetchSaleProduct();
+      }
       await fetchSellers();
     }
   },
@@ -285,7 +315,12 @@ watch(
 
 <template>
   <q-dialog v-model="open">
-    <q-card style="min-width: 70vw" class="bg-grey-2 form-basic">
+    <q-card
+      style="min-width: 70vw"
+      :class="
+        loadingReturn ? 'bg-grey-2 form-basic column justify-between' : 'bg-grey-2 form-basic'
+      "
+    >
       <q-card-section class="q-pa-none">
         <TitlePage
           :title="
@@ -297,7 +332,8 @@ watch(
         />
       </q-card-section>
       <q-card-section>
-        <div class="q-gutter-y-lg">
+        <Loading v-show="loadingReturn" :show="loadingReturn" />
+        <div class="q-gutter-y-lg" v-show="!loadingReturn">
           <TitlePage
             title="Itens devolvidos do cliente"
             icon="assignment_return"
@@ -317,7 +353,7 @@ watch(
             <div class="q-gutter-y-sm">
               <TableForReturnSaleOrReturnProducts
                 :rows="localProducts"
-                :loading="props.data.returnID ? loadingReturn : loadingListSaleProducts"
+                :loading="props.data.returnID !== null ? loadingReturn : loadingListSaleProducts"
                 :type="props.data.returnID !== null ? 'linked' : 'return'"
                 @add-to-return="(product: IDataReturnItens) => addToReturnTable(product, index)"
               />
@@ -383,6 +419,16 @@ watch(
               @input-value="(val: string) => (searchFilter = val)"
               style="width: 100%"
             />
+            <q-toggle
+              v-model="generatesCredit"
+              label="Gerar crédito ao cliente?"
+              class="text-body1"
+              checked-icon="check"
+              color="primary"
+              unchecked-icon="clear"
+              :true-value="1"
+              :false-value="0"
+            />
             <TableListProducts
               class="q-mt-md"
               :hidden-ids="cartIds"
@@ -406,16 +452,19 @@ watch(
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
-          <q-btn color="red" label="Fechar" size="md" @click="close" unelevated no-caps flat />
           <q-btn
-            @click="
-              console.log({
-                returnData: returnData,
-                exchangeProducts: exchangeProducts,
-                saleID: props.data.saleID,
-                returnID: props.data.returnID,
-              })
-            "
+            color="red"
+            label="Fechar"
+            size="md"
+            @click="close"
+            :loading="loadingReturn"
+            unelevated
+            no-caps
+            flat
+          />
+          <q-btn
+            @click="save()"
+            :loading="loadingReturn"
             color="primary"
             label="Salvar"
             size="md"

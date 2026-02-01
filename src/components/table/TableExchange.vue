@@ -1,48 +1,56 @@
 <script setup lang="ts">
-import { columnsReturn } from 'src/utils/columns';
+import { columnsExchanges } from 'src/utils/columns';
 import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useReturnStore } from 'src/stores/return-store';
+import { useExchangeStore } from 'src/stores/exchange-store';
 
 defineOptions({
-  name: 'TableReturn',
+  name: 'TableExchange',
 });
 
 const props = defineProps<{
   saleID: number | null;
 }>();
-const emit = defineEmits<{
-  'open:form-linked-return': [number, number];
-  'open:return-details': [number];
-  'edit:return': [number, number, string];
-}>();
 
-const { listReturns, loadingReturns } = storeToRefs(useReturnStore());
+const { listExchanges, loadingExchange } = storeToRefs(useExchangeStore());
 
 const filter = ref<string>('');
+// const showExchangeDetails = reactive({
+//   open: false as boolean,
+//   returnID: null as number | null,
+// });
 
-const fetchReturns = async () => {
+// const changeShowExchangeDetails = (
+//   open: boolean,
+//   returnID: number | null = null,
+// ) => {
+//   Object.assign(showExchangeDetails, {
+//     open,
+//     returnID,
+//   });
+// };
+const fetchExchanges = async () => {
   if (props.saleID) {
-    await useReturnStore().getReturns(props.saleID);
+    await useExchangeStore().getExchanges(props.saleID);
   }
 };
 
 onMounted(async () => {
-  await fetchReturns();
+  await fetchExchanges();
 });
 </script>
 
 <template>
   <section style="min-height: 300px">
     <q-table
-      v-show="!loadingReturns"
-      :rows="loadingReturns ? [] : listReturns"
-      :columns="columnsReturn"
+      v-show="!loadingExchange"
+      :rows="loadingExchange ? [] : listExchanges"
+      :columns="columnsExchanges"
       :filter="filter"
-      :loading="loadingReturns"
-      title="Lista de devolução"
+      :loading="loadingExchange"
+      title="Lista de estorno"
       row-key="index"
-      no-data-label="Nenhuma devolução para mostrar"
+      no-data-label="Nenhum estorno para mostrar"
       virtual-scroll
       :rows-per-page-options="[10]"
       style="height: 460px"
@@ -58,10 +66,10 @@ onMounted(async () => {
       </template>
       <template v-slot:top>
         <div class="row justify-between items-center full-width">
-          <span class="text-body1">Lista de devolução</span>
+          <span class="text-body1">Lista de estorno</span>
           <q-space />
           <q-input
-            v-show="listReturns.length > 0"
+            v-show="listExchanges.length > 0"
             v-model="filter"
             outlined
             dense
@@ -76,53 +84,39 @@ onMounted(async () => {
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="created_at" :props="props" class="text-left">
+          <q-td key="date" :props="props" class="text-left">
             {{ props.row.created_at }}
           </q-td>
           <q-td key="status" :props="props" class="items-center">
             <q-icon
-              :name="props.row.status === 'Ativa' ? 'check_circle' : 'close'"
-              :color="props.row.status === 'Ativa' ? 'green' : 'red'"
+              :name="props.row.status === 'Ativo' ? 'check_circle' : 'close'"
+              :color="props.row.status === 'Ativo' ? 'green' : 'red'"
               class="cursor-pointer q-px-xs"
               size="17px"
             >
               <q-tooltip class="bg-grey-3 text-bold text-black">{{
-                props.row.status === 'Ativa' ? 'Ativa' : 'Cancelada'
+                props.row.status === 'Ativo' ? 'Ativo' : 'Cancelado'
               }}</q-tooltip>
             </q-icon>
           </q-td>
-          <q-td key="code" :props="props" class="text-left">
-            {{ props.row.id }}
+          <q-td key="return_id" :props="props" class="text-left">
+            {{ props.row.return_id }}
           </q-td>
-          <q-td key="linked_code" :props="props" class="text-left">
-            {{ props.row.linked_return_id === null ? '-' : props.row.linked_return_id }}
+          <q-td key="difference_value" :props="props" class="text-left text-green-6">
+            {{ props.row.difference_value }}
+          </q-td>
+          <q-td key="exchange_value" :props="props" class="text-left text-red-6">
+            {{ props.row.exchange_value }}
           </q-td>
           <q-td key="created_by_name" :props="props" class="text-left">
             {{ props.row.created_by_name }}
           </q-td>
-          <q-td key="created_by_email" :props="props" class="text-left">
-            {{ props.row.created_by_email }}
-          </q-td>
           <q-td key="updated_by_name" :props="props" class="text-left">
             {{ props.row.updated_by_name === null ? '-' : props.row.updated_by_name }}
           </q-td>
-          <q-td key="updated_by_email" :props="props" class="text-left">
-            {{ props.row.updated_by_email === null ? '-' : props.row.updated_by_email }}
-          </q-td>
           <q-td key="action" :props="props">
             <q-btn
-              v-if="props.row.return_exchange_items.length > 0"
-              @click="if (saleID) emit('open:form-linked-return', saleID, props.row.id);"
-              size="sm"
-              flat
-              round
-              color="black"
-              icon="arrow_circle_right"
-            >
-              <q-tooltip> Vincular devolução </q-tooltip>
-            </q-btn>
-            <q-btn
-              @click="emit('open:return-details', props.row.id)"
+              @click="console.log(true, props.row.id)"
               size="sm"
               flat
               round
@@ -132,7 +126,7 @@ onMounted(async () => {
               <q-tooltip> Detalhes </q-tooltip>
             </q-btn>
             <q-btn
-              @click="emit('edit:return', props.row.id, saleID!, props.row.status)"
+              @click="console.log('ajksahd', props.row.id)"
               size="sm"
               flat
               round

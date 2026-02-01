@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
 import { columnsCommissions } from 'src/utils/columns';
@@ -13,12 +13,13 @@ defineOptions({
 
 const props = defineProps<{
   saleID: number | null;
-  filter: string;
 }>();
 
 const { loadingCommission, listCommission } = storeToRefs(useCommissionStore());
 
-const fetchCommissions = async (): Promise<void> => {
+const filter = ref<string>('');
+
+const fetchCommissions = async () => {
   if (props.saleID) {
     await useCommissionStore().getComissionsSelect(props.saleID);
   }
@@ -52,7 +53,7 @@ onMounted(async () => {
       v-show="!loadingCommission"
       :rows="loadingCommission ? [] : listCommission"
       :columns="columnsCommissions"
-      :filter="props.filter"
+      :filter="filter"
       :filter-method="filterMethod"
       :loading="loadingCommission"
       title="Lista de comissões"
@@ -70,6 +71,24 @@ onMounted(async () => {
             <span class="text-body2 text-bold">{{ col.label }}</span>
           </q-th>
         </q-tr>
+      </template>
+      <template v-slot:top>
+        <div class="row justify-between items-center full-width">
+          <span class="text-body1">Lista de comissões</span>
+          <q-space />
+          <q-input
+            v-show="listCommission.length > 0"
+            v-model="filter"
+            outlined
+            dense
+            label="Pesquisar"
+            :class="!$q.screen.lt.md ? '' : 'q-mt-sm'"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">

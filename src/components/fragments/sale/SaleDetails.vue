@@ -10,6 +10,7 @@ import type { PaymentType } from 'src/enums/payment-enum';
 import { PaymentTypeLabels } from 'src/enums/payment-enum';
 import ReturnManage from 'src/components/manage/ReturnManage.vue';
 import CommissionManage from 'src/components/manage/CommissionManage.vue';
+import ExchangeManage from 'src/components/manage/ExchangeManage.vue';
 
 defineOptions({
   name: 'SaleDetails',
@@ -32,6 +33,10 @@ const showReturnManage = reactive({
   saleID: null as number | null,
 });
 const showCommissionManage = reactive({
+  open: false as boolean,
+  saleID: null as number | null,
+});
+const showExchangeManage = reactive({
   open: false as boolean,
   saleID: null as number | null,
 });
@@ -99,6 +104,12 @@ const changeShowCommissionManage = (open: boolean, saleID: number | null = null)
     saleID,
   });
 };
+const changeShowExchangeManage = (open: boolean, saleID: number | null = null): void => {
+  Object.assign(showExchangeManage, {
+    open,
+    saleID,
+  });
+};
 
 const saleID = computed(() => props.data.saleID);
 const open = computed({
@@ -142,7 +153,14 @@ watch(open, async () => {
               <p class="flex items-center">
                 <q-icon name="flag" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Status:</b>
-                <span class="text-bold"> daskjdhaskjdasd </span>
+                <span class="text-bold"
+                  ><q-icon
+                    :name="Sale.status === 'active' ? 'check_circle' : 'close'"
+                    :color="Sale.status === 'active' ? 'green' : 'red'"
+                    class="cursor-pointer"
+                    size="17px"
+                  />{{ Sale.status == 'active' ? 'Ativa' : 'Cancelada' }}
+                </span>
               </p>
 
               <p class="flex items-center">
@@ -161,7 +179,13 @@ watch(open, async () => {
               <p class="flex items-center">
                 <q-icon name="paid" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Total da venda:</b>
-                {{ formatToReal(Sale.total) }}
+                {{ formatToReal(Sale.starting_total) }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="paid" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Total atual:</b>
+                {{ formatToReal(Sale.current_total) }}
               </p>
 
               <p class="flex items-center">
@@ -371,7 +395,7 @@ watch(open, async () => {
               <q-tooltip>Devoluções</q-tooltip>
             </q-btn>
             <q-btn
-              @click="console.log('history')"
+              @click="changeShowExchangeManage(true, props.data.saleID)"
               color="secondary"
               icon="payments"
               round
@@ -422,4 +446,5 @@ watch(open, async () => {
   <!-- Modals -->
   <ReturnManage :data="showReturnManage" @update:open="changeShowReturnManage(false)" />
   <CommissionManage :data="showCommissionManage" @update:open="changeShowCommissionManage(false)" />
+  <ExchangeManage :data="showExchangeManage" @update:open="changeShowExchangeManage(false)" />
 </template>

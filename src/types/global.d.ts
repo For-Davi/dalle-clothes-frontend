@@ -116,9 +116,14 @@ import type {
   DataCreateReturn,
   ReturnItens,
   DataCreateReturnLinked,
+  Returns,
+  Return,
+  ReturnItem,
+  ReturnExchangeItem,
+  EditReturnData,
 } from './Return';
 import type { Commission } from './Commission';
-import type { ExchangeData } from './Exchange';
+import type { ExchangeData, Exchanges, ExchangePaymentMethodData } from './Exchange';
 
 export {};
 
@@ -252,4 +257,11 @@ declare global {
   type IExchangeData = ExchangeData;
   type IReturnItens = ReturnItens;
   type IDataCreateReturnLinked = DataCreateReturnLinked;
+  type IReturns = Returns;
+  type IReturn = Return;
+  type IExchanges = Exchanges;
+  type IReturnItem = ReturnItem;
+  type IReturnExchangeItem = ReturnExchangeItem;
+  type IEditReturnData = EditReturnData;
+  type IExchangePaymentMethodData = ExchangePaymentMethodData;
 }

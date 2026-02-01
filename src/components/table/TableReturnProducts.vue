@@ -83,9 +83,6 @@ const getColorStyle = (hexColor: string) => {
           <q-td key="price" :props="props" class="text-left">
             {{ formatToReal(props.row.product_price) }}
           </q-td>
-          <q-td key="price" :props="props" class="text-left">
-            {{ formatToReal(props.row.product_price) }}
-          </q-td>
           <q-td key="color" :props="props" class="text-left">
             <div
               v-if="props.row.color"

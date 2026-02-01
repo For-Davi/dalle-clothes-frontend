@@ -79,13 +79,13 @@ onMounted(async () => {
           </q-td>
           <q-td key="status" :props="props" class="text-left">
             <q-icon
-              :name="props.row.status ? 'check_circle' : 'close'"
-              :color="props.row.status ? 'green' : 'red'"
+              :name="props.row.status === 'active' ? 'check_circle' : 'close'"
+              :color="props.row.status === 'active' ? 'green' : 'red'"
               class="cursor-pointer q-px-xs"
               size="17px"
             >
               <q-tooltip class="bg-grey-3 text-bold text-black">{{
-                props.row.status ? 'Ativa' : 'Cancelada'
+                props.row.status === 'active' ? 'Ativa' : 'Cancelada'
               }}</q-tooltip>
             </q-icon>
           </q-td>
@@ -96,7 +96,7 @@ onMounted(async () => {
             {{ props.row.client_name ? props.row.client_name : 'Consumidor final' }}
           </q-td>
           <q-td key="total" :props="props" class="text-left">
-            {{ formatToReal(props.row.total) }}
+            {{ formatToReal(props.row.starting_total) }}
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
@@ -105,9 +105,11 @@ onMounted(async () => {
               size="sm"
               flat
               round
-              color="black"
+              color="primary"
               icon="visibility"
-            />
+            >
+              <q-tooltip> Detalhes </q-tooltip>
+            </q-btn>
             <q-btn
               @click="console.log('ajksahd', props.row.id)"
               size="sm"

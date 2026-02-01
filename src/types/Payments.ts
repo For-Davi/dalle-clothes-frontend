@@ -87,12 +87,14 @@ export interface SaleMade {
 export interface Sale {
   id: number;
   enterprise_id: number;
+  status: string;
   seller_id: number | null;
   seller_name: string | null;
   client_id: number | null;
   client_name: string | null;
   fees: number;
-  total: number;
+  starting_total: number;
+  current_total: number;
   change: number;
   date: string;
   sale_itens: ISaleItens[];
@@ -147,7 +149,7 @@ export interface CouponData {
     id: number;
     enterprise_id: number;
     fees: string;
-    total: string;
+    starting_total: string;
     change: string;
     date: string;
   };

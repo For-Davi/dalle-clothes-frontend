@@ -7,7 +7,7 @@ import { createErrorData } from 'src/composables/CreateNotify';
 import { useCatalogSupplierStore } from 'src/stores/catalog-supplier-store';
 
 defineOptions({
-  name: 'FormCategoryTransaction',
+  name: 'FormLinkedProduct',
 });
 
 const props = withDefaults(

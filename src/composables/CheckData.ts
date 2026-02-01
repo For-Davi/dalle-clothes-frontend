@@ -1184,6 +1184,15 @@ export const checkDataCreateReturn = (
 ): { status: boolean; message?: string } => {
   const allReturnData = data.returnData.map((item) => item);
   const allReturnDataProducts = data.returnData.flatMap((returnItem) => returnItem.products);
+  const allExchangeDataProducts = data.exchangeProducts.flatMap((exchangeItem) => exchangeItem);
+  const invalidReason = data.returnData.find((r) => r.reason === null || r.reason === '');
+  const exceedsReturnQuantity = allReturnDataProducts.find(
+    (product) => product.quantity < product.returnQuantity,
+  );
+  const exceedsExchangeQuantity = allExchangeDataProducts.find(
+    (product) => product.stock_quantity < product.quantity,
+  );
+
   if (!data.saleID) {
     return {
       status: false,
@@ -1202,22 +1211,43 @@ export const checkDataCreateReturn = (
       message: 'Informe os produtos que o cliente devolveu',
     };
   }
-  if (!data.exchangeData.exchangeValue) {
-    return { status: false, message: 'Informe o valor a ser estornado' };
-  }
   if (isNaN(data.exchangeData.exchangeValue)) {
     return { status: false, message: 'Informe um valor válido para ser estornado' };
   }
   if (data.exchangeData.exchangeValue < 0) {
     return { status: false, message: 'O valor de estorno não pode ser abaixo de 0' };
   }
+  if (data.exchangeData.exchangeValue === 0 && data.exchangeData.generatesCredit) {
+    return {
+      status: false,
+      message: 'Para gerar crédito ao cliente o valor do estorno não pode ser 0',
+    };
+  }
+  if (exceedsReturnQuantity) {
+    return {
+      status: false,
+      message: `A quantidade estornada do produto ${exceedsReturnQuantity.product_name} excede sua quantidade comprada`,
+    };
+  }
+  if (invalidReason) {
+    return { status: false, message: 'Informe um motivo para a devolução do produto' };
+  }
+  if (exceedsExchangeQuantity) {
+    return {
+      status: false,
+      message: `A quantidade para troca do produto ${exceedsExchangeQuantity.product_name} excede sua quantidade em estoque`,
+    };
+  }
 
   return { status: true };
 };
 
-// export const checkDataReturn = (
-//   data:
-// ): { status: boolean; message?: string } => {
+export const checkDataReturnEditStatus = (data: {
+  status: string;
+}): { status: boolean; message?: string } => {
+  if (data.status.trim() === '' || !data.status.trim()) {
+    return { status: false, message: 'Deve ser informado o status da devolução' };
+  }
 
-//  return { status: true }
-// }
+  return { status: true };
+};
