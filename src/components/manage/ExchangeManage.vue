@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, reactive } from 'vue';
 import TitlePage from '../shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import { useExchangeStore } from 'src/stores/exchange-store';
 import Empty from '../info/Empty.vue';
 import Loading from '../shared/Loading.vue';
 import TableExchange from '../table/TableExchange.vue';
+import FormExchangePayment from '../form/FormExchangePayment.vue';
+import ExchangeDetails from '../details/ExchangeDetails.vue';
 
 defineOptions({
   name: 'ExchangeManage',
@@ -21,22 +23,29 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
-const { listExchanges, loadingExchange } = storeToRefs(useExchangeStore());
+const { listExchanges, loadingExchanges } = storeToRefs(useExchangeStore());
 
-// const showFormReturn = reactive({
-//   open: false as boolean,
-//   returnID: null as number | null,
-// });
+const showFormPayment = reactive({
+  open: false as boolean,
+  exchange: null as IExchange | null,
+});
+const showExchangeDetails = reactive({
+  open: false as boolean,
+  exchangeID: null as number | null,
+});
 
-// const changeShowFormReturn = (
-//   open: boolean,
-//   returnID: number | null = null,
-// ) => {
-//   Object.assign(showFormReturn, {
-//     open,
-//     returnID,
-//   });
-// };
+const changeShowFormPayment = (open: boolean, exchange: IExchange | null = null) => {
+  Object.assign(showFormPayment, {
+    open,
+    exchange,
+  });
+};
+const changeShowExchangeDetails = (open: boolean, exchangeID: number | null = null) => {
+  Object.assign(showExchangeDetails, {
+    open,
+    exchangeID,
+  });
+};
 
 const open = computed({
   get: () => props.data.open,
@@ -48,21 +57,26 @@ const open = computed({
   <q-dialog v-model="open">
     <q-card
       style="min-width: 70vw"
-      :class="loadingExchange ? 'bg-grey-2 sub-page column justify-between' : 'bg-grey-2 sub-page'"
+      :class="loadingExchanges ? 'bg-grey-2 sub-page column justify-between' : 'bg-grey-2 sub-page'"
     >
       <q-card-section class="q-pa-none">
-        <TitlePage title="Estornos" icon="fa-solid fa-box" />
+        <TitlePage title="Estornos e Diferenças" icon="fa-solid fa-box" />
       </q-card-section>
       <q-card-section>
-        <div v-show="!loadingExchange">
-          <TableExchange :sale-i-d="props.data.saleID" v-show="listExchanges.length > 0" />
+        <div v-show="!loadingExchanges">
+          <TableExchange
+            :sale-i-d="props.data.saleID"
+            v-show="listExchanges.length > 0"
+            @show:payment-form="(exchange) => changeShowFormPayment(true, exchange)"
+            @show:exchange-details="(exchangeID) => changeShowExchangeDetails(true, exchangeID)"
+          />
           <Empty
-            v-show="listExchanges.length <= 0 && !loadingExchange"
-            message="Sem estornos"
+            v-show="listExchanges.length <= 0 && !loadingExchanges"
+            message="Sem estornos e diferenças"
             color="bg-red-3"
           />
         </div>
-        <Loading :show="loadingExchange" />
+        <Loading :show="loadingExchanges" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm">
@@ -77,8 +91,9 @@ const open = computed({
           />
         </div>
       </q-card-actions>
-      <!-- Modals -->
-      <!-- <FormReturn :data="showFormReturn" @update:open="changeShowFormReturn(false)" /> -->
     </q-card>
   </q-dialog>
+  <!-- Modals -->
+  <FormExchangePayment :data="showFormPayment" @update:open="changeShowFormPayment(false)" />
+  <ExchangeDetails :data="showExchangeDetails" @update:open="changeShowExchangeDetails(false)" />
 </template>

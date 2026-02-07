@@ -123,7 +123,15 @@ import type {
   EditReturnData,
 } from './Return';
 import type { Commission } from './Commission';
-import type { ExchangeData, Exchanges, ExchangePaymentMethodData } from './Exchange';
+import type {
+  ExchangeData,
+  Exchanges,
+  ExchangePaymentMethodData,
+  Exchange,
+  ExchangePaymentData,
+  DifferencePaymentData,
+  DifferencePaymentMethodData,
+} from './Exchange';
 
 export {};
 
@@ -264,4 +272,8 @@ declare global {
   type IReturnExchangeItem = ReturnExchangeItem;
   type IEditReturnData = EditReturnData;
   type IExchangePaymentMethodData = ExchangePaymentMethodData;
+  type IExchange = Exchange;
+  type IExchangePaymentData = ExchangePaymentData;
+  type IDifferencePaymentData = DifferencePaymentData;
+  type IDifferencePaymentMethodData = DifferencePaymentMethodData;
 }

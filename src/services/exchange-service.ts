@@ -11,11 +11,29 @@ export const getExchangesService = (
   };
 }> => api.get(`${baseUrl}/${saleID}`);
 
-// export const getReturnItemsService = (
-//   returnID: number,
-// ): Promise<{
-//   status: number;
-//   data: {
-//     products: IDataReturnItens[];
-//   };
-// }> => api.get(`${baseUrl}/linked/${returnID}`);
+export const showExchangeService = (
+  exchangeID: number,
+): Promise<{
+  status: number;
+  data: {
+    exchange: IExchange;
+  };
+}> => api.get(`${baseUrl}/exchange/${exchangeID}`);
+
+export const createExchangePaymentService = (
+  data: IExchangePaymentData,
+): Promise<{
+  status: number;
+  data: {
+    exchanges: IExchanges[];
+  };
+}> => api.post(`${baseUrl}/`, data);
+
+export const createDifferencePaymentService = (
+  data: IDifferencePaymentData,
+): Promise<{
+  status: number;
+  data: {
+    exchanges: IExchanges[];
+  };
+}> => api.post(`${baseUrl}/difference`, data);

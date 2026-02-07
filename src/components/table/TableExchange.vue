@@ -11,24 +11,15 @@ defineOptions({
 const props = defineProps<{
   saleID: number | null;
 }>();
+const emit = defineEmits<{
+  'show:payment-form': [IExchange];
+  'show:exchange-details': [number];
+}>();
 
-const { listExchanges, loadingExchange } = storeToRefs(useExchangeStore());
+const { listExchanges, loadingExchanges } = storeToRefs(useExchangeStore());
 
 const filter = ref<string>('');
-// const showExchangeDetails = reactive({
-//   open: false as boolean,
-//   returnID: null as number | null,
-// });
 
-// const changeShowExchangeDetails = (
-//   open: boolean,
-//   returnID: number | null = null,
-// ) => {
-//   Object.assign(showExchangeDetails, {
-//     open,
-//     returnID,
-//   });
-// };
 const fetchExchanges = async () => {
   if (props.saleID) {
     await useExchangeStore().getExchanges(props.saleID);
@@ -43,14 +34,14 @@ onMounted(async () => {
 <template>
   <section style="min-height: 300px">
     <q-table
-      v-show="!loadingExchange"
-      :rows="loadingExchange ? [] : listExchanges"
+      v-show="!loadingExchanges"
+      :rows="loadingExchanges ? [] : listExchanges"
       :columns="columnsExchanges"
       :filter="filter"
-      :loading="loadingExchange"
-      title="Lista de estorno"
+      :loading="loadingExchanges"
+      title="Lista de estorno e diferenças"
       row-key="index"
-      no-data-label="Nenhum estorno para mostrar"
+      no-data-label="Nenhum estorno ou diferença para mostrar"
       virtual-scroll
       :rows-per-page-options="[10]"
       style="height: 460px"
@@ -66,7 +57,7 @@ onMounted(async () => {
       </template>
       <template v-slot:top>
         <div class="row justify-between items-center full-width">
-          <span class="text-body1">Lista de estorno</span>
+          <span class="text-body1">Lista de estorno e diferenças</span>
           <q-space />
           <q-input
             v-show="listExchanges.length > 0"
@@ -116,7 +107,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
-              @click="console.log(true, props.row.id)"
+              @click="emit('show:exchange-details', props.row.id)"
               size="sm"
               flat
               round
@@ -126,21 +117,19 @@ onMounted(async () => {
               <q-tooltip> Detalhes </q-tooltip>
             </q-btn>
             <q-btn
-              @click="console.log('ajksahd', props.row.id)"
+              v-if="
+                props.row.exchange_payment_method.length === 0 &&
+                props.row.difference_payment_method.length === 0
+              "
+              @click="emit('show:payment-form', props.row)"
               size="sm"
               flat
               round
-              color="black"
-              icon="edit"
-            />
-            <q-btn
-              @click="console.log('ajksahd', props.row.id)"
-              size="sm"
-              flat
-              round
-              color="red"
-              icon="delete"
-            />
+              color="teal"
+              icon="payments"
+            >
+              <q-tooltip> Realizar pagamento </q-tooltip>
+            </q-btn>
           </q-td>
         </q-tr>
       </template>

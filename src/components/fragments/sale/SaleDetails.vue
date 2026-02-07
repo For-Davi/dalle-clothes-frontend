@@ -147,7 +147,7 @@ watch(open, async () => {
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
                 <b>Vendedor:</b>
-                {{ Sale.seller_name }}
+                {{ Sale.seller_name ? Sale.seller_name : '-' }}
               </p>
 
               <p class="flex items-center">
@@ -165,17 +165,17 @@ watch(open, async () => {
 
               <p class="flex items-center">
                 <q-icon name="paid" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Faturas:</b> {{ formatToReal(Sale.fees) }}
+                <b class="q-mr-sm">Tarifas:</b> {{ formatToReal(Sale.fees) }}
               </p>
-            </div>
 
-            <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Cliente:</b>
                 {{ Sale.client_name ? Sale.client_name : 'Consumidor final' }}
               </p>
+            </div>
 
+            <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="paid" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Total da venda:</b>
@@ -362,7 +362,7 @@ watch(open, async () => {
 
                       <p class="flex items-center">
                         <q-icon name="shopping_cart" class="q-mr-sm text-primary" />
-                        <b class="q-mr-sm">Qtde comprada:</b> {{ product.quantity }}
+                        <b class="q-mr-sm">Qtde:</b> {{ product.quantity }}
                       </p>
 
                       <p class="flex items-center">

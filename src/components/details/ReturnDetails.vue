@@ -161,11 +161,11 @@ watch(open, async () => {
                 >
                   <TableReturnProductsDetails :rows="group.items" :loading="loadingReturn" />
                   <q-card flat bordered class="q-pa-md q-mb-lg bg-grey-1">
-                    <div class="text-subtitle2 text-primary text-bold">
+                    <div class="text-subtitle2 text-black text-bold">
                       Motivo: {{ getReturnReasonLabels(group.reason) }}
                     </div>
 
-                    <div class="text-body2 text-primary q-mt-xs text-bold">
+                    <div class="text-body2 text-black q-mt-xs text-bold">
                       Descrição:
                       <span class="text-black text-bold">{{
                         group.description ? group.description : 'Nenhuma descrição adicionada'

@@ -488,7 +488,7 @@ onMounted(async () => {
             fill-mask="0"
             reverse-fill-mask
             class="full-width"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="attach_money" color="black" />
@@ -504,7 +504,7 @@ onMounted(async () => {
             input-class="text-black"
             :loading="loading"
             maxlength="8"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="search" color="black" size="20px" />
@@ -520,7 +520,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="model.freight === false ? true : false"
+              :disable="!model.freight"
             >
               <template v-slot:prepend>
                 <q-icon name="map" color="black" size="20px" />
@@ -535,7 +535,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="model.freight === false ? true : false"
+              :disable="!model.freight"
             >
               <template v-slot:prepend>
                 <q-icon name="pin_drop" color="black" size="20px" />
@@ -550,7 +550,7 @@ onMounted(async () => {
             label="Bairro"
             dense
             input-class="text-black"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="pin_drop" color="black" size="20px" />
@@ -564,7 +564,7 @@ onMounted(async () => {
             label="Logradouro"
             dense
             input-class="text-black"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="pin_drop" color="black" size="20px" />
@@ -582,7 +582,7 @@ onMounted(async () => {
               class="input-divider"
               maxlength="15"
               mask="###############"
-              :disable="model.freight === false ? true : false"
+              :disable="!model.freight"
             >
               <template v-slot:prepend>
                 <q-icon name="numbers" color="black" size="20px" />
@@ -597,7 +597,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="model.freight === false ? true : false"
+              :disable="!model.freight"
             >
               <template v-slot:prepend>
                 <q-icon name="numbers" color="black" size="20px" />
@@ -612,7 +612,7 @@ onMounted(async () => {
             label="Nome do recebedor"
             dense
             input-class="text-black"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="person" color="black" size="20px" />
@@ -626,7 +626,7 @@ onMounted(async () => {
             label="Telefone do recebedor"
             dense
             input-class="text-black"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="phone" color="black" size="20px" />
@@ -641,7 +641,7 @@ onMounted(async () => {
             dense
             input-class="text-black no-resize"
             type="textarea"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="description" color="black" size="20px" />
