@@ -81,6 +81,7 @@ export interface Exchange {
   updated_by_email: string | null;
   created_at: string;
   updated_at: string;
+  fees: number | null;
   change: number | null;
   description: string | null;
   exchange_payment_method: ExchangePaymentMethod[];

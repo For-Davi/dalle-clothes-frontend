@@ -17,6 +17,7 @@ defineOptions({
 const props = defineProps<{
   totalPrice: string;
   checkPaymentsReset: boolean;
+  credit: number | null;
   loadingSale: boolean;
 }>();
 const emit = defineEmits<{
@@ -61,7 +62,7 @@ const fetchEmployees = async (): Promise<void> => {
 };
 const fetchReceiptsAndTypes = async (): Promise<void> => {
   await useReceiptstore().getReceipt({ active: 1 });
-  await useTypesReceiptStore().getTypesReceipt({ active: 1 });
+  await useTypesReceiptStore().getTypesReceipt({ active: 1 }, 'withoutCredit');
 };
 const createPayments = (count: number) => {
   if (paymentTotal.value) {
@@ -226,7 +227,13 @@ const listEmployeeOptions = computed(() => {
   return options.filter((option) => option.label.toLowerCase().includes(needle));
 });
 const getTypes = computed(() => {
-  return listTypesReceipt.value.map((type: ITypesReceipt) => ({
+  let types = listTypesReceipt.value;
+
+  if (paymentTotal.value) {
+    types = types.filter((type: ITypesReceipt) => type.name !== 'CREDIT');
+  }
+
+  return types.map((type: ITypesReceipt) => ({
     label: PaymentTypeLabels[type.name as keyof typeof PaymentTypeLabels],
     value: type.name,
   }));
@@ -290,12 +297,27 @@ watch([() => totalPricePayment.value, paymentTotal], () => {
 watch(
   () => model.value.payment.map((p) => p.paymentType),
   (newPaymentTypes) => {
+    if (paymentDivider.value) {
+      newPaymentTypes.forEach((type, index) => {
+        const payment = model.value.payment[index];
+
+        if (type === 'CREDIT' && props.credit) {
+          payment.value = props.credit.toFixed(2).toString();
+          disableValue.value = true;
+        }
+      });
+    }
+  },
+);
+watch(
+  () => model.value.payment.map((p) => p.paymentType),
+  (newPaymentTypes) => {
     if (paymentTotal.value) {
       newPaymentTypes.forEach((type, index) => {
         const payment = model.value.payment[index];
 
-        //Caso o tipo de pagamento seja dinheiro ele tira o disable e deixa nulo a quantidade de parcelas e o valor delas
-        if (type === 'MONEY') {
+        //Caso o tipo de pagamento seja dinheiro ou crédito ele tira o disable e deixa nulo a quantidade de parcelas e o valor delas
+        if (type === 'MONEY' || type === 'CREDIT') {
           disableValue.value = false;
           payment.value = '';
           payment.installment = { value: null, amount: null };
@@ -661,6 +683,11 @@ onMounted(async () => {
               >Faltando: {{ formatToReal(missingAmount.toString()) }}</span
             >
           </div>
+          <div v-if="props.credit" class="flex column q-pa-xs">
+            <span class="text-bold text-h6 text-bold text-black"
+              >Este cliente possui um crédito de {{ formatToReal(props.credit) }}</span
+            >
+          </div>
           <q-input
             label="R$ Valor de tarifas"
             v-model="model.fees"
@@ -822,6 +849,7 @@ onMounted(async () => {
                 />
               </div>
               <q-select
+                v-if="payments.paymentType !== 'CREDIT'"
                 v-model="payments.receiptID"
                 label="Selecione o recebimento"
                 :options="getReceiptOptions(payments.paymentType)"

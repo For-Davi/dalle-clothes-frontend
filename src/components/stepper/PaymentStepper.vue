@@ -80,6 +80,7 @@ const dataClient = reactive({
   description: '' as string,
   dateBirthday: '' as string,
   sex: '' as string,
+  credits: null as number | null,
 });
 const showFormClient = reactive<{
   open: boolean;
@@ -190,6 +191,7 @@ const sendData = async () => {
             complement: dataClient.complement,
             description: dataClient.description,
             sex: dataClient.sex === 'Masculino' ? 'M' : 'F',
+            credits: dataClient.credits,
           }
         : null,
       saleData: {
@@ -351,6 +353,7 @@ onMounted(async () => {
         <FormPayment
           :totalPrice="dataSale.totalPrice"
           :checkPaymentsReset="checkPaymentsReset"
+          :credit="dataClient.credits"
           :loadingSale="loadingSale"
           v-model="dataPayment"
           @send-missing-amount="setMissingAmount"

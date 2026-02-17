@@ -48,6 +48,7 @@ const checkDataEdit = async () => {
         description: client.description ?? '',
         dateBirthday: client.date_birthday ?? '',
         sex: client.sex === 'M' ? 'Masculino' : 'Feminino',
+        credits: client.credits ?? null,
       });
 
       loadingCheckData.value = false;

@@ -103,7 +103,7 @@ watch(open, async () => {
                 </span>
               </p>
               <p class="flex items-center">
-                <q-icon name="person" class="q-mr-sm text-primary" />
+                <q-icon name="paid" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm"
                   >{{ Exchange.exchange_value > 0 ? 'Valor a estornar' : 'Diferença a pagar' }}:</b
                 >
@@ -113,30 +113,40 @@ watch(open, async () => {
                     : formatToReal(Exchange.difference_value)
                 }}
               </p>
+              <p class="flex items-center">
+                <q-icon name="paid" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Tarifas:</b>
+                {{ Exchange.fees ? formatToReal(Exchange.fees) : '-' }}
+              </p>
+              <p class="flex items-center">
+                <q-icon name="paid" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Troco:</b>
+                {{ Exchange.change ? formatToReal(Exchange.change) : '-' }}
+              </p>
             </div>
 
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Atualizado por:</b>
-                {{ Exchange.updated_by_name ? Exchange.updated_by_name : '-' }}
+                {{ Exchange.updated_by_name ?? '-' }}
               </p>
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Email:</b>
-                {{ Exchange.updated_by_email ? Exchange.updated_by_email : '-' }}
+                {{ Exchange.updated_by_email ?? '-' }}
               </p>
 
               <p class="flex items-center">
-                <q-icon name="paid" class="q-mr-sm text-primary" />
+                <q-icon name="calendar_today" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Data de criação:</b>
                 {{ Exchange.created_at }}
               </p>
 
               <p class="flex items-center">
-                <q-icon name="paid" class="q-mr-sm text-primary" />
+                <q-icon name="calendar_today" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Data de atualização:</b>
-                {{ Exchange.updated_at }}
+                {{ Exchange.updated_at ?? '-' }}
               </p>
             </div>
 

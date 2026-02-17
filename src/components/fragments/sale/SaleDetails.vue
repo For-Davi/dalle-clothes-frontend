@@ -181,6 +181,11 @@ watch(open, async () => {
                 <b class="q-mr-sm">Total da venda:</b>
                 {{ formatToReal(Sale.starting_total) }}
               </p>
+              <p class="flex items-center">
+                <q-icon name="paid" class="q-mr-sm text-primary" />
+                <b class="q-mr-sm">Troco:</b>
+                {{ formatToReal(Sale.change) }}
+              </p>
 
               <p class="flex items-center">
                 <q-icon name="paid" class="q-mr-sm text-primary" />

@@ -1,6 +1,7 @@
 import {
   getTypesReceiptService,
   getTypesReceiptFilterService,
+  getTypesReceiptWithoutCreditService,
 } from 'src/services/types-receipt-service';
 import { defineStore } from 'pinia';
 import { createError } from 'src/composables/CreateNotify';
@@ -20,16 +21,23 @@ export const useTypesReceiptStore = defineStore('typesReceipt', {
     setListTypesReceipt(types: ITypesReceipt[]) {
       types.map((item) => this.listTypesReceipt.push(item));
     },
-    async getTypesReceipt(filter: IFilterReceipt | null = null) {
+    async getTypesReceipt(
+      filter: IFilterReceipt | null = null,
+      type: 'withoutCredit' | null = null,
+    ) {
       try {
         this.setLoading(true);
         let response = null;
         if (filter) {
           response = await getTypesReceiptFilterService(filter);
-        } else {
+        }
+        if (!filter && type === 'withoutCredit') {
+          response = await getTypesReceiptWithoutCreditService();
+        }
+        if (!filter && !type) {
           response = await getTypesReceiptService();
         }
-        if (response.status === 200) {
+        if (response?.status === 200) {
           this.clearListTypesReceipt();
           this.setListTypesReceipt(response.data.types);
         }

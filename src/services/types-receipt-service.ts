@@ -9,6 +9,13 @@ export const getTypesReceiptService = (): Promise<{
   };
 }> => api.get(`${baseUrl}`);
 
+export const getTypesReceiptWithoutCreditService = (): Promise<{
+  status: number;
+  data: {
+    types: ITypesReceipt[];
+  };
+}> => api.get(`${baseUrl}/without-credit`);
+
 export const getTypesReceiptFilterService = (
   filter: IFilterReceipt,
 ): Promise<{
