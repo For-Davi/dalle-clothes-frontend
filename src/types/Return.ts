@@ -41,6 +41,17 @@ export interface ReturnItem {
   reason: string;
   description: string | null;
 }
+
+export interface StockReentryReturnItem {
+  product_variant_id: number;
+  product_name: string;
+  product_sku: string | null;
+  product_code: string | null;
+  product_color: string | null;
+  product_color_name: string | null;
+  quantity: number;
+}
+
 export interface Returns {
   id: number;
   sale_id: number;

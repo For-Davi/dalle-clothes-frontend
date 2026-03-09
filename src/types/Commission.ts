@@ -2,6 +2,7 @@ export interface Commission {
   created_at: string;
   status: string;
   type: string;
+  return_id: number | null;
   product_name: string;
   seller_name: string;
   seller_email?: string | null;

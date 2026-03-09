@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { columnsSearchProductVariant } from 'src/utils/columns';
+import { columnsSearchReturnItemVariant } from 'src/utils/columns';
+import { useReturnStore } from 'src/stores/return-store';
+import { storeToRefs } from 'pinia';
 
 defineOptions({
-  name: 'TableSearchProductVariant',
+  name: 'TableSearchReturnItem',
 });
 
 const props = defineProps<{
-  list: ISearchProductVariant[];
+  list: IStockReentryReturnItem[];
 }>();
 const emit = defineEmits<{
-  chooseProductVariant: [number, 'in' | 'out', 'stock'];
+  chooseProductVariant: [number, 'in' | 'out', 'return'];
 }>();
+
+const { loadingReturn } = storeToRefs(useReturnStore());
 
 const filter = ref<string>('');
 
@@ -30,10 +34,11 @@ const getColorStyle = (hexColor: string) => {
 <template>
   <q-table
     :rows="props.list"
-    :columns="columnsSearchProductVariant"
+    :columns="columnsSearchReturnItemVariant"
     :filter="filter"
+    :loading="loadingReturn"
     row-key="index"
-    no-data-label="Nenhuma variante para mostrar"
+    no-data-label="Nenhum produto devolvido para mostrar"
     virtual-scroll
     :rows-per-page-options="[6]"
     bordered
@@ -49,7 +54,7 @@ const getColorStyle = (hexColor: string) => {
     </template>
     <template v-slot:top>
       <div class="row justify-between items-center full-width">
-        <span class="text-body1">Lista de variantes</span>
+        <span class="text-body1">Lista de produtos devolvidos</span>
         <q-space />
         <q-input
           v-model="filter"
@@ -67,34 +72,31 @@ const getColorStyle = (hexColor: string) => {
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td key="name" :props="props" class="text-left">
-          {{ props.row.product.name }}
+          {{ props.row.product_name }}
         </q-td>
         <q-td key="sku" :props="props" class="text-left">
-          {{ props.row.sku }}
+          {{ props.row.product_sku }}
         </q-td>
         <q-td key="code" :props="props" class="text-left">
-          {{ props.row.code }}
+          {{ props.row.product_code }}
         </q-td>
         <q-td key="color" :props="props" class="text-left">
           <div
-            v-if="props.row.color"
+            v-if="props.row.product_color"
             class="cursor-pointer"
-            :style="getColorStyle(props.row.color.hex_color_code)"
+            :style="getColorStyle(props.row.product_color)"
           >
-            <q-tooltip class="bg-grey-3 text-bold text-black">{{ props.row.color.name }}</q-tooltip>
+            <q-tooltip class="bg-grey-3 text-bold text-black">{{
+              props.row.product_color_name
+            }}</q-tooltip>
           </div>
         </q-td>
-        <q-td
-          key="stock_quantity"
-          :props="props"
-          class="text-left"
-          :class="props.row.stock_quantity <= props.row.min_stock_alert ? 'text-red text-bold' : ''"
-        >
-          {{ props.row.stock_quantity }}
+        <q-td key="quantity_return" :props="props" class="text-left">
+          {{ props.row.quantity }}
         </q-td>
         <q-td key="action" :props="props">
           <q-btn
-            @click="emit('chooseProductVariant', props.row.id, 'out', 'stock')"
+            @click="emit('chooseProductVariant', props.row.product_variant_id, 'out', 'return')"
             size="sm"
             flat
             round
@@ -104,7 +106,7 @@ const getColorStyle = (hexColor: string) => {
             <q-tooltip class="bg-grey-3 text-bold text-red">Saída</q-tooltip>
           </q-btn>
           <q-btn
-            @click="emit('chooseProductVariant', props.row.id, 'in', 'stock')"
+            @click="emit('chooseProductVariant', props.row.product_variant_id, 'in', 'return')"
             size="sm"
             flat
             round

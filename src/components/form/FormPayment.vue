@@ -119,8 +119,12 @@ const clearFreight = () => {
   model.value.recipientName = '';
   model.value.recipientPhone = '';
 };
-const isMoneyAndHasArrayPayment = (label: string) => {
-  return label === 'MONEY' && model.value.payment.some((p) => p.paymentType === 'MONEY');
+const isRestrictedTypeAndAlreadySelected = (type: string) => {
+  const restrictedTypes = ['MONEY', 'CREDIT'];
+
+  if (!restrictedTypes.includes(type) || paymentTotal.value) return false;
+
+  return model.value.payment.some((p) => p.paymentType === type);
 };
 const createPaymentsAfterReset = () => {
   createPayments(paymentTotal.value ? 1 : 2);
@@ -301,8 +305,9 @@ watch(
       newPaymentTypes.forEach((type, index) => {
         const payment = model.value.payment[index];
 
-        if (type === 'CREDIT' && props.credit) {
-          payment.value = props.credit.toFixed(2).toString();
+        if (type === 'CREDIT' && props.credit && props.credit > 0) {
+          payment.value = props.credit.toString();
+          payment.installment = { value: null, amount: null };
           disableValue.value = true;
         }
       });
@@ -317,7 +322,7 @@ watch(
         const payment = model.value.payment[index];
 
         //Caso o tipo de pagamento seja dinheiro ou crédito ele tira o disable e deixa nulo a quantidade de parcelas e o valor delas
-        if (type === 'MONEY' || type === 'CREDIT') {
+        if (type === 'MONEY') {
           disableValue.value = false;
           payment.value = '';
           payment.installment = { value: null, amount: null };
@@ -683,7 +688,7 @@ onMounted(async () => {
               >Faltando: {{ formatToReal(missingAmount.toString()) }}</span
             >
           </div>
-          <div v-if="props.credit" class="flex column q-pa-xs">
+          <div v-if="props.credit && props.credit > 0" class="flex column q-pa-xs">
             <span class="text-bold text-h6 text-bold text-black"
               >Este cliente possui um crédito de {{ formatToReal(props.credit) }}</span
             >
@@ -755,7 +760,7 @@ onMounted(async () => {
                 <template v-slot:option="scope">
                   <q-item
                     v-bind="scope.itemProps"
-                    v-if="!isMoneyAndHasArrayPayment(scope.opt.value)"
+                    v-if="!isRestrictedTypeAndAlreadySelected(scope.opt.value)"
                   >
                     <q-item-section>
                       <q-item-label>{{ scope.opt.label }}</q-item-label>
@@ -787,7 +792,7 @@ onMounted(async () => {
                       ? 'input-3-divider'
                       : 'full-width'
                   "
-                  :disable="disableValue"
+                  :disable="disableValue || payments.paymentType === 'CREDIT'"
                 >
                   <template v-slot:prepend>
                     <q-icon name="attach_money" color="black" />

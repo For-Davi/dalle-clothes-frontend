@@ -164,6 +164,15 @@ export const createMovementVariantService = (
   };
 }> => api.post(`${baseUrl}/variant/movement`, data);
 
+export const createStockReentryMovementService = (
+  data: IDataMovementProductRegister,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+  };
+}> => api.post(`${baseUrl}/stock-reentry/movement`, data);
+
 export const updateProductAdvancedService = (
   data: IDataProductAdvanced,
 ): Promise<{

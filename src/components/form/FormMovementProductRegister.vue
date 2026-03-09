@@ -15,6 +15,7 @@ const props = defineProps<{
     open: boolean;
     variantID: number | null;
     type: 'in' | 'out';
+    productType: 'stock' | 'return' | null;
   };
 }>();
 const emit = defineEmits<{
@@ -71,19 +72,37 @@ const clear = (): void => {
   };
 };
 const save = async (): Promise<void> => {
-  const response = await useProductStore().createMovementVariant({
-    variantID: variantID.value ?? 0,
-    documentNumber:
-      dataMovement.documentNumber.trim().length === 0 ? null : dataMovement.documentNumber,
-    lotNumber: dataMovement.lotNumber.trim().length === 0 ? null : dataMovement.lotNumber,
-    quantity: Number(dataMovement.quantity),
-    unitCost: parseFloat(dataMovement.unitCost),
-    totalCost: parseFloat(dataMovement.totalCost),
-    reason: selectedReason.value.value,
-    supplierID: selectedSupplier.value.value,
-    type: props.data.type,
-    description: dataMovement.description.trim().length === 0 ? null : dataMovement.description,
-  });
+  let response = null;
+  if (props.data.productType === 'stock') {
+    response = await useProductStore().createMovementVariant({
+      variantID: variantID.value ?? 0,
+      documentNumber:
+        dataMovement.documentNumber.trim().length === 0 ? null : dataMovement.documentNumber,
+      lotNumber: dataMovement.lotNumber.trim().length === 0 ? null : dataMovement.lotNumber,
+      quantity: Number(dataMovement.quantity),
+      unitCost: parseFloat(dataMovement.unitCost),
+      totalCost: parseFloat(dataMovement.totalCost),
+      reason: selectedReason.value.value,
+      supplierID: selectedSupplier.value.value,
+      type: props.data.type,
+      description: dataMovement.description.trim().length === 0 ? null : dataMovement.description,
+    });
+  }
+  if (props.data.productType === 'return') {
+    response = await useProductStore().createMovementStockReentry({
+      variantID: variantID.value ?? 0,
+      documentNumber:
+        dataMovement.documentNumber.trim().length === 0 ? null : dataMovement.documentNumber,
+      lotNumber: dataMovement.lotNumber.trim().length === 0 ? null : dataMovement.lotNumber,
+      quantity: Number(dataMovement.quantity),
+      unitCost: parseFloat(dataMovement.unitCost),
+      totalCost: parseFloat(dataMovement.totalCost),
+      reason: selectedReason.value.value,
+      supplierID: selectedSupplier.value.value,
+      type: props.data.type,
+      description: dataMovement.description.trim().length === 0 ? null : dataMovement.description,
+    });
+  }
   if (response?.status === 200) {
     clear();
     emit('update:open');

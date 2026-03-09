@@ -191,7 +191,7 @@ const sendData = async () => {
             complement: dataClient.complement,
             description: dataClient.description,
             sex: dataClient.sex === 'Masculino' ? 'M' : 'F',
-            credits: dataClient.credits,
+            credits: Number(dataClient.credits),
           }
         : null,
       saleData: {
@@ -353,7 +353,7 @@ onMounted(async () => {
         <FormPayment
           :totalPrice="dataSale.totalPrice"
           :checkPaymentsReset="checkPaymentsReset"
-          :credit="dataClient.credits"
+          :credit="Number(dataClient.credits)"
           :loadingSale="loadingSale"
           v-model="dataPayment"
           @send-missing-amount="setMissingAmount"

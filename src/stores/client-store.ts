@@ -4,6 +4,7 @@ import {
   getClientsFilterService,
   getClientsService,
   showClientService,
+  getClientCreditService,
 } from 'src/services/client-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -180,6 +181,21 @@ export const useClientStore = defineStore('client', {
       } catch (error) {
         createError(error);
         return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async getClientCredit(saleID: number) {
+      try {
+        this.setLoading(true);
+        const response = await getClientCreditService(saleID);
+        if (response.status === 200) {
+          return response.data.credit;
+        }
+        return null;
+      } catch (error) {
+        createError(error);
+        return null;
       } finally {
         this.setLoading(false);
       }

@@ -31,6 +31,7 @@ export interface AdditionalExchangePaymentMethodData {
 }
 export interface AdditionalDifferencePaymentMethodData {
   saleID: number;
+  returnID: number;
   exchangeID: number;
   change: number;
   fees: number;

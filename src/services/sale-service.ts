@@ -84,3 +84,31 @@ export const exportSaleService = async (saleID: number) => {
     createError(error);
   }
 };
+
+export const createSaleCancellationService = (
+  data: IDataSaleCancellation,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+  };
+}> => api.post(`${baseUrl}/cancel`, data);
+
+export const getSaleCancellationService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    cancellation: ISaleCancellation;
+  };
+}> => api.get(`${baseUrl}/cancel/${saleID}`);
+
+export const deleteSaleService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    sales: ISales[];
+    message: string;
+  };
+}> => api.delete(`${baseUrl}/${saleID}`);

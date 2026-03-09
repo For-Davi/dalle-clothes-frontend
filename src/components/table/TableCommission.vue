@@ -56,6 +56,10 @@ onMounted(async () => {
       :filter="filter"
       :filter-method="filterMethod"
       :loading="loadingCommission"
+      :pagination="{
+        sortBy: 'created_at',
+        descending: true,
+      }"
       title="Lista de comissões"
       row-key="created_at"
       no-data-label="Nenhuma comissão para mostrar"
@@ -92,7 +96,7 @@ onMounted(async () => {
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="date" :props="props" class="text-left">
+          <q-td key="created_at" :props="props" class="text-left">
             {{ props.row.created_at }}
           </q-td>
           <q-td key="status" :props="props" class="text-left">
@@ -107,6 +111,9 @@ onMounted(async () => {
           </q-td>
           <q-td key="type" :props="props" class="text-left">
             {{ props.row.type }}
+          </q-td>
+          <q-td key="return_code" :props="props" class="text-left">
+            {{ props.row.return_id ?? '-' }}
           </q-td>
           <q-td key="product_name" :props="props" class="text-left">
             {{ props.row.product_name }}

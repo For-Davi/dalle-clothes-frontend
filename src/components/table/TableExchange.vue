@@ -3,6 +3,7 @@ import { columnsExchanges } from 'src/utils/columns';
 import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useExchangeStore } from 'src/stores/exchange-store';
+import { formatToReal } from 'src/composables/Money';
 
 defineOptions({
   name: 'TableExchange',
@@ -39,6 +40,7 @@ onMounted(async () => {
       :columns="columnsExchanges"
       :filter="filter"
       :loading="loadingExchanges"
+      :pagination="{ sortBy: 'created_at', descending: true }"
       title="Lista de estorno e diferenças"
       row-key="index"
       no-data-label="Nenhum estorno ou diferença para mostrar"
@@ -75,7 +77,7 @@ onMounted(async () => {
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="date" :props="props" class="text-left">
+          <q-td key="created_at" :props="props" class="text-left">
             {{ props.row.created_at }}
           </q-td>
           <q-td key="status" :props="props" class="items-center">
@@ -94,10 +96,10 @@ onMounted(async () => {
             {{ props.row.return_id }}
           </q-td>
           <q-td key="difference_value" :props="props" class="text-left text-green-6">
-            {{ props.row.difference_value }}
+            {{ formatToReal(props.row.difference_value) }}
           </q-td>
           <q-td key="exchange_value" :props="props" class="text-left text-red-6">
-            {{ props.row.exchange_value }}
+            {{ formatToReal(props.row.exchange_value) }}
           </q-td>
           <q-td key="created_by_name" :props="props" class="text-left">
             {{ props.row.created_by_name }}

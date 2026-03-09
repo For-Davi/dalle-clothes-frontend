@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch, reactive } from 'vue';
+import { computed, ref, watch, reactive } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
@@ -11,6 +11,7 @@ import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 import { useReceiptstore } from 'src/stores/receipt-store';
 import { searchCep } from 'src/services/cep-service';
 import { formatToReal } from 'src/composables/Money';
+import { useClientStore } from 'src/stores/client-store';
 
 defineOptions({
   name: 'FormExchangePayment',
@@ -31,6 +32,7 @@ const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 const { listReceipt } = storeToRefs(useReceiptstore());
 
 const exchangePaymentData = ref<IExchangePaymentMethodData[]>([]);
+const clientCredit = ref<number | null>(null);
 const additionalPaymentData = reactive({
   change: 0,
   fees: 0,
@@ -87,15 +89,6 @@ const save = async () => {
       if (response?.status === 201) {
         emit('update:open');
       }
-      console.log('dados', {
-        exchangePaymentData: exchangePaymentData.value,
-        additionalExchangePaymentData: {
-          saleID: props.data.exchange?.sale_id,
-          exchangeID: props.data.exchange?.id,
-          change: additionalPaymentData.change,
-          description: additionalPaymentData.description,
-        },
-      });
     } else {
       createErrorData(check.message || 'Erro ao processar dados do pagamento');
     }
@@ -105,6 +98,7 @@ const save = async () => {
         differencePaymentData: exchangePaymentData.value,
         additionalDifferencePaymentData: {
           saleID: props.data.exchange?.sale_id ?? 0,
+          returnID: props.data.exchange?.return_id ?? 0,
           exchangeID: props.data.exchange?.id ?? 0,
           fees: additionalPaymentData.fees,
           change: additionalPaymentData.change,
@@ -119,6 +113,7 @@ const save = async () => {
         differencePaymentData: exchangePaymentData.value,
         additionalDifferencePaymentData: {
           saleID: props.data.exchange?.sale_id ?? 0,
+          returnID: props.data.exchange?.return_id ?? 0,
           exchangeID: props.data.exchange?.id ?? 0,
           fees: additionalPaymentData.fees,
           change: additionalPaymentData.change,
@@ -129,17 +124,6 @@ const save = async () => {
       if (response?.status === 201) {
         emit('update:open');
       }
-      console.log('dadodasodosad', {
-        differencePaymentData: exchangePaymentData.value,
-        additionalDifferencePaymentData: {
-          saleID: props.data.exchange?.sale_id ?? 0,
-          exchangeID: props.data.exchange?.id ?? 0,
-          fees: additionalPaymentData.fees,
-          change: additionalPaymentData.change,
-          description: additionalPaymentData.description,
-        },
-        differenceDelievryData: deliveryData,
-      });
     } else {
       createErrorData(check.message || 'Erro ao processar dados do pagamento');
     }
@@ -158,9 +142,6 @@ const getReceiptOptions = (paymentType: string | null) => {
   } else {
     return [];
   }
-};
-const isMoneyAndHasArrayPayment = (label: string) => {
-  return label === 'MONEY' && exchangePaymentData.value.some((p) => p.paymentType === 'MONEY');
 };
 const createPayments = (count: number) => {
   if (paymentTotal.value) {
@@ -195,6 +176,9 @@ const fetchReceiptsAndTypes = async () => {
   await useReceiptstore().getReceipt({ active: 1 });
   await useTypesReceiptStore().getTypesReceipt({ active: 1 });
 };
+const fetchClientCredit = async () => {
+  clientCredit.value = await useClientStore().getClientCredit(props.data.exchange?.sale_id ?? 0);
+};
 const clearDelivery = () => {
   deliveryData.freightValue = '0.00';
   deliveryData.cep = '';
@@ -210,6 +194,13 @@ const clearDelivery = () => {
 const clear = () => {
   paymentTotal.value = true;
   clearDelivery();
+};
+const isRestrictedTypeAndAlreadySelected = (type: string) => {
+  const restrictedTypes = ['MONEY', 'CREDIT'];
+
+  if (!restrictedTypes.includes(type) || paymentTotal.value) return false;
+
+  return exchangePaymentData.value.some((p) => p.paymentType === type);
 };
 
 const getInstallmentOptions = computed(() => {
@@ -422,23 +413,30 @@ watch(
 //Caso o preço total mude com tarifas ou frete e caso seja pagar total ele ja coloca esse valor no payment.value
 watch([() => totalPricePayment.value, paymentTotal], () => {
   if (paymentTotal.value) {
-    if (hasExchange.value) {
-      exchangePaymentData.value.forEach((payment) => {
-        if (payment.paymentType !== 'MONEY') {
+    exchangePaymentData.value.forEach((payment) => {
+      if (payment.paymentType !== 'MONEY') {
+        disableValue.value = true;
+        payment.value = Number(totalPricePayment.value).toFixed(2).toString();
+      }
+    });
+  }
+});
+watch(
+  () => exchangePaymentData.value.map((p) => p.paymentType),
+  (newPaymentTypes) => {
+    if (paymentDivider.value) {
+      newPaymentTypes.forEach((type, index) => {
+        const payment = exchangePaymentData.value[index];
+
+        if (type === 'CREDIT' && clientCredit.value && clientCredit.value > 0) {
+          payment.value = clientCredit.value.toString();
+          payment.installment = { value: null, amount: null };
           disableValue.value = true;
-          payment.value = Number(totalPricePayment.value).toFixed(2).toString();
-        }
-      });
-    } else {
-      exchangePaymentData.value.forEach((payment) => {
-        if (payment.paymentType !== 'MONEY') {
-          disableValue.value = true;
-          payment.value = Number(totalPricePayment.value).toFixed(2).toString();
         }
       });
     }
-  }
-});
+  },
+);
 watch(
   () => exchangePaymentData.value.map((p) => p.paymentType),
   (newPaymentTypes) => {
@@ -446,19 +444,29 @@ watch(
       newPaymentTypes.forEach((type, index) => {
         const payment = exchangePaymentData.value[index];
 
-        //Caso o tipo de pagamento seja dinheiro ele tira o disable e deixa nulo a quantidade de parcelas e o valor delas
+        // Tratamento para DINHEIRO
         if (type === 'MONEY') {
           disableValue.value = false;
           payment.value = '';
           payment.installment = { value: null, amount: null };
-        } else {
-          //Caso o tipo seja outro ele volta o disable e coloca o valor total no input value e deixa nulo a quantidade de parcelas e o valor delas
+        }
+        // Tratamento para CRÉDITO
+        else if (type === 'CREDIT') {
+          disableValue.value = clientCredit.value && clientCredit.value > 0 ? true : false;
+          payment.value =
+            clientCredit.value && clientCredit.value > 0
+              ? Number(clientCredit.value).toFixed(2).toString()
+              : '';
+          payment.installment = { value: null, amount: null };
+        }
+        // Demais tipos (ex: CREDIT_CARD, outros)
+        else {
           disableValue.value = true;
           payment.value = Number(totalPricePayment.value).toFixed(2).toString();
           payment.installment = { value: null, amount: null };
         }
 
-        //Caso o tipo de pagamento seja cartão de crédito ele ja coloca o parcelamento de 1X como padrão
+        // Para cartão de crédito, define parcelamento padrão (1x)
         if (type === 'CREDIT_CARD' && !hasExchange.value) {
           const defaultInstallment = getInstallmentOptions.value[0];
           payment.installment = defaultInstallment;
@@ -543,17 +551,30 @@ watch(
 watch(
   () => totalPaid.value,
   () => {
+    let creditValue = 0;
+
+    exchangePaymentData.value.forEach((p) => {
+      if (p.paymentType === 'CREDIT') {
+        creditValue += Number(p.value);
+      }
+    });
     if (totalPaid.value > Number(totalPricePayment.value)) {
-      additionalPaymentData.change = totalPaid.value - Number(totalPricePayment.value);
+      const change = totalPaid.value - Number(totalPricePayment.value) - creditValue;
+      additionalPaymentData.change = change > 0 ? change : 0;
     } else {
       additionalPaymentData.change = 0;
     }
   },
 );
-
-onMounted(async () => {
-  await fetchReceiptsAndTypes();
-});
+watch(
+  () => props.data.open,
+  async () => {
+    if (props.data.open) {
+      await fetchReceiptsAndTypes();
+      await fetchClientCredit();
+    }
+  },
+);
 </script>
 <template>
   <q-dialog v-model="open">
@@ -766,6 +787,11 @@ onMounted(async () => {
                 >Faltando: {{ formatToReal(missingAmount.toString()) }}</span
               >
             </div>
+            <div v-if="clientCredit && clientCredit > 0" class="flex column q-pa-xs">
+              <span class="text-bold text-h6 text-bold text-black"
+                >Este cliente possui um crédito de {{ formatToReal(clientCredit) }}</span
+              >
+            </div>
             <q-input
               v-if="!hasExchange"
               label="R$ Valor de tarifas"
@@ -829,7 +855,7 @@ onMounted(async () => {
                   <template v-slot:option="scope">
                     <q-item
                       v-bind="scope.itemProps"
-                      v-if="!isMoneyAndHasArrayPayment(scope.opt.value)"
+                      v-if="!isRestrictedTypeAndAlreadySelected(scope.opt.value)"
                     >
                       <q-item-section>
                         <q-item-label>{{ scope.opt.label }}</q-item-label>
@@ -861,7 +887,9 @@ onMounted(async () => {
                         ? 'input-3-divider'
                         : 'full-width'
                     "
-                    :disable="disableValue"
+                    :disable="
+                      disableValue || (payments.paymentType === 'CREDIT' && (clientCredit ?? 0) > 0)
+                    "
                   >
                     <template v-slot:prepend>
                       <q-icon name="attach_money" color="black" />
@@ -929,6 +957,7 @@ onMounted(async () => {
                   />
                 </div>
                 <q-select
+                  v-if="payments.paymentType !== 'CREDIT'"
                   v-model="payments.receiptID"
                   label="Selecione o recebimento"
                   :options="getReceiptOptions(payments.paymentType)"

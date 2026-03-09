@@ -17,16 +17,18 @@ const { loadingSetting, systemSetting } = storeToRefs(useSettingsStore());
 
 const dataSystem = reactive({
   sendNotificationStockCritical: 1 as number,
+  hasCreditExpiredData: 1 as number,
+  quantityCreditExpireDays: 3 as number,
 });
 
 const update = async () => {
-  await useSettingsStore().updateSystemSetting({
-    sendNotificationStockCritical: dataSystem.sendNotificationStockCritical,
-  });
+  await useSettingsStore().updateSystemSetting(dataSystem);
 };
 const mountData = () => {
   Object.assign(dataSystem, {
     sendNotificationStockCritical: systemSetting.value.send_notification_stock_critical,
+    hasCreditExpiredData: systemSetting.value.has_credit_expired_data,
+    quantityCreditExpireDays: systemSetting.value.quantity_credit_expire_days,
   });
 };
 
@@ -50,7 +52,7 @@ watch(
     <Loading :show="loadingSetting" />
     <q-card-section v-show="!loadingSetting">
       <q-form class="q-gutter-y-md column">
-        <div>
+        <div class="q-mt-md">
           <q-toggle
             v-model="dataSystem.sendNotificationStockCritical"
             checked-icon="check"
@@ -67,6 +69,35 @@ watch(
               </span>
             </div>
           </q-toggle>
+          <div class="q-my-md">
+            <q-toggle
+              v-model="dataSystem.hasCreditExpiredData"
+              checked-icon="check"
+              color="green"
+              unchecked-icon="clear"
+              :true-value="1"
+              :false-value="0"
+              class="q-mr-sm"
+            >
+              <div class="column">
+                <span class="text-bold text-body2">Expiração de crédito</span>
+                <span
+                  >O crédito dado ao cliente será retirado após a quantidade de dias
+                  informadas</span
+                >
+              </div>
+            </q-toggle>
+            <q-input
+              v-model="dataSystem.quantityCreditExpireDays"
+              bg-color="white"
+              label-color="black"
+              input-class="text-black"
+              style="width: 200px"
+              outlined
+              dense
+              label="Quantidade de dias para a expiração"
+            />
+          </div>
         </div>
       </q-form>
     </q-card-section>

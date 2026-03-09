@@ -6,6 +6,8 @@ import {
   createReturnService,
   showReturnService,
   updateReturnService,
+  getStockReentryReturnItemsService,
+  deleteReturnService,
 } from 'src/services/return-service';
 
 export const useReturnStore = defineStore('return', {
@@ -86,6 +88,16 @@ export const useReturnStore = defineStore('return', {
         this.setLoading(false);
       }
     },
+    async getStockReentryReturnItems() {
+      try {
+        this.setLoading(true);
+        return await getStockReentryReturnItemsService();
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
     async createReturn(data: IDataCreateReturn) {
       try {
         this.setLoading(true);
@@ -118,6 +130,23 @@ export const useReturnStore = defineStore('return', {
         createError(error);
       } finally {
         this.setLoading(false);
+      }
+    },
+    async deleteReturn(saleID: number, returnID: number) {
+      this.setReturnsLoading(true);
+      try {
+        const response = await deleteReturnService(saleID, returnID);
+
+        if (response.status === 200) {
+          this.clearListReturn();
+          this.setListReturns(response.data.returns);
+          createSuccess(response.data.message);
+        }
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setReturnsLoading(false);
       }
     },
   },

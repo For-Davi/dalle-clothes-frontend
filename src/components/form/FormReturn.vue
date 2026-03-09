@@ -421,7 +421,7 @@ watch(
             />
             <q-toggle
               v-model="generatesCredit"
-              label="Gerar crédito ao cliente?"
+              label="Gerar crédito a partir do estorno ao cliente?"
               class="text-body1"
               checked-icon="check"
               color="primary"

@@ -880,7 +880,11 @@ export const checkPaymentData = (
   }
 
   //VALIDAÇÃO DE RECEBIMENTO
-  const notHaveReceipt = data.payment.find((p) => p.receiptID === null);
+  const notHaveReceipt = data.payment.find((p) => {
+    if (p.paymentType !== 'CREDIT') {
+      return p.receiptID === null;
+    }
+  });
   if (notHaveReceipt) {
     return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
   }
@@ -1308,7 +1312,7 @@ export const checkDataExchangePayment = (
   if (missingAmount > 0) {
     return {
       status: false,
-      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar a venda`,
+      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar o pagamento`,
     };
   }
 
@@ -1343,6 +1347,16 @@ export const checkDataDifferencePayment = (
     if (data.differenceDeliveryData.numberAddress?.trim() === '') {
       return { status: false, message: 'Preencha o campo de número' };
     }
+  }
+
+  if (!data.additionalDifferencePaymentData.saleID) {
+    return { status: false, message: 'O ID da venda deve ser informado' };
+  }
+  if (!data.additionalDifferencePaymentData.returnID) {
+    return { status: false, message: 'O ID da devolução deve ser informado' };
+  }
+  if (!data.additionalDifferencePaymentData.exchangeID) {
+    return { status: false, message: 'O ID do estorno/diferença deve ser informado' };
   }
 
   if (isNaN(data.additionalDifferencePaymentData.change)) {
@@ -1445,8 +1459,21 @@ export const checkDataDifferencePayment = (
   if (missingAmount > 0) {
     return {
       status: false,
-      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar a venda`,
+      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar o pagamento`,
     };
+  }
+
+  return { status: true };
+};
+
+export const checkDataSaleCancellation = (
+  data: IDataSaleCancellation,
+): { status: boolean; message?: string } => {
+  if (!data.reason?.trim()) {
+    return { status: false, message: 'O motivo do cancelamento é obrigatório' };
+  }
+  if (data.description.trim().length > 5000) {
+    return { status: false, message: 'A descrição não pode exceder 5000 caracteres' };
   }
 
   return { status: true };

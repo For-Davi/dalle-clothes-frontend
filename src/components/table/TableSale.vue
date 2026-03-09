@@ -5,6 +5,8 @@ import { storeToRefs } from 'pinia';
 import { useSaleStore } from 'src/stores/sale-store';
 import { formatToReal } from 'src/composables/Money';
 import SaleDetails from '../fragments/sale/SaleDetails.vue';
+import ConfirmAction from '../confirm/ConfirmAction.vue';
+import { formatToBrazilianDate } from 'src/composables/FormatData';
 
 defineOptions({
   name: 'TableSale',
@@ -20,11 +22,12 @@ const props = withDefaults(
 
 const { loadingListSale, listSale } = storeToRefs(useSaleStore());
 
-const saleMonitoring = ref<number | null>(null);
 const showSaleDetails = reactive({
   open: false as boolean,
   saleID: null as number | null,
 });
+const showConfirmAction = ref<boolean>(false);
+const saleMonitoring = ref<number | null>(null);
 
 const changeShowSaleDetails = (open: boolean, saleID: number | null = null): void => {
   Object.assign(showSaleDetails, {
@@ -32,20 +35,27 @@ const changeShowSaleDetails = (open: boolean, saleID: number | null = null): voi
     saleID,
   });
 };
-const formatToBrazilianDateTime = (value?: string | null) => {
-  if (!value) return '';
-
-  const localValue = value.replace('Z', '');
-
-  const date = new Date(localValue);
-
-  const pad = (n: number) => String(n).padStart(2, '0');
-
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}
-          ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-};
 const fetchSales = async (): Promise<void> => {
   await useSaleStore().getSales();
+};
+const clear = (): void => {
+  saleMonitoring.value = null;
+};
+const closeConfirmActionOk = async () => {
+  showConfirmAction.value = false;
+  await useSaleStore().deleteSale(saleMonitoring.value ?? 0);
+  clear();
+};
+const closeConfirmAction = (): void => {
+  showConfirmAction.value = false;
+  clear();
+};
+const openConfirmAction = (id: number): void => {
+  saleMonitoring.value = id;
+  showConfirmAction.value = true;
+};
+const startExclude = (id: number) => {
+  openConfirmAction(id);
 };
 
 onMounted(async () => {
@@ -64,6 +74,7 @@ onMounted(async () => {
       no-data-label="Nenhuma venda para mostrar"
       virtual-scroll
       :rows-per-page-options="[10]"
+      :pagination="{ sortBy: 'date', descending: true }"
     >
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -75,7 +86,7 @@ onMounted(async () => {
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="date" :props="props" class="text-left">
-            {{ formatToBrazilianDateTime(props.row.date) }}
+            {{ formatToBrazilianDate(props.row.date) }}
           </q-td>
           <q-td key="status" :props="props" class="text-left">
             <q-icon
@@ -111,7 +122,7 @@ onMounted(async () => {
               <q-tooltip> Detalhes </q-tooltip>
             </q-btn>
             <q-btn
-              @click="console.log('ajksahd', props.row.id)"
+              @click="startExclude(props.row.id)"
               size="sm"
               flat
               round
@@ -124,5 +135,17 @@ onMounted(async () => {
     </q-table>
   </section>
   <!-- Modals -->
-  <SaleDetails :data="showSaleDetails" @update:open="changeShowSaleDetails(false)" />
+  <SaleDetails
+    :data="showSaleDetails"
+    @update:open="changeShowSaleDetails(false)"
+    @new-request="fetchSales"
+  />
+  <ConfirmAction
+    :open="showConfirmAction"
+    label-action="Continuar"
+    title="Confirmação de exclusão da venda"
+    message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a venda e registros como, devoluções, comissões, entregas e movimentações de estoque permanentemente."
+    @update:open="closeConfirmAction"
+    @update:ok="closeConfirmActionOk"
+  />
 </template>

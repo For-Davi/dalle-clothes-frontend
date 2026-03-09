@@ -29,6 +29,13 @@ export const getReturnItemsService = (
   };
 }> => api.get(`${baseUrl}/linked/${returnID}`);
 
+export const getStockReentryReturnItemsService = (): Promise<{
+  status: number;
+  data: {
+    products: IStockReentryReturnItem[];
+  };
+}> => api.get(`${baseUrl}/stock/reentry`);
+
 export const createReturnService = (
   data: IDataCreateReturn,
 ): Promise<{
@@ -55,3 +62,14 @@ export const updateReturnService = (
     saleID,
     status,
   });
+
+export const deleteReturnService = (
+  saleID: number,
+  returnID: number,
+): Promise<{
+  status: number;
+  data: {
+    returns: IReturns[];
+    message: string;
+  };
+}> => api.delete(`${baseUrl}/${saleID}/${returnID}`);

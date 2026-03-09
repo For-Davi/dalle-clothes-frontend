@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { createError } from 'src/composables/CreateNotify';
+import { createError, createSuccess } from 'src/composables/CreateNotify';
 import {
   getExchangesService,
   createExchangePaymentService,
@@ -71,6 +71,7 @@ export const useExchangeStore = defineStore('exchange', {
         if (response.status === 201) {
           this.clearListExchange();
           this.setListExchange(response.data.exchanges);
+          createSuccess(response.data.message);
         }
         return response;
       } catch (error) {
@@ -87,6 +88,7 @@ export const useExchangeStore = defineStore('exchange', {
         if (response.status === 201) {
           this.clearListExchange();
           this.setListExchange(response.data.exchanges);
+          createSuccess(response.data.message);
         }
         return response;
       } catch (error) {

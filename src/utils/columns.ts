@@ -1017,6 +1017,15 @@ export const columnsReturn: IQuasarTable[] = [
     label: 'Data de criação',
     field: 'created_at',
     align: 'left',
+    sort: (a, b) => {
+      const parse = (date: string) => {
+        const [day, month, rest] = date.split('/');
+        const [year, time] = rest.split(' ');
+        return new Date(`${year}-${month}-${day} ${time}`).getTime();
+      };
+
+      return parse(a) - parse(b);
+    },
   },
   {
     name: 'status',
@@ -1166,9 +1175,9 @@ export const columnsShiftProduct: IQuasarTable[] = [
 
 export const columnsCommissions: IQuasarTable[] = [
   {
-    name: 'date',
+    name: 'created_at',
     label: 'Data',
-    field: 'date',
+    field: 'created_at',
     align: 'left',
   },
   {
@@ -1181,6 +1190,12 @@ export const columnsCommissions: IQuasarTable[] = [
     name: 'type',
     label: 'Tipo',
     field: 'type',
+    align: 'left',
+  },
+  {
+    name: 'return_code',
+    label: 'Códig. da Devolução',
+    field: 'return_code',
     align: 'left',
   },
   {
@@ -1217,10 +1232,19 @@ export const columnsCommissions: IQuasarTable[] = [
 
 export const columnsExchanges: IQuasarTable[] = [
   {
-    name: 'date',
+    name: 'created_at',
     label: 'Data',
-    field: 'date',
+    field: 'created_at',
     align: 'left',
+    sort: (a, b) => {
+      const parse = (date: string) => {
+        const [day, month, rest] = date.split('/');
+        const [year, time] = rest.split(' ');
+        return new Date(`${year}-${month}-${day} ${time}`).getTime();
+      };
+
+      return parse(a) - parse(b);
+    },
   },
   {
     name: 'status',
@@ -1302,5 +1326,44 @@ export const columnsReturnDetails: IQuasarTable[] = [
     label: 'Total',
     field: 'total',
     align: 'left',
+  },
+];
+
+export const columnsSearchReturnItemVariant: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'quantity_return',
+    label: 'Qtde devolvida',
+    field: 'quantity_return',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
   },
 ];

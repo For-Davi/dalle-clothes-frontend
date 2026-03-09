@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { createError } from 'src/composables/CreateNotify';
+import { createError, createSuccess } from 'src/composables/CreateNotify';
 import {
   createSaleService,
   showSaleCouponDataService,
@@ -7,6 +7,9 @@ import {
   sendCouponToEmailService,
   getSalesService,
   getSaleItensService,
+  createSaleCancellationService,
+  getSaleCancellationService,
+  deleteSaleService,
 } from 'src/services/sale-service';
 
 export const useSaleStore = defineStore('sale', {
@@ -14,9 +17,11 @@ export const useSaleStore = defineStore('sale', {
     loadingSale: false as boolean,
     loadingListSale: false as boolean,
     loadingListSaleProducts: false as boolean,
+    loadingCancellation: false as boolean,
     Sale: {} as ISale,
     listSale: [] as ISales[],
     listSaleProducts: [] as ISaleItens[],
+    saleCancellation: {} as ISaleCancellation,
   }),
   actions: {
     clearListSale() {
@@ -28,6 +33,9 @@ export const useSaleStore = defineStore('sale', {
     clearSale() {
       this.Sale = {} as ISale;
     },
+    clearCancellation() {
+      this.saleCancellation = {} as ISaleCancellation;
+    },
     setLoading(loading: boolean) {
       this.loadingSale = loading;
     },
@@ -37,14 +45,20 @@ export const useSaleStore = defineStore('sale', {
     setLoadingListProduct(loading: boolean) {
       this.loadingListSaleProducts = loading;
     },
+    setLoadingCancellation(loading: boolean) {
+      this.loadingCancellation = loading;
+    },
     setListSale(sales: ISales[]) {
-      this.listSale = sales.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      sales.map((item) => this.listSale.push(item));
     },
     setSale(sale: ISale) {
       this.Sale = sale;
     },
     setSaleProduct(saleProduct: ISaleItens[]) {
       saleProduct.map((item) => this.listSaleProducts.push(item));
+    },
+    setCancellation(cancellation: ISaleCancellation) {
+      this.saleCancellation = cancellation;
     },
     async getSales() {
       try {
@@ -89,6 +103,20 @@ export const useSaleStore = defineStore('sale', {
         this.setLoadingListProduct(false);
       }
     },
+    async getSaleCancellation(saleID: number) {
+      try {
+        this.setLoadingCancellation(true);
+        const response = await getSaleCancellationService(saleID);
+        if (response.status === 200) {
+          this.clearCancellation();
+          this.setCancellation(response.data.cancellation);
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoadingCancellation(false);
+      }
+    },
     async showSaleCouponData(saleID: number) {
       try {
         this.setLoading(true);
@@ -112,6 +140,23 @@ export const useSaleStore = defineStore('sale', {
         this.setLoading(false);
       }
     },
+    async createSaleCancellation(data: IDataSaleCancellation) {
+      this.setLoadingCancellation(true);
+      try {
+        const response = await createSaleCancellationService(data);
+
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
+
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoadingCancellation(false);
+      }
+    },
     async sendCouponToEmail(saleID: number, email: string) {
       this.setLoading(true);
       try {
@@ -121,6 +166,22 @@ export const useSaleStore = defineStore('sale', {
         return undefined;
       } finally {
         this.setLoading(false);
+      }
+    },
+    async deleteSale(saleID: number) {
+      this.setLoadingList(true);
+      try {
+        const response = await deleteSaleService(saleID);
+        if (response.status === 200) {
+          this.clearListSale();
+          this.setListSale(response.data.sales);
+          createSuccess(response.data.message);
+        }
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoadingList(false);
       }
     },
   },

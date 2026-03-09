@@ -3,6 +3,7 @@ import { columnsReturn } from 'src/utils/columns';
 import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useReturnStore } from 'src/stores/return-store';
+import ConfirmAction from '../confirm/ConfirmAction.vue';
 
 defineOptions({
   name: 'TableReturn',
@@ -20,11 +21,32 @@ const emit = defineEmits<{
 const { listReturns, loadingReturns } = storeToRefs(useReturnStore());
 
 const filter = ref<string>('');
+const returnMonitoring = ref<number | null>(null);
+const showConfirmAction = ref<boolean>(false);
 
 const fetchReturns = async () => {
   if (props.saleID) {
     await useReturnStore().getReturns(props.saleID);
   }
+};
+const clear = (): void => {
+  returnMonitoring.value = null;
+};
+const closeConfirmActionOk = async () => {
+  showConfirmAction.value = false;
+  await useReturnStore().deleteReturn(props.saleID ?? 0, returnMonitoring.value ?? 0);
+  clear();
+};
+const closeConfirmAction = (): void => {
+  showConfirmAction.value = false;
+  clear();
+};
+const openConfirmAction = (id: number): void => {
+  returnMonitoring.value = id;
+  showConfirmAction.value = true;
+};
+const startExclude = (id: number) => {
+  openConfirmAction(id);
 };
 
 onMounted(async () => {
@@ -40,6 +62,7 @@ onMounted(async () => {
       :columns="columnsReturn"
       :filter="filter"
       :loading="loadingReturns"
+      :pagination="{ sortBy: 'created_at', descending: true }"
       title="Lista de devolução"
       row-key="index"
       no-data-label="Nenhuma devolução para mostrar"
@@ -140,7 +163,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
-              @click="console.log('ajksahd', props.row.id)"
+              @click="startExclude(props.row.id)"
               size="sm"
               flat
               round
@@ -152,4 +175,13 @@ onMounted(async () => {
       </template>
     </q-table>
   </section>
+  <!-- Modals -->
+  <ConfirmAction
+    :open="showConfirmAction"
+    label-action="Continuar"
+    title="Confirmação de exclusão da venda"
+    message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a devolução e registros como trocas, estornos, diferenças, comissões, entregas e movimentações de estoque permanentemente."
+    @update:open="closeConfirmAction"
+    @update:ok="closeConfirmActionOk"
+  />
 </template>

@@ -26,6 +26,7 @@ export const createExchangePaymentService = (
   status: number;
   data: {
     exchanges: IExchanges[];
+    message: string;
   };
 }> => api.post(`${baseUrl}/`, data);
 
@@ -35,5 +36,6 @@ export const createDifferencePaymentService = (
   status: number;
   data: {
     exchanges: IExchanges[];
+    message: string;
   };
 }> => api.post(`${baseUrl}/difference`, data);

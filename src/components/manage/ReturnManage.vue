@@ -112,12 +112,14 @@ const open = computed({
             label="Fechar"
             size="md"
             @click="open = false"
+            :loading="loadingReturns"
             unelevated
             no-caps
             flat
           />
           <q-btn
             @click="changeShowFormReturn(true, props.data.saleID)"
+            :loading="loadingReturns"
             color="primary"
             label="Adicionar"
             size="md"

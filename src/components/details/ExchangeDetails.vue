@@ -72,7 +72,7 @@ watch(open, async () => {
         <q-card flat bordered class="q-pa-md bg-white q-mb-sm">
           <div class="text-h6 text-primary flex items-center">
             <q-icon name="info" class="q-mr-sm" />
-            {{ hasExchangePayments ? 'Informações do Estorno' : 'Informações da Diferença' }}
+            {{ hasExchangePayments ? 'Informações da Diferença' : 'Informações do Estorno' }}
           </div>
 
           <q-separator spaced />

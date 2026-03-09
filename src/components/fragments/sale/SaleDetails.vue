@@ -11,6 +11,8 @@ import { PaymentTypeLabels } from 'src/enums/payment-enum';
 import ReturnManage from 'src/components/manage/ReturnManage.vue';
 import CommissionManage from 'src/components/manage/CommissionManage.vue';
 import ExchangeManage from 'src/components/manage/ExchangeManage.vue';
+import FormSaleCancellation from 'src/components/form/FormSaleCancellation.vue';
+import SaleCancellationDetails from 'src/components/details/SaleCancellationDetails.vue';
 
 defineOptions({
   name: 'SaleDetails',
@@ -24,6 +26,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  'new-request': [void];
 }>();
 
 const { loadingSale, Sale } = storeToRefs(useSaleStore());
@@ -37,6 +40,14 @@ const showCommissionManage = reactive({
   saleID: null as number | null,
 });
 const showExchangeManage = reactive({
+  open: false as boolean,
+  saleID: null as number | null,
+});
+const showFormCancellation = reactive({
+  open: false as boolean,
+  saleID: null as number | null,
+});
+const showCancellationDetails = reactive({
   open: false as boolean,
   saleID: null as number | null,
 });
@@ -109,6 +120,23 @@ const changeShowExchangeManage = (open: boolean, saleID: number | null = null): 
     open,
     saleID,
   });
+};
+const changeShowFormCancellation = (open: boolean, saleID: number | null = null): void => {
+  Object.assign(showFormCancellation, {
+    open,
+    saleID,
+  });
+};
+const changeShowCancellationDetails = (open: boolean, saleID: number | null = null): void => {
+  Object.assign(showCancellationDetails, {
+    open,
+    saleID,
+  });
+};
+const handleCancelled = async () => {
+  changeShowFormCancellation(false);
+  await getSale();
+  emit('new-request');
 };
 
 const saleID = computed(() => props.data.saleID);
@@ -428,7 +456,11 @@ watch(open, async () => {
               unelevated
               no-caps
               class="q-ml-sm"
-              @click="console.log('lasdjaksl')"
+              @click="
+                Sale.status === 'active'
+                  ? changeShowFormCancellation(true, props.data.saleID)
+                  : changeShowCancellationDetails(true, props.data.saleID)
+              "
             >
               <q-tooltip>Cancelamento</q-tooltip>
             </q-btn>
@@ -452,4 +484,13 @@ watch(open, async () => {
   <ReturnManage :data="showReturnManage" @update:open="changeShowReturnManage(false)" />
   <CommissionManage :data="showCommissionManage" @update:open="changeShowCommissionManage(false)" />
   <ExchangeManage :data="showExchangeManage" @update:open="changeShowExchangeManage(false)" />
+  <FormSaleCancellation
+    :data="showFormCancellation"
+    @update:open="changeShowFormCancellation(false)"
+    @cancelled="handleCancelled"
+  />
+  <SaleCancellationDetails
+    :data="showCancellationDetails"
+    @update:open="changeShowCancellationDetails(false)"
+  />
 </template>

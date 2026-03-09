@@ -144,6 +144,19 @@ export interface SaleDelivery {
   observation: string;
 }
 
+export interface DataSaleCancellation {
+  saleID: number | null;
+  reason: string | null;
+  description: string;
+}
+export interface SaleCancellation {
+  created_by_name: string;
+  created_by_email: string;
+  reason: string;
+  description: string | null;
+  created_at: string;
+}
+
 export interface CouponData {
   sale: {
     id: number;
