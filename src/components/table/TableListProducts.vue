@@ -53,6 +53,30 @@ const getColorStyle = (hexColor: string) => {
     verticalAlign: 'middle',
   };
 };
+const customFilter = (
+  rows: readonly IClientCartProduct[],
+  terms: string,
+  cols: readonly { name: string; field?: string | ((row: IClientCartProduct) => unknown) }[],
+  getCellValue: (
+    col: { field?: string | ((row: IClientCartProduct) => unknown) },
+    row: IClientCartProduct,
+  ) => unknown,
+): readonly IClientCartProduct[] => {
+  if (!terms) return rows;
+
+  const search = terms.toLowerCase();
+
+  return rows.filter((row) => {
+    const columnMatch = cols.some((col) => {
+      const value = getCellValue(col, row);
+      return String(value).toLowerCase().includes(search);
+    });
+
+    const colorMatch = row.color?.name?.toLowerCase().includes(search);
+
+    return columnMatch || colorMatch;
+  });
+};
 
 const filteredProducts = computed(() => {
   if (!props.hiddenIds?.length) return localProducts.value;
@@ -71,6 +95,7 @@ onMounted(async () => {
       :columns="columnsListProductsSale"
       :filter="filter"
       :loading="loadingProduct"
+      :filter-method="customFilter"
       title="Lista de produtos"
       row-key="index"
       no-data-label="Nenhum produto para mostrar"

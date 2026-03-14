@@ -8,6 +8,7 @@ import Loading from '../shared/Loading.vue';
 import TableExchange from '../table/TableExchange.vue';
 import FormExchangePayment from '../form/FormExchangePayment.vue';
 import ExchangeDetails from '../details/ExchangeDetails.vue';
+import ExchangeMade from '../fragments/exchange/ExchangeMade.vue';
 
 defineOptions({
   name: 'ExchangeManage',
@@ -17,6 +18,7 @@ const props = defineProps<{
   data: {
     open: boolean;
     saleID: number | null;
+    status: string | null;
   };
 }>();
 const emit = defineEmits<{
@@ -33,6 +35,10 @@ const showExchangeDetails = reactive({
   open: false as boolean,
   exchangeID: null as number | null,
 });
+const showExchangeMade = reactive({
+  open: false as boolean,
+  couponData: null as IExchangeCouponData | null,
+});
 
 const changeShowFormPayment = (open: boolean, exchange: IExchange | null = null) => {
   Object.assign(showFormPayment, {
@@ -45,6 +51,15 @@ const changeShowExchangeDetails = (open: boolean, exchangeID: number | null = nu
     open,
     exchangeID,
   });
+};
+const changeShowExchangeMade = (open: boolean, couponData: IExchangeCouponData | null = null) => {
+  Object.assign(showExchangeMade, {
+    open,
+    couponData,
+  });
+};
+const fetchExchanges = async () => {
+  await useExchangeStore().getExchanges(props.data.saleID ?? 0);
 };
 
 const open = computed({
@@ -66,6 +81,7 @@ const open = computed({
         <div v-show="!loadingExchanges">
           <TableExchange
             :sale-i-d="props.data.saleID"
+            :saleStatus="props.data.status"
             v-show="listExchanges.length > 0"
             @show:payment-form="(exchange) => changeShowFormPayment(true, exchange)"
             @show:exchange-details="(exchangeID) => changeShowExchangeDetails(true, exchangeID)"
@@ -94,6 +110,12 @@ const open = computed({
     </q-card>
   </q-dialog>
   <!-- Modals -->
-  <FormExchangePayment :data="showFormPayment" @update:open="changeShowFormPayment(false)" />
+  <FormExchangePayment
+    :data="showFormPayment"
+    @update:open="changeShowFormPayment(false)"
+    @new-request="fetchExchanges"
+    @show:coupon="(data) => changeShowExchangeMade(true, data)"
+  />
   <ExchangeDetails :data="showExchangeDetails" @update:open="changeShowExchangeDetails(false)" />
+  <ExchangeMade :data="showExchangeMade" @update:open="changeShowExchangeMade(false)" />
 </template>

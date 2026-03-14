@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import TitlePage from '../shared/TitlePage.vue';
 import TableReturn from '../table/TableReturn.vue';
 import FormReturn from '../form/FormReturn.vue';
@@ -9,6 +9,7 @@ import Empty from '../info/Empty.vue';
 import Loading from '../shared/Loading.vue';
 import ReturnDetails from '../details/ReturnDetails.vue';
 import FormReturnEditStatus from '../form/FormReturnEditStatus.vue';
+import ConfirmAction from '../confirm/ConfirmAction.vue';
 
 defineOptions({
   name: 'ReturnManage',
@@ -18,6 +19,7 @@ const props = defineProps<{
   data: {
     open: boolean;
     saleID: number | null;
+    status: string | null;
   };
 }>();
 const emit = defineEmits<{
@@ -39,6 +41,8 @@ const showEditStatus = reactive({
   open: false as boolean,
   editData: null as IEditReturnData | null,
 });
+const returnMonitoring = ref<number | null>(null);
+const showConfirmAction = ref<boolean>(false);
 
 const changeShowFormReturn = (
   open: boolean,
@@ -70,6 +74,22 @@ const navigateLinkedReturn = (linkedReturnID: number) => {
 const startEdit = (id: number, saleID: number, status: string) => {
   changeShowEditStatus(true, { id: id, saleID: saleID, status: status });
 };
+const clear = (): void => {
+  returnMonitoring.value = null;
+};
+const closeConfirmActionOk = async () => {
+  showConfirmAction.value = false;
+  await useReturnStore().deleteReturn(props.data.saleID ?? 0, returnMonitoring.value ?? 0);
+  clear();
+};
+const closeConfirmAction = (): void => {
+  showConfirmAction.value = false;
+  clear();
+};
+const openConfirmAction = (id: number): void => {
+  returnMonitoring.value = id;
+  showConfirmAction.value = true;
+};
 
 const open = computed({
   get: () => props.data.open,
@@ -91,11 +111,13 @@ const open = computed({
           <TableReturn
             v-show="listReturns.length > 0"
             :sale-i-d="props.data.saleID"
+            :saleStatus="props.data.status"
             @open:return-details="(returnID) => changeShowReturnDetails(true, returnID)"
             @open:form-linked-return="
               (saleID, returnID) => changeShowFormReturn(true, saleID, returnID)
             "
             @edit:return="startEdit"
+            @exclude:return="openConfirmAction"
           />
           <Empty
             v-show="listReturns.length <= 0 && !loadingReturns"
@@ -118,6 +140,7 @@ const open = computed({
             flat
           />
           <q-btn
+            v-if="props.data.status !== 'canceled'"
             @click="changeShowFormReturn(true, props.data.saleID)"
             :loading="loadingReturns"
             color="primary"
@@ -129,6 +152,14 @@ const open = computed({
         </div>
       </q-card-actions>
       <!-- Modals -->
+      <ConfirmAction
+        :open="showConfirmAction"
+        label-action="Continuar"
+        title="Confirmação de exclusão da venda"
+        message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a devolução e registros como trocas, estornos, diferenças, comissões, entregas e movimentações de estoque permanentemente."
+        @update:open="closeConfirmAction"
+        @update:ok="closeConfirmActionOk"
+      />
       <FormReturn :data="showFormReturn" @update:open="changeShowFormReturn(false)" />
       <ReturnDetails
         :data="showReturnDetails"

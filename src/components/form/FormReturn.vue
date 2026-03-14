@@ -36,6 +36,7 @@ const exchangeProducts = ref<IClientCartProduct[]>([]);
 const sellerID = ref<number | null>(null);
 const generatesCredit = ref<1 | 0>(0);
 const searchFilter = ref<string>('');
+const returnQuantities = ref<Record<number, Record<number, number>>>({});
 
 const { listSaleProducts, loadingListSaleProducts } = storeToRefs(useSaleStore());
 const { listReturnItems, loadingReturn } = storeToRefs(useReturnStore());
@@ -123,6 +124,11 @@ const close = () => {
   open.value = false;
   returnData.value = [];
   quantity.value = 1;
+  returnQuantities.value = {};
+  exchangeProducts.value = [];
+  sellerID.value = null;
+  generatesCredit.value = 0;
+  searchFilter.value = 'Nenhum vendedor selecionado';
 };
 const save = async () => {
   const payload: IDataCreateReturn = {
@@ -148,6 +154,13 @@ const save = async () => {
   } else {
     createErrorData(check.message || 'Erro ao enviar dados da devolução');
   }
+};
+const updateQuantity = (formIndex: number, productId: number, value: number) => {
+  if (!returnQuantities.value[formIndex]) {
+    returnQuantities.value[formIndex] = {};
+  }
+
+  returnQuantities.value[formIndex][productId] = value;
 };
 
 const open = computed({
@@ -271,6 +284,24 @@ const listEmployeeOptions = computed(() => {
   return options.filter((option) => option.label.toLowerCase().includes(needle));
 });
 const cartIds = computed(() => exchangeProducts.value.map((p) => p.product_variant_id));
+const returnedQuantities = computed(() => {
+  const map: Record<number, number> = {};
+
+  returnData.value.forEach((item) => {
+    item.products.forEach((product) => {
+      map[product.product_variant_id] =
+        (map[product.product_variant_id] || 0) + product.returnQuantity;
+    });
+  });
+
+  return map;
+});
+const availableProducts = computed((): ISaleItens[] | IDataReturnItens[] => {
+  return localProducts.value.filter((product) => {
+    const returned = returnedQuantities.value[product.product_variant_id] ?? 0;
+    return product.quantity - returned > 0;
+  }) as ISaleItens[] | IDataReturnItens[];
+});
 
 watch(
   () => quantity,
@@ -341,7 +372,7 @@ watch(
           />
           <q-input
             v-model="quantity"
-            label="Quantidade de itens que foram devolvidos"
+            label="Quantidade de devoluções (por motivo)"
             type="number"
             outlined
             dense
@@ -352,10 +383,14 @@ watch(
           <div class="q-mb-lg" v-for="(item, index) in returnData" :key="index">
             <div class="q-gutter-y-sm">
               <TableForReturnSaleOrReturnProducts
-                :rows="localProducts"
+                :rows="availableProducts"
                 :loading="props.data.returnID !== null ? loadingReturn : loadingListSaleProducts"
                 :type="props.data.returnID !== null ? 'linked' : 'return'"
+                :returned-quantities="returnedQuantities"
+                :form-index="index"
+                :quantities="returnQuantities[index] || {}"
                 @add-to-return="(product: IDataReturnItens) => addToReturnTable(product, index)"
+                @update-quantity="updateQuantity"
               />
               <TableReturnProducts
                 v-model="item.products"
@@ -428,6 +463,7 @@ watch(
               unchecked-icon="clear"
               :true-value="1"
               :false-value="0"
+              :disable="refundValue <= 0"
             />
             <TableListProducts
               class="q-mt-md"

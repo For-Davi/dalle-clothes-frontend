@@ -71,16 +71,16 @@ const getColorStyle = (hexColor: string) => {
     </template>
     <template v-slot:body="props">
       <q-tr :props="props">
-        <q-td key="name" :props="props" class="text-left">
+        <q-td key="product_name" :props="props" class="text-left">
           {{ props.row.product_name }}
         </q-td>
-        <q-td key="sku" :props="props" class="text-left">
-          {{ props.row.product_sku }}
+        <q-td key="product_sku" :props="props" class="text-left">
+          {{ props.row.product_sku ?? '-' }}
         </q-td>
-        <q-td key="code" :props="props" class="text-left">
-          {{ props.row.product_code }}
+        <q-td key="product_code" :props="props" class="text-left">
+          {{ props.row.product_code ?? '-' }}
         </q-td>
-        <q-td key="color" :props="props" class="text-left">
+        <q-td key="product_color_name" :props="props" class="text-left">
           <div
             v-if="props.row.product_color"
             class="cursor-pointer"
@@ -91,7 +91,7 @@ const getColorStyle = (hexColor: string) => {
             }}</q-tooltip>
           </div>
         </q-td>
-        <q-td key="quantity_return" :props="props" class="text-left">
+        <q-td key="quantity" :props="props" class="text-left">
           {{ props.row.quantity }}
         </q-td>
         <q-td key="action" :props="props">

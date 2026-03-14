@@ -6,7 +6,6 @@ import { useSaleStore } from 'src/stores/sale-store';
 import { formatToReal } from 'src/composables/Money';
 import SaleDetails from '../fragments/sale/SaleDetails.vue';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
-import { formatToBrazilianDate } from 'src/composables/FormatData';
 
 defineOptions({
   name: 'TableSale',
@@ -86,7 +85,7 @@ onMounted(async () => {
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="date" :props="props" class="text-left">
-            {{ formatToBrazilianDate(props.row.date) }}
+            {{ props.row.date }}
           </q-td>
           <q-td key="status" :props="props" class="text-left">
             <q-icon

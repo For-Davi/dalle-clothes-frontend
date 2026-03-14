@@ -144,6 +144,18 @@ export const columnsClient: IQuasarTable[] = [
     align: 'left',
   },
   {
+    name: 'credit',
+    label: 'Crédito',
+    field: 'credit',
+    align: 'left',
+  },
+  {
+    name: 'credit_expires_at',
+    label: 'Data de expiração do crédito',
+    field: 'credit_expires_at',
+    align: 'left',
+  },
+  {
     name: 'action',
     label: 'Ação',
     field: 'action',
@@ -1079,15 +1091,21 @@ export const columnsReturn: IQuasarTable[] = [
 
 export const columnsSaleProduct: IQuasarTable[] = [
   {
-    name: 'name',
+    name: 'product_name',
     label: 'Nome',
-    field: 'name',
+    field: 'product_name',
     align: 'left',
   },
   {
-    name: 'sku',
+    name: 'product_sku',
     label: 'SKU',
-    field: 'sku',
+    field: 'product_sku',
+    align: 'left',
+  },
+  {
+    name: 'product_code',
+    label: 'Código',
+    field: 'product_code',
     align: 'left',
   },
   {
@@ -1097,15 +1115,15 @@ export const columnsSaleProduct: IQuasarTable[] = [
     align: 'left',
   },
   {
-    name: 'price',
+    name: 'product_price',
     label: 'Preço',
-    field: 'price',
+    field: 'product_price',
     align: 'left',
   },
   {
-    name: 'color',
+    name: 'color_name',
     label: 'Cor',
-    field: 'color',
+    field: 'color_name',
     align: 'left',
   },
   {
@@ -1304,6 +1322,12 @@ export const columnsReturnDetails: IQuasarTable[] = [
     align: 'left',
   },
   {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
     name: 'quantity',
     label: 'Quantidade',
     field: 'quantity',
@@ -1331,33 +1355,33 @@ export const columnsReturnDetails: IQuasarTable[] = [
 
 export const columnsSearchReturnItemVariant: IQuasarTable[] = [
   {
-    name: 'name',
+    name: 'product_name',
     label: 'Nome',
-    field: 'name',
+    field: 'product_name',
     align: 'left',
   },
   {
-    name: 'sku',
+    name: 'product_sku',
     label: 'SKU',
-    field: 'sku',
+    field: 'product_sku',
     align: 'left',
   },
   {
-    name: 'code',
+    name: 'product_code',
     label: 'Código',
-    field: 'code',
+    field: 'product_code',
     align: 'left',
   },
   {
-    name: 'color',
+    name: 'product_color_name',
     label: 'Cor',
-    field: 'color',
+    field: 'product_color_name',
     align: 'left',
   },
   {
-    name: 'quantity_return',
+    name: 'quantity',
     label: 'Qtde devolvida',
-    field: 'quantity_return',
+    field: 'quantity',
     align: 'left',
   },
   {

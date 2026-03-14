@@ -10,6 +10,7 @@ import {
   createSaleCancellationService,
   getSaleCancellationService,
   deleteSaleService,
+  getSalesServiceFilterService,
 } from 'src/services/sale-service';
 
 export const useSaleStore = defineStore('sale', {
@@ -60,10 +61,16 @@ export const useSaleStore = defineStore('sale', {
     setCancellation(cancellation: ISaleCancellation) {
       this.saleCancellation = cancellation;
     },
-    async getSales() {
+    async getSales(filter: IFilterSale | null = null) {
       try {
         this.setLoadingList(true);
-        const response = await getSalesService();
+        let response = null;
+
+        if (filter) {
+          response = await getSalesServiceFilterService(filter);
+        } else {
+          response = await getSalesService();
+        }
 
         if (response.status === 200) {
           this.clearListSale();

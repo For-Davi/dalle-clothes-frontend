@@ -4,6 +4,8 @@ import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { useClientStore } from 'src/stores/client-store';
 import { columnsClient } from 'src/utils/columns';
+import { formatToReal } from 'src/composables/Money';
+import { formatToBrazilianDate } from 'src/composables/FormatData';
 
 defineOptions({
   name: 'TableClient',
@@ -89,6 +91,14 @@ onMounted(async () => {
           </q-td>
           <q-td key="date_birthday" :props="props" class="text-left">
             {{ props.row.date_birthday }}
+          </q-td>
+          <q-td key="credit" :props="props" class="text-left">
+            {{ formatToReal(props.row.credits) }}
+          </q-td>
+          <q-td key="credit_expires_at" :props="props" class="text-left">
+            {{
+              props.row.credit_expires_at ? formatToBrazilianDate(props.row.credit_expires_at) : '-'
+            }}
           </q-td>
           <q-td key="action" :props="props">
             <q-btn

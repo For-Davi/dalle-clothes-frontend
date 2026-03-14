@@ -69,9 +69,11 @@ const searchProduct = async () => {
   }
 };
 const newRequest = async (): Promise<void> => {
-  const response = await useProductStore().searchProduct(search.value);
-  if (response?.status === 200) {
-    listProductSearch.value = response.data.products;
+  if (search.value.trim() !== '') {
+    const response = await useProductStore().searchProduct(search.value);
+    if (response?.status === 200) {
+      listProductSearch.value = response.data.products;
+    }
   }
 };
 const getReturnItem = async () => {
@@ -161,6 +163,12 @@ watch(open, async () => {
               v-if="listProductSearch.length > 0"
               :list="listProductSearch"
               @choose-product-variant="makeProductVariant"
+            />
+            <q-separator
+              v-if="listReturnItemSearch.length > 0"
+              class="q-my-lg"
+              color="primary"
+              inset
             />
             <TableSearchReturnItem
               v-if="listReturnItemSearch.length > 0"

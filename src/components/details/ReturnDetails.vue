@@ -74,7 +74,7 @@ watch(open, async () => {
       :class="
         loadingReturn ? 'bg-grey-2 form-basic column justify-between' : 'bg-grey-2 form-basic'
       "
-      style="min-width: 40vw"
+      style="min-width: 50vw"
     >
       <q-card-section class="q-pa-none">
         <TitlePage title="Detalhes da devolução" icon="list_alt" />
@@ -93,13 +93,24 @@ watch(open, async () => {
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b>Criada por:</b>
+                <b>Criada (nome):</b>
                 {{ Return.created_by_name }}
               </p>
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b>Email:</b>
+                <b>Criada (email):</b>
                 {{ Return.created_by_email }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon name="person" class="q-mr-sm text-primary" />
+                <b>Vendedor responsável pela troca (nome):</b>
+                {{ Return.seller_name ?? '-' }}
+              </p>
+              <p class="flex items-center">
+                <q-icon name="person" class="q-mr-sm text-primary" />
+                <b>Vendedor responsável pela troca (email):</b>
+                {{ Return.seller_email ?? '-' }}
               </p>
 
               <p class="flex items-center">
@@ -125,12 +136,12 @@ watch(open, async () => {
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Atualizada por:</b>
+                <b class="q-mr-sm">Atualizada (nome):</b>
                 {{ Return.updated_by_name ? Return.updated_by_name : '-' }}
               </p>
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Email:</b>
+                <b class="q-mr-sm">Atualizada (email):</b>
                 {{ Return.updated_by_email ? Return.updated_by_email : '-' }}
               </p>
 
@@ -143,7 +154,7 @@ watch(open, async () => {
               <p class="flex items-center">
                 <q-icon name="paid" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Data de atualização:</b>
-                {{ Return.updated_at }}
+                {{ Return.updated_at === Return.created_at ? '-' : Return.updated_at }}
               </p>
             </div>
 

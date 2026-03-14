@@ -5,6 +5,7 @@ import { useSaleStore } from 'src/stores/sale-store';
 import { SaleCancellationLabels } from 'src/enums/sale-cancellation-reason-enum';
 import type { SaleCancellationReason } from 'src/enums/sale-cancellation-reason-enum';
 import Loading from '../shared/Loading.vue';
+import TitlePage from '../shared/TitlePage.vue';
 
 defineOptions({
   name: 'SaleCancellationDetails',
@@ -44,11 +45,11 @@ watch(open, async () => {
 <template>
   <q-dialog v-model="open" persistent>
     <q-card
-      style="width: 600px; max-width: 90vw"
+      style="width: 800px; max-width: 90vw"
       class="bg-grey-2 form-basic column justify-between"
     >
       <q-card-section class="q-pa-none">
-        <TitlePage title="Detalhes oe cancelamento" icon="money_off" />
+        <TitlePage title="Detalhes do cancelamento" icon="money_off" />
       </q-card-section>
       <q-card-section>
         <Loading v-show="loadingCancellation" :show="loadingCancellation" />
@@ -64,18 +65,18 @@ watch(open, async () => {
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b>Criada por:</b>
-                {{ saleCancellation.created_by_name }}
+                <b>Criado (nome):</b>
+                {{ saleCancellation?.created_by_name }}
               </p>
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b>Email:</b>
-                {{ saleCancellation.created_by_email }}
+                <b>Criado (email):</b>
+                {{ saleCancellation?.created_by_email }}
               </p>
               <p class="flex items-center">
                 <q-icon name="calendar_today" class="q-mr-sm text-primary" />
                 <b class="q-mr-sm">Criado em:</b>
-                {{ saleCancellation.created_at }}
+                {{ saleCancellation?.created_at }}
               </p>
             </div>
 
@@ -83,15 +84,15 @@ watch(open, async () => {
               <div class="q-gutter-y-xs">
                 <q-card flat bordered class="q-pa-md q-mb-lg bg-grey-1">
                   <div class="text-subtitle2 text-black text-bold">
-                    Motivo: {{ getCancellationReasonLabels(saleCancellation.reason) }}
+                    Motivo: {{ getCancellationReasonLabels(saleCancellation?.reason) }}
                   </div>
 
                   <div class="text-body2 text-black q-mt-xs text-bold">
                     Descrição:
                     <span
-                      class="text-black text-bold break-word"
-                      style="white-space: pre-line; word-break: break-word"
-                      >{{ saleCancellation.description ?? 'Nenhuma descrição adicionada' }}</span
+                      class="text-black text-bold"
+                      style="max-width: 100%; word-break: break-word; white-space: pre-wrap"
+                      >{{ saleCancellation?.description ?? 'Nenhuma descrição adicionada' }}</span
                     >
                   </div>
                 </q-card>

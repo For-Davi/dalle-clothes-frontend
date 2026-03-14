@@ -51,7 +51,10 @@ const getColorStyle = (hexColor: string) => {
             {{ props.row.product_name }}
           </q-td>
           <q-td key="sku" :props="props" class="text-left">
-            {{ props.row.product_sku ? props.row.product_sku : '-' }}
+            {{ props.row.product_sku ?? '-' }}
+          </q-td>
+          <q-td key="code" :props="props" class="text-left">
+            {{ props.row.product_code ?? '-' }}
           </q-td>
           <q-td key="quantity" :props="props" class="text-left">
             {{ props.row.quantity }}

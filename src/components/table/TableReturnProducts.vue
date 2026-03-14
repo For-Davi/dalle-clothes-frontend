@@ -68,22 +68,22 @@ const getColorStyle = (hexColor: string) => {
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="name" :props="props" class="text-left">
+          <q-td key="product_name" :props="props" class="text-left">
             {{ props.row.product_name }}
           </q-td>
-          <q-td key="sku" :props="props" class="text-left">
+          <q-td key="product_sku" :props="props" class="text-left">
             {{ props.row.product_sku }}
           </q-td>
-          <q-td key="code" :props="props" class="text-left">
-            {{ props.row.code }}
+          <q-td key="product_code" :props="props" class="text-left">
+            {{ props.row.product_code }}
           </q-td>
           <q-td key="quantity" :props="props" class="text-left">
             {{ props.row.returnQuantity }}
           </q-td>
-          <q-td key="price" :props="props" class="text-left">
+          <q-td key="product_price" :props="props" class="text-left">
             {{ formatToReal(props.row.product_price) }}
           </q-td>
-          <q-td key="color" :props="props" class="text-left">
+          <q-td key="color_name" :props="props" class="text-left">
             <div
               v-if="props.row.color"
               class="cursor-pointer"

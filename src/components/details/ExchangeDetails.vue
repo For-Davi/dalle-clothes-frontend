@@ -81,12 +81,12 @@ watch(open, async () => {
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b>Criado por:</b>
+                <b>Criado (nome):</b>
                 {{ Exchange.created_by_name }}
               </p>
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b>Email:</b>
+                <b>Criado (email):</b>
                 {{ Exchange.created_by_email }}
               </p>
 
@@ -128,12 +128,12 @@ watch(open, async () => {
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Atualizado por:</b>
+                <b class="q-mr-sm">Atualizado (nome):</b>
                 {{ Exchange.updated_by_name ?? '-' }}
               </p>
               <p class="flex items-center">
                 <q-icon name="person" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Email:</b>
+                <b class="q-mr-sm">Atualizado (email):</b>
                 {{ Exchange.updated_by_email ?? '-' }}
               </p>
 

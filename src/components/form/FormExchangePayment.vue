@@ -25,6 +25,8 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  'new-request': [void];
+  'show:coupon': [IExchangeCouponData];
 }>();
 
 const { loadingExchange } = storeToRefs(useExchangeStore());
@@ -68,6 +70,7 @@ const save = async () => {
         additionalExchangePaymentData: {
           saleID: props.data.exchange?.sale_id ?? 0,
           exchangeID: props.data.exchange?.id ?? 0,
+          returnID: props.data.exchange?.return_id ?? 0,
           change: additionalPaymentData.change,
           fees: additionalPaymentData.fees,
           description: additionalPaymentData.description,
@@ -81,6 +84,7 @@ const save = async () => {
         additionalExchangePaymentData: {
           saleID: props.data.exchange?.sale_id ?? 0,
           exchangeID: props.data.exchange?.id ?? 0,
+          returnID: props.data.exchange?.return_id ?? 0,
           change: additionalPaymentData.change,
           fees: additionalPaymentData.fees,
           description: additionalPaymentData.description,
@@ -122,6 +126,8 @@ const save = async () => {
         differenceDeliveryData: deliveryData,
       });
       if (response?.status === 201) {
+        emit('show:coupon', response.data.exchangeTaxCoupon);
+        emit('new-request');
         emit('update:open');
       }
     } else {
@@ -249,12 +255,6 @@ const formattedPhone = computed({
     deliveryData.recipientPhone = digits;
   },
 });
-const getTypes = computed(() => {
-  return listTypesReceipt.value.map((type: ITypesReceipt) => ({
-    label: PaymentTypeLabels[type.name as keyof typeof PaymentTypeLabels],
-    value: type.name,
-  }));
-});
 const totalPricePayment = computed(() => {
   const base = Number(totalExchange.value ?? 0);
   const freight = Number(deliveryData.freightValue ?? 0);
@@ -283,6 +283,21 @@ const totalPaid = computed(() =>
     0,
   ),
 );
+const getTypes = computed(() => {
+  if (hasExchange.value) {
+    return listTypesReceipt.value
+      .filter((type: ITypesReceipt) => type.name !== 'CREDIT')
+      .map((type: ITypesReceipt) => ({
+        label: PaymentTypeLabels[type.name as keyof typeof PaymentTypeLabels],
+        value: type.name,
+      }));
+  }
+
+  return listTypesReceipt.value.map((type: ITypesReceipt) => ({
+    label: PaymentTypeLabels[type.name as keyof typeof PaymentTypeLabels],
+    value: type.name,
+  }));
+});
 const missingAmount = computed(() => {
   const payments = exchangePaymentData.value;
 

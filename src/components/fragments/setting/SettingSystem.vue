@@ -45,7 +45,7 @@ watch(
 </script>
 
 <template>
-  <q-card class="bg-grey-1 column justify-between" bordered flat>
+  <q-card class="bg-grey-1 column justify-between" bordered flat style="min-height: 300px">
     <q-card-section>
       <TitlePage title="Sistema" icon="construction" />
     </q-card-section>

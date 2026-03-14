@@ -5,6 +5,7 @@ import {
   createExchangePaymentService,
   createDifferencePaymentService,
   showExchangeService,
+  sendCouponToEmailService,
 } from 'src/services/exchange-service';
 
 export const useExchangeStore = defineStore('exchange', {
@@ -86,13 +87,22 @@ export const useExchangeStore = defineStore('exchange', {
         const response = await createDifferencePaymentService(data);
 
         if (response.status === 201) {
-          this.clearListExchange();
-          this.setListExchange(response.data.exchanges);
           createSuccess(response.data.message);
         }
         return response;
       } catch (error) {
         createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async sendCouponToEmail(exchangeID: number, email: string) {
+      this.setLoading(true);
+      try {
+        return await sendCouponToEmailService(exchangeID, email);
+      } catch (error) {
+        createError(error);
+        return undefined;
       } finally {
         this.setLoading(false);
       }

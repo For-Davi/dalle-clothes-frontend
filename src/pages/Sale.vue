@@ -1,18 +1,55 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import TableSale from 'src/components/table/TableSale.vue';
-import { ref } from 'vue';
+import { ref, reactive, computed } from 'vue';
+import FilterSale from 'src/components/filter/FilterSale.vue';
+import { useSaleStore } from 'src/stores/sale-store';
 
 defineOptions({
   name: 'Sale',
 });
 
 const search = ref<string>('');
-const hasFilter = ref<boolean>(true);
+const showFilterSale = ref<boolean>(false);
+const filter = reactive<IFilterSale>({
+  startDate: null,
+  endDate: null,
+  status: null,
+  client: null,
+  seller: null,
+  product: null,
+  paymentType: null,
+  receipt: null,
+  minTotal: null,
+  maxTotal: null,
+});
 
 const changeShowFilterSale = () => {
-  console.log('abrir filtro');
+  showFilterSale.value = !showFilterSale.value;
 };
+const actionFilter = async (data: 'close' | IFilterSale): Promise<void> => {
+  changeShowFilterSale();
+
+  if (data !== 'close') {
+    Object.assign(filter, {
+      startDate: data.startDate,
+      endDate: data.endDate,
+      status: data.status,
+      client: data.client,
+      seller: data.seller,
+      product: data.product,
+      paymentType: data.paymentType,
+      receipt: data.receipt,
+      minTotal: data.minTotal,
+      maxTotal: data.maxTotal,
+    });
+    await useSaleStore().getSales(filter);
+  }
+};
+
+const hasFilter = computed(() => {
+  return Object.values(filter).some((value) => value !== null && value !== '');
+});
 </script>
 <template>
   <main class="q-pa-lg">
@@ -48,5 +85,7 @@ const changeShowFilterSale = () => {
       </q-banner>
       <TableSale :filter="search" />
     </section>
+    <!-- Modals -->
+    <FilterSale :open="showFilterSale" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>

@@ -3,7 +3,6 @@ import { columnsReturn } from 'src/utils/columns';
 import { ref, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useReturnStore } from 'src/stores/return-store';
-import ConfirmAction from '../confirm/ConfirmAction.vue';
 
 defineOptions({
   name: 'TableReturn',
@@ -11,42 +10,26 @@ defineOptions({
 
 const props = defineProps<{
   saleID: number | null;
+  saleStatus: string | null;
 }>();
 const emit = defineEmits<{
   'open:form-linked-return': [number, number];
   'open:return-details': [number];
   'edit:return': [number, number, string];
+  'exclude:return': [number];
 }>();
 
 const { listReturns, loadingReturns } = storeToRefs(useReturnStore());
 
 const filter = ref<string>('');
-const returnMonitoring = ref<number | null>(null);
-const showConfirmAction = ref<boolean>(false);
 
 const fetchReturns = async () => {
   if (props.saleID) {
     await useReturnStore().getReturns(props.saleID);
   }
 };
-const clear = (): void => {
-  returnMonitoring.value = null;
-};
-const closeConfirmActionOk = async () => {
-  showConfirmAction.value = false;
-  await useReturnStore().deleteReturn(props.saleID ?? 0, returnMonitoring.value ?? 0);
-  clear();
-};
-const closeConfirmAction = (): void => {
-  showConfirmAction.value = false;
-  clear();
-};
-const openConfirmAction = (id: number): void => {
-  returnMonitoring.value = id;
-  showConfirmAction.value = true;
-};
 const startExclude = (id: number) => {
-  openConfirmAction(id);
+  emit('exclude:return', id);
 };
 
 onMounted(async () => {
@@ -134,7 +117,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
-              v-if="props.row.return_exchange_items.length > 0"
+              v-if="props.row.return_exchange_items.length > 0 && saleStatus !== 'canceled'"
               @click="if (saleID) emit('open:form-linked-return', saleID, props.row.id);"
               size="sm"
               flat
@@ -155,6 +138,7 @@ onMounted(async () => {
               <q-tooltip> Detalhes </q-tooltip>
             </q-btn>
             <q-btn
+              v-if="saleStatus !== 'canceled'"
               @click="emit('edit:return', props.row.id, saleID!, props.row.status)"
               size="sm"
               flat
@@ -163,6 +147,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="saleStatus !== 'canceled'"
               @click="startExclude(props.row.id)"
               size="sm"
               flat
@@ -175,13 +160,4 @@ onMounted(async () => {
       </template>
     </q-table>
   </section>
-  <!-- Modals -->
-  <ConfirmAction
-    :open="showConfirmAction"
-    label-action="Continuar"
-    title="Confirmação de exclusão da venda"
-    message="Caso tenha certeza, clique em 'Continuar', pois essa ação é irreversível e excluirá a devolução e registros como trocas, estornos, diferenças, comissões, entregas e movimentações de estoque permanentemente."
-    @update:open="closeConfirmAction"
-    @update:ok="closeConfirmActionOk"
-  />
 </template>

@@ -112,3 +112,12 @@ export const deleteSaleService = (
     message: string;
   };
 }> => api.delete(`${baseUrl}/${saleID}`);
+
+export const getSalesServiceFilterService = (
+  filter: IFilterSale,
+): Promise<{
+  status: number;
+  data: {
+    sales: ISales[];
+  };
+}> => api.post(`${baseUrl}/filter`, filter);

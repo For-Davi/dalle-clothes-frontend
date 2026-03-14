@@ -104,6 +104,7 @@ import type {
   ModeSaleDetails,
   SaleCancellation,
   DataSaleCancellation,
+  FilterSale,
 } from './Payments';
 import type {
   Subscriptions,
@@ -134,6 +135,7 @@ import type {
   ExchangePaymentData,
   DifferencePaymentData,
   DifferencePaymentMethodData,
+  ExchangeCouponData,
 } from './Exchange';
 
 export {};
@@ -282,4 +284,6 @@ declare global {
   type IStockReentryReturnItem = StockReentryReturnItem;
   type ISaleCancellation = SaleCancellation;
   type IDataSaleCancellation = DataSaleCancellation;
+  type IFilterSale = FilterSale;
+  type IExchangeCouponData = ExchangeCouponData;
 }

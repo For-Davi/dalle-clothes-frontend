@@ -25,6 +25,7 @@ export interface ExchangePaymentMethodData {
 export interface AdditionalExchangePaymentMethodData {
   saleID: number;
   exchangeID: number;
+  returnID: number;
   change: number;
   fees: number;
   description: string | null;
@@ -87,6 +88,30 @@ export interface Exchange {
   description: string | null;
   exchange_payment_method: ExchangePaymentMethod[];
   difference_payment_method: DifferencePaymentMethod[];
+}
+
+export interface ExchangeCouponData {
+  exchange: {
+    id: number;
+    fees: string;
+    total: string;
+    change: string;
+    date: string;
+  };
+  enterprise: {
+    id: number;
+    name: string;
+    cpf: string;
+    cnpj: string;
+  };
+  products: {
+    product_variant_id: number;
+    product_name: string;
+    product_sku: string | null;
+    product_price: string;
+    quantity: number;
+    total: string;
+  }[];
 }
 
 export interface ExchangePaymentMethod {

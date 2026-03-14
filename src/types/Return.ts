@@ -20,10 +20,13 @@ export interface Return {
   updated_at: string;
   return_items: ReturnItem[];
   return_exchange_items: ReturnExchangeItem[];
+  seller_name: string;
+  seller_email: string;
 }
 export interface ReturnExchangeItem {
   product_name: string;
   product_sku: string | null;
+  product_code: number | null;
   product_price: number;
   color: string | null;
   color_name: string | null;
@@ -33,6 +36,7 @@ export interface ReturnExchangeItem {
 export interface ReturnItem {
   product_name: string;
   product_sku: string | null;
+  product_code: number | null;
   product_price: number;
   color: string | null;
   color_name: string | null;
@@ -69,6 +73,7 @@ export interface DataReturnItens {
   product_variant_id: number;
   product_name: string;
   product_sku: string | null;
+  product_code: number | null;
   product_price: number;
   quantity: number;
   returnQuantity: number;

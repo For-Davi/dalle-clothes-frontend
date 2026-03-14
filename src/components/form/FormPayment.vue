@@ -233,7 +233,7 @@ const listEmployeeOptions = computed(() => {
 const getTypes = computed(() => {
   let types = listTypesReceipt.value;
 
-  if (paymentTotal.value) {
+  if (paymentTotal.value && (props.credit ?? 0) < Number(totalPricePayment.value)) {
     types = types.filter((type: ITypesReceipt) => type.name !== 'CREDIT');
   }
 
@@ -291,7 +291,7 @@ watch(
 watch([() => totalPricePayment.value, paymentTotal], () => {
   if (paymentTotal.value) {
     model.value.payment.forEach((payment) => {
-      if (payment.paymentType !== 'MONEY') {
+      if (payment.paymentType !== 'MONEY' && payment.paymentType !== 'CREDIT') {
         disableValue.value = true;
         payment.value = Number(totalPricePayment.value).toFixed(2).toString();
       }
@@ -301,17 +301,15 @@ watch([() => totalPricePayment.value, paymentTotal], () => {
 watch(
   () => model.value.payment.map((p) => p.paymentType),
   (newPaymentTypes) => {
-    if (paymentDivider.value) {
-      newPaymentTypes.forEach((type, index) => {
-        const payment = model.value.payment[index];
+    newPaymentTypes.forEach((type, index) => {
+      const payment = model.value.payment[index];
 
-        if (type === 'CREDIT' && props.credit && props.credit > 0) {
-          payment.value = props.credit.toString();
-          payment.installment = { value: null, amount: null };
-          disableValue.value = true;
-        }
-      });
-    }
+      if (type === 'CREDIT' && props.credit && props.credit > 0) {
+        payment.value = props.credit.toString();
+        payment.installment = { value: null, amount: null };
+        disableValue.value = true;
+      }
+    });
   },
 );
 watch(
@@ -321,12 +319,12 @@ watch(
       newPaymentTypes.forEach((type, index) => {
         const payment = model.value.payment[index];
 
-        //Caso o tipo de pagamento seja dinheiro ou crédito ele tira o disable e deixa nulo a quantidade de parcelas e o valor delas
+        //Caso o tipo de pagamento seja dinheiro ele tira o disable e deixa nulo a quantidade de parcelas e o valor delas
         if (type === 'MONEY') {
           disableValue.value = false;
           payment.value = '';
           payment.installment = { value: null, amount: null };
-        } else {
+        } else if (type !== 'MONEY' && type !== 'CREDIT') {
           //Caso o tipo seja outro ele volta o disable e coloca o valor total no input value e deixa nulo a quantidade de parcelas e o valor delas
           disableValue.value = true;
           payment.value = Number(totalPricePayment.value).toFixed(2).toString();
@@ -362,10 +360,28 @@ watch(
 watch(
   () => totalPaid.value,
   () => {
-    if (totalPaid.value > Number(totalPricePayment.value)) {
-      model.value.change = (totalPaid.value - Number(totalPricePayment.value))
-        .toFixed(2)
-        .toString();
+    const total = Number(totalPricePayment.value);
+
+    let creditValue = 0;
+    let otherPayments = 0;
+
+    model.value.payment.forEach((payment) => {
+      const value = Number(payment.value || 0);
+
+      if (payment.paymentType === 'CREDIT') {
+        creditValue += value;
+      } else {
+        otherPayments += value;
+      }
+    });
+
+    if (creditValue >= total) {
+      model.value.change = otherPayments.toFixed(2);
+      return;
+    }
+
+    if (totalPaid.value > total) {
+      model.value.change = (totalPaid.value - total).toFixed(2);
     } else {
       model.value.change = '0.00';
     }

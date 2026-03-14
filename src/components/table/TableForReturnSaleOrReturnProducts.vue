@@ -13,28 +13,30 @@ const props = defineProps<{
   rows: ISaleItens[] | IDataReturnItens[];
   loading: boolean;
   type: 'return' | 'linked';
+  returnedQuantities: Record<number, number>;
+  quantities: Record<number, number>;
+  formIndex: number;
 }>();
 
 const emit = defineEmits<{
   'add-to-return': [IDataReturnItens];
+  'update-quantity': [number, number, number];
 }>();
 
 const filter = ref<string>('');
 
 const addToReturn = (product: IDataReturnItens) => {
-  const check = checkDataToAddReturnProducts(product);
+  const quantity = getQuantity(product.product_variant_id);
+
+  const data = {
+    ...product,
+    returnQuantity: quantity,
+  };
+
+  const check = checkDataToAddReturnProducts(data);
+
   if (check.status) {
-    emit('add-to-return', {
-      product_variant_id: product.product_variant_id,
-      product_name: product.product_name,
-      product_sku: product.product_sku,
-      product_price: product.product_price,
-      quantity: product.quantity,
-      returnQuantity: product.returnQuantity,
-      color: product.color,
-      color_name: product.color_name,
-      total: product.total,
-    });
+    emit('add-to-return', data);
   } else {
     createErrorData(check.message || 'Erro ao adicionar produto para a tabela de devolução');
   }
@@ -49,6 +51,12 @@ const getColorStyle = (hexColor: string) => {
     display: 'inline-block',
     verticalAlign: 'middle',
   };
+};
+const getAvailableQuantity = (row: IDataReturnItens | ISaleItens) => {
+  return row.quantity - (props.returnedQuantities[row.product_variant_id] || 0);
+};
+const getQuantity = (productId: number) => {
+  return props.quantities[productId] || 0;
 };
 </script>
 
@@ -92,39 +100,39 @@ const getColorStyle = (hexColor: string) => {
           </q-input>
         </div>
       </template>
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="name" :props="props" class="text-left">
-            {{ props.row.product_name }}
+      <template v-slot:body="slot">
+        <q-tr :props="slot">
+          <q-td key="product_name" :props="slot" class="text-left">
+            {{ slot.row.product_name }}
           </q-td>
-          <q-td key="sku" :props="props" class="text-left">
-            {{ props.row.product_sku }}
+          <q-td key="product_sku" :props="slot" class="text-left">
+            {{ slot.row.product_sku }}
           </q-td>
-          <q-td key="code" :props="props" class="text-left">
-            {{ props.row.code }}
+          <q-td key="product_code" :props="slot" class="text-left">
+            {{ slot.row.product_code }}
           </q-td>
-          <q-td key="quantity" :props="props" class="text-left">
-            {{ props.row.quantity }}
+          <q-td key="quantity" :props="slot" class="text-left">
+            {{ getAvailableQuantity(slot.row) }}
           </q-td>
-          <q-td key="price" :props="props" class="text-left">
-            {{ formatToReal(props.row.product_price) }}
+          <q-td key="product_price" :props="slot" class="text-left">
+            {{ formatToReal(slot.row.product_price) }}
           </q-td>
-          <q-td key="color" :props="props" class="text-left">
+          <q-td key="color_name" :props="slot" class="text-left">
             <div
-              v-if="props.row.color"
+              v-if="slot.row.color"
               class="cursor-pointer"
-              :style="getColorStyle(props.row.color)"
+              :style="getColorStyle(slot.row.color)"
             >
               <q-tooltip class="bg-grey-3 text-bold text-black">{{
-                props.row.color_name
+                slot.row.color_name
               }}</q-tooltip>
             </div>
           </q-td>
-          <q-td key="total" :props="props" class="text-left">
-            {{ formatToReal(props.row.total) }}
+          <q-td key="total" :props="slot" class="text-left">
+            {{ formatToReal(slot.row.total) }}
           </q-td>
 
-          <q-td key="action" :props="props">
+          <q-td key="action" :props="slot">
             <div class="flex row justify-end">
               <q-btn
                 size="md"
@@ -133,13 +141,29 @@ const getColorStyle = (hexColor: string) => {
                 color="red"
                 icon="remove"
                 class="q-mr-sm"
-                :disable="props.row.returnQuantity <= 0 || !props.row.returnQuantity"
-                @click="props.row.returnQuantity--"
+                :disable="getQuantity(slot.row.product_variant_id) <= 0"
+                @click="
+                  emit(
+                    'update-quantity',
+                    formIndex,
+                    slot.row.product_variant_id,
+                    getQuantity(slot.row.product_variant_id) - 1,
+                  )
+                "
               />
               <q-input
                 outlined
                 dense
-                v-model.number="props.row.returnQuantity"
+                :model-value="getQuantity(slot.row.product_variant_id)"
+                @update:model-value="
+                  (val) =>
+                    emit(
+                      'update-quantity',
+                      formIndex,
+                      slot.row.product_variant_id,
+                      Number(val) || 0,
+                    )
+                "
                 input-class="text-right"
                 mask="#"
                 fill-mask="0"
@@ -155,10 +179,16 @@ const getColorStyle = (hexColor: string) => {
                 icon="add"
                 class="q-mr-sm"
                 :disable="
-                  props.row.quantity === props.row.returnQuantity ||
-                  props.row.returnQuantity > props.row.quantity
+                  getQuantity(slot.row.product_variant_id) >= getAvailableQuantity(slot.row)
                 "
-                @click="props.row.returnQuantity++"
+                @click="
+                  emit(
+                    'update-quantity',
+                    formIndex,
+                    slot.row.product_variant_id,
+                    getQuantity(slot.row.product_variant_id) + 1,
+                  )
+                "
               />
               <q-btn
                 size="md"
@@ -167,11 +197,10 @@ const getColorStyle = (hexColor: string) => {
                 color="primary"
                 icon="add_shopping_cart"
                 :disable="
-                  props.row.returnQuantity <= 0 ||
-                  props.row.returnQuantity > props.row.quantity ||
-                  !props.row.returnQuantity
+                  getQuantity(slot.row.product_variant_id) <= 0 ||
+                  getQuantity(slot.row.product_variant_id) > getAvailableQuantity(slot.row)
                 "
-                @click="addToReturn(props.row)"
+                @click="addToReturn(slot.row)"
               >
                 <q-tooltip> Adicionar item a devolução</q-tooltip>
               </q-btn>

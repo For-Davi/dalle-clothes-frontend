@@ -108,12 +108,12 @@ export interface SaleItens {
   product_variant_id: number;
   product_name: string;
   product_sku: string | null;
+  product_code: number | null;
   product_price: number;
   quantity: number;
   returnQuantity?: number;
   total: number;
   grid: string;
-  code: string;
   color: string;
   color_name: string;
 }
@@ -176,7 +176,6 @@ export interface CouponData {
     email: string | null;
   };
   products: {
-    sale_id: number;
     product_variant_id: number;
     product_name: string;
     product_sku: string | null;
@@ -184,4 +183,17 @@ export interface CouponData {
     quantity: number;
     total: string;
   }[];
+}
+
+export interface FilterSale {
+  startDate: string | null;
+  endDate: string | null;
+  status: null | 'active' | 'canceled';
+  client: number | null;
+  seller: number | null;
+  product: string | null;
+  paymentType: number | null;
+  receipt: number | null;
+  minTotal: string | null;
+  maxTotal: string | null;
 }
