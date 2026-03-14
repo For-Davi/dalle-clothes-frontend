@@ -144,6 +144,18 @@ export const columnsClient: IQuasarTable[] = [
     align: 'left',
   },
   {
+    name: 'credit',
+    label: 'Crédito',
+    field: 'credit',
+    align: 'left',
+  },
+  {
+    name: 'credit_expires_at',
+    label: 'Data de expiração do crédito',
+    field: 'credit_expires_at',
+    align: 'left',
+  },
+  {
     name: 'action',
     label: 'Ação',
     field: 'action',
@@ -968,6 +980,414 @@ export const columnsDashboardQuantityRegister: IQuasarTable[] = [
     name: 'quantity',
     label: 'Quantidade',
     field: 'quantity',
+    align: 'right',
+  },
+];
+
+export const columnsSales: IQuasarTable[] = [
+  {
+    name: 'date',
+    label: 'Data',
+    field: 'date',
+    align: 'left',
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'seller_name',
+    label: 'Vendedor',
+    field: 'seller_name',
+    align: 'left',
+  },
+  {
+    name: 'client_name',
+    label: 'Cliente',
+    field: 'client_name',
+    align: 'left',
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    field: 'total',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsReturn: IQuasarTable[] = [
+  {
+    name: 'created_at',
+    label: 'Data de criação',
+    field: 'created_at',
+    align: 'left',
+    sort: (a, b) => {
+      const parse = (date: string) => {
+        const [day, month, rest] = date.split('/');
+        const [year, time] = rest.split(' ');
+        return new Date(`${year}-${month}-${day} ${time}`).getTime();
+      };
+
+      return parse(a) - parse(b);
+    },
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'linked_code',
+    label: 'Vinculada com a devolução',
+    field: 'linked_code',
+    align: 'left',
+  },
+  {
+    name: 'created_by_name',
+    label: 'Criado por',
+    field: 'created_by_name',
+    align: 'left',
+  },
+  {
+    name: 'created_by_email',
+    label: 'Criado por (email)',
+    field: 'created_by_email',
+    align: 'left',
+  },
+  {
+    name: 'updated_by_name',
+    label: 'Atualizado por',
+    field: 'updated_by_name',
+    align: 'left',
+  },
+  {
+    name: 'updated_by_email',
+    label: 'Atualizado por (email)',
+    field: 'updated_by_email',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsSaleProduct: IQuasarTable[] = [
+  {
+    name: 'product_name',
+    label: 'Nome',
+    field: 'product_name',
+    align: 'left',
+  },
+  {
+    name: 'product_sku',
+    label: 'SKU',
+    field: 'product_sku',
+    align: 'left',
+  },
+  {
+    name: 'product_code',
+    label: 'Código',
+    field: 'product_code',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Quantidade',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'product_price',
+    label: 'Preço',
+    field: 'product_price',
+    align: 'left',
+  },
+  {
+    name: 'color_name',
+    label: 'Cor',
+    field: 'color_name',
+    align: 'left',
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    field: 'total',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsShiftProduct: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: 'Preço',
+    field: 'price',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Quantidade',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    field: 'total',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsCommissions: IQuasarTable[] = [
+  {
+    name: 'created_at',
+    label: 'Data',
+    field: 'created_at',
+    align: 'left',
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'type',
+    label: 'Tipo',
+    field: 'type',
+    align: 'left',
+  },
+  {
+    name: 'return_code',
+    label: 'Códig. da Devolução',
+    field: 'return_code',
+    align: 'left',
+  },
+  {
+    name: 'product_name',
+    label: 'Produto',
+    field: 'product_name',
+    align: 'left',
+  },
+  {
+    name: 'seller_name',
+    label: 'Vendedor',
+    field: 'seller_name',
+    align: 'left',
+  },
+  {
+    name: 'seller_email',
+    label: 'Email do vendedor',
+    field: 'seller_email',
+    align: 'left',
+  },
+  {
+    name: 'percentage',
+    label: 'Porcentagem da comissão',
+    field: 'percentage',
+    align: 'left',
+  },
+  {
+    name: 'commission_value',
+    label: 'Valor da comissão',
+    field: 'commission_value',
+    align: 'left',
+  },
+];
+
+export const columnsExchanges: IQuasarTable[] = [
+  {
+    name: 'created_at',
+    label: 'Data',
+    field: 'created_at',
+    align: 'left',
+    sort: (a, b) => {
+      const parse = (date: string) => {
+        const [day, month, rest] = date.split('/');
+        const [year, time] = rest.split(' ');
+        return new Date(`${year}-${month}-${day} ${time}`).getTime();
+      };
+
+      return parse(a) - parse(b);
+    },
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'return_id',
+    label: 'Vinculado com a devolução',
+    field: 'return_id',
+    align: 'left',
+  },
+  {
+    name: 'difference_value',
+    label: 'Diferença a pagar',
+    field: 'difference_value',
+    align: 'left',
+  },
+  {
+    name: 'exchange_value',
+    label: 'Valor a estornar',
+    field: 'exchange_value',
+    align: 'left',
+  },
+  {
+    name: 'created_by_name',
+    label: 'Criado por',
+    field: 'created_by_name',
+    align: 'left',
+  },
+  {
+    name: 'updated_by_name',
+    label: 'Atualizado por',
+    field: 'updated_by_name',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ações',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsReturnDetails: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'sku',
+    label: 'SKU',
+    field: 'sku',
+    align: 'left',
+  },
+  {
+    name: 'code',
+    label: 'Código',
+    field: 'code',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Quantidade',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'price',
+    label: 'Preço',
+    field: 'price',
+    align: 'left',
+  },
+  {
+    name: 'color',
+    label: 'Cor',
+    field: 'color',
+    align: 'left',
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    field: 'total',
+    align: 'left',
+  },
+];
+
+export const columnsSearchReturnItemVariant: IQuasarTable[] = [
+  {
+    name: 'product_name',
+    label: 'Nome',
+    field: 'product_name',
+    align: 'left',
+  },
+  {
+    name: 'product_sku',
+    label: 'SKU',
+    field: 'product_sku',
+    align: 'left',
+  },
+  {
+    name: 'product_code',
+    label: 'Código',
+    field: 'product_code',
+    align: 'left',
+  },
+  {
+    name: 'product_color_name',
+    label: 'Cor',
+    field: 'product_color_name',
+    align: 'left',
+  },
+  {
+    name: 'quantity',
+    label: 'Qtde devolvida',
+    field: 'quantity',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
     align: 'right',
   },
 ];

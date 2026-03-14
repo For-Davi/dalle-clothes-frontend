@@ -132,3 +132,12 @@ export const deleteClientService = (
     clients: IClient[];
   };
 }> => api.delete(`${baseUrl}/${id}`);
+
+export const getClientCreditService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    credit: number;
+  };
+}> => api.post(`${baseUrl}/credit`, { saleID });

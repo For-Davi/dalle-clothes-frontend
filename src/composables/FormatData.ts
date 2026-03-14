@@ -1,4 +1,6 @@
 export const formatToBrazilianDate = (isoDate: string) => {
+  if (!isoDate) return '-';
+
   const date = new Date(isoDate);
 
   const day = String(date.getDate()).padStart(2, '0');
@@ -9,4 +11,16 @@ export const formatToBrazilianDate = (isoDate: string) => {
   const seconds = String(date.getSeconds()).padStart(2, '0');
 
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+};
+
+export const formatDate = (isoDate: string) => {
+  if (!isoDate) return '-';
+
+  const [datePart, timePart] = isoDate.split('T');
+
+  const [year, month, day] = datePart.split('-');
+
+  const time = timePart.split('.')[0];
+
+  return `${day}/${month}/${year} ${time}`;
 };

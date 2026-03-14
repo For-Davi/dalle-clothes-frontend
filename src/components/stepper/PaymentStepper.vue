@@ -80,6 +80,7 @@ const dataClient = reactive({
   description: '' as string,
   dateBirthday: '' as string,
   sex: '' as string,
+  credits: null as number | null,
 });
 const showFormClient = reactive<{
   open: boolean;
@@ -156,6 +157,7 @@ const sendData = async () => {
   const check = checkPaymentData(dataPayment, missingAmount.value);
   if (check.status) {
     const formattedProducts: IDataProductSale[] = dataSale.products.map((p) => ({
+      productID: p.product_id,
       productVariantID: p.product_variant_id,
       price: p.price,
       offer: p.offer ?? '',
@@ -189,6 +191,7 @@ const sendData = async () => {
             complement: dataClient.complement,
             description: dataClient.description,
             sex: dataClient.sex === 'Masculino' ? 'M' : 'F',
+            credits: Number(dataClient.credits),
           }
         : null,
       saleData: {
@@ -350,6 +353,7 @@ onMounted(async () => {
         <FormPayment
           :totalPrice="dataSale.totalPrice"
           :checkPaymentsReset="checkPaymentsReset"
+          :credit="Number(dataClient.credits)"
           :loadingSale="loadingSale"
           v-model="dataPayment"
           @send-missing-amount="setMissingAmount"

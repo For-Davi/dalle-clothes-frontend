@@ -3,12 +3,19 @@ import { createError } from 'src/composables/CreateNotify';
 
 const baseUrl = 'sale';
 
+export const getSalesService = (): Promise<{
+  status: number;
+  data: {
+    sales: ISales[];
+  };
+}> => api.get(`${baseUrl}/`);
+
 export const createSaleService = (
   data: IDataSale,
 ): Promise<{
   status: number;
   data: {
-    sale: ISale;
+    sale: ISaleMade;
   };
 }> => api.post(`${baseUrl}/`, data);
 
@@ -17,9 +24,27 @@ export const showSaleService = (
 ): Promise<{
   status: number;
   data: {
-    couponData: ICouponData;
+    sale: ISale;
   };
 }> => api.get(`${baseUrl}/${saleID}`);
+
+export const getSaleItensService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    saleItens: ISaleItens[];
+  };
+}> => api.get(`${baseUrl}/product/${saleID}`);
+
+export const showSaleCouponDataService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    couponData: ICouponData;
+  };
+}> => api.get(`${baseUrl}/coupon/${saleID}`);
 
 export const sendCouponToEmailService = (
   saleID: number,
@@ -59,3 +84,40 @@ export const exportSaleService = async (saleID: number) => {
     createError(error);
   }
 };
+
+export const createSaleCancellationService = (
+  data: IDataSaleCancellation,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+  };
+}> => api.post(`${baseUrl}/cancel`, data);
+
+export const getSaleCancellationService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    cancellation: ISaleCancellation;
+  };
+}> => api.get(`${baseUrl}/cancel/${saleID}`);
+
+export const deleteSaleService = (
+  saleID: number,
+): Promise<{
+  status: number;
+  data: {
+    sales: ISales[];
+    message: string;
+  };
+}> => api.delete(`${baseUrl}/${saleID}`);
+
+export const getSalesServiceFilterService = (
+  filter: IFilterSale,
+): Promise<{
+  status: number;
+  data: {
+    sales: ISales[];
+  };
+}> => api.post(`${baseUrl}/filter`, filter);

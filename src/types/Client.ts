@@ -20,6 +20,7 @@ export interface Client {
   description: string | null;
   sex: string;
   created_at?: string;
+  credits: number | null;
 }
 
 export interface VModelClient {
@@ -42,6 +43,7 @@ export interface VModelClient {
   complement: string | null;
   description: string | null;
   sex: string;
+  credits: number | null;
 }
 
 export interface FilterClient {

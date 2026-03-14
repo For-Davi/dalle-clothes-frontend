@@ -17,6 +17,7 @@ defineOptions({
 const props = defineProps<{
   totalPrice: string;
   checkPaymentsReset: boolean;
+  credit: number | null;
   loadingSale: boolean;
 }>();
 const emit = defineEmits<{
@@ -61,7 +62,7 @@ const fetchEmployees = async (): Promise<void> => {
 };
 const fetchReceiptsAndTypes = async (): Promise<void> => {
   await useReceiptstore().getReceipt({ active: 1 });
-  await useTypesReceiptStore().getTypesReceipt({ active: 1 });
+  await useTypesReceiptStore().getTypesReceipt({ active: 1 }, 'withoutCredit');
 };
 const createPayments = (count: number) => {
   if (paymentTotal.value) {
@@ -118,8 +119,12 @@ const clearFreight = () => {
   model.value.recipientName = '';
   model.value.recipientPhone = '';
 };
-const isMoneyAndHasArrayPayment = (label: string) => {
-  return label === 'MONEY' && model.value.payment.some((p) => p.paymentType === 'MONEY');
+const isRestrictedTypeAndAlreadySelected = (type: string) => {
+  const restrictedTypes = ['MONEY', 'CREDIT'];
+
+  if (!restrictedTypes.includes(type) || paymentTotal.value) return false;
+
+  return model.value.payment.some((p) => p.paymentType === type);
 };
 const createPaymentsAfterReset = () => {
   createPayments(paymentTotal.value ? 1 : 2);
@@ -226,7 +231,13 @@ const listEmployeeOptions = computed(() => {
   return options.filter((option) => option.label.toLowerCase().includes(needle));
 });
 const getTypes = computed(() => {
-  return listTypesReceipt.value.map((type: ITypesReceipt) => ({
+  let types = listTypesReceipt.value;
+
+  if (paymentTotal.value && (props.credit ?? 0) < Number(totalPricePayment.value)) {
+    types = types.filter((type: ITypesReceipt) => type.name !== 'CREDIT');
+  }
+
+  return types.map((type: ITypesReceipt) => ({
     label: PaymentTypeLabels[type.name as keyof typeof PaymentTypeLabels],
     value: type.name,
   }));
@@ -269,6 +280,8 @@ watch(
         const receiptOptions = getReceiptOptions(type);
         if (receiptOptions.length > 0) {
           payment.receiptID = receiptOptions[0].value;
+        } else {
+          payment.receiptID = null;
         }
       }
     });
@@ -278,13 +291,27 @@ watch(
 watch([() => totalPricePayment.value, paymentTotal], () => {
   if (paymentTotal.value) {
     model.value.payment.forEach((payment) => {
-      if (payment.paymentType !== 'MONEY') {
+      if (payment.paymentType !== 'MONEY' && payment.paymentType !== 'CREDIT') {
         disableValue.value = true;
         payment.value = Number(totalPricePayment.value).toFixed(2).toString();
       }
     });
   }
 });
+watch(
+  () => model.value.payment.map((p) => p.paymentType),
+  (newPaymentTypes) => {
+    newPaymentTypes.forEach((type, index) => {
+      const payment = model.value.payment[index];
+
+      if (type === 'CREDIT' && props.credit && props.credit > 0) {
+        payment.value = props.credit.toString();
+        payment.installment = { value: null, amount: null };
+        disableValue.value = true;
+      }
+    });
+  },
+);
 watch(
   () => model.value.payment.map((p) => p.paymentType),
   (newPaymentTypes) => {
@@ -297,7 +324,7 @@ watch(
           disableValue.value = false;
           payment.value = '';
           payment.installment = { value: null, amount: null };
-        } else {
+        } else if (type !== 'MONEY' && type !== 'CREDIT') {
           //Caso o tipo seja outro ele volta o disable e coloca o valor total no input value e deixa nulo a quantidade de parcelas e o valor delas
           disableValue.value = true;
           payment.value = Number(totalPricePayment.value).toFixed(2).toString();
@@ -333,10 +360,28 @@ watch(
 watch(
   () => totalPaid.value,
   () => {
-    if (totalPaid.value > Number(totalPricePayment.value)) {
-      model.value.change = (totalPaid.value - Number(totalPricePayment.value))
-        .toFixed(2)
-        .toString();
+    const total = Number(totalPricePayment.value);
+
+    let creditValue = 0;
+    let otherPayments = 0;
+
+    model.value.payment.forEach((payment) => {
+      const value = Number(payment.value || 0);
+
+      if (payment.paymentType === 'CREDIT') {
+        creditValue += value;
+      } else {
+        otherPayments += value;
+      }
+    });
+
+    if (creditValue >= total) {
+      model.value.change = otherPayments.toFixed(2);
+      return;
+    }
+
+    if (totalPaid.value > total) {
+      model.value.change = (totalPaid.value - total).toFixed(2);
     } else {
       model.value.change = '0.00';
     }
@@ -486,7 +531,7 @@ onMounted(async () => {
             fill-mask="0"
             reverse-fill-mask
             class="full-width"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="attach_money" color="black" />
@@ -502,7 +547,7 @@ onMounted(async () => {
             input-class="text-black"
             :loading="loading"
             maxlength="8"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="search" color="black" size="20px" />
@@ -518,7 +563,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="model.freight === false ? true : false"
+              :disable="!model.freight"
             >
               <template v-slot:prepend>
                 <q-icon name="map" color="black" size="20px" />
@@ -533,7 +578,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="model.freight === false ? true : false"
+              :disable="!model.freight"
             >
               <template v-slot:prepend>
                 <q-icon name="pin_drop" color="black" size="20px" />
@@ -548,7 +593,7 @@ onMounted(async () => {
             label="Bairro"
             dense
             input-class="text-black"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="pin_drop" color="black" size="20px" />
@@ -562,7 +607,7 @@ onMounted(async () => {
             label="Logradouro"
             dense
             input-class="text-black"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="pin_drop" color="black" size="20px" />
@@ -580,7 +625,7 @@ onMounted(async () => {
               class="input-divider"
               maxlength="15"
               mask="###############"
-              :disable="model.freight === false ? true : false"
+              :disable="!model.freight"
             >
               <template v-slot:prepend>
                 <q-icon name="numbers" color="black" size="20px" />
@@ -595,7 +640,7 @@ onMounted(async () => {
               dense
               input-class="text-black"
               class="input-divider"
-              :disable="model.freight === false ? true : false"
+              :disable="!model.freight"
             >
               <template v-slot:prepend>
                 <q-icon name="numbers" color="black" size="20px" />
@@ -610,7 +655,7 @@ onMounted(async () => {
             label="Nome do recebedor"
             dense
             input-class="text-black"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="person" color="black" size="20px" />
@@ -624,7 +669,7 @@ onMounted(async () => {
             label="Telefone do recebedor"
             dense
             input-class="text-black"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="phone" color="black" size="20px" />
@@ -639,7 +684,7 @@ onMounted(async () => {
             dense
             input-class="text-black no-resize"
             type="textarea"
-            :disable="model.freight === false ? true : false"
+            :disable="!model.freight"
           >
             <template v-slot:prepend>
               <q-icon name="description" color="black" size="20px" />
@@ -657,6 +702,11 @@ onMounted(async () => {
             >
             <span class="text-bold text-h6 text-bold text-red-9"
               >Faltando: {{ formatToReal(missingAmount.toString()) }}</span
+            >
+          </div>
+          <div v-if="props.credit && props.credit > 0" class="flex column q-pa-xs">
+            <span class="text-bold text-h6 text-bold text-black"
+              >Este cliente possui um crédito de {{ formatToReal(props.credit) }}</span
             >
           </div>
           <q-input
@@ -726,7 +776,7 @@ onMounted(async () => {
                 <template v-slot:option="scope">
                   <q-item
                     v-bind="scope.itemProps"
-                    v-if="!isMoneyAndHasArrayPayment(scope.opt.value)"
+                    v-if="!isRestrictedTypeAndAlreadySelected(scope.opt.value)"
                   >
                     <q-item-section>
                       <q-item-label>{{ scope.opt.label }}</q-item-label>
@@ -758,7 +808,7 @@ onMounted(async () => {
                       ? 'input-3-divider'
                       : 'full-width'
                   "
-                  :disable="disableValue"
+                  :disable="disableValue || payments.paymentType === 'CREDIT'"
                 >
                   <template v-slot:prepend>
                     <q-icon name="attach_money" color="black" />
@@ -820,6 +870,7 @@ onMounted(async () => {
                 />
               </div>
               <q-select
+                v-if="payments.paymentType !== 'CREDIT'"
                 v-model="payments.receiptID"
                 label="Selecione o recebimento"
                 :options="getReceiptOptions(payments.paymentType)"

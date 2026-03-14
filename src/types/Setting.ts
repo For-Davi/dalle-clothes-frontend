@@ -36,8 +36,12 @@ export interface Appearance {
 
 export interface SettingSystem {
   sendNotificationStockCritical: number;
+  hasCreditExpiredData: number;
+  quantityCreditExpireDays: number;
 }
 
 export interface System {
   send_notification_stock_critical: number;
+  has_credit_expired_data: number;
+  quantity_credit_expire_days: number;
 }

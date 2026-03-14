@@ -29,7 +29,7 @@ const startAddCart = (product: IClientCartProduct) => {
   if (check.status) {
     emit('add-to-cart', product);
   } else {
-    createErrorData(check.message || 'Erro ao adicionar produto ao carrinho');
+    createErrorData(check.message || 'Erro ao adicionar produto');
   }
 };
 const fetchProducts = async (): Promise<void> => {
@@ -53,6 +53,30 @@ const getColorStyle = (hexColor: string) => {
     verticalAlign: 'middle',
   };
 };
+const customFilter = (
+  rows: readonly IClientCartProduct[],
+  terms: string,
+  cols: readonly { name: string; field?: string | ((row: IClientCartProduct) => unknown) }[],
+  getCellValue: (
+    col: { field?: string | ((row: IClientCartProduct) => unknown) },
+    row: IClientCartProduct,
+  ) => unknown,
+): readonly IClientCartProduct[] => {
+  if (!terms) return rows;
+
+  const search = terms.toLowerCase();
+
+  return rows.filter((row) => {
+    const columnMatch = cols.some((col) => {
+      const value = getCellValue(col, row);
+      return String(value).toLowerCase().includes(search);
+    });
+
+    const colorMatch = row.color?.name?.toLowerCase().includes(search);
+
+    return columnMatch || colorMatch;
+  });
+};
 
 const filteredProducts = computed(() => {
   if (!props.hiddenIds?.length) return localProducts.value;
@@ -71,6 +95,7 @@ onMounted(async () => {
       :columns="columnsListProductsSale"
       :filter="filter"
       :loading="loadingProduct"
+      :filter-method="customFilter"
       title="Lista de produtos"
       row-key="index"
       no-data-label="Nenhum produto para mostrar"
@@ -184,7 +209,9 @@ onMounted(async () => {
                 color="green"
                 icon="add"
                 class="q-mr-sm"
-                :disable="props.row.stock_quantity <= 0"
+                :disable="
+                  props.row.stock_quantity <= 0 || props.row.quantity >= props.row.stock_quantity
+                "
                 @click="props.row.quantity++"
               />
               <q-btn
@@ -193,7 +220,11 @@ onMounted(async () => {
                 round
                 color="primary"
                 icon="add_shopping_cart"
-                :disable="props.row.stock_quantity <= 0 || props.row.quantity <= 0"
+                :disable="
+                  props.row.stock_quantity <= 0 ||
+                  props.row.quantity <= 0 ||
+                  props.row.quantity > props.row.stock_quantity
+                "
                 @click="startAddCart(props.row)"
               >
                 <q-tooltip> Adicionar ao carrinho do cliente </q-tooltip>

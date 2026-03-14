@@ -57,6 +57,7 @@ import type {
   ProductSupplierOrder,
   VModelProductVariant,
   ProductColor,
+  ListProduct,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -92,7 +93,21 @@ import type {
   ProductSupplierOrder,
 } from './Order';
 import type { Enterprise, DataEnterprise } from './Enterprise';
-import type { VModelSalePayment, DataSale, Sale, CouponData } from './Payments';
+import type {
+  VModelSalePayment,
+  DataSale,
+  SaleMade,
+  CouponData,
+  SaleDelivery,
+  SaleItens,
+  SalePaymentsMethods,
+  Sales,
+  Sale,
+  ModeSaleDetails,
+  SaleCancellation,
+  DataSaleCancellation,
+  FilterSale,
+} from './Payments';
 import type {
   Subscriptions,
   QrCode,
@@ -100,6 +115,30 @@ import type {
   PaymentSubscriptionCreditCard,
 } from './Subscription';
 import type { DashboardData, RecordsData, FilterDashboard } from './Dashboard';
+import type {
+  ReturnData,
+  DataReturnItens,
+  DataCreateReturn,
+  ReturnItens,
+  DataCreateReturnLinked,
+  Returns,
+  Return,
+  ReturnItem,
+  ReturnExchangeItem,
+  EditReturnData,
+  StockReentryReturnItem,
+} from './Return';
+import type { Commission } from './Commission';
+import type {
+  ExchangeData,
+  Exchanges,
+  ExchangePaymentMethodData,
+  Exchange,
+  ExchangePaymentData,
+  DifferencePaymentData,
+  DifferencePaymentMethodData,
+  ExchangeCouponData,
+} from './Exchange';
 
 export {};
 
@@ -202,7 +241,7 @@ declare global {
   type IFilterReceipt = FilterReceipt;
   type IDataSale = DataSale;
   type IDataProductSale = DataProductSale;
-  type ISale = Sale;
+  type ISaleMade = SaleMade;
   type ICouponData = CouponData;
   type IModeOrderDetails = ModeOrderDetails;
   type ISupplierOrderItem = SupplierOrderItem;
@@ -221,4 +260,34 @@ declare global {
   type IColorMountVariant = ColorMountVariant;
   type IProductColor = ProductColor;
   type IDataCheckCodeAndSku = DataCheckCodeAndSku;
+  type ISaleItens = SaleItens;
+  type ISalePaymentsMethods = SalePaymentsMethods;
+  type ISaleDelivery = SaleDelivery;
+  type ISales = Sales;
+  type ISale = Sale;
+  type IModeSaleDetails = ModeSaleDetails;
+  type IReturnData = ReturnData;
+  type IDataReturnItens = DataReturnItens;
+  type IDataCreateReturn = DataCreateReturn;
+  type IListProduct = ListProduct;
+  type ICommission = Commission;
+  type IExchangeData = ExchangeData;
+  type IReturnItens = ReturnItens;
+  type IDataCreateReturnLinked = DataCreateReturnLinked;
+  type IReturns = Returns;
+  type IReturn = Return;
+  type IExchanges = Exchanges;
+  type IReturnItem = ReturnItem;
+  type IReturnExchangeItem = ReturnExchangeItem;
+  type IEditReturnData = EditReturnData;
+  type IExchangePaymentMethodData = ExchangePaymentMethodData;
+  type IExchange = Exchange;
+  type IExchangePaymentData = ExchangePaymentData;
+  type IDifferencePaymentData = DifferencePaymentData;
+  type IDifferencePaymentMethodData = DifferencePaymentMethodData;
+  type IStockReentryReturnItem = StockReentryReturnItem;
+  type ISaleCancellation = SaleCancellation;
+  type IDataSaleCancellation = DataSaleCancellation;
+  type IFilterSale = FilterSale;
+  type IExchangeCouponData = ExchangeCouponData;
 }

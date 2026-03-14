@@ -15,7 +15,6 @@ import SupplierLinkedProductsManage from 'src/components/manage/SupplierLinkedPr
 import FormMovementProduct from 'src/components/form/FormMovementProduct.vue';
 import Exports from 'src/components/export/Exports.vue';
 import { exportProductsService } from 'src/services/product-service';
-import StockSetting from 'src/components/fragments/stock/StockSetting.vue';
 
 defineOptions({
   name: 'Stock',
@@ -28,7 +27,6 @@ const showFormMovementProduct = ref<boolean>(false);
 const showColorManage = ref<boolean>(false);
 const showGridManage = ref<boolean>(false);
 const showTagManage = ref<boolean>(false);
-const showStockSetting = ref<boolean>(false);
 const showCategoryProductManage = ref<boolean>(false);
 const showSupplierLinkedProductManage = reactive<{
   open: boolean;
@@ -111,9 +109,6 @@ const startExport = async () => {
 const changeCategoryProductManage = (): void => {
   showCategoryProductManage.value = !showCategoryProductManage.value;
 };
-const changeStockSetting = (): void => {
-  showStockSetting.value = !showStockSetting.value;
-};
 const openAction = (type: IActionStock): void => {
   switch (type) {
     case 'export':
@@ -136,9 +131,6 @@ const openAction = (type: IActionStock): void => {
       break;
     case 'category':
       changeCategoryProductManage();
-      break;
-    case 'settings':
-      changeStockSetting();
       break;
   }
 };
@@ -297,6 +289,5 @@ const hasFilter = computed(() => {
       @update:open="changeFormMovementProduct()"
       @new-request="fetchProducts"
     />
-    <StockSetting :open="showStockSetting" @update:open="changeStockSetting()" />
   </main>
 </template>

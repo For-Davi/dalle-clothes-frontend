@@ -14,6 +14,7 @@ import {
   updateProductMediaService,
   updateProductTagService,
   updateVariantService,
+  createStockReentryMovementService,
 } from 'src/services/product-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -107,6 +108,21 @@ export const useProductStore = defineStore('product', {
       this.setLoading(true);
       try {
         const response = await createMovementVariantService(data);
+        if (response.status === 200) {
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async createMovementStockReentry(data: IDataMovementProductRegister) {
+      this.setLoading(true);
+      try {
+        const response = await createStockReentryMovementService(data);
         if (response.status === 200) {
           createSuccess(response.data.message);
         }

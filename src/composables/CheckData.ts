@@ -683,7 +683,7 @@ export const checkEnterpriseData = (data: {
 };
 
 export const checkProductClientData = (
-  data: IClientCartProduct,
+  data: IListProduct,
 ): { status: boolean; message?: string } => {
   if (data.stock_quantity < data.quantity) {
     return { status: false, message: 'A quantidade informada excede a quantidade em estoque' };
@@ -807,7 +807,7 @@ export const checkPaymentData = (
     if (hasPix.value.trim() === '') {
       return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
     }
-    if (hasPix.value.trim() === '0.00') {
+    if (hasPix.value.trim() === '0.00' && missingAmount > 0) {
       return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
     }
   }
@@ -818,7 +818,7 @@ export const checkPaymentData = (
     if (hasMoney.value.trim() === '') {
       return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
     }
-    if (hasMoney.value.trim() === '0.00') {
+    if (hasMoney.value.trim() === '0.00' && missingAmount > 0) {
       return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
     }
   }
@@ -829,7 +829,7 @@ export const checkPaymentData = (
     if (hasDebitCard.value.trim() === '') {
       return { status: false, message: 'Informe o valor para o pagamento com cartão de débito.' };
     }
-    if (hasDebitCard.value.trim() === '0.00') {
+    if (hasDebitCard.value.trim() === '0.00' && missingAmount > 0) {
       return {
         status: false,
         message: 'O valor do pagamento com cartão de débito não pode ser zero.',
@@ -850,7 +850,7 @@ export const checkPaymentData = (
         message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
       };
     }
-    if (hasCreditCard.value.trim() === '0.00' && !hasCreditCard.installment) {
+    if (hasCreditCard.value.trim() === '0.00' && !hasCreditCard.installment && missingAmount > 0) {
       return {
         status: false,
         message: 'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
@@ -880,7 +880,11 @@ export const checkPaymentData = (
   }
 
   //VALIDAÇÃO DE RECEBIMENTO
-  const notHaveReceipt = data.payment.find((p) => p.receiptID === null);
+  const notHaveReceipt = data.payment.find((p) => {
+    if (p.paymentType !== 'CREDIT') {
+      return p.receiptID === null;
+    }
+  });
   if (notHaveReceipt) {
     return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
   }
@@ -1151,6 +1155,325 @@ export const checkDashboardFilter = (
     if (!isValidDate) {
       return { status: false, message: 'A data informada não é válida.' };
     }
+  }
+
+  return { status: true };
+};
+
+export const checkDataToAddReturnProducts = (
+  data: IDataReturnItens,
+): { status: boolean; message?: string } => {
+  if (data.quantity < data.returnQuantity) {
+    return {
+      status: false,
+      message:
+        'A quantidade adicionada para devolução não pode ser maior que a quantidade comprada',
+    };
+  }
+  if (data.returnQuantity < 0) {
+    return {
+      status: false,
+      message: 'A quantidade adicionada para devolução não pode ser menor que 0',
+    };
+  }
+  if (data.returnQuantity === 0) {
+    return { status: false, message: 'Informe a quantidade que foi devolvida' };
+  }
+
+  return { status: true };
+};
+
+export const checkDataCreateReturn = (
+  data: IDataCreateReturn,
+): { status: boolean; message?: string } => {
+  const allReturnData = data.returnData.map((item) => item);
+  const allReturnDataProducts = data.returnData.flatMap((returnItem) => returnItem.products);
+  const allExchangeDataProducts = data.exchangeProducts.flatMap((exchangeItem) => exchangeItem);
+  const invalidReason = data.returnData.find((r) => r.reason === null || r.reason === '');
+  const exceedsReturnQuantity = allReturnDataProducts.find(
+    (product) => product.quantity < product.returnQuantity,
+  );
+  const exceedsExchangeQuantity = allExchangeDataProducts.find(
+    (product) => product.stock_quantity < product.quantity,
+  );
+
+  if (!data.saleID) {
+    return {
+      status: false,
+      message: 'Deve ser informado o id da venda',
+    };
+  }
+  if (allReturnData.length === 0) {
+    return {
+      status: false,
+      message: 'Preencha com os dados necessários',
+    };
+  }
+  if (allReturnDataProducts.length === 0) {
+    return {
+      status: false,
+      message: 'Informe os produtos que o cliente devolveu',
+    };
+  }
+  if (isNaN(data.exchangeData.exchangeValue)) {
+    return { status: false, message: 'Informe um valor válido para ser estornado' };
+  }
+  if (data.exchangeData.exchangeValue < 0) {
+    return { status: false, message: 'O valor de estorno não pode ser abaixo de 0' };
+  }
+  if (data.exchangeData.exchangeValue === 0 && data.exchangeData.generatesCredit) {
+    return {
+      status: false,
+      message: 'Para gerar crédito ao cliente o valor do estorno não pode ser 0',
+    };
+  }
+  if (exceedsReturnQuantity) {
+    return {
+      status: false,
+      message: `A quantidade estornada do produto ${exceedsReturnQuantity.product_name} excede sua quantidade comprada`,
+    };
+  }
+  if (invalidReason) {
+    return { status: false, message: 'Informe um motivo para a devolução do produto' };
+  }
+  if (exceedsExchangeQuantity) {
+    return {
+      status: false,
+      message: `A quantidade para troca do produto ${exceedsExchangeQuantity.product_name} excede sua quantidade em estoque`,
+    };
+  }
+
+  return { status: true };
+};
+
+export const checkDataReturnEditStatus = (data: {
+  status: string;
+}): { status: boolean; message?: string } => {
+  if (data.status.trim() === '' || !data.status.trim()) {
+    return { status: false, message: 'Deve ser informado o status da devolução' };
+  }
+
+  return { status: true };
+};
+
+export const checkDataExchangePayment = (
+  data: IExchangePaymentData,
+  missingAmount: number,
+): { status: boolean; message?: string } => {
+  if (data.exchangePaymentData.length === 0) {
+    return { status: false, message: 'Insira algum pagamento' };
+  }
+  if (data.exchangePaymentData.some((p) => p.paymentType === null)) {
+    return { status: false, message: 'Deve ser informado a forma de pagamento' };
+  }
+
+  //VALIDAÇÃO DE PIX
+  const hasPix = data.exchangePaymentData.find((p) => p.paymentType === 'PIX');
+  if (hasPix) {
+    if (hasPix.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
+    }
+    if (hasPix.value.trim() === '0.00' && missingAmount > 0) {
+      return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE DINHEIRO
+  const hasMoney = data.exchangePaymentData.find((p) => p.paymentType === 'MONEY');
+  if (hasMoney) {
+    if (hasMoney.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
+    }
+    if (hasMoney.value.trim() === '0.00' && missingAmount > 0) {
+      return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE DÉBITO
+  const hasDebitCard = data.exchangePaymentData.find((p) => p.paymentType === 'DEBIT_CARD');
+  if (hasDebitCard) {
+    if (hasDebitCard.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento com cartão de débito.' };
+    }
+    if (hasDebitCard.value.trim() === '0.00' && missingAmount > 0) {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de débito não pode ser zero.',
+      };
+    }
+  }
+
+  //VALIDAÇÃO DE RECEBIMENTO
+  const notHaveReceipt = data.exchangePaymentData.find((p) => p.receiptID === null);
+  if (notHaveReceipt) {
+    return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
+  }
+
+  if (missingAmount > 0) {
+    return {
+      status: false,
+      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar o pagamento`,
+    };
+  }
+
+  return { status: true };
+};
+
+export const checkDataDifferencePayment = (
+  data: IDifferencePaymentData,
+  missingAmount: number,
+): { status: boolean; message?: string } => {
+  if (data.differenceDeliveryData.freight) {
+    if (
+      data.differenceDeliveryData.city?.trim() === '' &&
+      data.differenceDeliveryData.state?.trim() === '' &&
+      data.differenceDeliveryData.neighborhood?.trim() === '' &&
+      data.differenceDeliveryData.numberAddress?.trim() === ''
+    ) {
+      return { status: false, message: 'Com o frete ativado você deve preencher os campos' };
+    }
+    if (data.differenceDeliveryData.freightValue === null) {
+      return { status: false, message: 'Preencha o campo do valor do frete' };
+    }
+    if (data.differenceDeliveryData.city?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de cidade' };
+    }
+    if (data.differenceDeliveryData.state?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de UF' };
+    }
+    if (data.differenceDeliveryData.neighborhood?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de bairro' };
+    }
+    if (data.differenceDeliveryData.numberAddress?.trim() === '') {
+      return { status: false, message: 'Preencha o campo de número' };
+    }
+  }
+
+  if (!data.additionalDifferencePaymentData.saleID) {
+    return { status: false, message: 'O ID da venda deve ser informado' };
+  }
+  if (!data.additionalDifferencePaymentData.returnID) {
+    return { status: false, message: 'O ID da devolução deve ser informado' };
+  }
+  if (!data.additionalDifferencePaymentData.exchangeID) {
+    return { status: false, message: 'O ID do estorno/diferença deve ser informado' };
+  }
+
+  if (isNaN(data.additionalDifferencePaymentData.change)) {
+    return { status: false, message: 'O troco  do pagamento deve ser um número' };
+  }
+  if (isNaN(data.additionalDifferencePaymentData.fees)) {
+    return { status: false, message: 'A fatura do pagamento deve ser um número' };
+  }
+  if (data.differencePaymentData.length === 0) {
+    return { status: false, message: 'Insira algum pagamento' };
+  }
+  if (data.differencePaymentData.some((p) => p.paymentType === null)) {
+    return { status: false, message: 'Deve ser informado a forma de pagamento' };
+  }
+
+  //VALIDAÇÃO DE PIX
+  const hasPix = data.differencePaymentData.find((p) => p.paymentType === 'PIX');
+  if (hasPix) {
+    if (hasPix.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
+    }
+    if (hasPix.value.trim() === '0.00' && missingAmount > 0) {
+      return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE DINHEIRO
+  const hasMoney = data.differencePaymentData.find((p) => p.paymentType === 'MONEY');
+  if (hasMoney) {
+    if (hasMoney.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
+    }
+    if (hasMoney.value.trim() === '0.00' && missingAmount > 0) {
+      return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE DÉBITO
+  const hasDebitCard = data.differencePaymentData.find((p) => p.paymentType === 'DEBIT_CARD');
+  if (hasDebitCard) {
+    if (hasDebitCard.value.trim() === '') {
+      return { status: false, message: 'Informe o valor para o pagamento com cartão de débito.' };
+    }
+    if (hasDebitCard.value.trim() === '0.00' && missingAmount > 0) {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de débito não pode ser zero.',
+      };
+    }
+  }
+
+  //VALIDAÇÃO DE CARTÃO DE CRÉDITO
+  const hasCreditCard = data.differencePaymentData.find((p) => p.paymentType === 'CREDIT_CARD');
+  if (hasCreditCard) {
+    if (
+      hasCreditCard.value.trim() === '' &&
+      hasCreditCard.installment.value === null &&
+      hasCreditCard.installment.amount?.trim() === null
+    ) {
+      return {
+        status: false,
+        message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
+      };
+    }
+    if (hasCreditCard.value.trim() === '0.00' && !hasCreditCard.installment && missingAmount > 0) {
+      return {
+        status: false,
+        message: 'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
+      };
+    }
+    if (
+      hasCreditCard.installment.value !== null &&
+      hasCreditCard.installment.value > 0 &&
+      hasCreditCard.installment.amount?.trim() === null
+    ) {
+      return {
+        status: false,
+        message: 'Deve ser informado o valor da parcela caso a parcela seja maior do que 0.',
+      };
+    }
+    if (
+      hasCreditCard.installment.amount?.trim() !== null &&
+      Number(hasCreditCard.installment.amount?.trim()) > 0 &&
+      hasCreditCard.installment.value === null
+    ) {
+      return {
+        status: false,
+        message:
+          'Deve ser informado a quantidade da parcela caso o valor da parcela seja maior que 0.00.',
+      };
+    }
+  }
+
+  //VALIDAÇÃO DE RECEBIMENTO
+  const notHaveReceipt = data.differencePaymentData.find((p) => p.receiptID === null);
+  if (notHaveReceipt) {
+    return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
+  }
+
+  if (missingAmount > 0) {
+    return {
+      status: false,
+      message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar o pagamento`,
+    };
+  }
+
+  return { status: true };
+};
+
+export const checkDataSaleCancellation = (
+  data: IDataSaleCancellation,
+): { status: boolean; message?: string } => {
+  if (!data.reason?.trim()) {
+    return { status: false, message: 'O motivo do cancelamento é obrigatório' };
+  }
+  if (data.description.trim().length > 5000) {
+    return { status: false, message: 'A descrição não pode exceder 5000 caracteres' };
   }
 
   return { status: true };

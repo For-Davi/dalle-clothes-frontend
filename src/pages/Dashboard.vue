@@ -110,16 +110,18 @@ const typeReceiptData = computed(() => {
 
 const allSalesPeriodsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
   const info = dashboardInfo.value.sales_months_info;
+  const hasData = info && info.total && Object.values(info.total).length > 0;
 
-  if (!info)
+  if (!hasData) {
     return [
       {
         type: 'bar',
         label: 'Valor das vendas em ... (R$)',
-        data: [],
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         stack: 'total',
       },
     ];
+  }
 
   return Object.values(info.total ?? {}).map((item) => ({
     type: 'bar',

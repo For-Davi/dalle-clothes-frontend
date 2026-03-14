@@ -6,6 +6,8 @@ import { useProductStore } from 'src/stores/product-store';
 import TableSearchProductVariant from '../table/TableSearchProductVariant.vue';
 import Empty from '../info/Empty.vue';
 import FormMovementProductRegister from './FormMovementProductRegister.vue';
+import TableSearchReturnItem from '../table/TableSearchReturnItem.vue';
+import { useReturnStore } from 'src/stores/return-store';
 
 defineOptions({
   name: 'FormMovementProduct',
@@ -22,14 +24,17 @@ const emit = defineEmits<{
 const { loadingProduct } = storeToRefs(useProductStore());
 
 const listProductSearch = ref<ISearchProductVariant[]>([]);
+const listReturnItemSearch = ref<IStockReentryReturnItem[]>([]);
 const showFormNewMovementProduct = reactive<{
   open: boolean;
   variantID: number | null;
   type: 'in' | 'out';
+  productType: 'stock' | 'return' | null;
 }>({
   open: false,
   variantID: null,
   type: 'in',
+  productType: null,
 });
 const search = ref<string>('');
 const dataMovement = reactive({
@@ -64,22 +69,40 @@ const searchProduct = async () => {
   }
 };
 const newRequest = async (): Promise<void> => {
-  const response = await useProductStore().searchProduct(search.value);
-  if (response?.status === 200) {
-    listProductSearch.value = response.data.products;
+  if (search.value.trim() !== '') {
+    const response = await useProductStore().searchProduct(search.value);
+    if (response?.status === 200) {
+      listProductSearch.value = response.data.products;
+    }
   }
+};
+const getReturnItem = async () => {
+  const response = await useReturnStore().getStockReentryReturnItems();
+  if (response?.status === 200) {
+    listReturnItemSearch.value = response.data.products;
+  }
+};
+const makeNewRequests = async () => {
+  await newRequest();
+  await getReturnItem();
 };
 const changeShowFormNewMovementProduct = (
   show: boolean,
   type: 'in' | 'out' = 'in',
   variantID: number | null = null,
+  productType: 'stock' | 'return' | null = null,
 ): void => {
   showFormNewMovementProduct.variantID = variantID;
   showFormNewMovementProduct.type = type;
   showFormNewMovementProduct.open = show;
+  showFormNewMovementProduct.productType = productType;
 };
-const makeProductVariant = (productVariantID: number, type: 'in' | 'out') => {
-  changeShowFormNewMovementProduct(true, type, productVariantID);
+const makeProductVariant = (
+  productVariantID: number,
+  type: 'in' | 'out',
+  productType: 'stock' | 'return',
+) => {
+  changeShowFormNewMovementProduct(true, type, productVariantID, productType);
 };
 
 const getLabelSearch = computed((): string => {
@@ -93,9 +116,10 @@ const open = computed({
   },
 });
 
-watch(open, () => {
+watch(open, async () => {
   if (open.value) {
     clear();
+    await getReturnItem();
   }
 });
 </script>
@@ -134,12 +158,24 @@ watch(open, () => {
             />
           </div>
           <div>
+            <Empty v-if="listProductSearch.length === 0" message="Sem resultado" color="bg-red-3" />
             <TableSearchProductVariant
               v-if="listProductSearch.length > 0"
               :list="listProductSearch"
               @choose-product-variant="makeProductVariant"
             />
-            <Empty v-else message="Sem resultado" color="bg-red-3" />
+            <q-separator
+              v-if="listReturnItemSearch.length > 0"
+              class="q-my-lg"
+              color="primary"
+              inset
+            />
+            <TableSearchReturnItem
+              v-if="listReturnItemSearch.length > 0"
+              class="q-mt-md"
+              :list="listReturnItemSearch"
+              @choose-product-variant="makeProductVariant"
+            />
           </div>
         </q-form>
       </q-card-section>
@@ -162,7 +198,7 @@ watch(open, () => {
     <FormMovementProductRegister
       :data="showFormNewMovementProduct"
       @update:open="changeShowFormNewMovementProduct(false)"
-      @new-request="newRequest"
+      @new-request="makeNewRequests"
     />
   </q-dialog>
 </template>

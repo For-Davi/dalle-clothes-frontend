@@ -116,7 +116,7 @@ const formatToBrazilianDateTime = (value?: string | null) => {
             >TROCO: {{ formatToReal(props.couponData?.sale.change ?? '0') }}</span
           >
           <span class="text-bold text-h6"
-            >TOTAL: {{ formatToReal(props.couponData?.sale.total ?? '0') }}</span
+            >TOTAL: {{ formatToReal(props.couponData?.sale.starting_total ?? '0') }}</span
           >
         </div>
         <span class="text-bold text-body1"
