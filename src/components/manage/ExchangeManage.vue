@@ -18,7 +18,6 @@ const props = defineProps<{
   data: {
     open: boolean;
     saleID: number | null;
-    status: string | null;
   };
 }>();
 const emit = defineEmits<{
@@ -81,7 +80,6 @@ const open = computed({
         <div v-show="!loadingExchanges">
           <TableExchange
             :sale-i-d="props.data.saleID"
-            :saleStatus="props.data.status"
             v-show="listExchanges.length > 0"
             @show:payment-form="(exchange) => changeShowFormPayment(true, exchange)"
             @show:exchange-details="(exchangeID) => changeShowExchangeDetails(true, exchangeID)"

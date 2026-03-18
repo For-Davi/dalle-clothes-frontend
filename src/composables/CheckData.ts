@@ -1451,7 +1451,9 @@ export const checkDataDifferencePayment = (
   }
 
   //VALIDAÇÃO DE RECEBIMENTO
-  const notHaveReceipt = data.differencePaymentData.find((p) => p.receiptID === null);
+  const notHaveReceipt = data.differencePaymentData.find(
+    (p) => p.receiptID === null && p.paymentType !== 'CREDIT',
+  );
   if (notHaveReceipt) {
     return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
   }

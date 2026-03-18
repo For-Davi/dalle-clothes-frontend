@@ -67,10 +67,6 @@ const changeShowEditStatus = (open: boolean, editData: IEditReturnData | null = 
     editData,
   });
 };
-const navigateLinkedReturn = (linkedReturnID: number) => {
-  changeShowReturnDetails(false);
-  changeShowReturnDetails(true, linkedReturnID);
-};
 const startEdit = (id: number, saleID: number, status: string) => {
   changeShowEditStatus(true, { id: id, saleID: saleID, status: status });
 };
@@ -111,7 +107,6 @@ const open = computed({
           <TableReturn
             v-show="listReturns.length > 0"
             :sale-i-d="props.data.saleID"
-            :saleStatus="props.data.status"
             @open:return-details="(returnID) => changeShowReturnDetails(true, returnID)"
             @open:form-linked-return="
               (saleID, returnID) => changeShowFormReturn(true, saleID, returnID)
@@ -140,7 +135,6 @@ const open = computed({
             flat
           />
           <q-btn
-            v-if="props.data.status !== 'canceled'"
             @click="changeShowFormReturn(true, props.data.saleID)"
             :loading="loadingReturns"
             color="primary"
@@ -161,11 +155,7 @@ const open = computed({
         @update:ok="closeConfirmActionOk"
       />
       <FormReturn :data="showFormReturn" @update:open="changeShowFormReturn(false)" />
-      <ReturnDetails
-        :data="showReturnDetails"
-        @update:open="changeShowReturnDetails(false)"
-        @navegate:linked-return="navigateLinkedReturn"
-      />
+      <ReturnDetails :data="showReturnDetails" @update:open="changeShowReturnDetails(false)" />
       <FormReturnEditStatus :data="showEditStatus" @update:open="changeShowEditStatus(false)" />
     </q-card>
   </q-dialog>

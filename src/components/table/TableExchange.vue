@@ -11,7 +11,6 @@ defineOptions({
 
 const props = defineProps<{
   saleID: number | null;
-  saleStatus: string | null;
 }>();
 const emit = defineEmits<{
   'show:payment-form': [IExchange];
@@ -122,8 +121,7 @@ onMounted(async () => {
             <q-btn
               v-if="
                 props.row.exchange_payment_method.length === 0 &&
-                props.row.difference_payment_method.length === 0 &&
-                saleStatus !== 'canceled'
+                props.row.difference_payment_method.length === 0
               "
               @click="emit('show:payment-form', props.row)"
               size="sm"

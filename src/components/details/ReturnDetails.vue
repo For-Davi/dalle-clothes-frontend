@@ -220,18 +220,8 @@ watch(open, async () => {
             no-caps
             flat
           />
-          <q-btn
-            v-if="Return.linked_return_id"
-            color="teal"
-            label="Ir para a devolução vinculada"
-            size="md"
-            @click="emit('navegate:linked-return', Return.linked_return_id)"
-            unelevated
-            no-caps
-          />
         </div>
       </q-card-actions>
     </q-card>
   </q-dialog>
-  <!-- Modals -->
 </template>

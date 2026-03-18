@@ -72,7 +72,6 @@ const open = computed({
 watch(open, () => {
   if (open.value) {
     checkDataEdit();
-    console.log('props', props.data.editData);
   }
 });
 </script>

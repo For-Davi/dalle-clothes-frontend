@@ -30,6 +30,7 @@ const emit = defineEmits<{
 }>();
 
 const { loadingExchange } = storeToRefs(useExchangeStore());
+const { loadingClient } = storeToRefs(useClientStore());
 const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 const { listReceipt } = storeToRefs(useReceiptstore());
 
@@ -284,7 +285,7 @@ const totalPaid = computed(() =>
   ),
 );
 const getTypes = computed(() => {
-  if (hasExchange.value) {
+  if (hasExchange.value || (clientCredit.value ?? 0) === 0) {
     return listTypesReceipt.value
       .filter((type: ITypesReceipt) => type.name !== 'CREDIT')
       .map((type: ITypesReceipt) => ({
@@ -585,8 +586,8 @@ watch(
   () => props.data.open,
   async () => {
     if (props.data.open) {
-      await fetchReceiptsAndTypes();
       await fetchClientCredit();
+      await fetchReceiptsAndTypes();
     }
   },
 );
@@ -596,7 +597,9 @@ watch(
     <q-card
       style="min-width: 80vw"
       :class="
-        loadingExchange ? 'bg-grey-2 form-basic column justify-between' : 'bg-grey-2 form-basic'
+        loadingExchange || loadingClient
+          ? 'bg-grey-2 form-basic column justify-between'
+          : 'bg-grey-2 form-basic'
       "
     >
       <q-card-section class="q-pa-none">
@@ -605,8 +608,8 @@ watch(
           icon="attach_money"
         />
       </q-card-section>
-      <Loading :show="loadingExchange" />
-      <q-card-section class="q-pa-sm" v-show="!loadingExchange">
+      <Loading :show="loadingExchange || loadingClient" />
+      <q-card-section class="q-pa-sm" v-show="!(loadingExchange || loadingClient)">
         <q-form class="q-gutter-y-lg q-pa-md">
           <section v-if="!hasExchange" class="border-blue-light q-pa-lg q-gutter-y-sm">
             <TitlePage title="Entrega" icon="local_shipping" class="q-pa-none q-ma-none" />
@@ -1017,7 +1020,7 @@ watch(
             size="md"
             flat
             @click="open = false"
-            :loading="loadingExchange"
+            :loading="loadingExchange || loadingClient"
             unelevated
             no-caps
           />
@@ -1030,7 +1033,7 @@ watch(
             color="primary"
             label="Realizar pagamento"
             size="md"
-            :loading="loadingExchange"
+            :loading="loadingExchange || loadingClient"
             unelevated
             no-caps
           />

@@ -10,7 +10,6 @@ defineOptions({
 
 const props = defineProps<{
   saleID: number | null;
-  saleStatus: string | null;
 }>();
 const emit = defineEmits<{
   'open:form-linked-return': [number, number];
@@ -117,7 +116,6 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
-              v-if="props.row.return_exchange_items.length > 0 && saleStatus !== 'canceled'"
               @click="if (saleID) emit('open:form-linked-return', saleID, props.row.id);"
               size="sm"
               flat
@@ -138,7 +136,6 @@ onMounted(async () => {
               <q-tooltip> Detalhes </q-tooltip>
             </q-btn>
             <q-btn
-              v-if="saleStatus !== 'canceled'"
               @click="emit('edit:return', props.row.id, saleID!, props.row.status)"
               size="sm"
               flat
@@ -147,7 +144,6 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
-              v-if="saleStatus !== 'canceled'"
               @click="startExclude(props.row.id)"
               size="sm"
               flat
