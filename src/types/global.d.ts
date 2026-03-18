@@ -139,6 +139,7 @@ import type {
   DifferencePaymentMethodData,
   ExchangeCouponData,
 } from './Exchange';
+import type { DataSellerRegistration } from './Seller';
 
 export {};
 
@@ -290,4 +291,5 @@ declare global {
   type IDataSaleCancellation = DataSaleCancellation;
   type IFilterSale = FilterSale;
   type IExchangeCouponData = ExchangeCouponData;
+  type IDataSellerRegistration = DataSellerRegistration;
 }

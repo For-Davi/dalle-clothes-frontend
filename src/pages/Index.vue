@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import router from 'src/router';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import FormSellerRegistration from 'src/components/form/FormSellerRegistration.vue';
 
 defineOptions({
   name: 'Index',
 });
 
+const showFormSellerRegistration = ref<boolean>(false);
+
 const goLogin = () => {
   void router.push({ name: 'auth' });
+};
+const changeFormSellerRegistration = (): void => {
+  showFormSellerRegistration.value = !showFormSellerRegistration.value;
 };
 
 const listFeatures = computed(() => [
@@ -46,7 +52,7 @@ const listFeatures = computed(() => [
           <q-btn flat class="text-dark" label="Recursos" href="#features-section" />
           <q-btn flat class="text-dark" label="Depoimentos" href="#testimonials-section" />
           <q-btn flat class="text-dark" label="Preços" href="#pricing-section" />
-          <q-btn flat class="text-dark" label="Associado" />
+          <q-btn flat class="text-dark" label="Associado" @click="changeFormSellerRegistration" />
           <q-btn flat class="bg-primary text-white q-px-md" label="Entrar" @click="goLogin" />
         </div>
       </q-toolbar>
@@ -260,6 +266,12 @@ const listFeatures = computed(() => [
         </div>
       </div>
     </footer>
+
+    <!-- Modals -->
+    <FormSellerRegistration
+      :open="showFormSellerRegistration"
+      @update:open="changeFormSellerRegistration()"
+    />
   </main>
 </template>
 

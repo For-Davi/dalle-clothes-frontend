@@ -1480,3 +1480,36 @@ export const checkDataSaleCancellation = (
 
   return { status: true };
 };
+
+export const checkDataSellerRegistration = (data: {
+  name: string;
+  phone: string;
+  email: string;
+  description: string;
+}): { status: boolean; message?: string } => {
+  if (data.name === '') {
+    return { status: false, message: 'Deve ser informado o nome do associado' };
+  }
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (data.email.trim() === '') {
+    return { status: false, message: 'Campo de e-mail não pode ser vazio' };
+  }
+  if (!emailRegex.test(data.email)) {
+    return { status: false, message: 'O e-mail não é válido' };
+  }
+  if (data.phone.trim() === '') {
+    return {
+      status: false,
+      message: 'Deve ser informado o número de telefone do associado',
+    };
+  }
+  if (data.phone.trim().length < 11) {
+    return { status: false, message: 'Insira um número de telefone válido' };
+  }
+  if (data.description.trim().length > 500) {
+    return { status: false, message: 'A descrição não pode exceder 500 caracteres' };
+  }
+
+  return { status: true };
+};
