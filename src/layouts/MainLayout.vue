@@ -1,25 +1,26 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import Navbar from 'src/components/general/Navbar.vue';
-import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
+import { useSettingsStore } from 'src/stores/setting-store';
+import { useAuthStore } from 'src/stores/auth-store';
+import { useNotificationChannel } from 'src/channels/NotificationChanel';
+import Navbar from 'src/components/general/Navbar.vue';
 import Inbox from 'src/components/general/Inbox.vue';
 import ContactHelper from 'src/components/info/ContactHelper.vue';
 
 const route = useRoute();
-
 const { appearanceSetting } = storeToRefs(useSettingsStore());
+const { user } = storeToRefs(useAuthStore());
+
+useNotificationChannel(user.value?.id ?? 0);
 
 const showInbox = ref<boolean>(false);
 const showContactHelper = ref<boolean>(false);
 const miniState = ref<boolean>(false);
 const drawer = ref<boolean>(false);
 
-const isActive = (routeName: string) => {
-  return route.name === routeName;
-};
-
+const isActive = (routeName: string) => route.name === routeName;
 const changeShowInbox = () => {
   showInbox.value = !showInbox.value;
 };
