@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, reactive } from 'vue';
 import TitlePage from '../shared/TitlePage.vue';
 import TableForReturnSaleOrReturnProducts from '../table/TableForReturnSaleOrReturnProducts.vue';
 import TableReturnProducts from '../table/TableReturnProducts.vue';
@@ -12,7 +12,9 @@ import { formatToReal } from 'src/composables/Money';
 import TableListProducts from '../table/TableListProducts.vue';
 import TableExchangeItems from '../table/TableExchangeItems.vue';
 import { checkDataCreateReturn } from 'src/composables/CheckData';
+import FormExchangePayment from './FormExchangePayment.vue';
 import Loading from '../shared/Loading.vue';
+import FormDelivery from './FormDelivery.vue';
 
 defineOptions({
   name: 'FormReturn',
@@ -37,6 +39,38 @@ const sellerID = ref<number | null>(null);
 const generatesCredit = ref<1 | 0>(0);
 const searchFilter = ref<string>('');
 const returnQuantities = ref<Record<number, Record<number, number>>>({});
+const showFormExchangePayment = reactive({
+  open: false as boolean,
+  exchange: null as IExchange | null,
+  hasExchangeItem: false as boolean,
+});
+const missingAmount = ref<number>(0);
+const formExchangeModel = reactive<IVModelReturnPayment>({
+  deliveryData: {
+    freight: false,
+    freightValue: '0.00',
+    cep: '',
+    state: '',
+    city: '',
+    neighborhood: '',
+    address: '',
+    numberAddress: '',
+    complement: '',
+    observation: '',
+    recipientName: '',
+    recipientPhone: '',
+  },
+  paymentExchangeOrDifferenceData: {
+    change: '0.00',
+    fees: '0.00',
+    payment: [],
+  },
+  freightPaymentData: {
+    change: '0.00',
+    fees: '0.00',
+    payment: [],
+  },
+});
 
 const { listSaleProducts, loadingListSaleProducts } = storeToRefs(useSaleStore());
 const { listReturnItems, loadingReturn } = storeToRefs(useReturnStore());
@@ -129,25 +163,40 @@ const close = () => {
   sellerID.value = null;
   generatesCredit.value = 0;
   searchFilter.value = 'Nenhum vendedor selecionado';
+  closeFormPayment(false);
 };
 const save = async () => {
-  const payload: IDataCreateReturn = {
-    saleID: props.data.saleID!,
-    returnID: props.data.returnID,
-    sellerID: sellerID.value,
-    returnData: returnData.value,
-    exchangeData: {
-      generatesCredit: generatesCredit.value,
-      exchangeValue: refundValue.value,
-      differenceValue: differenceRefundValue.value,
+  const check = checkDataCreateReturn(
+    {
+      saleID: props.data.saleID!,
+      returnID: props.data.returnID,
+      sellerID: sellerID.value,
+      returnData: returnData.value,
+      exchangeData: {
+        generatesCredit: generatesCredit.value,
+        exchangeValue: refundValue.value,
+        differenceValue: differenceRefundValue.value,
+      },
+      exchangeProducts: exchangeProducts.value,
+      paymentData: formExchangeModel,
     },
-    exchangeProducts: exchangeProducts.value,
-  };
-
-  const check = checkDataCreateReturn(payload);
+    missingAmount.value,
+  );
 
   if (check.status) {
-    const response = await useReturnStore().createReturn(payload);
+    const response = await useReturnStore().createReturn({
+      saleID: props.data.saleID!,
+      returnID: props.data.returnID,
+      sellerID: sellerID.value,
+      returnData: returnData.value,
+      exchangeData: {
+        generatesCredit: generatesCredit.value,
+        exchangeValue: refundValue.value,
+        differenceValue: differenceRefundValue.value,
+      },
+      exchangeProducts: exchangeProducts.value,
+      paymentData: formExchangeModel,
+    });
     if (response?.status === 201) {
       close();
     }
@@ -161,6 +210,32 @@ const updateQuantity = (formIndex: number, productId: number, value: number) => 
   }
 
   returnQuantities.value[formIndex][productId] = value;
+};
+const openFormPayment = (
+  open: boolean,
+  saleID: number | null,
+  differenceValue: number,
+  exchangeValue: number,
+) => {
+  Object.assign(showFormExchangePayment, {
+    open,
+    exchange: {
+      saleID: saleID,
+      differenceValue: differenceValue,
+      exchangeValue: exchangeValue,
+      hasExchangeItem: exchangeProducts.value.length > 0 ? true : false,
+    },
+  });
+};
+const closeFormPayment = (open: boolean) => {
+  Object.assign(showFormExchangePayment, {
+    open,
+    exchange: null,
+  });
+};
+const sendMissingAmountAndSave = async (amount: number) => {
+  missingAmount.value = amount;
+  await save();
 };
 
 const open = computed({
@@ -476,6 +551,13 @@ watch(
               @remove-from-shift="removeFromExchangeTable"
             />
           </div>
+          <div
+            v-if="refundValue === 0 && differenceRefundValue === 0 && exchangeProducts.length > 0"
+            class="q-mt-xl"
+          >
+            <TitlePage title="Cadastro do frete" icon="assignment_return" class="q-pa-none" />
+            <FormDelivery v-model="formExchangeModel.deliveryData" />
+          </div>
           <div class="flex justify-end q-pa-sm q-gutter-x-lg">
             <span class="text-h5 text-green-8 text-weight-medium"
               >Estorno: {{ formatToReal(refundValue) }}
@@ -499,6 +581,7 @@ watch(
             flat
           />
           <q-btn
+            v-if="(refundValue === 0 && differenceRefundValue === 0) || generatesCredit"
             @click="save()"
             :loading="loadingReturn"
             color="primary"
@@ -507,8 +590,24 @@ watch(
             unelevated
             no-caps
           />
+          <q-btn
+            v-else
+            @click="openFormPayment(true, props.data.saleID, differenceRefundValue, refundValue)"
+            color="primary"
+            label="Realizar pagamento"
+            size="md"
+            unelevated
+            no-caps
+          />
         </div>
       </q-card-actions>
     </q-card>
   </q-dialog>
+  <!-- Modals -->
+  <FormExchangePayment
+    :data="showFormExchangePayment"
+    v-model="formExchangeModel"
+    @update:open="closeFormPayment(false)"
+    @send:data="sendMissingAmountAndSave"
+  />
 </template>

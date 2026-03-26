@@ -70,24 +70,30 @@ export interface Exchanges {
   difference_payment_method: DifferencePaymentMethod[];
 }
 
+// export interface Exchange {
+//   id: number;
+//   sale_id: number;
+//   return_id: number;
+//   status: string;
+//   exchange_value: number;
+//   difference_value: number;
+//   created_by_name: string;
+//   created_by_email: string;
+//   updated_by_name: string | null;
+//   updated_by_email: string | null;
+//   created_at: string;
+//   updated_at: string;
+//   fees: number | null;
+//   change: number | null;
+//   description: string | null;
+//   exchange_payment_method: ExchangePaymentMethod[];
+//   difference_payment_method: DifferencePaymentMethod[];
+// }
 export interface Exchange {
-  id: number;
-  sale_id: number;
-  return_id: number;
-  status: string;
-  exchange_value: number;
-  difference_value: number;
-  created_by_name: string;
-  created_by_email: string;
-  updated_by_name: string | null;
-  updated_by_email: string | null;
-  created_at: string;
-  updated_at: string;
-  fees: number | null;
-  change: number | null;
-  description: string | null;
-  exchange_payment_method: ExchangePaymentMethod[];
-  difference_payment_method: DifferencePaymentMethod[];
+  saleID: number | null;
+  differenceValue: number;
+  exchangeValue: number;
+  hasExchangeItem: boolean;
 }
 
 export interface ExchangeCouponData {

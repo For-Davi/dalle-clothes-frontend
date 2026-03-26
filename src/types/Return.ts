@@ -98,6 +98,7 @@ export interface DataCreateReturn {
   returnData: IReturnData[];
   exchangeData: IExchangeData;
   exchangeProducts: IClientCartProduct[];
+  paymentData: IVModelReturnPayment;
 }
 export interface DataCreateReturnLinked {
   saleID: number;
@@ -105,4 +106,38 @@ export interface DataCreateReturnLinked {
   returnData: IReturnData[];
   exchangeData: IExchangeData;
   exchangeProducts: IClientCartProduct[];
+}
+export interface VModelReturnPayment {
+  deliveryData: DeliveryData;
+  paymentExchangeOrDifferenceData: PaymentData;
+  freightPaymentData: PaymentData;
+}
+
+export interface PaymentData {
+  change: string;
+  fees: string | null;
+  payment: Array<{
+    paymentType: string | null;
+    value: string;
+    receiptID: number | null;
+    installment: {
+      value: number | null;
+      amount: string | null;
+    };
+  }>;
+}
+
+export interface DeliveryData {
+  freight: boolean;
+  freightValue: string;
+  cep: string | null;
+  state: string | null;
+  city: string | null;
+  neighborhood: string | null;
+  address: string | null;
+  numberAddress: string | null;
+  complement: string;
+  recipientName: string;
+  recipientPhone: string;
+  observation: string | null;
 }

@@ -40,6 +40,7 @@ const loading = ref<boolean>(false);
 const model = defineModel<IVModelSalePayment>({
   default: () => ({
     sellerID: null,
+    change: '',
     freight: false,
     freightValue: '',
     cep: '',

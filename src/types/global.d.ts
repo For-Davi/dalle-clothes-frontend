@@ -127,6 +127,9 @@ import type {
   ReturnExchangeItem,
   EditReturnData,
   StockReentryReturnItem,
+  VModelReturnPayment,
+  DeliveryData,
+  PaymentData,
 } from './Return';
 import type { Commission } from './Commission';
 import type {
@@ -292,4 +295,7 @@ declare global {
   type IFilterSale = FilterSale;
   type IExchangeCouponData = ExchangeCouponData;
   type IDataSellerRegistration = DataSellerRegistration;
+  type IVModelReturnPayment = VModelReturnPayment;
+  type IPaymentData = PaymentData;
+  type IDeliveryData = DeliveryData;
 }
