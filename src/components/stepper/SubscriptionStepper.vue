@@ -7,8 +7,8 @@ import { storeToRefs } from 'pinia';
 import { useSubscriptionStore } from 'src/stores/subscription-store';
 import { checkPaymentCreditCardData } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
-import { onMounted, onUnmounted } from 'vue';
-import echo from 'src/plugins/echo';
+import { usePaymentChannel } from 'src/channels/PaymentChanel';
+import { useNotificationStore } from 'src/stores/notification-store';
 
 defineOptions({
   name: 'SubscriptionStepper',
@@ -20,6 +20,12 @@ const emit = defineEmits<{
 const props = defineProps<{
   subscriptionID: number;
 }>();
+
+usePaymentChannel(() => {
+  useSubscriptionStore().setLoading(false);
+  step.value = 3;
+  void useNotificationStore().getNotifications();
+});
 
 const { loadingSubscription } = storeToRefs(useSubscriptionStore());
 
@@ -58,7 +64,6 @@ const sendDataCreditCard = async (dataCreditCard: IVMPaymentSubscriptionCreditCa
     createErrorData(check.message || 'Erro ao enviar dados do cartão');
   }
 };
-
 const changeType = (sendType: 'pix' | 'credit') => {
   type.value = sendType;
   step.value = 2;
@@ -90,17 +95,6 @@ const stepTitle = computed(() => {
   if (type.value === 'credit') return 'Formulário do cartão de crédito';
   if (type.value === 'pix') return 'Escaneie o QRCode ou copie e cole';
   return '';
-});
-
-onMounted(() => {
-  echo.channel('payments').listen('.payment.made', () => {
-    useSubscriptionStore().setLoading(false);
-    step.value = 3;
-  });
-});
-
-onUnmounted(() => {
-  echo.leaveChannel('payments');
 });
 </script>
 
