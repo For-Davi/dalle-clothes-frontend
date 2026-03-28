@@ -8,7 +8,7 @@ import { formatToReal } from 'src/composables/Money';
 import type { QTableProps } from 'quasar';
 
 defineOptions({
-  name: 'TableCategoryTransaction',
+  name: 'TableCommission',
 });
 
 const props = defineProps<{
@@ -21,7 +21,7 @@ const filter = ref<string>('');
 
 const fetchCommissions = async () => {
   if (props.saleID) {
-    await useCommissionStore().getComissionsSelect(props.saleID);
+    await useCommissionStore().getComissionsBySale(props.saleID);
   }
 };
 const filterMethod: QTableProps['filterMethod'] = (rows, terms) => {
@@ -32,7 +32,6 @@ const filterMethod: QTableProps['filterMethod'] = (rows, terms) => {
 
     return (
       formattedDate.includes(search) ||
-      row.status.toLowerCase().includes(search) ||
       row.type.toLowerCase().includes(search) ||
       row.product_name.toLowerCase().includes(search) ||
       row.seller_name.toLowerCase().includes(search) ||
