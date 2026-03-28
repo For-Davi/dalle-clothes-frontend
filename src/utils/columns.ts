@@ -986,15 +986,15 @@ export const columnsDashboardQuantityRegister: IQuasarTable[] = [
 
 export const columnsSales: IQuasarTable[] = [
   {
-    name: 'date',
-    label: 'Data',
-    field: 'date',
+    name: 'id',
+    label: 'ID',
+    field: 'id',
     align: 'left',
   },
   {
-    name: 'status',
-    label: 'Status',
-    field: 'status',
+    name: 'date',
+    label: 'Data',
+    field: 'date',
     align: 'left',
   },
   {

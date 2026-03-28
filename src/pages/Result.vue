@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, ref } from 'vue';
-import TableCommissionResult from 'src/components/table/TableCommissionResult.vue';
+import ListCommissionResult from 'src/components/list/ListCommissionResult.vue';
 
 defineOptions({
   name: 'Result',
@@ -74,7 +74,7 @@ const hasFilter = computed(() => {
           </q-btn>
         </div>
       </q-banner>
-      <TableCommissionResult :filters="filter" @show:show-details-commission="changeShowDetails" />
+      <ListCommissionResult :filters="filter" @show:show-details-commission="changeShowDetails" />
     </section>
 
     <!-- Modals -->

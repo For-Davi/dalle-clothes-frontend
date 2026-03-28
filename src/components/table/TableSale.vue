@@ -84,20 +84,11 @@ onMounted(async () => {
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
+          <q-td key="id" :props="props" class="text-left">
+            {{ props.row.id }}
+          </q-td>
           <q-td key="date" :props="props" class="text-left">
             {{ props.row.date }}
-          </q-td>
-          <q-td key="status" :props="props" class="text-left">
-            <q-icon
-              :name="props.row.status === 'active' ? 'check_circle' : 'close'"
-              :color="props.row.status === 'active' ? 'green' : 'red'"
-              class="cursor-pointer q-px-xs"
-              size="17px"
-            >
-              <q-tooltip class="bg-grey-3 text-bold text-black">{{
-                props.row.status === 'active' ? 'Ativa' : 'Cancelada'
-              }}</q-tooltip>
-            </q-icon>
           </q-td>
           <q-td key="seller_name" :props="props" class="text-left">
             {{ props.row.seller_name ? props.row.seller_name : '-' }}

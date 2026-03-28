@@ -128,7 +128,12 @@ import type {
   EditReturnData,
   StockReentryReturnItem,
 } from './Return';
-import type { Commission, CommissionPeriod, FilterCommission } from './Commission';
+import type {
+  Commission,
+  CommissionPeriod,
+  ExportCommissionDetailsSellerAndPeriod,
+  FilterCommission,
+} from './Commission';
 import type {
   ExchangeData,
   Exchanges,
@@ -273,6 +278,7 @@ declare global {
   type IListProduct = ListProduct;
   type ICommission = Commission;
   type ICommissionPeriod = CommissionPeriod;
+  type IExportCommissionDetailsSellerAndPeriod = ExportCommissionDetailsSellerAndPeriod;
   type IFilterCommission = FilterCommission;
   type IExchangeData = ExchangeData;
   type IReturnItens = ReturnItens;

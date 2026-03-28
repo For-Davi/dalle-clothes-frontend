@@ -22,3 +22,8 @@ export interface FilterCommission {
   endDate: string;
   sellerID: number | null;
 }
+
+export interface ExportCommissionDetailsSellerAndPeriod {
+  sellerID: number;
+  period: string;
+}
