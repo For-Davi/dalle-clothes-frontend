@@ -25,9 +25,8 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
-  'send:data': [number];
+  'send:missingsAmounts': [number, number];
   'new-request': [void];
-  'show:coupon': [IExchangeCouponData];
 }>();
 
 const { loadingExchange } = storeToRefs(useExchangeStore());
@@ -36,6 +35,7 @@ const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 const { listReceipt } = storeToRefs(useReceiptstore());
 const { loadingReturn } = storeToRefs(useReturnStore());
 
+const missingAmountFreightPayment = ref<number>(0);
 const clientCredit = ref<number | null>(null);
 const paymentTotal = ref(true);
 const paymentDivider = ref(false);
@@ -147,6 +147,9 @@ const isRestrictedTypeAndAlreadySelected = (type: string) => {
 
   return model.value.paymentExchangeOrDifferenceData.payment.some((p) => p.paymentType === type);
 };
+const assignMissingAmountFreight = (missingAmountFreight: number) => {
+  missingAmountFreightPayment.value = missingAmountFreight;
+};
 
 const getInstallmentOptions = computed(() => {
   const total = Number(totalPricePayment.value);
@@ -257,6 +260,21 @@ const missingAmount = computed(() => {
   }
 
   return diff;
+});
+const hasValue = computed(() => {
+  return (
+    (props.data.exchange?.exchangeValue && props.data.exchange.exchangeValue > 0) ||
+    (props.data.exchange?.differenceValue && props.data.exchange.differenceValue > 0)
+  );
+});
+const titlePage = computed(() => {
+  if (props.data.exchange?.exchangeValue && props.data.exchange.exchangeValue > 0) {
+    return { title: 'Pagamento do estorno e cadastro da entrega', icon: 'attach_money' };
+  }
+  if (props.data.exchange?.differenceValue && props.data.exchange.differenceValue > 0) {
+    return { title: 'Pagamento da diferença e cadastro da entrega', icon: 'attach_money' };
+  }
+  return { title: 'Cadastro da entrega', icon: 'local_shipping' };
 });
 const open = computed({
   get: () => props.data.open,
@@ -545,10 +563,7 @@ watch(
       "
     >
       <q-card-section class="q-pa-none">
-        <TitlePage
-          :title="hasExchange ? 'Pagamento do estorno' : 'Pagamento da diferença'"
-          icon="attach_money"
-        />
+        <TitlePage :title="titlePage.title" :icon="titlePage.icon" />
       </q-card-section>
       <Loading :show="loadingExchange || loadingClient || loadingReturn" />
       <q-card-section class="q-pa-sm" v-show="!(loadingExchange || loadingClient || loadingReturn)">
@@ -737,7 +752,7 @@ watch(
               </template>
             </q-input>
           </section>
-          <section class="border-blue-light q-pa-md q-gutter-y-sm">
+          <section v-if="hasValue" class="border-blue-light q-pa-md q-gutter-y-sm">
             <TitlePage title="Pagamentos" icon="payments" class="q-pa-none q-ma-none" />
             <div class="row q-gutter-x-md">
               <span class="text-bold text-h6 text-bold text-green"
@@ -951,7 +966,8 @@ watch(
               v-model="model.freightPaymentData"
               :open="props.data.open"
               :freightValue="Number(model.deliveryData.freightValue)"
-              :saleID="props.data.exchange?.saleID"
+              :saleID="props.data.exchange?.saleID ?? 0"
+              @send:missing-amount="assignMissingAmountFreight"
             />
           </div>
         </q-form>
@@ -969,9 +985,9 @@ watch(
             no-caps
           />
           <q-btn
-            @click="emit('send:data', missingAmount)"
+            @click="emit('send:missingsAmounts', missingAmount, missingAmountFreightPayment)"
             color="primary"
-            label="Realizar pagamento"
+            label="Salvar"
             size="md"
             :loading="loadingExchange || loadingClient || loadingReturn"
             unelevated

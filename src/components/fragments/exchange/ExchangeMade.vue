@@ -3,10 +3,12 @@ import { computed, ref, reactive } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import InformEmail from '../email/InformEmail.vue';
 import ExchangeTaxCoupon from '../taxcoupon/ExchangeTaxCoupon.vue';
-import { useExchangeStore } from 'src/stores/exchange-store';
-import { exportExchangeService } from 'src/services/exchange-service';
+import { useReturnStore } from 'src/stores/return-store';
+import { exportReturnExchangeService } from 'src/services/exchange-service';
 import { checkEmail } from 'src/composables/CheckData';
 import { createErrorData, createSuccess } from 'src/composables/CreateNotify';
+import { storeToRefs } from 'pinia';
+import Loading from 'src/components/shared/Loading.vue';
 
 defineOptions({
   name: 'ExchangeMade',
@@ -20,9 +22,10 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
-  'new-sale': [void];
 }>();
 const loading = ref<boolean>(false);
+
+const { loadingReturn } = storeToRefs(useReturnStore());
 
 const showInformEmail = reactive<{
   open: boolean;
@@ -40,13 +43,13 @@ const changeShowInformEmail = (show: boolean, clientEmail: string | null = null)
 };
 
 const startExport = async (): Promise<void> => {
-  await exportExchangeService(props.data.couponData?.exchange.id ?? 0);
+  await exportReturnExchangeService(props.data.couponData?.return.id ?? 0);
 };
 const startSendToEmail = async (email: string) => {
   const check = checkEmail(email);
   if (check.status) {
-    const response = await useExchangeStore().sendCouponToEmail(
-      props.data.couponData?.exchange.id ?? 0,
+    const response = await useReturnStore().sendCouponToEmail(
+      props.data.couponData?.return.id ?? 0,
       email,
     );
 
@@ -65,20 +68,23 @@ const open = computed({
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card class="bg-grey-2 sub-page">
+    <q-card :class="loadingReturn ? 'column justify-between' : 'bg-grey-2 sub-page'">
       <q-card-section class="q-pa-none">
         <TitlePage title="Troca finalizada" icon="point_of_sale" />
       </q-card-section>
+      <Loading v-show="loadingReturn" :show="loadingReturn" />
       <q-card-section>
-        <div class="flex justify-center">
-          <q-icon name="fa-solid fa-check-to-slot" color="green" size="40px" />
+        <div v-if="!loadingReturn">
+          <div class="flex justify-center">
+            <q-icon name="fa-solid fa-check-to-slot" color="green" size="40px" />
+          </div>
+          <div class="flex justify-center">
+            <span class="text-green text-body1 text-bold q-mt-sm">
+              Sua troca foi finalizada com sucesso
+            </span>
+          </div>
+          <ExchangeTaxCoupon :couponData="props.data.couponData" />
         </div>
-        <div class="flex justify-center">
-          <span class="text-green text-body1 text-bold q-mt-sm">
-            Sua troca foi finalizada com sucesso
-          </span>
-        </div>
-        <ExchangeTaxCoupon :couponData="props.data.couponData" />
       </q-card-section>
       <q-card-actions align="right">
         <div class="row justify-end items-center q-gutter-x-sm q-mr-md">

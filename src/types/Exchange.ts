@@ -97,15 +97,17 @@ export interface Exchange {
 }
 
 export interface ExchangeCouponData {
-  exchange: {
+  return: {
     id: number;
+    sale_code: number;
+    exchange_value: string;
+    difference_value: string;
     fees: string;
-    total: string;
+    freight_value: string;
     change: string;
     date: string;
   };
   enterprise: {
-    id: number;
     name: string;
     cpf: string;
     cnpj: string;

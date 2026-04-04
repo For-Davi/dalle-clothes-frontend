@@ -143,6 +143,14 @@ import type {
   ExchangeCouponData,
 } from './Exchange';
 import type { DataSellerRegistration } from './Seller';
+import {
+  ActionsDelivery,
+  Delivery,
+  DeliveryGuy,
+  ScheduleDeliveryData,
+  DashboardDelivery,
+  DeliveredProducts,
+} from './Delivery';
 
 export {};
 
@@ -298,4 +306,10 @@ declare global {
   type IVModelReturnPayment = VModelReturnPayment;
   type IPaymentData = PaymentData;
   type IDeliveryData = DeliveryData;
+  type IActionDelivery = ActionsDelivery;
+  type IDelivery = Delivery;
+  type IDeliveryGuy = DeliveryGuy;
+  type IScheduleDeliveryData = ScheduleDeliveryData;
+  type IDashboardDelivery = DashboardDelivery;
+  type IDeliveredProducts = DeliveredProducts;
 }

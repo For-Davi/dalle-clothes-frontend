@@ -8,6 +8,7 @@ import {
   updateReturnService,
   getStockReentryReturnItemsService,
   deleteReturnService,
+  sendCouponToEmailService,
 } from 'src/services/return-service';
 
 export const useReturnStore = defineStore('return', {
@@ -99,6 +100,7 @@ export const useReturnStore = defineStore('return', {
       }
     },
     async createReturn(data: IDataCreateReturn) {
+      console.log('dados enviados', data);
       try {
         this.setLoading(true);
         const response = await createReturnService(data);
@@ -147,6 +149,17 @@ export const useReturnStore = defineStore('return', {
         return undefined;
       } finally {
         this.setReturnsLoading(false);
+      }
+    },
+    async sendCouponToEmail(returnID: number, email: string) {
+      this.setLoading(true);
+      try {
+        return await sendCouponToEmailService(returnID, email);
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
       }
     },
   },

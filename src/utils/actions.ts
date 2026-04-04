@@ -71,3 +71,16 @@ export const actionsSupplier: { label: string; icon: string; type: IActionsSuppl
     type: 'order',
   },
 ];
+
+export const actionsDelivery: { label: string; icon: string; type: IActionDelivery }[] = [
+  {
+    label: 'Exportar',
+    icon: 'download',
+    type: 'export',
+  },
+  {
+    label: 'Entregadores',
+    icon: 'local_shipping',
+    type: 'delivery_guy',
+  },
+];

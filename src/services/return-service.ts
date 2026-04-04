@@ -1,4 +1,5 @@
 import { api } from 'boot/axios';
+import { createError } from 'src/composables/CreateNotify';
 
 const baseUrl = 'returns';
 
@@ -42,6 +43,7 @@ export const createReturnService = (
   status: number;
   data: {
     returns: IReturns[];
+    coupon: IExchangeCouponData | null;
     message: string;
   };
 }> => api.post(`${baseUrl}/`, data);
@@ -73,3 +75,42 @@ export const deleteReturnService = (
     message: string;
   };
 }> => api.delete(`${baseUrl}/${saleID}/${returnID}`);
+
+export const sendCouponToEmailService = (
+  returnID: number,
+  email: string,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+  };
+}> => api.post(`${baseUrl}/send-to-email`, { returnID, email });
+
+export const exportExchangeService = async (returnID: number) => {
+  try {
+    const response = await api.post(
+      `${baseUrl}/export`,
+      {
+        returnID: returnID,
+      },
+      {
+        responseType: 'blob',
+      },
+    );
+
+    const now = new Date();
+    const timestamp = now.toISOString().replace(/[-:]/g, '').replace(/\..+/, '');
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `troca_${timestamp}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    createError(error);
+  }
+};

@@ -10,6 +10,7 @@ import Loading from '../shared/Loading.vue';
 import ReturnDetails from '../details/ReturnDetails.vue';
 import FormReturnEditStatus from '../form/FormReturnEditStatus.vue';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
+import ExchangeMade from '../fragments/exchange/ExchangeMade.vue';
 
 defineOptions({
   name: 'ReturnManage',
@@ -43,6 +44,10 @@ const showEditStatus = reactive({
 });
 const returnMonitoring = ref<number | null>(null);
 const showConfirmAction = ref<boolean>(false);
+const showExchangeMade = reactive({
+  open: false as boolean,
+  couponData: null as IExchangeCouponData | null,
+});
 
 const changeShowFormReturn = (
   open: boolean,
@@ -85,6 +90,12 @@ const closeConfirmAction = (): void => {
 const openConfirmAction = (id: number): void => {
   returnMonitoring.value = id;
   showConfirmAction.value = true;
+};
+const changeShowExchangeMade = (open: boolean, couponData: IExchangeCouponData | null = null) => {
+  Object.assign(showExchangeMade, {
+    open,
+    couponData,
+  });
 };
 
 const open = computed({
@@ -154,9 +165,14 @@ const open = computed({
         @update:open="closeConfirmAction"
         @update:ok="closeConfirmActionOk"
       />
-      <FormReturn :data="showFormReturn" @update:open="changeShowFormReturn(false)" />
+      <FormReturn
+        :data="showFormReturn"
+        @update:open="changeShowFormReturn(false)"
+        @show:coupon="(coupon) => changeShowExchangeMade(true, coupon)"
+      />
       <ReturnDetails :data="showReturnDetails" @update:open="changeShowReturnDetails(false)" />
       <FormReturnEditStatus :data="showEditStatus" @update:open="changeShowEditStatus(false)" />
+      <ExchangeMade :data="showExchangeMade" @update:open="changeShowExchangeMade(false)" />
     </q-card>
   </q-dialog>
 </template>

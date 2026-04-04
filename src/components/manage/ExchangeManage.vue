@@ -112,7 +112,6 @@ const open = computed({
     :data="showFormPayment"
     @update:open="changeShowFormPayment(false)"
     @new-request="fetchExchanges"
-    @show:coupon="(data) => changeShowExchangeMade(true, data)"
   />
   <ExchangeDetails :data="showExchangeDetails" @update:open="changeShowExchangeDetails(false)" />
   <ExchangeMade :data="showExchangeMade" @update:open="changeShowExchangeMade(false)" />

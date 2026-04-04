@@ -22,7 +22,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
-  'send:data': [number];
+  'send:missingAmount': [number];
   'new-request': [void];
 }>();
 
@@ -431,6 +431,12 @@ watch(
       await fetchClientCredit();
       await fetchReceiptsAndTypes();
     }
+  },
+);
+watch(
+  () => missingAmount.value,
+  () => {
+    emit('send:missingAmount', missingAmount.value);
   },
 );
 </script>

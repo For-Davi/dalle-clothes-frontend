@@ -19,7 +19,7 @@ const props = defineProps<{
           <span class="text-bold text-h6">{{
             props.couponData?.enterprise.name.toUpperCase()
           }}</span>
-          <span class="text-bold text-h6">{{ props.couponData?.exchange.date ?? '-' }}</span>
+          <span class="text-bold text-h6">{{ props.couponData?.return.date ?? '-' }}</span>
         </div>
         <span
           class="text-bold text-h6"
@@ -98,15 +98,30 @@ const props = defineProps<{
       <div>
         <div class="flex justify-between">
           <span class="text-bold text-body1"
-            >TROCO: {{ formatToReal(props.couponData?.exchange.change ?? '0') }}</span
+            >TROCO: {{ formatToReal(props.couponData?.return.change ?? '0') }}</span
           >
           <span class="text-bold text-h6"
-            >TOTAL: {{ formatToReal(props.couponData?.exchange.total ?? '0') }}</span
+            >TOTAL:
+            {{
+              formatToReal(
+                (props.couponData?.return.difference_value ?? 0 > 0)
+                  ? (props.couponData?.return.difference_value ?? '0')
+                  : ((
+                      Number(props.couponData?.return.freight_value) +
+                      Number(props.couponData?.return.fees)
+                    ).toString() ?? '0'),
+              )
+            }}</span
           >
         </div>
-        <span class="text-bold text-body1"
-          >TARIFAS: {{ formatToReal(props.couponData?.exchange.fees ?? '0') }}</span
-        >
+        <div class="flex column">
+          <span class="text-bold text-body1"
+            >TARIFAS: {{ formatToReal(props.couponData?.return.fees ?? '0') }}</span
+          >
+          <span class="text-bold text-body1 q-mt-sm"
+            >FRETE: {{ formatToReal(props.couponData?.return.freight_value ?? '0') }}</span
+          >
+        </div>
       </div>
     </q-card-section>
   </q-card>

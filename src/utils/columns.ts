@@ -1391,3 +1391,105 @@ export const columnsSearchReturnItemVariant: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsDelivery: IQuasarTable[] = [
+  {
+    name: 'state',
+    label: 'Estado',
+    field: 'state',
+    align: 'left',
+  },
+  {
+    name: 'city',
+    label: 'Cidade',
+    field: 'city',
+    align: 'left',
+  },
+  {
+    name: 'neighborhood',
+    label: 'Bairro',
+    field: 'neighborhood',
+    align: 'left',
+  },
+  {
+    name: 'sale_id',
+    label: 'Venda',
+    field: 'sale_id',
+    align: 'left',
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'recipient_name',
+    label: 'Nome do recebedor',
+    field: 'recipient_name',
+    align: 'left',
+  },
+  {
+    name: 'recipient_phone',
+    label: 'Telefone do recebedor',
+    field: 'recipient_phone',
+    align: 'left',
+  },
+  {
+    name: 'freight_value',
+    label: 'Valor do frete',
+    field: 'freight_value',
+    align: 'left',
+  },
+  {
+    name: 'scheduled_date',
+    label: 'Data de agendamento',
+    field: 'scheduled_date',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];
+
+export const columnsDeliveryGuy: IQuasarTable[] = [
+  {
+    name: 'name',
+    label: 'Nome',
+    field: 'name',
+    align: 'left',
+  },
+  {
+    name: 'cpf',
+    label: 'CPF',
+    field: 'cpf',
+    align: 'left',
+  },
+  {
+    name: 'email',
+    label: 'E-mail',
+    field: 'email',
+    align: 'left',
+  },
+  {
+    name: 'phone',
+    label: 'Telefone',
+    field: 'phone',
+    align: 'left',
+  },
+  {
+    name: 'vehicle',
+    label: 'Veículo',
+    field: 'vehicle',
+    align: 'left',
+  },
+  {
+    name: 'action',
+    label: 'Ação',
+    field: 'action',
+    align: 'right',
+  },
+];

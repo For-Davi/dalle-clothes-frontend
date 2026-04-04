@@ -51,7 +51,7 @@ export const sendCouponToEmailService = (
   };
 }> => api.post(`${baseUrl}/send-to-email`, { exchangeID, email });
 
-export const exportExchangeService = async (exchangeID: number) => {
+export const exportReturnExchangeService = async (exchangeID: number) => {
   try {
     const response = await api.post(
       `${baseUrl}/export`,

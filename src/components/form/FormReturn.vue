@@ -14,7 +14,6 @@ import TableExchangeItems from '../table/TableExchangeItems.vue';
 import { checkDataCreateReturn } from 'src/composables/CheckData';
 import FormExchangePayment from './FormExchangePayment.vue';
 import Loading from '../shared/Loading.vue';
-import FormDelivery from './FormDelivery.vue';
 
 defineOptions({
   name: 'FormReturn',
@@ -29,6 +28,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   'update:open': [void];
+  'show:coupon': [IExchangeCouponData];
 }>();
 
 const quantity = ref<number>(1);
@@ -45,6 +45,7 @@ const showFormExchangePayment = reactive({
   hasExchangeItem: false as boolean,
 });
 const missingAmount = ref<number>(0);
+const missingAmountFreight = ref<number>(0);
 const formExchangeModel = reactive<IVModelReturnPayment>({
   deliveryData: {
     freight: false,
@@ -181,6 +182,7 @@ const save = async () => {
       paymentData: formExchangeModel,
     },
     missingAmount.value,
+    missingAmountFreight.value,
   );
 
   if (check.status) {
@@ -198,6 +200,9 @@ const save = async () => {
       paymentData: formExchangeModel,
     });
     if (response?.status === 201) {
+      if (response.data.coupon) {
+        emit('show:coupon', response.data.coupon);
+      }
       close();
     }
   } else {
@@ -233,8 +238,9 @@ const closeFormPayment = (open: boolean) => {
     exchange: null,
   });
 };
-const sendMissingAmountAndSave = async (amount: number) => {
+const sendMissingsAmountsAndSave = async (amount: number, amountFreight: number) => {
   missingAmount.value = amount;
+  missingAmountFreight.value = amountFreight;
   await save();
 };
 
@@ -551,13 +557,6 @@ watch(
               @remove-from-shift="removeFromExchangeTable"
             />
           </div>
-          <div
-            v-if="refundValue === 0 && differenceRefundValue === 0 && exchangeProducts.length > 0"
-            class="q-mt-xl"
-          >
-            <TitlePage title="Cadastro do frete" icon="assignment_return" class="q-pa-none" />
-            <FormDelivery v-model="formExchangeModel.deliveryData" />
-          </div>
           <div class="flex justify-end q-pa-sm q-gutter-x-lg">
             <span class="text-h5 text-green-8 text-weight-medium"
               >Estorno: {{ formatToReal(refundValue) }}
@@ -581,7 +580,7 @@ watch(
             flat
           />
           <q-btn
-            v-if="(refundValue === 0 && differenceRefundValue === 0) || generatesCredit"
+            v-if="generatesCredit"
             @click="save()"
             :loading="loadingReturn"
             color="primary"
@@ -594,7 +593,7 @@ watch(
             v-else
             @click="openFormPayment(true, props.data.saleID, differenceRefundValue, refundValue)"
             color="primary"
-            label="Realizar pagamento"
+            label="Realizar cadastro do frete e pagamento"
             size="md"
             unelevated
             no-caps
@@ -608,6 +607,6 @@ watch(
     :data="showFormExchangePayment"
     v-model="formExchangeModel"
     @update:open="closeFormPayment(false)"
-    @send:data="sendMissingAmountAndSave"
+    @send:missings-amounts="sendMissingsAmountsAndSave"
   />
 </template>
