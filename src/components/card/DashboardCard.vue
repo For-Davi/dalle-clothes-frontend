@@ -3,15 +3,22 @@ defineOptions({
   name: 'DashboardCard',
 });
 
-const props = defineProps<{
-  title: string | null;
-  data: number | string;
-  data2?: number | string | null;
-  tooltip?: string | null;
-  tooltip2?: string | null;
-  dataClass?: string | null;
-  dataClass2?: string | null;
-}>();
+const props = withDefaults(
+  defineProps<{
+    title: string | null;
+    data: number | string;
+    data2?: number | string | null;
+    tooltip?: string | null;
+    tooltip2?: string | null;
+    dataClass?: string | null;
+    dataClass2?: string | null;
+  }>(),
+  {
+    data: 0,
+    title: '',
+    data2: null,
+  },
+);
 </script>
 
 <template>
