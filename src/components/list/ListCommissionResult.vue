@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
 import { useCommissionStore } from 'src/stores/commission-store';
 import CardCommission from '../card/CardCommission.vue';
+import { formatToReal } from 'src/composables/Money';
 
 defineOptions({ name: 'ListCommissionResult' });
 
@@ -14,6 +15,14 @@ const { loadingCommission, listCommissionPeriod } = storeToRefs(useCommissionSto
 
 const showDetails = (sellerID: number, period: string) => {
   emit('show:showDetailsCommission', sellerID, period);
+};
+const getCaption = (sellers: typeof listCommissionPeriod.value) => {
+  const count = sellers.length;
+  const labelVendedor = count !== 1 ? 'vendedores' : 'vendedor';
+
+  const total = sellers.reduce((sum, s) => sum + Number(s.total_commission), 0);
+
+  return `${count} ${labelVendedor} • Total: ${formatToReal(total)}`;
 };
 
 const groupedByPeriod = computed(() => {
@@ -51,7 +60,7 @@ onMounted(async () => {
           expand-separator
           icon="calendar_month"
           :label="`Período: ${period}`"
-          :caption="`${sellers.length} vendedor${sellers.length !== 1 ? 'es' : ''}`"
+          :caption="getCaption(sellers)"
           header-class="text-subtitle1 text-bold text-primary"
         >
           <q-card flat>

@@ -2,47 +2,56 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { computed, reactive, ref } from 'vue';
 import ListCommissionResult from 'src/components/list/ListCommissionResult.vue';
+import FilterResult from 'src/components/filter/FilterResult.vue';
+import { useCommissionStore } from 'src/stores/commission-store';
+import { checkCommissionFilter } from 'src/composables/CheckData';
+import { createErrorData } from 'src/composables/CreateNotify';
 
 defineOptions({
   name: 'Result',
 });
 
 const filter = reactive<IFilterCommission>({
-  startDate: '',
-  endDate: '',
+  startPeriod: '',
+  endPeriod: '',
   sellerID: null,
 });
-const showFilterCommission = ref<boolean>(false);
-const showDetailsComssion = reactive({
+const showFilterResult = ref<boolean>(false);
+const showDetailsResult = reactive({
   open: false as boolean,
   sellerID: null as number | null,
   period: null as string | null,
 });
 
 const changeShowFilterCommision = (): void => {
-  showFilterCommission.value = !showFilterCommission.value;
+  showFilterResult.value = !showFilterResult.value;
 };
-// const actionFilter = async (data: 'close' | IFilterCommission): Promise<void> => {
-//   changeShowFilterCommision();
+const actionFilter = async (data: 'close' | IFilterCommission): Promise<void> => {
+  changeShowFilterCommision();
 
-//   if (data !== 'close') {
-//     Object.assign(filter, {
-//       startDate: data.startDate,
-//       endDate: data.endDate,
-//       sellerID: data.sellerID,
-//     });
-//     await useCommissionStore().getComissions(filter);
-//   }
-// };
+  if (data !== 'close') {
+    Object.assign(filter, {
+      startPeriod: data.startPeriod,
+      endPeriod: data.endPeriod,
+      sellerID: data.sellerID,
+    });
+    const check = checkCommissionFilter(filter);
+    if (check.status) {
+      await useCommissionStore().getComissions(filter);
+    } else {
+      createErrorData(check.message || 'Erro ao processar dados do filtro');
+    }
+  }
+};
 const changeShowDetails = (sellerID: number, period: string) => {
-  if (showDetailsComssion.open) {
-    Object.assign(showDetailsComssion, {
+  if (showDetailsResult.open) {
+    Object.assign(showDetailsResult, {
       open: false,
       sellerID: null,
       period: null,
     });
   } else {
-    Object.assign(showDetailsComssion, {
+    Object.assign(showDetailsResult, {
       open: true,
       sellerID: sellerID,
       period: period,
@@ -51,7 +60,7 @@ const changeShowDetails = (sellerID: number, period: string) => {
 };
 
 const hasFilter = computed(() => {
-  return filter.startDate !== '' || filter.endDate != '' || filter.sellerID;
+  return filter.startPeriod !== '' || filter.endPeriod !== '' || filter.sellerID;
 });
 </script>
 <template>
@@ -78,7 +87,6 @@ const hasFilter = computed(() => {
     </section>
 
     <!-- Modals -->
-    <!-- <FormClient :data="showFormClient" @update:open="changeShowFormClient(false)" />
-    <FilterClient :open="showFilterClient" :filters="filter" @update:open="actionFilter" /> -->
+    <FilterResult :open="showFilterResult" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>

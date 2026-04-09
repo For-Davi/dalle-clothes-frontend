@@ -18,8 +18,8 @@ export interface CommissionPeriod {
 }
 
 export interface FilterCommission {
-  startDate: string;
-  endDate: string;
+  startPeriod: string;
+  endPeriod: string;
   sellerID: number | null;
 }
 
