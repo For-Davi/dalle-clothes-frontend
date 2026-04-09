@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import TitlePage from 'src/components/shared/TitlePage.vue';
 import { reactive, watch } from 'vue';
 import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
@@ -112,272 +111,479 @@ watch(
 );
 </script>
 <template>
-  <q-card class="bg-grey-1 column justify-between" bordered flat style="min-height: 400px">
-    <q-card-section>
-      <TitlePage title="Configurações de aparência" icon="design_services" />
-    </q-card-section>
-    <Loading :show="loadingSetting" />
-    <q-card-section v-show="!loadingSetting">
-      <q-form class="q-gutter-y-md column">
-        <!-- Título -->
-        <div class="q-my-md">
-          <q-toggle
-            v-model="dataAppearance.titlePageColorDefault"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Título </span>
-              <span>Utilizar a cor padrão para título das páginas</span>
-            </div>
-          </q-toggle>
-          <q-input
-            v-model="dataAppearance.titlePageColorCode"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            label="Código da cor"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.titlePageColorCode" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-        <q-separator />
-        <!-- Navbar -->
+  <q-card flat bordered class="appearance-card">
+    <q-card-section class="q-pb-sm">
+      <div class="row items-center q-gutter-x-sm">
+        <q-icon name="design_services" color="primary" size="22px" />
         <div>
-          <q-toggle
-            v-model="dataAppearance.navbarColorDefault"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Navbar </span>
-              <span>Utilizar a cor padrão para fundo da navbar</span>
-            </div>
-          </q-toggle>
-          <q-input
-            v-model="dataAppearance.navbarColorCode"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            label="Código da cor"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.navbarColorCode" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+          <div class="text-subtitle1 text-weight-bold">Aparência</div>
+          <div class="text-caption text-grey-6">Personalize as cores da interface do sistema</div>
         </div>
-        <div class="q-my-md">
-          <q-toggle
-            v-model="dataAppearance.navbarIconColorDefault"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-            class="q-mr-sm"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Ícones da navbar </span>
-              <span> Utilizar a cor padrão para ícones da navbar </span>
+      </div>
+    </q-card-section>
+
+    <q-separator />
+
+    <Loading :show="loadingSetting" />
+
+    <q-card-section v-show="!loadingSetting" class="q-pt-md">
+      <q-form class="column q-gutter-y-none">
+        <!-- Grupo: Título -->
+        <div class="settings-group">
+          <div class="group-label">
+            <q-icon name="title" size="15px" class="q-mr-xs" />
+            Título das Páginas
+          </div>
+          <div class="setting-row row items-center justify-between">
+            <div class="col">
+              <q-toggle
+                v-model="dataAppearance.titlePageColorDefault"
+                checked-icon="check"
+                color="primary"
+                unchecked-icon="clear"
+                :true-value="1"
+                :false-value="0"
+              >
+                <div>
+                  <div class="text-weight-medium text-body2">Cor padrão do título</div>
+                  <div class="text-caption text-grey-6">Cor padrão para título das páginas</div>
+                </div>
+              </q-toggle>
             </div>
-          </q-toggle>
-          <q-input
-            v-model="dataAppearance.navbarIconColorCode"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            label="Código da cor"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.navbarIconColorCode" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+            <div class="col-auto">
+              <q-chip
+                :color="dataAppearance.titlePageColorDefault ? 'positive' : 'grey-4'"
+                :text-color="dataAppearance.titlePageColorDefault ? 'white' : 'grey-7'"
+                dense
+                size="sm"
+              >
+                {{ dataAppearance.titlePageColorDefault ? 'Padrão' : 'Personalizado' }}
+              </q-chip>
+            </div>
+          </div>
+          <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs">
+            <div
+              class="color-dot"
+              :style="{ background: dataAppearance.titlePageColorCode || '#e0e0e0' }"
+            />
+            <q-input
+              v-model="dataAppearance.titlePageColorCode"
+              bg-color="white"
+              label-color="black"
+              input-class="text-black"
+              outlined
+              dense
+              label="Cor hex"
+              style="width: 200px"
+            >
+              <template v-slot:append>
+                <q-icon name="colorize" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-color v-model="dataAppearance.titlePageColorCode" no-header />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
         </div>
-        <q-separator />
-        <!-- Menu lateral não selecionado -->
-        <div class="q-mt-md">
-          <q-toggle
-            v-model="dataAppearance.sideMenuColorDefaultNotSelectedItem"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-            class="q-mr-sm"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Menu lateral - Itens não selecionados </span>
-              <span>
-                Utilizar a cor padrão para fundo dos itens não selecionados no menu lateral
-              </span>
+
+        <q-separator class="q-my-md" />
+
+        <!-- Grupo: Navbar -->
+        <div class="settings-group">
+          <div class="group-label">
+            <q-icon name="web" size="15px" class="q-mr-xs" />
+            Navbar
+          </div>
+          <div class="setting-row row items-center justify-between q-mb-xs">
+            <div class="col">
+              <q-toggle
+                v-model="dataAppearance.navbarColorDefault"
+                checked-icon="check"
+                color="primary"
+                unchecked-icon="clear"
+                :true-value="1"
+                :false-value="0"
+              >
+                <div>
+                  <div class="text-weight-medium text-body2">Fundo da navbar</div>
+                  <div class="text-caption text-grey-6">Cor de fundo da barra de navegação</div>
+                </div>
+              </q-toggle>
             </div>
-          </q-toggle>
-          <q-input
-            v-model="dataAppearance.sideMenuColorCodeNotSelectedItem"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            label="Código da cor"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.sideMenuColorCodeNotSelectedItem" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+            <div class="col-auto">
+              <q-chip
+                :color="dataAppearance.navbarColorDefault ? 'positive' : 'grey-4'"
+                :text-color="dataAppearance.navbarColorDefault ? 'white' : 'grey-7'"
+                dense
+                size="sm"
+              >
+                {{ dataAppearance.navbarColorDefault ? 'Padrão' : 'Personalizado' }}
+              </q-chip>
+            </div>
+          </div>
+          <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs q-mb-md">
+            <div
+              class="color-dot"
+              :style="{ background: dataAppearance.navbarColorCode || '#e0e0e0' }"
+            />
+            <q-input
+              v-model="dataAppearance.navbarColorCode"
+              bg-color="white"
+              label-color="black"
+              input-class="text-black"
+              outlined
+              dense
+              label="Cor hex"
+              style="width: 200px"
+            >
+              <template v-slot:append>
+                <q-icon name="colorize" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-color v-model="dataAppearance.navbarColorCode" no-header />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+          <div class="setting-row row items-center justify-between q-mb-xs">
+            <div class="col">
+              <q-toggle
+                v-model="dataAppearance.navbarIconColorDefault"
+                checked-icon="check"
+                color="primary"
+                unchecked-icon="clear"
+                :true-value="1"
+                :false-value="0"
+              >
+                <div>
+                  <div class="text-weight-medium text-body2">Ícones da navbar</div>
+                  <div class="text-caption text-grey-6">Cor dos ícones da barra de navegação</div>
+                </div>
+              </q-toggle>
+            </div>
+            <div class="col-auto">
+              <q-chip
+                :color="dataAppearance.navbarIconColorDefault ? 'positive' : 'grey-4'"
+                :text-color="dataAppearance.navbarIconColorDefault ? 'white' : 'grey-7'"
+                dense
+                size="sm"
+              >
+                {{ dataAppearance.navbarIconColorDefault ? 'Padrão' : 'Personalizado' }}
+              </q-chip>
+            </div>
+          </div>
+          <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs">
+            <div
+              class="color-dot"
+              :style="{ background: dataAppearance.navbarIconColorCode || '#e0e0e0' }"
+            />
+            <q-input
+              v-model="dataAppearance.navbarIconColorCode"
+              bg-color="white"
+              label-color="black"
+              input-class="text-black"
+              outlined
+              dense
+              label="Cor hex"
+              style="width: 200px"
+            >
+              <template v-slot:append>
+                <q-icon name="colorize" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-color v-model="dataAppearance.navbarIconColorCode" no-header />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
         </div>
-        <div class="q-my-md">
-          <q-toggle
-            v-model="dataAppearance.sideMenuColorDefaultNotSelectedIcon"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-            class="q-mr-sm"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Menu lateral - Ícones não selecionados </span>
-              <span> Utilizar a cor padrão para ícones não selecionados do menu lateral. </span>
+
+        <q-separator class="q-my-md" />
+
+        <!-- Grupo: Menu Lateral -->
+        <div class="settings-group">
+          <div class="group-label">
+            <q-icon name="menu" size="15px" class="q-mr-xs" />
+            Menu Lateral
+          </div>
+
+          <div class="sub-group-label q-mb-xs">Itens não selecionados</div>
+          <div class="setting-row row items-center justify-between q-mb-xs">
+            <div class="col">
+              <q-toggle
+                v-model="dataAppearance.sideMenuColorDefaultNotSelectedItem"
+                checked-icon="check"
+                color="primary"
+                unchecked-icon="clear"
+                :true-value="1"
+                :false-value="0"
+              >
+                <div>
+                  <div class="text-weight-medium text-body2">Fundo dos itens</div>
+                  <div class="text-caption text-grey-6">
+                    Cor de fundo dos itens não selecionados
+                  </div>
+                </div>
+              </q-toggle>
             </div>
-          </q-toggle>
-          <q-input
-            v-model="dataAppearance.sideMenuColorCodeNotSelectedIcon"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            label="Código da cor"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.sideMenuColorCodeNotSelectedIcon" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-        <q-separator />
-        <!-- Menu lateral selecionado -->
-        <div class="q-mt-md">
-          <q-toggle
-            v-model="dataAppearance.sideMenuColorDefaultSelectedItem"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-            class="q-mr-sm"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Menu lateral - Item selecionado </span>
-              <span> Utilizar a cor padrão para fundo do item selecionado no menu lateral </span>
+            <div class="col-auto">
+              <q-chip
+                :color="dataAppearance.sideMenuColorDefaultNotSelectedItem ? 'positive' : 'grey-4'"
+                :text-color="
+                  dataAppearance.sideMenuColorDefaultNotSelectedItem ? 'white' : 'grey-7'
+                "
+                dense
+                size="sm"
+              >
+                {{
+                  dataAppearance.sideMenuColorDefaultNotSelectedItem ? 'Padrão' : 'Personalizado'
+                }}
+              </q-chip>
             </div>
-          </q-toggle>
-          <q-input
-            v-model="dataAppearance.sideMenuColorCodeSelectedItem"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            label="Código da cor"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.sideMenuColorCodeSelectedItem" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-        </div>
-        <div class="q-mt-md">
-          <q-toggle
-            v-model="dataAppearance.sideMenuColorDefaultSelectedIcon"
-            checked-icon="check"
-            color="green"
-            unchecked-icon="clear"
-            :true-value="1"
-            :false-value="0"
-            class="q-mr-sm"
-          >
-            <div class="column">
-              <span class="text-bold text-body2"> Menu lateral - Ícone selecionado </span>
-              <span> Utilizar a cor padrão para ícone selecionado no menu lateral </span>
+          </div>
+          <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs q-mb-md">
+            <div
+              class="color-dot"
+              :style="{ background: dataAppearance.sideMenuColorCodeNotSelectedItem || '#e0e0e0' }"
+            />
+            <q-input
+              v-model="dataAppearance.sideMenuColorCodeNotSelectedItem"
+              bg-color="white"
+              label-color="black"
+              input-class="text-black"
+              outlined
+              dense
+              label="Cor hex"
+              style="width: 200px"
+            >
+              <template v-slot:append>
+                <q-icon name="colorize" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-color v-model="dataAppearance.sideMenuColorCodeNotSelectedItem" no-header />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+          <div class="setting-row row items-center justify-between q-mb-xs">
+            <div class="col">
+              <q-toggle
+                v-model="dataAppearance.sideMenuColorDefaultNotSelectedIcon"
+                checked-icon="check"
+                color="primary"
+                unchecked-icon="clear"
+                :true-value="1"
+                :false-value="0"
+              >
+                <div>
+                  <div class="text-weight-medium text-body2">Ícones</div>
+                  <div class="text-caption text-grey-6">Cor dos ícones não selecionados</div>
+                </div>
+              </q-toggle>
             </div>
-          </q-toggle>
-          <q-input
-            v-model="dataAppearance.sideMenuColorCodeSelectedIcon"
-            bg-color="white"
-            label-color="black"
-            input-class="text-black"
-            style="width: 200px"
-            outlined
-            dense
-            label="Código da cor"
-          >
-            <template v-slot:append>
-              <q-icon name="colorize" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-color v-model="dataAppearance.sideMenuColorCodeSelectedIcon" no-header />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+            <div class="col-auto">
+              <q-chip
+                :color="dataAppearance.sideMenuColorDefaultNotSelectedIcon ? 'positive' : 'grey-4'"
+                :text-color="
+                  dataAppearance.sideMenuColorDefaultNotSelectedIcon ? 'white' : 'grey-7'
+                "
+                dense
+                size="sm"
+              >
+                {{
+                  dataAppearance.sideMenuColorDefaultNotSelectedIcon ? 'Padrão' : 'Personalizado'
+                }}
+              </q-chip>
+            </div>
+          </div>
+          <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs q-mb-lg">
+            <div
+              class="color-dot"
+              :style="{ background: dataAppearance.sideMenuColorCodeNotSelectedIcon || '#e0e0e0' }"
+            />
+            <q-input
+              v-model="dataAppearance.sideMenuColorCodeNotSelectedIcon"
+              bg-color="white"
+              label-color="black"
+              input-class="text-black"
+              outlined
+              dense
+              label="Cor hex"
+              style="width: 200px"
+            >
+              <template v-slot:append>
+                <q-icon name="colorize" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-color v-model="dataAppearance.sideMenuColorCodeNotSelectedIcon" no-header />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+
+          <div class="sub-group-label q-mb-xs">Item selecionado</div>
+          <div class="setting-row row items-center justify-between q-mb-xs">
+            <div class="col">
+              <q-toggle
+                v-model="dataAppearance.sideMenuColorDefaultSelectedItem"
+                checked-icon="check"
+                color="primary"
+                unchecked-icon="clear"
+                :true-value="1"
+                :false-value="0"
+              >
+                <div>
+                  <div class="text-weight-medium text-body2">Fundo do item ativo</div>
+                  <div class="text-caption text-grey-6">Cor de fundo do item selecionado</div>
+                </div>
+              </q-toggle>
+            </div>
+            <div class="col-auto">
+              <q-chip
+                :color="dataAppearance.sideMenuColorDefaultSelectedItem ? 'positive' : 'grey-4'"
+                :text-color="dataAppearance.sideMenuColorDefaultSelectedItem ? 'white' : 'grey-7'"
+                dense
+                size="sm"
+              >
+                {{ dataAppearance.sideMenuColorDefaultSelectedItem ? 'Padrão' : 'Personalizado' }}
+              </q-chip>
+            </div>
+          </div>
+          <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs q-mb-md">
+            <div
+              class="color-dot"
+              :style="{ background: dataAppearance.sideMenuColorCodeSelectedItem || '#e0e0e0' }"
+            />
+            <q-input
+              v-model="dataAppearance.sideMenuColorCodeSelectedItem"
+              bg-color="white"
+              label-color="black"
+              input-class="text-black"
+              outlined
+              dense
+              label="Cor hex"
+              style="width: 200px"
+            >
+              <template v-slot:append>
+                <q-icon name="colorize" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-color v-model="dataAppearance.sideMenuColorCodeSelectedItem" no-header />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
+          <div class="setting-row row items-center justify-between q-mb-xs">
+            <div class="col">
+              <q-toggle
+                v-model="dataAppearance.sideMenuColorDefaultSelectedIcon"
+                checked-icon="check"
+                color="primary"
+                unchecked-icon="clear"
+                :true-value="1"
+                :false-value="0"
+              >
+                <div>
+                  <div class="text-weight-medium text-body2">Ícone ativo</div>
+                  <div class="text-caption text-grey-6">Cor do ícone selecionado</div>
+                </div>
+              </q-toggle>
+            </div>
+            <div class="col-auto">
+              <q-chip
+                :color="dataAppearance.sideMenuColorDefaultSelectedIcon ? 'positive' : 'grey-4'"
+                :text-color="dataAppearance.sideMenuColorDefaultSelectedIcon ? 'white' : 'grey-7'"
+                dense
+                size="sm"
+              >
+                {{ dataAppearance.sideMenuColorDefaultSelectedIcon ? 'Padrão' : 'Personalizado' }}
+              </q-chip>
+            </div>
+          </div>
+          <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs">
+            <div
+              class="color-dot"
+              :style="{ background: dataAppearance.sideMenuColorCodeSelectedIcon || '#e0e0e0' }"
+            />
+            <q-input
+              v-model="dataAppearance.sideMenuColorCodeSelectedIcon"
+              bg-color="white"
+              label-color="black"
+              input-class="text-black"
+              outlined
+              dense
+              label="Cor hex"
+              style="width: 200px"
+            >
+              <template v-slot:append>
+                <q-icon name="colorize" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-color v-model="dataAppearance.sideMenuColorCodeSelectedIcon" no-header />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
         </div>
       </q-form>
     </q-card-section>
-    <q-card-actions align="right" v-show="!loadingSetting">
-      <div class="row justify-end items-center q-gutter-x-sm">
-        <q-btn
-          @click="update"
-          color="primary"
-          label="Atualizar"
-          size="md"
-          :loading="loadingSetting"
-          unelevated
-          no-caps
-        />
-      </div>
+
+    <q-separator v-show="!loadingSetting" />
+
+    <q-card-actions align="right" v-show="!loadingSetting" class="q-pa-md">
+      <q-btn
+        @click="update"
+        color="primary"
+        label="Salvar alterações"
+        size="md"
+        :loading="loadingSetting"
+        unelevated
+        no-caps
+        icon-right="save"
+      />
     </q-card-actions>
   </q-card>
 </template>
+<style scoped>
+.appearance-card {
+  border-radius: 12px !important;
+}
+
+.settings-group {
+  padding: 4px 0;
+}
+
+.group-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #78909c;
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sub-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #b0bec5;
+  padding-left: 4px;
+}
+
+.setting-row {
+  padding: 6px 0;
+  gap: 12px;
+}
+
+.color-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+</style>
