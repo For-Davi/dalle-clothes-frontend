@@ -27,9 +27,18 @@ onMounted(async () => {
     <section class="q-mt-md q-px-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">
-          <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
-            <q-badge v-show="true" floating color="red" rounded />
-          </q-btn>
+          <q-input
+            label="Pesquise"
+            outlined
+            v-model="search"
+            dense
+            style="width: 200px"
+            class="bg-white rounded-borders"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" size="20px" color="black" />
+            </template>
+          </q-input>
         </div>
       </q-banner>
       <DeliveriesList :filter="search" status="scheduled" :list-deliveries="listDelivery" />

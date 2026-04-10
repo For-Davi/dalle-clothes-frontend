@@ -116,6 +116,8 @@ export interface SaleItens {
   grid: string;
   color: string;
   color_name: string;
+  quantity_delivered: number | null;
+  delivered: number;
 }
 
 export interface SalePaymentsMethods {
@@ -191,7 +193,7 @@ export interface FilterSale {
   status: null | 'active' | 'canceled';
   client: number | null;
   seller: number | null;
-  product: string | null;
+  product: number | null;
   paymentType: number | null;
   receipt: number | null;
   minTotal: string | null;

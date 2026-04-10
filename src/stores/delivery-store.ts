@@ -6,6 +6,8 @@ import {
   scheduleDeliveryService,
   getDeliveryDashboardService,
   createPartialDeliveredDeliveryService,
+  updateDeliveryStatusService,
+  getDeliveriesFilterService,
 } from 'src/services/delivery-service';
 
 export const useDeliveryStore = defineStore('delivery', {
@@ -41,10 +43,15 @@ export const useDeliveryStore = defineStore('delivery', {
     setDashboard(dashboard: IDashboardDelivery) {
       this.Dashboard = dashboard;
     },
-    async getDeliveries(status: string) {
+    async getDeliveries(status: string, filter: IFilterDelivery | null = null) {
       this.setLoadingDeliveries(true);
       try {
-        const response = await getDeliveriesService(status);
+        let response = null;
+        if (filter) {
+          response = await getDeliveriesFilterService(status, filter);
+        } else {
+          response = await getDeliveriesService(status);
+        }
         if (response.status === 200) {
           this.clearListDelivery();
           this.setListDelivery(response.data.deliveries);
@@ -127,6 +134,33 @@ export const useDeliveryStore = defineStore('delivery', {
         return undefined;
       } finally {
         this.setLoading(false);
+      }
+    },
+    async updateDelivery(
+      deliveryID: number,
+      deliveryStatus: string,
+      status: string,
+      deliveryGuyID: number | null = null,
+    ) {
+      this.setLoadingDeliveries(true);
+      try {
+        const response = await updateDeliveryStatusService(
+          deliveryID,
+          deliveryStatus,
+          status,
+          deliveryGuyID,
+        );
+        if (response.status === 200) {
+          this.clearListDelivery();
+          this.setListDelivery(response.data.deliveries);
+          createSuccess(response.data.message);
+        }
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoadingDeliveries(false);
       }
     },
   },

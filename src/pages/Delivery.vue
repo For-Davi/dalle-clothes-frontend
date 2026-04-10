@@ -1,41 +1,54 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import QuantityDeliveryCard from 'src/components/card/QuantityDeliveryCard.vue';
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { actionsDelivery } from 'src/utils/actions';
 import AllDeliveries from 'src/components/fragments/delivery/AllDeliveries.vue';
 import DeliveryDelivered from 'src/components/fragments/delivery/DeliveryDelivered.vue';
 import DeliveryPendent from 'src/components/fragments/delivery/DeliveryPendent.vue';
 import DeliveryScheduled from 'src/components/fragments/delivery/DeliveryScheduled.vue';
-import FormDeliveryGuy from 'src/components/form/FormDeliveryGuy.vue';
 import DeliveryGuyManage from 'src/components/manage/DeliveryGuyManage.vue';
 import { storeToRefs } from 'pinia';
 import { useDeliveryStore } from 'src/stores/delivery-store';
+import FilterDelivery from 'src/components/filter/FilterDelivery.vue';
 
 defineOptions({
   name: 'Delivery',
 });
 
 const tab = ref<'all' | 'pendent' | 'scheduled' | 'delivered'>('all');
-const showFormDeliveryGuy = reactive<{
-  open: boolean;
-  deliveryGuyID: number | null;
-}>({
-  open: false,
-  deliveryGuyID: null,
-});
 const showDeliveryGuyManage = ref<boolean>(false);
 
 const { Dashboard } = storeToRefs(useDeliveryStore());
 
-const changeShowFormDeliveryGuy = (show: boolean, deliveryGuyID: number | null = null): void => {
-  Object.assign(showFormDeliveryGuy, {
-    open: show,
-    deliveryGuyID: deliveryGuyID,
-  });
-};
+const showFilterDelivery = ref<boolean>(false);
+const filter = reactive<IFilterDelivery>({
+  startDate: '',
+  endDate: '',
+  startScheduledDate: '',
+  endScheduledDate: '',
+  deliveryGuy: null,
+});
+
 const changeShowDeliveryGuyManage = () => {
   showDeliveryGuyManage.value = !showDeliveryGuyManage.value;
+};
+const changeShowFilterDelivery = (): void => {
+  showFilterDelivery.value = !showFilterDelivery.value;
+};
+const actionFilter = async (data: 'close' | IFilterDelivery): Promise<void> => {
+  changeShowFilterDelivery();
+
+  if (data !== 'close') {
+    Object.assign(filter, {
+      startDate: data.startDate,
+      endDate: data.endDate,
+      startScheduledDate: data.startScheduledDate,
+      endScheduledDate: data.endScheduledDate,
+      deliveryGuy: data.deliveryGuy,
+    });
+    await useDeliveryStore().getDeliveries(tab.value, filter);
+  }
 };
 const openAction = (type: IActionDelivery): void => {
   switch (type) {
@@ -48,21 +61,22 @@ const openAction = (type: IActionDelivery): void => {
       break;
   }
 };
+
+const hasFilter = computed(() => {
+  return (
+    filter.startDate.trim() !== '' ||
+    filter.endDate.trim() !== '' ||
+    filter.startScheduledDate.trim() !== '' ||
+    filter.endScheduledDate.trim() !== '' ||
+    filter.deliveryGuy !== null
+  );
+});
 </script>
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
       <TitlePage class="col-7" title="Entregas" icon="local_shipping" />
       <div>
-        <q-btn
-          color="white"
-          text-color="black"
-          label="Novo entregador"
-          @click="changeShowFormDeliveryGuy(true)"
-          icon-right="add"
-          no-caps
-          class="q-mr-sm"
-        />
         <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
           <q-list dense>
             <q-item
@@ -137,6 +151,18 @@ const openAction = (type: IActionDelivery): void => {
           :disable="false"
         />
       </q-tabs>
+      <div class="row justify-end q-mt-sm">
+        <q-btn
+          @click="changeShowFilterDelivery"
+          round
+          color="primary"
+          icon="filter_alt"
+          unelevated
+          size="13px"
+        >
+          <q-badge v-show="hasFilter" floating color="red" rounded />
+        </q-btn>
+      </div>
       <q-tab-panels v-model="tab" animated>
         <q-tab-panel name="all" class="q-px-none">
           <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
@@ -161,7 +187,7 @@ const openAction = (type: IActionDelivery): void => {
       </q-tab-panels>
     </section>
     <!-- Modals -->
-    <FormDeliveryGuy :data="showFormDeliveryGuy" @update:open="changeShowFormDeliveryGuy(false)" />
     <DeliveryGuyManage :open="showDeliveryGuyManage" @update:open="changeShowDeliveryGuyManage" />
+    <FilterDelivery :open="showFilterDelivery" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>

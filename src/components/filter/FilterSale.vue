@@ -51,7 +51,7 @@ const selectedSeller = ref<IQuasarSelect<number | null>>({
   label: 'Todos',
   value: null,
 });
-const selectedProduct = ref<IQuasarSelect<string | null>>({
+const selectedProduct = ref<IQuasarSelect<number | null>>({
   label: 'Todos',
   value: null,
 });
@@ -129,7 +129,9 @@ const mountFilter = () => {
 
   const sellerItem = listEmployee.value.find((item) => item.id === props.filters.seller);
 
-  const productItem = listProduct.value.find((item) => item.name === props.filters.product);
+  const productItem = listProduct.value.find(
+    (item) => item.product_variant_id === props.filters.product,
+  );
 
   const paymentTypeItem = listTypesReceipt.value.find(
     (item) => item.id === props.filters.paymentType,
@@ -158,7 +160,10 @@ const mountFilter = () => {
     : { label: 'Todos', value: null };
 
   selectedProduct.value = productItem
-    ? { label: productItem.name, value: productItem.name }
+    ? {
+        label: `${productItem.name} - ${productItem.grid_item?.size ?? 'Sem tamanho'} - ${productItem.color?.name}`,
+        value: productItem.product_variant_id,
+      }
     : { label: 'Todos', value: null };
 
   selectedPaymentType.value = paymentTypeItem
@@ -262,16 +267,14 @@ const optionsSeller = computed(() => {
   return options.filter((option) => option.label.toLowerCase().includes(needle));
 });
 const optionsProduct = computed(() => {
-  const uniqueProducts = [...new Set(listProduct.value.map((p) => p.name))];
-
   const options = [
     {
       label: 'Todos',
       value: null,
     },
-    ...uniqueProducts.map((name) => ({
-      label: name,
-      value: name,
+    ...listProduct.value.map((item) => ({
+      label: `${item.name} - ${item.grid_item?.size ?? 'Sem tamanho'} - ${item.color?.name ?? 'Sem cor'}`,
+      value: item.name,
     })),
   ];
 

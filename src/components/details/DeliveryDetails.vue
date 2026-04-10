@@ -79,7 +79,7 @@ const compareDeliveryDates = (updatedAt: string | null, scheduledDate: string | 
       label: 'Atrasado',
       color: 'negative',
       icon: 'warning',
-      message: `Entregue com ${diffInDays} dia(s) de atraso`,
+      message: `Entregue depois de ${diffInDays} dia(s) do agendamento`,
     };
   } else {
     const daysBefore = Math.abs(diffInDays);
@@ -87,9 +87,20 @@ const compareDeliveryDates = (updatedAt: string | null, scheduledDate: string | 
       label: 'Adiantado',
       color: 'info',
       icon: 'auto_awesome',
-      message: `Entregue ${daysBefore} dia(s) antes do prazo`,
+      message: `Entregue ${daysBefore} dia(s) antes do agendamento`,
     };
   }
+};
+const getColorStyle = (hexColor: string) => {
+  return {
+    backgroundColor: hexColor || 'transparent',
+    width: '15px',
+    height: '15px',
+    border: '1px solid #ddd',
+    borderRadius: '50%',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+  };
 };
 
 const open = computed({
@@ -118,7 +129,7 @@ watch(open, async () => {
 
       <Loading :show="loadingDelivery" v-show="loadingDelivery" />
 
-      <q-card-section class="q-pa-md" v-show="!loadingDelivery">
+      <q-card-section class="q-pa-md q-gutter-y-md" v-show="!loadingDelivery">
         <q-card flat bordered class="q-pa-md bg-white q-mb-sm">
           <div class="text-h6 text-primary flex items-center">
             <q-icon name="info" class="q-mr-sm" />
@@ -171,12 +182,15 @@ watch(open, async () => {
               </p>
               <p class="flex items-center">
                 <q-icon name="edit_calendar" class="q-mr-sm text-primary" />
-                <b>Última atualização:</b
-                >{{ Delivery.updated_by_name ? formatToBrazilianDate(Delivery.updated_at) : '-' }}
+                <b>Última atualização:</b>{{ formatToBrazilianDate(Delivery.updated_at) }}
               </p>
               <p class="flex items-center">
                 <q-icon name="account_circle" color="primary" class="q-mr-xs" />
                 <b>Atualizado por:</b> {{ Delivery.updated_by_name ?? '-' }}
+              </p>
+              <p class="flex items-center">
+                <q-icon name="date_range" color="primary" class="q-mr-xs" />
+                <b>Data de criação:</b> {{ formatToBrazilianDate(Delivery.created_at) }}
               </p>
               <p
                 v-if="Delivery.scheduled_date && Delivery.status === 'delivered'"
@@ -245,6 +259,97 @@ watch(open, async () => {
             </div>
           </div>
         </q-card>
+
+        <div class="column q-gutterx-md">
+          <q-card flat bordered class="q-pa-md bg-white">
+            <div class="text-h6 text-primary q-pa-xs">
+              <q-icon name="shopping_cart" class="q-mr-sm" />{{
+                Delivery.return_id ? 'Itens da troca' : 'Itens da venda'
+              }}
+            </div>
+            <q-separator />
+            <q-list class="column q-gutter-y-sm">
+              <q-item
+                class="q-py-md border-full-grey-light rounded-borders"
+                v-for="(product, index) in Delivery.items"
+                :key="index"
+              >
+                <q-item-section>
+                  <div class="row q-col-gutter-sm">
+                    <div class="col-12 col-sm-6">
+                      <p class="flex items-center">
+                        <q-icon name="shopping_bag" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Produto:</b>
+                        {{ product.product_name }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="view_module" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Grade:</b>{{ product.grid }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="qr_code_2" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Código:</b>{{ product.product_code }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="label" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">SKU:</b>{{ product.product_sku }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="palette" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Cor:</b>
+                        <span class="cursor-pointer" :style="getColorStyle(product.color ?? '')">
+                          <q-tooltip>{{ product.color_name }}</q-tooltip>
+                        </span>
+                      </p>
+                    </div>
+
+                    <div class="col-12 col-sm-6">
+                      <p class="flex items-center">
+                        <q-icon name="payments" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Custo unitário:</b
+                        >{{ formatToReal(product.product_price) }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="shopping_cart" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Qtde comprada:</b> {{ product.quantity }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="local_shipping" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Qtde entregue:</b> {{ product.quantity_delivered ?? 0 }}
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="local_shipping" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Entregue:</b
+                        ><span>
+                          <q-icon
+                            :color="product.delivered ? 'green-5' : 'red'"
+                            :name="product.delivered ? 'check_circle' : 'cancel'"
+                            size="xs"
+                          />
+                        </span>
+                      </p>
+
+                      <p class="flex items-center">
+                        <q-icon name="inventory" class="q-mr-sm text-primary" />
+                        <b class="q-mr-sm">Total:</b> {{ formatToReal(product.total) }}
+                      </p>
+                    </div>
+                    <div class="col-12">
+                      <q-separator spaced v-if="index < Delivery.items.length - 1" />
+                    </div>
+                  </div>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </div>
       </q-card-section>
 
       <q-card-actions align="right" class="q-pb-md q-pr-md">

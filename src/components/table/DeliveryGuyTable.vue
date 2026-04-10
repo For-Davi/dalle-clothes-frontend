@@ -9,14 +9,6 @@ defineOptions({
   name: 'DeliveryGuyTable',
 });
 
-const props = withDefaults(
-  defineProps<{
-    filter?: string;
-  }>(),
-  {
-    filter: '',
-  },
-);
 const emit = defineEmits<{
   'show:showFormDeliveryGuy': [number];
 }>();
@@ -25,13 +17,13 @@ const { loadingDeliveryGuy, listDeliveryGuy } = storeToRefs(useDeliveryGuyStore(
 
 const showConfirmAction = ref<boolean>(false);
 const deliveryGuyMonitoring = ref<number | null>(null);
+const filter = ref<string>('');
 
 const clear = (): void => {
   deliveryGuyMonitoring.value = null;
 };
 const closeConfirmActionOk = async () => {
   showConfirmAction.value = false;
-  console.log('dksajldka', deliveryGuyMonitoring.value);
   await useDeliveryGuyStore().deleteDeliveryGuy(deliveryGuyMonitoring.value ?? 0);
   clear();
 };
@@ -62,7 +54,7 @@ onMounted(async () => {
     <q-table
       :rows="loadingDeliveryGuy ? [] : listDeliveryGuy"
       :columns="columnsDeliveryGuy"
-      :filter="props.filter"
+      :filter="filter"
       :loading="loadingDeliveryGuy"
       title="Lista de entregadores"
       row-key="index"
@@ -79,6 +71,24 @@ onMounted(async () => {
             <span class="text-body2 text-bold">{{ col.label }}</span>
           </q-th>
         </q-tr>
+      </template>
+      <template v-slot:top>
+        <div class="row justify-between items-center full-width">
+          <span class="text-body1">Lista de categorias</span>
+          <q-space />
+          <q-input
+            v-show="listDeliveryGuy.length > 0"
+            v-model="filter"
+            outlined
+            dense
+            label="Pesquisar"
+            :class="!$q.screen.lt.md ? '' : 'q-mt-sm'"
+          >
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">

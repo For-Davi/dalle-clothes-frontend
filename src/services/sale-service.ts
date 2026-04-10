@@ -30,12 +30,13 @@ export const showSaleService = (
 
 export const getSaleItensService = (
   saleID: number,
+  notDelivered: number | null,
 ): Promise<{
   status: number;
   data: {
     saleItens: ISaleItens[];
   };
-}> => api.get(`${baseUrl}/product/${saleID}`);
+}> => api.post(`${baseUrl}/product/${saleID}`, { notDelivered });
 
 export const showSaleCouponDataService = (
   saleID: number,

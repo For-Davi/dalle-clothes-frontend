@@ -150,6 +150,7 @@ import {
   ScheduleDeliveryData,
   DashboardDelivery,
   DeliveredProducts,
+  FilterDelivery,
 } from './Delivery';
 
 export {};
@@ -312,4 +313,5 @@ declare global {
   type IScheduleDeliveryData = ScheduleDeliveryData;
   type IDashboardDelivery = DashboardDelivery;
   type IDeliveredProducts = DeliveredProducts;
+  type IFilterDelivery = FilterDelivery;
 }

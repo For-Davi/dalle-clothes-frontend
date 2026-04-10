@@ -80,6 +80,8 @@ export interface DataReturnItens {
   color: string | null;
   color_name: string | null;
   total: number;
+  quantity_delivered: number | null;
+  delivered: number;
 }
 export interface ReturnItens {
   product_variant_id: number;

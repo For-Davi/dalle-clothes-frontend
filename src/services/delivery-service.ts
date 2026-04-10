@@ -11,6 +11,16 @@ export const getDeliveriesService = (
   };
 }> => api.post(`${baseUrl}/`, { status });
 
+export const getDeliveriesFilterService = (
+  status: string,
+  filter: IFilterDelivery,
+): Promise<{
+  status: number;
+  data: {
+    deliveries: IDelivery[];
+  };
+}> => api.post(`${baseUrl}/filter`, { status, filter });
+
 export const getDeliveryDashboardService = (): Promise<{
   status: number;
   data: {
@@ -50,3 +60,16 @@ export const createPartialDeliveredDeliveryService = (
     deliveries: IDelivery[];
   };
 }> => api.post(`${baseUrl}/partial-delivered`, { deliveryID, deliveredProducts, status });
+
+export const updateDeliveryStatusService = (
+  deliveryID: number,
+  deliveryStatus: string,
+  status: string,
+  deliveryGuyID: number | null,
+): Promise<{
+  status: number;
+  data: {
+    message: string;
+    deliveries: IDelivery[];
+  };
+}> => api.put(`${baseUrl}/`, { deliveryID, deliveryStatus, status, deliveryGuyID });

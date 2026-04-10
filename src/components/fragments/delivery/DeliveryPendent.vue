@@ -39,9 +39,6 @@ onMounted(async () => {
               <q-icon name="search" size="20px" color="black" />
             </template>
           </q-input>
-          <q-btn round color="primary" icon="filter_alt" unelevated size="13px">
-            <q-badge v-show="true" floating color="red" rounded />
-          </q-btn>
         </div>
       </q-banner>
       <DeliveriesList :filter="search" status="pendent" :list-deliveries="listDelivery" />

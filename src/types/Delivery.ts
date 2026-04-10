@@ -1,5 +1,13 @@
 export type ActionsDelivery = 'export' | 'delivery_guy';
 
+export interface FilterDelivery {
+  startDate: string;
+  endDate: string;
+  startScheduledDate: string;
+  endScheduledDate: string;
+  deliveryGuy: number | null;
+}
+
 export interface Delivery {
   sale_id: number;
   freight_value: string;
@@ -22,6 +30,7 @@ export interface Delivery {
   updated_by_email: string | null;
   delivery_guy_name: string | null;
   delivery_guy_phone: string | null;
+  items: ISaleItens[];
 }
 
 export interface DeliveryGuy {

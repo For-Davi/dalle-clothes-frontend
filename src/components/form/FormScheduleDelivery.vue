@@ -55,7 +55,7 @@ const schedule = async () => {
 const clear = () => {
   Object.assign(scheduleDeliveryData, {
     schedule: '',
-    deliveryGuyid: null,
+    deliveryGuyID: null,
   });
 };
 
@@ -77,6 +77,9 @@ const listDeliveryGuyOptions = computed(() => {
   const needle = searchFilter.value.toLowerCase();
   return options.filter((option) => option.label.toLowerCase().includes(needle));
 });
+const hasLoading = computed(() => {
+  return loadingDelivery.value || loadingDeliveryGuy.value;
+});
 const open = computed({
   get: () => props.data.open,
   set: () => emit('update:open'),
@@ -97,17 +100,16 @@ watch(
   <q-dialog v-model="open">
     <q-card
       :class="
-        loadingDeliveryGuy || loadingDelivery ? 'bg-grey-2 sub-page column' : 'bg-grey-2 sub-page'
+        hasLoading
+          ? 'bg-grey-2 sub-page justify-between column'
+          : 'bg-grey-2 justify-between column sub-page'
       "
     >
       <q-card-section class="q-pa-none">
         <TitlePage title="Agendamento da entrega" icon="date_range" />
       </q-card-section>
-      <Loading
-        :show="loadingDeliveryGuy || loadingDelivery"
-        v-show="loadingDeliveryGuy || loadingDelivery"
-      />
-      <q-card-section v-if="!loadingDeliveryGuy || !loadingDelivery">
+      <Loading :show="hasLoading" v-show="hasLoading" />
+      <q-card-section v-if="!hasLoading">
         <q-form class="q-gutter-y-sm">
           <q-input
             v-model="scheduleDeliveryData.schedule"
@@ -151,7 +153,7 @@ watch(
             size="md"
             flat
             @click="open = false"
-            :loading="loadingDeliveryGuy || loadingDelivery"
+            :loading="hasLoading"
             unelevated
             no-caps
           />
@@ -160,7 +162,7 @@ watch(
             label="Agendar"
             size="md"
             @click="schedule"
-            :loading="loadingDeliveryGuy || loadingDelivery"
+            :loading="hasLoading"
             unelevated
             no-caps
           />

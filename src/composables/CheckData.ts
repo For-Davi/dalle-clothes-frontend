@@ -1882,25 +1882,49 @@ export const checkDataPartialDelivered = (
 
   const invalidItem = data.find((item) => !item.productVariantID);
   const invalidQuantityDelivered = data.find(
-    (item) =>
-      !item.quantityDelivered || item.quantityDelivered <= 0 || isNaN(item.quantityDelivered),
+    (item) => item.quantityDelivered === null || isNaN(item.quantityDelivered),
   );
   const invalidQuantitySaled = data.find(
-    (item) => !item.quantitySaled || item.quantitySaled <= 0 || isNaN(item.quantitySaled),
+    (item) => !item.quantitySaled || isNaN(item.quantitySaled),
   );
+  const allAreZero = data.every((item) => item.quantityDelivered <= 0);
   const invalidQuantity = data.find((item) => item.quantityDelivered > item.quantitySaled);
 
   if (invalidItem) {
     return { status: false, message: 'Deve ser informado o nome do ID da variante' };
   }
   if (invalidQuantityDelivered) {
-    return { status: false, message: 'Insira uma quantidade devolvida válida' };
+    return { status: false, message: 'Insira uma quantidade entregue válida' };
+  }
+  if (allAreZero) {
+    return { status: false, message: 'A quantidade entregue deve ser maior que 0' };
   }
   if (invalidQuantitySaled) {
     return { status: false, message: 'A quantidade vendida deve ser uma quantidade válida' };
   }
   if (invalidQuantity) {
     return { status: false, message: 'A quantidade entregue é maior que a quantidade vendida' };
+  }
+
+  return { status: true };
+};
+
+export const checkDataUpdateDeliveryStatus = (data: {
+  id: number | null;
+  status: string;
+  deliveryGuyID: number | null;
+}): { status: boolean; message?: string | null } => {
+  if (!data.id) {
+    return { status: false, message: 'Deve ser informado o ID da entrega' };
+  }
+  if (data.status.trim() !== 'delivered' && data.status.trim() !== 'delivered_in_person') {
+    return {
+      status: false,
+      message: 'A entrega deve ser marcada como Entregue ou Entregue presencialmente',
+    };
+  }
+  if (!data.deliveryGuyID) {
+    return { status: false, message: 'Deve ser informado o ID do entregador' };
   }
 
   return { status: true };

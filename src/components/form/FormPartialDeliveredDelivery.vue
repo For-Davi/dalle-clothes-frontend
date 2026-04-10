@@ -26,13 +26,13 @@ const emit = defineEmits<{
   'update:open': [void];
 }>();
 
+const { loadingDelivery } = storeToRefs(useDeliveryStore());
 const { loadingListSaleProducts, listSaleProducts } = storeToRefs(useSaleStore());
 const { loadingReturn, listReturnItems } = storeToRefs(useReturnStore());
 
 const partialDeliveryData = ref<IDeliveredProducts[]>([]);
 
 const save = async () => {
-  console.log('askdjsalkdsajdsa', partialDeliveryData.value);
   const check = checkDataPartialDelivered(partialDeliveryData.value);
 
   if (check.status) {
@@ -49,7 +49,7 @@ const save = async () => {
   }
 };
 const fetchSaleProducts = async () => {
-  await useSaleStore().getSaleItens(props.data.saleID ?? 0);
+  await useSaleStore().getSaleItens(props.data.saleID ?? 0, 1);
 };
 const fetchReturnProducts = async () => {
   await useReturnStore().getReturnItems(props.data.returnID ?? 0);
@@ -63,7 +63,7 @@ const listProducts = computed(() => {
   }
 });
 const hasLoading = computed(() => {
-  return loadingListSaleProducts.value || loadingReturn.value;
+  return loadingListSaleProducts.value || loadingReturn.value || loadingDelivery.value;
 });
 const open = computed({
   get: () => props.data.open,
@@ -89,7 +89,7 @@ watch(
       partialDeliveryData.value = newList.value.map((item) => ({
         productVariantID: item.product_variant_id,
         quantitySaled: item.quantity,
-        quantityDelivered: 0,
+        quantityDelivered: item.quantity_delivered ?? 0,
       }));
     }
   },

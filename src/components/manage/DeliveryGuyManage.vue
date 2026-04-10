@@ -50,7 +50,7 @@ const open = computed({
       "
     >
       <q-card-section class="q-pa-none">
-        <TitlePage title="Entregadores" icon="redeem" />
+        <TitlePage title="Entregadores" icon="local_shipping" />
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingDeliveryGuy">
@@ -76,6 +76,14 @@ const open = computed({
             unelevated
             no-caps
             flat
+          />
+          <q-btn
+            color="primary"
+            label="Adicionar"
+            size="md"
+            @click="changeShowFormDeliveryGuy(true)"
+            unelevated
+            no-caps
           />
         </div>
       </q-card-actions>

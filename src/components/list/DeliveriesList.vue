@@ -5,9 +5,13 @@ import { columnsDelivery } from 'src/utils/columns';
 import { formatToBrazilianDate } from 'src/composables/FormatData';
 import { formatToReal } from 'src/composables/Money';
 import DeliveryDetails from '../details/DeliveryDetails.vue';
-import { reactive, computed } from 'vue';
+import { reactive, computed, ref } from 'vue';
 import FormScheduleDelivery from '../form/FormScheduleDelivery.vue';
 import FormPartialDeliveredDelivery from '../form/FormPartialDeliveredDelivery.vue';
+import ConfirmAction from '../confirm/ConfirmAction.vue';
+import FormSelectDeliveryGuy from '../form/FormSelectDeliveryGuy.vue';
+import { createErrorData } from 'src/composables/CreateNotify';
+import { checkDataUpdateDeliveryStatus } from 'src/composables/CheckData';
 
 defineOptions({
   name: 'DeliveriesList',
@@ -38,7 +42,52 @@ const showFormPartialDelivered = reactive({
   deliveryID: null as number | null,
   status: '' as string,
 });
+const showFormSelectDeliveryGuy = reactive({
+  open: false as boolean,
+  deliveryID: null as number | null,
+});
+const showConfirmAction = ref<boolean>(false);
+const deliveryMonitoring = reactive({
+  id: null as number | null,
+  status: '' as string,
+  deliveryGuyID: null as number | null,
+});
 
+const closeConfirmAction = () => {
+  showConfirmAction.value = false;
+  Object.assign(deliveryMonitoring, {
+    id: null,
+    status: '',
+    deliveryGuyID: null,
+  });
+};
+const changeShowConfirmAction = (
+  id: number,
+  status: string,
+  deliveryGuyID: number | null = null,
+) => {
+  if (status === 'delivered') {
+    Object.assign(deliveryMonitoring, {
+      id,
+      status,
+      deliveryGuyID,
+    });
+  } else {
+    Object.assign(deliveryMonitoring, {
+      id,
+      status,
+    });
+  }
+  showConfirmAction.value = true;
+};
+const closeConfirmActionOk = async () => {
+  showConfirmAction.value = false;
+  await useDeliveryStore().updateDelivery(
+    deliveryMonitoring.id ?? 0,
+    deliveryMonitoring.status,
+    props.status,
+  );
+};
 const changeShowDeliveryDetails = (open: boolean, deliveryID: number | null = null): void => {
   Object.assign(showDeliveryDetails, {
     open,
@@ -66,10 +115,57 @@ const changeShowFormPartialDelivered = (
     status: props.status,
   });
 };
+const changeShowFormSelectDeliveryGuy = (open: boolean, deliveryID: number | null = null) => {
+  Object.assign(showFormSelectDeliveryGuy, {
+    open,
+    deliveryID,
+  });
+};
+const hasDeliveryGuyId = (deliveryID: number, deliveryGuyID: number | null, status: string) => {
+  if (deliveryGuyID !== null) {
+    changeShowConfirmAction(deliveryID, status, deliveryGuyID);
+  } else {
+    changeShowFormSelectDeliveryGuy(true, deliveryID);
+  }
+};
+const setDeliveryGuyIdAndUpdate = async (deliveryID: number, deliveryGuyID: number | null) => {
+  deliveryMonitoring.id = deliveryID;
+  deliveryMonitoring.status = 'delivered';
+  deliveryMonitoring.deliveryGuyID = deliveryGuyID;
+
+  const check = checkDataUpdateDeliveryStatus({
+    id: deliveryMonitoring.id,
+    status: deliveryMonitoring.status,
+    deliveryGuyID: deliveryMonitoring.deliveryGuyID,
+  });
+
+  if (check.status) {
+    await useDeliveryStore().updateDelivery(
+      deliveryMonitoring.id ?? 0,
+      deliveryMonitoring.status,
+      props.status,
+      deliveryMonitoring.deliveryGuyID,
+    );
+  } else {
+    createErrorData(check.message || 'Erro ao enviar dados para marcar como entregue');
+  }
+};
 const getStatusAttributes = (status: string) => {
-  if (status === 'delivered') {
+  if (
+    status === 'delivered' ||
+    status === 'delivered_in_person' ||
+    status === 'partial_delivered'
+  ) {
+    let name = '';
+    if (status === 'partial_delivered') {
+      name = 'Entregue parcialmente';
+    } else if (status === 'delivered_in_person') {
+      name = 'Entregue pessoalmente';
+    } else {
+      name = 'Entregue';
+    }
     return {
-      name: 'Entregue',
+      name,
       color: 'green-5',
       textColor: 'green-1',
       icon: 'check_circle',
@@ -119,7 +215,11 @@ const getPriority = (status: string): number => {
   if (status === 'scheduled') return 1;
   if (status === 'pendent') return 2;
 
-  if (status === 'delivered' || status === 'partial_delivery' || status === 'delivered_in_person') {
+  if (
+    status === 'delivered' ||
+    status === 'partial_delivered' ||
+    status === 'delivered_in_person'
+  ) {
     return 3;
   }
 
@@ -143,7 +243,7 @@ const checkDueScheduleDate = (date: string): boolean => {
 };
 
 const sortedDeliveries = computed(() => {
-  if (props.all) {
+  if (props.status === 'all' || props.status === 'delivered') {
     return [...props.listDeliveries].sort((a, b) => {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
@@ -191,13 +291,13 @@ const sortedDeliveries = computed(() => {
               border: '2px solid transparent',
               borderRadius: '12px',
               background: `
-      linear-gradient(white, white) padding-box,
-      linear-gradient(
-        to right,
-        ${getStatusAttributes(props.row.status)?.hexColor},
-        #e0e0e0
-      ) border-box
-    `,
+              linear-gradient(white, white) padding-box,
+              linear-gradient(
+              to right,
+              ${getStatusAttributes(props.row.status)?.hexColor},
+              #e0e0e0
+            ) border-box
+              `,
             }"
           >
             <div class="flex justify-between">
@@ -211,9 +311,9 @@ const sortedDeliveries = computed(() => {
                 {{ getStatusAttributes(props.row.status)?.name }}
               </q-chip>
 
-              <div v-if="props.row.status === 'pendent'" class="row items-center q-mr-sm">
+              <div v-if="props.row.status !== 'scheduled'" class="row items-center q-mr-sm">
                 <q-icon name="date_range" color="secondary" size="xs" class="q-mr-sm" />
-                <div class="text-grey-9">Data:</div>
+                <div class="text-grey-9">Criação:</div>
                 <div class="text-grey-9 q-ml-xs">
                   {{ formatToBrazilianDate(props.row.created_at) }}
                 </div>
@@ -281,6 +381,16 @@ const sortedDeliveries = computed(() => {
                       {{ formatToReal(props.row.freight_value) }}
                     </div>
                   </div>
+                  <div
+                    v-if="props.row.scheduled_date && props.row.status !== 'scheduled'"
+                    class="row items-center q-mb-xs"
+                  >
+                    <q-icon name="attach_money" color="primary" size="xs" />
+                    <div class="text-weight-light text-grey-8 q-mr-xs">Agendamento:</div>
+                    <div class="text-weight-light text-grey-8">
+                      {{ formatScheduleDate(props.row.scheduled_date) }}
+                    </div>
+                  </div>
                 </section>
               </section>
 
@@ -289,20 +399,8 @@ const sortedDeliveries = computed(() => {
               <div class="row justify-end items-end">
                 <div class="row">
                   <q-btn
-                    v-if="props.row.status === 'pendent'"
-                    @click="changeShowFormScheduleDelivery(true, props.row.id)"
-                    flat
-                    round
-                    color="indigo-11"
-                    icon="date_range"
-                    size="sm"
-                  >
-                    <q-tooltip>Agendar entrega</q-tooltip>
-                  </q-btn>
-
-                  <q-btn
-                    v-if="props.row.status !== 'delivered'"
-                    @click="changeShowFormScheduleDelivery(true, props.row.id)"
+                    v-if="props.row.status === 'scheduled' || props.row.status === 'pendent'"
+                    @click="hasDeliveryGuyId(props.row.id, props.row.delivery_guy_id, 'delivered')"
                     flat
                     round
                     color="green-5"
@@ -313,7 +411,23 @@ const sortedDeliveries = computed(() => {
                   </q-btn>
 
                   <q-btn
-                    v-if="props.row.status !== 'delivered'"
+                    v-if="props.row.status === 'scheduled' || props.row.status === 'pendent'"
+                    @click="changeShowConfirmAction(props.row.id, 'delivered_in_person')"
+                    flat
+                    round
+                    color="green-5"
+                    icon="person"
+                    size="sm"
+                  >
+                    <q-tooltip>Finalizar como entregue pessoalmente</q-tooltip>
+                  </q-btn>
+
+                  <q-btn
+                    v-if="
+                      props.row.status === 'scheduled' ||
+                      props.row.status === 'pendent' ||
+                      props.row.status === 'partial_delivered'
+                    "
                     @click="
                       changeShowFormPartialDelivered(
                         true,
@@ -329,6 +443,17 @@ const sortedDeliveries = computed(() => {
                     size="sm"
                   >
                     <q-tooltip>Finalizar entrega parcialmente</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    v-if="props.row.status === 'pendent'"
+                    @click="changeShowFormScheduleDelivery(true, props.row.id)"
+                    flat
+                    round
+                    color="indigo-11"
+                    icon="date_range"
+                    size="sm"
+                  >
+                    <q-tooltip>Agendar entrega</q-tooltip>
                   </q-btn>
                   <q-btn
                     @click="changeShowDeliveryDetails(true, props.row.id)"
@@ -360,6 +485,30 @@ const sortedDeliveries = computed(() => {
     <FormPartialDeliveredDelivery
       :data="showFormPartialDelivered"
       @update:open="changeShowFormPartialDelivered(false)"
+    />
+    <ConfirmAction
+      :open="showConfirmAction"
+      label-action="Continuar"
+      :title="
+        deliveryMonitoring.status === 'delivered'
+          ? 'Confirmação da atualização como entregue'
+          : 'Confirmação da atualização como entregue pessoalmente'
+      "
+      :message="
+        deliveryMonitoring.status === 'delivered'
+          ? 'Caso tenha certeza, clique em \'Continuar\', pois a entrega será alterada como entregue e não poderá mais ser alterada.'
+          : 'Caso tenha certeza, clique em \'Continuar\', pois a entrega será alterada como entregue pessoalmente e não poderá mais ser alterada.'
+      "
+      @update:open="closeConfirmAction"
+      @update:ok="closeConfirmActionOk"
+    />
+    <FormSelectDeliveryGuy
+      :data="showFormSelectDeliveryGuy"
+      @update:open="changeShowFormSelectDeliveryGuy(false)"
+      @send:ids="
+        (deliveryID: number, deliveryGuyID: number | null) =>
+          setDeliveryGuyIdAndUpdate(deliveryID, deliveryGuyID)
+      "
     />
   </section>
 </template>
