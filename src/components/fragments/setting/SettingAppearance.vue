@@ -150,16 +150,6 @@ watch(
                 </div>
               </q-toggle>
             </div>
-            <div class="col-auto">
-              <q-chip
-                :color="dataAppearance.titlePageColorDefault ? 'positive' : 'grey-4'"
-                :text-color="dataAppearance.titlePageColorDefault ? 'white' : 'grey-7'"
-                dense
-                size="sm"
-              >
-                {{ dataAppearance.titlePageColorDefault ? 'Padrão' : 'Personalizado' }}
-              </q-chip>
-            </div>
           </div>
           <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs">
             <div
@@ -211,16 +201,6 @@ watch(
                 </div>
               </q-toggle>
             </div>
-            <div class="col-auto">
-              <q-chip
-                :color="dataAppearance.navbarColorDefault ? 'positive' : 'grey-4'"
-                :text-color="dataAppearance.navbarColorDefault ? 'white' : 'grey-7'"
-                dense
-                size="sm"
-              >
-                {{ dataAppearance.navbarColorDefault ? 'Padrão' : 'Personalizado' }}
-              </q-chip>
-            </div>
           </div>
           <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs q-mb-md">
             <div
@@ -261,16 +241,6 @@ watch(
                   <div class="text-caption text-grey-6">Cor dos ícones da barra de navegação</div>
                 </div>
               </q-toggle>
-            </div>
-            <div class="col-auto">
-              <q-chip
-                :color="dataAppearance.navbarIconColorDefault ? 'positive' : 'grey-4'"
-                :text-color="dataAppearance.navbarIconColorDefault ? 'white' : 'grey-7'"
-                dense
-                size="sm"
-              >
-                {{ dataAppearance.navbarIconColorDefault ? 'Padrão' : 'Personalizado' }}
-              </q-chip>
             </div>
           </div>
           <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs">
@@ -327,20 +297,6 @@ watch(
                 </div>
               </q-toggle>
             </div>
-            <div class="col-auto">
-              <q-chip
-                :color="dataAppearance.sideMenuColorDefaultNotSelectedItem ? 'positive' : 'grey-4'"
-                :text-color="
-                  dataAppearance.sideMenuColorDefaultNotSelectedItem ? 'white' : 'grey-7'
-                "
-                dense
-                size="sm"
-              >
-                {{
-                  dataAppearance.sideMenuColorDefaultNotSelectedItem ? 'Padrão' : 'Personalizado'
-                }}
-              </q-chip>
-            </div>
           </div>
           <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs q-mb-md">
             <div
@@ -381,20 +337,6 @@ watch(
                   <div class="text-caption text-grey-6">Cor dos ícones não selecionados</div>
                 </div>
               </q-toggle>
-            </div>
-            <div class="col-auto">
-              <q-chip
-                :color="dataAppearance.sideMenuColorDefaultNotSelectedIcon ? 'positive' : 'grey-4'"
-                :text-color="
-                  dataAppearance.sideMenuColorDefaultNotSelectedIcon ? 'white' : 'grey-7'
-                "
-                dense
-                size="sm"
-              >
-                {{
-                  dataAppearance.sideMenuColorDefaultNotSelectedIcon ? 'Padrão' : 'Personalizado'
-                }}
-              </q-chip>
             </div>
           </div>
           <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs q-mb-lg">
@@ -439,16 +381,6 @@ watch(
                 </div>
               </q-toggle>
             </div>
-            <div class="col-auto">
-              <q-chip
-                :color="dataAppearance.sideMenuColorDefaultSelectedItem ? 'positive' : 'grey-4'"
-                :text-color="dataAppearance.sideMenuColorDefaultSelectedItem ? 'white' : 'grey-7'"
-                dense
-                size="sm"
-              >
-                {{ dataAppearance.sideMenuColorDefaultSelectedItem ? 'Padrão' : 'Personalizado' }}
-              </q-chip>
-            </div>
           </div>
           <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs q-mb-md">
             <div
@@ -490,16 +422,6 @@ watch(
                 </div>
               </q-toggle>
             </div>
-            <div class="col-auto">
-              <q-chip
-                :color="dataAppearance.sideMenuColorDefaultSelectedIcon ? 'positive' : 'grey-4'"
-                :text-color="dataAppearance.sideMenuColorDefaultSelectedIcon ? 'white' : 'grey-7'"
-                dense
-                size="sm"
-              >
-                {{ dataAppearance.sideMenuColorDefaultSelectedIcon ? 'Padrão' : 'Personalizado' }}
-              </q-chip>
-            </div>
           </div>
           <div class="row items-center q-gutter-x-sm q-pl-sm q-mt-xs">
             <div
@@ -535,12 +457,11 @@ watch(
       <q-btn
         @click="update"
         color="primary"
-        label="Salvar alterações"
+        label="Atualizar"
         size="md"
         :loading="loadingSetting"
         unelevated
         no-caps
-        icon-right="save"
       />
     </q-card-actions>
   </q-card>
