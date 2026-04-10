@@ -35,8 +35,8 @@ const sortedRecords = computed(() => {
       no-data-label="Nenhum registro para mostrar"
       virtual-scroll
       :rows-per-page-options="[0]"
-      style="height: 400px; width: 400px"
-      bordered
+      style="height: 420px"
+      flat
     >
       <template v-slot:header="props">
         <q-tr :props="props">

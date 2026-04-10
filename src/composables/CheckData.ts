@@ -1814,6 +1814,43 @@ export const checkDataSellerRegistration = (data: {
   return { status: true };
 };
 
+export const checkCommissionFilter = (
+  data: IFilterCommission,
+): { status: boolean; message?: string } => {
+  const dateRegex = /^(0[1-9]|1[0-2])\/\d{4}$/;
+
+  if (data.startPeriod) {
+    if (!dateRegex.test(data.startPeriod)) {
+      return { status: false, message: 'O período inicial deve estar no formato MM/YYYY' };
+    }
+  }
+
+  if (data.endPeriod) {
+    if (!dateRegex.test(data.endPeriod)) {
+      return { status: false, message: 'O período final deve estar no formato MM/YYYY' };
+    }
+  }
+
+  if (
+    data.startPeriod &&
+    data.endPeriod &&
+    dateRegex.test(data.startPeriod) &&
+    dateRegex.test(data.endPeriod)
+  ) {
+    const [mStart, yStart] = data.startPeriod.split('/').map(Number);
+    const [mEnd, yEnd] = data.endPeriod.split('/').map(Number);
+
+    const startValue = yStart * 100 + mStart;
+    const endValue = yEnd * 100 + mEnd;
+
+    if (startValue > endValue) {
+      return { status: false, message: 'A data inicial não pode ser maior que a data final' };
+    }
+  }
+
+  return { status: true };
+};
+
 export const checkDataDeliveryGuy = (data: IDeliveryGuy): { status: boolean; message?: string } => {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 

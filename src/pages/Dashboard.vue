@@ -130,6 +130,7 @@ const allSalesPeriodsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
     stack: 'total',
   }));
 });
+
 const allSalesProductsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
   const products = dashboardInfo.value.products;
 
@@ -154,6 +155,7 @@ const allSalesProductsDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => 
     },
   ];
 });
+
 const allSalesSellerDatasets = computed<ChartDataset<'bar' | 'line'>[]>(() => {
   const sellers = dashboardInfo.value.sellers;
 
@@ -190,48 +192,57 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <main class="q-pa-lg">
-    <section>
-      <TitlePage title="Dashboard" icon="equalizer" />
-    </section>
-    <div class="full-width">
-      <section>
-        <q-banner rounded class="bg-grey-4 q-mb-sm">
-          <div class="row q-gutter-x-sm justify-end items-center">
-            <q-btn
-              round
-              color="primary"
-              icon="filter_alt"
-              unelevated
-              size="13px"
-              @click="changeShowFilterDashboard"
-            >
-              <q-badge v-show="hasFilter" floating color="red" rounded />
-            </q-btn>
-          </div>
-        </q-banner>
-      </section>
-      <div>
-        <div v-if="loadingDashboard" class="fixed-center q-mt-lg">
-          <Loading :show="loadingDashboard" size="170px" />
+  <main class="dashboard-page q-pa-md">
+    <!-- Header -->
+    <section class="q-mb-md">
+      <div class="row items-center no-wrap">
+        <div class="col">
+          <TitlePage title="Dashboard" icon="equalizer" />
         </div>
+        <div class="col-auto q-pr-xs">
+          <q-btn
+            round
+            color="primary"
+            icon="filter_alt"
+            unelevated
+            size="13px"
+            @click="changeShowFilterDashboard"
+          >
+            <q-badge v-show="hasFilter" floating color="red" rounded />
+          </q-btn>
+        </div>
+      </div>
+    </section>
 
-        <div v-else>
-          <div class="row justify-between full-width q-mt-sm">
+    <!-- Loading state -->
+    <div v-if="loadingDashboard" class="flex flex-center" style="min-height: 60vh">
+      <Loading :show="loadingDashboard" size="170px" />
+    </div>
+
+    <div v-else>
+      <!-- KPI Cards -->
+      <section class="q-mb-lg">
+        <div class="row q-col-gutter-md">
+          <div class="col-12 col-sm-6 col-lg-3">
             <DashboardCard
               title="Total de Vendas"
+              icon="payments"
               :data="
                 dashboardInfo.sales_value ? formatToReal(dashboardInfo.sales_value) : 'R$ 0,00'
               "
-              class="q-pa-xs"
             />
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
             <DashboardCard
               title="Quantidade de Vendas"
+              icon="shopping_cart"
               :data="dashboardInfo.sales_made"
-              class="q-pa-xs"
             />
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
             <DashboardCard
               title="Movimentações"
+              icon="compare_arrows"
               :data="
                 dashboardInfo.movements_entry_value
                   ? formatToReal(dashboardInfo.movements_entry_value)
@@ -244,108 +255,189 @@ onUnmounted(() => {
               "
               tooltip="Entrada"
               tooltip2="Saída"
-              dataClass="flex justify-center text-h5 text-weight-medium text-green-8"
-              dataClass2="flex justify-center text-h5 text-weight-medium text-red-8"
-              class="q-pa-xs"
+              dataClass="text-h5 text-weight-bold text-green-8"
+              dataClass2="text-h5 text-weight-bold text-red-8"
             />
+          </div>
+          <div class="col-12 col-sm-6 col-lg-3">
             <DashboardCard
               title="Ticket Médio"
+              icon="receipt_long"
               :data="
                 dashboardInfo.medium_ticket ? formatToReal(dashboardInfo.medium_ticket) : 'R$ 0,00'
               "
-              class="q-pa-xs"
-            />
-          </div>
-
-          <div class="row justify-between full-width q-mt-lg">
-            <GraphicDoughnut
-              :label="categoriesLabel"
-              :labelTooltip="
-                dashboardInfo.categories_most_sold?.length
-                  ? 'Quantidades vendidas'
-                  : 'Nenhuma quantidade para mostrar'
-              "
-              :data="categoriesData"
-              :backgroundColor="['#0046FF', '#FAB12F', '#0BA6DF', '#D96F32', '#9ECAD6']"
-              :hoverOffset="4"
-              :responsive="false"
-              position="top"
-              title="Vendas X Categorias TOP 5"
-              width="400"
-              height="400"
-            />
-            <GraphicDoughnut
-              :label="typeReceiptLabel"
-              :labelTooltip="
-                typeReceiptLabel[0] === '...'
-                  ? 'Nenhuma quantidade arrecadada'
-                  : 'Quantidade arrecadada em R$'
-              "
-              :data="typeReceiptData"
-              :backgroundColor="['#03A6A1', '#0046FF', '#E67514', '#06923E']"
-              :hoverOffset="4"
-              :responsive="false"
-              position="top"
-              title="Vendas X Tipos de Recebimentos"
-              width="400"
-              height="400"
-            />
-            <TableDashboardQuantityRegister
-              :records="dashboardInfo.records ? dashboardInfo.records : []"
-            />
-          </div>
-
-          <div class="row q-mt-lg q-gutter-y-xl">
-            <GraphicBar
-              :labels="[
-                'Janeiro',
-                'Fevereiro',
-                'Março',
-                'Abril',
-                'Maio',
-                'Junho',
-                'Julho',
-                'Agosto',
-                'Setembro',
-                'Outubro',
-                'Novembro',
-                'Dezembro',
-              ]"
-              :datasets="allSalesPeriodsDatasets"
-              :responsive="false"
-              indexAxis="x"
-              title="Vendas X Período"
-              :width="monitorWidth - 100"
-              height="500"
-              class="q-mb-md"
-            />
-            <GraphicBar
-              :labels="dashboardInfo.products ? dashboardInfo.products.labels : ['...']"
-              :datasets="allSalesProductsDatasets"
-              :responsive="false"
-              indexAxis="y"
-              position="bottom"
-              title="Vendas UND X Produto"
-              :width="monitorWidth - 100"
-              height="500px"
-              class="q-mb-md"
-            />
-            <GraphicBar
-              :labels="dashboardInfo.sellers ? dashboardInfo.sellers.labels : ['...']"
-              :datasets="allSalesSellerDatasets"
-              :responsive="false"
-              indexAxis="y"
-              position="bottom"
-              title="Vendas X Vendedores"
-              :width="monitorWidth - 100"
-              height="500px"
-              class="q-mb-md"
             />
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Doughnuts + Table -->
+      <section class="q-mb-lg">
+        <div class="row q-col-gutter-md">
+          <div class="col-12 col-md-4">
+            <q-card flat bordered class="dashboard-card full-height">
+              <q-card-section class="q-pb-none">
+                <div class="chart-section-title">Vendas X Categorias TOP 5</div>
+              </q-card-section>
+              <q-card-section class="flex justify-center">
+                <div class="doughnut-wrapper">
+                  <GraphicDoughnut
+                    :label="categoriesLabel"
+                    :labelTooltip="
+                      dashboardInfo.categories_most_sold?.length
+                        ? 'Quantidades vendidas'
+                        : 'Nenhuma quantidade para mostrar'
+                    "
+                    :data="categoriesData"
+                    :backgroundColor="['#0046FF', '#FAB12F', '#0BA6DF', '#D96F32', '#9ECAD6']"
+                    :hoverOffset="4"
+                    :responsive="true"
+                    position="top"
+                  />
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <q-card flat bordered class="dashboard-card full-height">
+              <q-card-section class="q-pb-none">
+                <div class="chart-section-title">Vendas X Tipos de Recebimentos</div>
+              </q-card-section>
+              <q-card-section class="flex justify-center">
+                <div class="doughnut-wrapper">
+                  <GraphicDoughnut
+                    :label="typeReceiptLabel"
+                    :labelTooltip="
+                      typeReceiptLabel[0] === '...'
+                        ? 'Nenhuma quantidade arrecadada'
+                        : 'Quantidade arrecadada em R$'
+                    "
+                    :data="typeReceiptData"
+                    :backgroundColor="['#03A6A1', '#0046FF', '#E67514', '#06923E']"
+                    :hoverOffset="4"
+                    :responsive="true"
+                    position="top"
+                  />
+                </div>
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <div class="col-12 col-md-4">
+            <q-card flat bordered class="dashboard-card full-height">
+              <TableDashboardQuantityRegister
+                :records="dashboardInfo.records ? dashboardInfo.records : []"
+              />
+            </q-card>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bar Charts -->
+      <section>
+        <div class="row q-col-gutter-md">
+          <div class="col-12">
+            <q-card flat bordered class="dashboard-card">
+              <q-card-section class="q-pb-none">
+                <div class="chart-section-title">Vendas X Período</div>
+              </q-card-section>
+              <q-card-section class="chart-scroll-x">
+                <GraphicBar
+                  :labels="[
+                    'Janeiro',
+                    'Fevereiro',
+                    'Março',
+                    'Abril',
+                    'Maio',
+                    'Junho',
+                    'Julho',
+                    'Agosto',
+                    'Setembro',
+                    'Outubro',
+                    'Novembro',
+                    'Dezembro',
+                  ]"
+                  :datasets="allSalesPeriodsDatasets"
+                  :responsive="false"
+                  indexAxis="x"
+                  :width="monitorWidth - 100"
+                  height="400"
+                />
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <div class="col-12">
+            <q-card flat bordered class="dashboard-card">
+              <q-card-section class="q-pb-none">
+                <div class="chart-section-title">Vendas UND X Produto</div>
+              </q-card-section>
+              <q-card-section class="chart-scroll-x">
+                <GraphicBar
+                  :labels="dashboardInfo.products ? dashboardInfo.products.labels : ['...']"
+                  :datasets="allSalesProductsDatasets"
+                  :responsive="false"
+                  indexAxis="y"
+                  :width="monitorWidth - 100"
+                  height="500px"
+                />
+              </q-card-section>
+            </q-card>
+          </div>
+
+          <div class="col-12">
+            <q-card flat bordered class="dashboard-card">
+              <q-card-section class="q-pb-none">
+                <div class="chart-section-title">Vendas X Vendedores</div>
+              </q-card-section>
+              <q-card-section class="chart-scroll-x">
+                <GraphicBar
+                  :labels="dashboardInfo.sellers ? dashboardInfo.sellers.labels : ['...']"
+                  :datasets="allSalesSellerDatasets"
+                  :responsive="false"
+                  indexAxis="y"
+                  :width="monitorWidth - 100"
+                  height="500px"
+                />
+              </q-card-section>
+            </q-card>
+          </div>
+        </div>
+      </section>
     </div>
+
     <!-- Modals -->
     <FilterDashboard :open="showFilterDashboard" :filters="filter" @update:open="actionFilter" />
   </main>
 </template>
+
+<style scoped>
+.dashboard-page {
+  background: #f4f6f9;
+  min-height: 100vh;
+}
+
+.dashboard-card {
+  border-radius: 12px !important;
+}
+
+.chart-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #78909c;
+}
+
+.doughnut-wrapper {
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+}
+
+.chart-scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+</style>

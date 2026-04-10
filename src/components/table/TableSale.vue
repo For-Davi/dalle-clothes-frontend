@@ -84,6 +84,9 @@ onMounted(async () => {
       </template>
       <template v-slot:body="props">
         <q-tr :props="props">
+          <q-td key="id" :props="props" class="text-left">
+            {{ props.row.id }}
+          </q-td>
           <q-td key="date" :props="props" class="text-left">
             {{ props.row.date }}
           </q-td>

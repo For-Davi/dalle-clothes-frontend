@@ -94,91 +94,113 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <section>
+  <section class="q-py-sm">
     <q-table
-      class="q-mt-sm"
+      grid
       :rows="loadingEmployee ? [] : listEmployee"
       :columns="columnsEmployee"
       :filter="props.filter"
       :loading="loadingEmployee"
-      title="Lista de funcionários"
-      row-key="index"
-      no-data-label="Nenhum fornecedor para mostrar"
-      virtual-scroll
-      :rows-per-page-options="[10]"
+      row-key="id"
+      card-container-class="row q-col-gutter-md"
+      no-data-label="Nenhum funcionário para mostrar"
+      :rows-per-page-options="[0]"
     >
-      <template v-slot:header="props">
-        <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props" class="text-h5">
-            <span class="text-body2 text-bold">{{ col.label }}</span>
-          </q-th>
-        </q-tr>
+      <template v-slot:item="props">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <q-card class="employee-card" flat bordered>
+            <q-card-section class="text-center q-pb-none">
+              <q-avatar
+                size="80px"
+                font-size="32px"
+                color="primary"
+                text-color="white"
+                class="shadow-2"
+              >
+                {{ props.row.name.charAt(0).toUpperCase() }}
+              </q-avatar>
+
+              <div class="text-h6 q-mt-md">{{ props.row.name }}</div>
+              <div class="text-caption text-grey-7">{{ props.row.email }}</div>
+            </q-card-section>
+
+            <q-card-section>
+              <div class="row items-center q-mb-xs">
+                <q-icon name="group_work" color="primary" size="xs" class="q-mr-sm" />
+                <div class="text-grey-8">{{ props.row.department_name ?? 'Sem departamento' }}</div>
+              </div>
+
+              <q-separator inset class="q-my-sm" />
+
+              <div class="row justify-between items-center">
+                <q-chip
+                  dense
+                  :color="props.row.has_login_access === 1 ? 'blue-1' : 'grey-3'"
+                  :text-color="props.row.has_login_access === 1 ? 'blue-9' : 'grey-7'"
+                  :icon="props.row.has_login_access === 1 ? 'key' : 'key_off'"
+                >
+                  {{ props.row.has_login_access === 1 ? 'Com acesso' : 'Sem acesso' }}
+                </q-chip>
+
+                <div class="row">
+                  <q-btn
+                    v-if="props.row.has_login_access === 1"
+                    flat
+                    round
+                    color="orange"
+                    icon="key_off"
+                    size="sm"
+                    :disable="employeeMonitoring === props.row.id"
+                    @click="startRemoveAccessLogin(props.row.id)"
+                  >
+                    <q-tooltip>Remover acesso do sistema</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    v-else
+                    flat
+                    round
+                    color="green"
+                    icon="key"
+                    size="sm"
+                    :disable="employeeMonitoring === props.row.id"
+                    @click="openFormCreateAccessLogin(props.row.id)"
+                  >
+                    <q-tooltip>Criar acesso do sistema</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    color="primary"
+                    icon="edit"
+                    size="sm"
+                    :disable="employeeMonitoring === props.row.id"
+                    @click="startEdit(props.row.id)"
+                  >
+                    <q-tooltip>Editar Funcionário</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    flat
+                    round
+                    color="negative"
+                    icon="delete"
+                    size="sm"
+                    :disable="employeeMonitoring === props.row.id"
+                    @click="startExclude(props.row.id)"
+                  >
+                    <q-tooltip>Excluir Funcionário</q-tooltip>
+                  </q-btn>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
+        </div>
       </template>
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="name" :props="props" class="text-left">
-            {{ props.row.name }}
-          </q-td>
-          <q-td key="email" :props="props" class="text-left">
-            {{ props.row.email }}
-          </q-td>
-          <q-td key="department_name" :props="props" class="text-left">
-            {{ props.row.department_name }}
-          </q-td>
-          <q-td key="has_login_access" :props="props" class="text-left">
-            <q-icon
-              :name="props.row.has_login_access === 1 ? 'check_circle' : 'close'"
-              :color="props.row.has_login_access === 1 ? 'green' : 'red'"
-              size="17px"
-            />
-          </q-td>
-          <q-td key="action" :props="props">
-            <q-btn
-              v-if="props.row.has_login_access === 1"
-              @click="startRemoveAccessLogin(props.row.id)"
-              :disable="employeeMonitoring === props.row.id"
-              size="sm"
-              flat
-              round
-              color="red"
-              icon="key_off"
-            >
-              <q-tooltip>Remover acesso do sistema</q-tooltip>
-            </q-btn>
-            <q-btn
-              v-else
-              @click="openFormCreateAccessLogin(props.row.id)"
-              :disable="employeeMonitoring === props.row.id"
-              size="sm"
-              flat
-              round
-              color="green"
-              icon="key"
-            >
-              <q-tooltip>Criar acesso do sistema</q-tooltip>
-            </q-btn>
-            <q-btn
-              @click="startEdit(props.row.id)"
-              :disable="employeeMonitoring === props.row.id"
-              size="sm"
-              flat
-              round
-              color="black"
-              icon="edit"
-            />
-            <q-btn
-              @click="startExclude(props.row.id)"
-              :disable="employeeMonitoring === props.row.id"
-              size="sm"
-              flat
-              round
-              color="red"
-              icon="delete"
-            />
-          </q-td>
-        </q-tr>
+
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
       </template>
     </q-table>
+
     <ConfirmAction
       :open="showConfirmAction"
       :label-action="dataConfirmAction.labelAction"
@@ -189,3 +211,9 @@ onMounted(async () => {
     />
   </section>
 </template>
+
+<style scoped lang="scss">
+.employee-card {
+  border-radius: 12px;
+}
+</style>

@@ -394,11 +394,11 @@ const getBackgroundSelectedSideMenu = computed(() => {
               clickable
               v-ripple
               class="text-white"
-              :to="{ name: 'earnings' }"
-              :active="isActive('earnings')"
+              :to="{ name: 'results' }"
+              :active="isActive('results')"
               active-class="text-bold"
               :style="
-                isActive('earnings')
+                isActive('results')
                   ? getBackgroundSelectedSideMenu
                     ? { backgroundColor: getBackgroundSelectedSideMenu }
                     : undefined
@@ -409,9 +409,9 @@ const getBackgroundSelectedSideMenu = computed(() => {
             >
               <q-item-section avatar>
                 <q-icon
-                  name="savings"
+                  name="analytics"
                   :style="{
-                    color: isActive('earnings')
+                    color: isActive('results')
                       ? getColorIconSelectedSideMenu || ''
                       : getColorIconNotSelectedSideMenu || '',
                   }"
@@ -420,12 +420,12 @@ const getBackgroundSelectedSideMenu = computed(() => {
               <q-item-section>
                 <span
                   :style="{
-                    color: isActive('earnings')
+                    color: isActive('results')
                       ? getColorIconSelectedSideMenu || undefined
                       : getColorIconNotSelectedSideMenu || undefined,
                   }"
                 >
-                  Ganhos
+                  Resultados
                 </span>
               </q-item-section>
             </q-item>
