@@ -95,14 +95,6 @@ const hasFilter = computed(() => {
       <TitlePage class="col-7" title="Funcionários" icon="badge" />
       <div>
         <q-btn
-          color="white"
-          text-color="black"
-          label="Permissões"
-          icon-right="rule"
-          no-caps
-          class="q-mr-sm"
-        />
-        <q-btn
           @click="changeShowDepartmentManage"
           color="white"
           text-color="black"

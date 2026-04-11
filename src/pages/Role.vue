@@ -10,7 +10,7 @@ import { useUserStore } from 'src/stores/user-store';
 import { actionsUser } from 'src/utils/actions';
 
 defineOptions({
-  name: 'User',
+  name: 'Role',
 });
 
 const search = ref<string>('');
@@ -85,7 +85,7 @@ const hasFilter = computed((): boolean => {
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Usuários" icon="person" />
+      <TitlePage class="col-7" title="Permissões" icon="person" />
       <div>
         <q-btn
           @click="changeShowFormUser(true)"

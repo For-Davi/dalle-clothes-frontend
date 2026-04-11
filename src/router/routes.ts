@@ -112,6 +112,11 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/pages/User.vue'),
       },
       {
+        path: 'role',
+        name: 'role',
+        component: () => import('src/pages/Role.vue'),
+      },
+      {
         path: 'setting',
         name: 'setting',
         component: () => import('src/pages/Setting.vue'),

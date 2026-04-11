@@ -11,3 +11,5 @@ export type ActionStock =
 export type ActionsMovement = 'history' | 'category' | 'export';
 
 export type ActionsSupplier = 'order' | 'category';
+
+export type ActionsUser = 'role' | 'department';

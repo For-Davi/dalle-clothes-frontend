@@ -72,6 +72,19 @@ export const actionsSupplier: { label: string; icon: string; type: IActionsSuppl
   },
 ];
 
+export const actionsUser: { label: string; icon: string; type: IActionsUser }[] = [
+  {
+    label: 'Permissões',
+    icon: 'category',
+    type: 'role',
+  },
+  {
+    label: 'Departamentos',
+    icon: 'group_work',
+    type: 'department',
+  },
+];
+
 export const actionsDelivery: { label: string; icon: string; type: IActionDelivery }[] = [
   {
     label: 'Exportar',
