@@ -22,7 +22,7 @@ import type {
   DepartmentRoot,
 } from './Department';
 import type { QuasarSelect, QuasarTable } from './Quasar';
-import type { RoleSelect } from './Role';
+import type { RoleSelect, Permission, Role, DataRole } from './Role';
 import type { FilterUser, User } from './User';
 import type { FilterClient, Client, VModelClient } from './Client';
 import type { Color } from './Color';
@@ -184,6 +184,8 @@ declare global {
   type IEmployeeTable = EmployeeTable;
   type IFilterEmployee = FilterEmployee;
   type IRoleSelect = RoleSelect;
+  type IPermission = Permission;
+  type IRole = Role;
   type IColor = Color;
   type IGrid = Grid;
   type IGridGroup = GridGroup;
@@ -249,6 +251,7 @@ declare global {
   type INotification = Notification;
   type IEnterprise = Enterprise;
   type IDataEnterprise = DataEnterprise;
+  type IDataRole = DataRole;
   type IVModelClient = VModelClient;
   type IVModelSalePayment = VModelSalePayment;
   type ISupplierCartProduct = SupplierCartProduct;
