@@ -4,6 +4,17 @@ export interface User {
   email: string;
   active: number;
   role_id: number;
+  role: {
+    description: string | null;
+    id: number;
+    name: string;
+    is_system: number;
+    permissions: {
+      id: number;
+      slug: string;
+      description: string;
+    }[];
+  };
   enterprise_id: number;
   department_id: number;
   image_id: number | null;

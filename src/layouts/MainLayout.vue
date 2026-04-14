@@ -15,38 +15,85 @@ const { user } = storeToRefs(useAuthStore());
 
 useNotificationChannel(user.value?.id ?? 0);
 
-const showInbox = ref<boolean>(false);
-const showContactHelper = ref<boolean>(false);
-const miniState = ref<boolean>(false);
-const drawer = ref<boolean>(false);
+const showInbox = ref(false);
+const showContactHelper = ref(false);
+const miniState = ref(false);
+const drawer = ref(false);
+
+const allMenuItems = [
+  { name: 'dashboard', icon: 'equalizer', label: 'Dashboard', permission: 'dashboard.view' },
+  { name: 'payment', icon: 'point_of_sale', label: 'Caixa', permission: 'sale.create' },
+  { name: 'delivery', icon: 'local_shipping', label: 'Entregas', permission: 'delivery.view' },
+  { name: 'client', icon: 'groups', label: 'Clientes', permission: 'client.view' },
+  { name: 'stock', icon: 'inventory', label: 'Estoque', permission: 'product.view' },
+  { name: 'sale', icon: 'paid', label: 'Vendas', permission: 'sale.view' },
+  { name: 'results', icon: 'analytics', label: 'Resultados', permission: 'result.view' },
+  { name: 'user', icon: 'person', label: 'Usuários', permission: 'user.view' },
+  { name: 'employee', icon: 'badge', label: 'Funcionários', permission: 'employee.view' },
+  { name: 'transaction', icon: 'sync_alt', label: 'Transações', permission: 'transaction.view' },
+  { name: 'receipt', icon: 'account_balance', label: 'Recebimentos', permission: 'receipt.view' },
+  { name: 'supplier', icon: 'list_alt', label: 'Fornecedores', permission: 'supplier.view' },
+  { name: 'setting', icon: 'settings', label: 'Configurações', permission: 'setting.view' },
+  { name: 'help', icon: 'help', label: 'Ajuda' }, // Sem permission sempre aparece
+];
+
+const filteredMenuItems = computed(() => {
+  if (!user.value?.role?.permissions) return [];
+
+  const userSlugs = new Set(user.value.role.permissions.map((p) => p.slug));
+
+  return allMenuItems.filter((item) => {
+    if (!item.permission) return true;
+    return userSlugs.has(item.permission);
+  });
+});
 
 const isActive = (routeName: string) => route.name === routeName;
+
+const getItemStyle = (routeName: string) => {
+  const bg = isActive(routeName) ? backgroundSelected.value : backgroundNotSelected.value;
+  return bg ? { backgroundColor: bg } : undefined;
+};
+
 const changeShowInbox = () => {
   showInbox.value = !showInbox.value;
 };
+
 const changeShowContactHelper = () => {
   showContactHelper.value = !showContactHelper.value;
 };
 
-const getColorIconNotSelectedSideMenu = computed(() => {
+const getIconColor = (routeName: string) => {
+  return isActive(routeName) ? colorIconSelected.value || '' : colorIconNotSelected.value || '';
+};
+
+const getLabelColor = (routeName: string) => {
+  return isActive(routeName) ? colorIconSelected.value : colorIconNotSelected.value;
+};
+
+// Cores Dinâmicas
+const colorIconNotSelected = computed(() => {
   return appearanceSetting.value.side_menu_color_default_not_selected_icon === 0 &&
     appearanceSetting.value.side_menu_color_code_not_selected_icon
     ? appearanceSetting.value.side_menu_color_code_not_selected_icon
     : undefined;
 });
-const getColorIconSelectedSideMenu = computed(() => {
+
+const colorIconSelected = computed(() => {
   return appearanceSetting.value.side_menu_color_default_selected_icon === 0 &&
     appearanceSetting.value.side_menu_color_code_selected_icon
     ? appearanceSetting.value.side_menu_color_code_selected_icon
     : '#212121';
 });
-const getBackgroundNotSelectedSideMenu = computed(() => {
+
+const backgroundNotSelected = computed(() => {
   return appearanceSetting.value.side_menu_color_default_not_selected_item === 0 &&
     appearanceSetting.value.side_menu_color_code_not_selected_item
     ? appearanceSetting.value.side_menu_color_code_not_selected_item
     : undefined;
 });
-const getBackgroundSelectedSideMenu = computed(() => {
+
+const backgroundSelected = computed(() => {
   return appearanceSetting.value.side_menu_color_default_selected_item === 0 &&
     appearanceSetting.value.side_menu_color_code_selected_item
     ? appearanceSetting.value.side_menu_color_code_selected_item
@@ -78,672 +125,27 @@ const getBackgroundSelectedSideMenu = computed(() => {
         <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: '0' }">
           <q-list>
             <q-item
+              v-for="item in filteredMenuItems"
+              :key="item.name"
               clickable
               v-ripple
               class="text-white"
-              :to="{ name: 'dashboard' }"
-              :active="isActive('dashboard')"
+              :to="{ name: item.name }"
+              :active="isActive(item.name)"
               active-class="text-bold"
-              :style="
-                isActive('dashboard')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
+              :style="getItemStyle(item.name)"
             >
               <q-item-section avatar>
-                <q-icon
-                  name="equalizer"
-                  :style="{
-                    color: isActive('dashboard')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('dashboard')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Dashboard
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'payment' }"
-              :active="isActive('payment')"
-              active-class="text-bold"
-              :style="
-                isActive('payment')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="point_of_sale"
-                  :style="{
-                    color: isActive('payment')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
+                <q-icon :name="item.icon" :style="{ color: getIconColor(item.name) }" />
               </q-item-section>
               <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('payment')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Caixa
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'delivery' }"
-              :active="isActive('delivery')"
-              active-class="text-bold"
-              :style="
-                isActive('delivery')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="local_shipping"
-                  :style="{
-                    color: isActive('delivery')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('delivery')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Entregas
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'client' }"
-              :active="isActive('client')"
-              active-class="text-bold"
-              :style="
-                isActive('client')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="groups"
-                  :style="{
-                    color: isActive('client')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('client')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Clientes
-                </span>
-              </q-item-section>
-            </q-item>
-            <!-- <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'store' }"
-              :active="isActive('store')"
-              active-class="text-bold"
-              :style="
-                isActive('store')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="storefront"
-                  :style="{
-                    color: isActive('store')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('store')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Loja
-                </span>
-              </q-item-section>
-            </q-item> -->
-            <!-- <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'coupon' }"
-              :active="isActive('coupon')"
-              active-class="text-bold"
-              :style="
-                isActive('coupon')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="sell"
-                  :style="{
-                    color: isActive('coupon')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('coupon')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Cupons
-                </span>
-              </q-item-section>
-            </q-item> -->
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'stock' }"
-              :active="isActive('stock')"
-              active-class="text-bold"
-              :style="
-                isActive('stock')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="inventory"
-                  :style="{
-                    color: isActive('stock')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('stock')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Estoque
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'sale' }"
-              :active="isActive('sale')"
-              active-class="text-bold"
-              :style="
-                isActive('sale')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="paid"
-                  :style="{
-                    color: isActive('sale')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('sale')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Vendas
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'results' }"
-              :active="isActive('results')"
-              active-class="text-bold"
-              :style="
-                isActive('results')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="analytics"
-                  :style="{
-                    color: isActive('results')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('results')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Resultados
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'user' }"
-              :active="isActive('user')"
-              active-class="text-bold"
-              :style="
-                isActive('user')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="person"
-                  :style="{
-                    color: isActive('user')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('user')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Usuários
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'employee' }"
-              :active="isActive('employee')"
-              active-class="text-bold"
-              :style="
-                isActive('employee')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="badge"
-                  :style="{
-                    color: isActive('employee')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('employee')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Funcionários
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'transaction' }"
-              :active="isActive('transaction')"
-              active-class="text-bold"
-              :style="
-                isActive('transaction')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="sync_alt"
-                  :style="{
-                    color: isActive('transaction')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('transaction')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Transações
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'receipt' }"
-              :active="isActive('receipt')"
-              active-class="text-bold"
-              :style="
-                isActive('receipt')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="account_balance"
-                  :style="{
-                    color: isActive('receipt')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('receipt')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Recebimentos
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'supplier' }"
-              :active="isActive('supplier')"
-              active-class="text-bold"
-              :style="
-                isActive('supplier')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="list_alt"
-                  :style="{
-                    color: isActive('supplier')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('supplier')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Fornecedores
-                </span>
-              </q-item-section>
-            </q-item>
-            <!-- <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'diary' }"
-              :active="isActive('diary')"
-              active-class="text-bold"
-              :style="
-                isActive('diary')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="calendar_month"
-                  :style="{
-                    color: isActive('diary')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('diary')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Agenda
-                </span>
-              </q-item-section>
-            </q-item> -->
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'setting' }"
-              :active="isActive('setting')"
-              active-class="text-bold"
-              :style="
-                isActive('setting')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="settings"
-                  :style="{
-                    color: isActive('setting')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('setting')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Configurações
-                </span>
-              </q-item-section>
-            </q-item>
-            <q-item
-              clickable
-              v-ripple
-              class="text-white"
-              :to="{ name: 'help' }"
-              :active="isActive('help')"
-              active-class="text-bold"
-              :style="
-                isActive('help')
-                  ? getBackgroundSelectedSideMenu
-                    ? { backgroundColor: getBackgroundSelectedSideMenu }
-                    : undefined
-                  : getBackgroundNotSelectedSideMenu
-                    ? { backgroundColor: getBackgroundNotSelectedSideMenu }
-                    : undefined
-              "
-            >
-              <q-item-section avatar>
-                <q-icon
-                  name="help"
-                  :style="{
-                    color: isActive('help')
-                      ? getColorIconSelectedSideMenu || ''
-                      : getColorIconNotSelectedSideMenu || '',
-                  }"
-                />
-              </q-item-section>
-              <q-item-section>
-                <span
-                  :style="{
-                    color: isActive('help')
-                      ? getColorIconSelectedSideMenu || undefined
-                      : getColorIconNotSelectedSideMenu || undefined,
-                  }"
-                >
-                  Ajuda
-                </span>
+                <span :style="{ color: getLabelColor(item.name) }">{{ item.label }}</span>
               </q-item-section>
             </q-item>
           </q-list>
         </q-scroll-area>
       </q-drawer>
+
       <q-page-container>
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
@@ -751,7 +153,7 @@ const getBackgroundSelectedSideMenu = computed(() => {
           </transition>
         </router-view>
       </q-page-container>
-      <!-- Notification -->
+
       <Inbox :open="showInbox" @update:open="changeShowInbox" />
       <ContactHelper :open="showContactHelper" @update:open="changeShowContactHelper" />
     </q-layout>
