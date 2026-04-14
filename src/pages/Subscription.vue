@@ -4,12 +4,14 @@ import { storeToRefs } from 'pinia';
 import { useSubscriptionStore } from 'src/stores/subscription-store';
 import { computed, onMounted, reactive } from 'vue';
 import SubscriptionPayment from 'src/components/subscription/SubscriptionPayment.vue';
+import { useAuthStore } from 'src/stores/auth-store';
 
 defineOptions({
   name: 'Subscription',
 });
 
 const { listSubscription } = storeToRefs(useSubscriptionStore());
+const { user } = storeToRefs(useAuthStore());
 
 const showSubscriptionPayment = reactive<{
   open: boolean;
@@ -36,6 +38,9 @@ const basicSubscriptionId = computed(() => {
 const premiumSubscriptionId = computed(() => {
   const premium = listSubscription.value.find((premium) => premium.name === 'premium');
   return premium ? premium.id : null;
+});
+const showActionPayment = computed(() => {
+  return user.value?.role?.permissions?.some((p) => p.slug === 'subscription.payment') ?? false;
 });
 
 onMounted(async () => {
@@ -71,7 +76,7 @@ onMounted(async () => {
             </q-list>
           </q-card-section>
           <q-separator />
-          <q-card-actions align="right">
+          <q-card-actions align="right" v-if="showActionPayment">
             <q-btn
               icon-right="paid"
               label="VAMOS INICIAR NO BÁSICO"
@@ -111,7 +116,7 @@ onMounted(async () => {
             </q-list>
           </q-card-section>
           <q-separator />
-          <q-card-actions>
+          <q-card-actions v-if="showActionPayment">
             <q-btn
               icon-right="paid"
               label="QUERO TODAS AS VANTAGENS"
