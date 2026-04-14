@@ -36,10 +36,11 @@ export const updateRoleService = (
 
 export const deleteRoleService = (
   id: number,
+  newId: number,
 ): Promise<{
   status: number;
   data: { roles: IRole[]; message: string };
-}> => api.delete(`${baseUrl}/${id}`);
+}> => api.delete(`${baseUrl}/${id}/${newId}`);
 
 export const getPermissionsService = (): Promise<{
   status: number;

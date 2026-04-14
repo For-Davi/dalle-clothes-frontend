@@ -111,10 +111,10 @@ export const useRoleStore = defineStore('role', {
         this.setLoading(false);
       }
     },
-    async deleteRole(id: number) {
+    async deleteRole(id: number, newId: number) {
       this.setLoading(true);
       try {
-        const response = await deleteRoleService(id);
+        const response = await deleteRoleService(id, newId);
         if (response.status === 200) {
           this.clearListRole();
           this.setListRole(response.data.roles);

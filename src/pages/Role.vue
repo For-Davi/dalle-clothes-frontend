@@ -11,7 +11,7 @@ defineOptions({
   name: 'Role',
 });
 
-const { loadingRole, listRole } = storeToRefs(useRoleStore());
+const { loadingRole, listRole, listRoleSelect } = storeToRefs(useRoleStore());
 
 const search = ref<string>('');
 const showFormRole = reactive<{
@@ -24,10 +24,12 @@ const showFormRole = reactive<{
 const confirmDelete = reactive<{
   open: boolean;
   roleId: number | null;
+  newRoleId: number | null;
   roleName: string;
 }>({
   open: false,
   roleId: null,
+  newRoleId: null,
   roleName: '',
 });
 
@@ -45,21 +47,27 @@ const changeShowFormRole = (show: boolean, roleId: number | null = null): void =
   showFormRole.open = show;
 };
 
-const openDeleteConfirm = (role: IRole): void => {
+const rolesSelectFiltered = computed((): IRoleSelect[] =>
+  listRoleSelect.value.filter((r) => r.id !== confirmDelete.roleId),
+);
+
+const openDeleteConfirm = async (role: IRole): Promise<void> => {
   confirmDelete.roleId = role.id;
   confirmDelete.roleName = role.name;
   confirmDelete.open = true;
+  await useRoleStore().getRolesSelect();
 };
 
 const closeDeleteConfirm = (): void => {
   confirmDelete.open = false;
   confirmDelete.roleId = null;
+  confirmDelete.newRoleId = null;
   confirmDelete.roleName = '';
 };
 
 const confirmDeleteRole = async (): Promise<void> => {
-  if (confirmDelete.roleId) {
-    await useRoleStore().deleteRole(confirmDelete.roleId);
+  if (confirmDelete.roleId && confirmDelete.newRoleId) {
+    await useRoleStore().deleteRole(confirmDelete.roleId, confirmDelete.newRoleId);
   }
   closeDeleteConfirm();
 };
@@ -158,10 +166,18 @@ onMounted(async () => {
               </div>
               <div
                 v-if="role.description"
-                class="text-caption text-grey-7 q-mt-xs"
-                style="white-space: pre-line"
+                class="text-caption text-grey-7 q-mt-xs ellipsis"
+                style="white-space: pre-line; max-width: 100%"
               >
                 {{ role.description }}
+                <q-tooltip
+                  anchor="top middle"
+                  self="bottom middle"
+                  :offset="[10, 10]"
+                  class="bg-grey-9"
+                >
+                  {{ role.description }}
+                </q-tooltip>
               </div>
             </q-card-section>
             <q-card-section class="q-pt-xs">
@@ -181,14 +197,31 @@ onMounted(async () => {
     <FormRole :data="showFormRole" @update:open="onFormClose" />
 
     <!-- Confirm delete dialog -->
-    <q-dialog v-model="confirmDelete.open">
-      <q-card style="min-width: 320px">
-        <q-card-section class="row items-center">
+    <q-dialog v-model="confirmDelete.open" persistent>
+      <q-card style="min-width: 360px">
+        <q-card-section class="row items-center q-pb-none">
           <q-avatar icon="warning" color="negative" text-color="white" />
           <span class="q-ml-sm">
             Deseja excluir a permissão <strong>{{ confirmDelete.roleName }}</strong
             >?
           </span>
+        </q-card-section>
+        <q-card-section>
+          <div class="text-caption text-grey-7 q-mb-sm">
+            Selecione a permissão que será atribuída aos usuários que possuem esta permissão:
+          </div>
+          <q-select
+            v-model="confirmDelete.newRoleId"
+            :options="rolesSelectFiltered"
+            option-value="id"
+            option-label="name"
+            emit-value
+            map-options
+            outlined
+            dense
+            label="Nova permissão"
+            :loading="loadingRole"
+          />
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="primary" @click="closeDeleteConfirm" no-caps />
@@ -198,6 +231,7 @@ onMounted(async () => {
             color="negative"
             @click="confirmDeleteRole"
             :loading="loadingRole"
+            :disable="!confirmDelete.newRoleId"
             no-caps
           />
         </q-card-actions>
