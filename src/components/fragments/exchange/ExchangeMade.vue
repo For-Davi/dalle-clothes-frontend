@@ -93,8 +93,8 @@ const open = computed({
             label="Fechar"
             flat
             size="md"
-            :loading="loading"
             @click="open = false"
+            :loading="loading"
             unelevated
             no-caps
           />

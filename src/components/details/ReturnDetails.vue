@@ -220,12 +220,12 @@ watch(open, async () => {
               </p>
               <p class="flex items-center">
                 <q-icon name="attach_money" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Troco:</b>
+                <b class="q-mr-sm">Troco do estorno/diferença:</b>
                 {{ formatToReal(Return.change) }}
               </p>
               <p class="flex items-center">
                 <q-icon name="attach_money" class="q-mr-sm text-primary" />
-                <b class="q-mr-sm">Tarifas:</b>
+                <b class="q-mr-sm">Tarifas do estorno/diferença:</b>
                 {{ formatToReal(Return.fees) }}
               </p>
               <p class="flex items-center">

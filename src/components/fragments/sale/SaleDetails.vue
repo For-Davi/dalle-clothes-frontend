@@ -325,7 +325,7 @@ watch(open, async () => {
                   <b class="q-mr-sm">Complemento:</b> {{ Sale.sale_delivery.complement }}
                 </p>
 
-                <p class="flex items-center">
+                <p class="flex items-center" style="word-break: break-word; white-space: normal">
                   <q-icon name="description" class="q-mr-sm text-primary" />
                   <b class="q-mr-sm">Observação:</b> {{ Sale.sale_delivery.observation }}
                 </p>
