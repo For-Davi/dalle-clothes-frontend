@@ -74,7 +74,7 @@ onMounted(async () => {
       </template>
       <template v-slot:top>
         <div class="row justify-between items-center full-width">
-          <span class="text-body1">Lista de categorias</span>
+          <span class="text-body1">Lista de entregadores</span>
           <q-space />
           <q-input
             v-show="listDeliveryGuy.length > 0"
