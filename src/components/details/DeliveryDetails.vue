@@ -141,6 +141,15 @@ watch(open, async () => {
             <div class="col-12 col-sm-6">
               <p class="flex items-center">
                 <q-icon
+                  :name="Delivery.return_id ? 'assignment_return' : 'point_of_sale'"
+                  class="q-mr-sm text-primary"
+                />
+                <b>{{ Delivery.return_id ? 'Devolução' : 'Venda' }}:</b
+                >{{ Delivery.return_id ? Delivery.return_id : Delivery.sale_id }}
+              </p>
+
+              <p class="flex items-center">
+                <q-icon
                   :name="attributesStatus(Delivery.status)?.icon"
                   class="q-mr-sm text-primary"
                 />
@@ -193,7 +202,10 @@ watch(open, async () => {
                 <b>Data de criação:</b> {{ formatToBrazilianDate(Delivery.created_at) }}
               </p>
               <p
-                v-if="Delivery.scheduled_date && Delivery.status === 'delivered'"
+                v-if="
+                  Delivery.scheduled_date &&
+                  (Delivery.status === 'delivered' || Delivery.status === 'delivered_in_person')
+                "
                 class="flex items-center"
               >
                 <q-icon

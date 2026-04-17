@@ -4,7 +4,7 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import InformEmail from '../email/InformEmail.vue';
 import ExchangeTaxCoupon from '../taxcoupon/ExchangeTaxCoupon.vue';
 import { useReturnStore } from 'src/stores/return-store';
-import { exportReturnExchangeService } from 'src/services/exchange-service';
+import { exportExchangeService } from 'src/services/return-service';
 import { checkEmail } from 'src/composables/CheckData';
 import { createErrorData, createSuccess } from 'src/composables/CreateNotify';
 import { storeToRefs } from 'pinia';
@@ -43,7 +43,7 @@ const changeShowInformEmail = (show: boolean, clientEmail: string | null = null)
 };
 
 const startExport = async (): Promise<void> => {
-  await exportReturnExchangeService(props.data.couponData?.return.id ?? 0);
+  await exportExchangeService(props.data.couponData?.return.id ?? 0);
 };
 const startSendToEmail = async (email: string) => {
   const check = checkEmail(email);
@@ -68,7 +68,7 @@ const open = computed({
 </script>
 <template>
   <q-dialog v-model="open">
-    <q-card :class="loadingReturn ? 'column justify-between' : 'bg-grey-2 sub-page'">
+    <q-card :class="loadingReturn ? 'column justify-between sub-page' : 'bg-grey-2 sub-page'">
       <q-card-section class="q-pa-none">
         <TitlePage title="Troca finalizada" icon="point_of_sale" />
       </q-card-section>
@@ -102,6 +102,7 @@ const open = computed({
             color="secondary"
             label="Download Cupom"
             @click="startExport()"
+            :loading="loadingReturn"
             size="md"
             unelevated
             no-caps
@@ -110,6 +111,7 @@ const open = computed({
             color="primary"
             label="Enviar cupom por email"
             @click="changeShowInformEmail(true)"
+            :loading="loadingReturn"
             size="md"
             unelevated
             no-caps

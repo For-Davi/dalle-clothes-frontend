@@ -10,17 +10,16 @@ const props = defineProps<{
   couponData: ICouponData | null;
 }>();
 
-const formatToBrazilianDateTime = (value?: string | null) => {
+const formatToBrazilianDateTime = (value?: string | null): string => {
   if (!value) return '';
 
-  const localValue = value.replace('Z', '');
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
 
-  const date = new Date(localValue);
+  if (!match) return value;
 
-  const pad = (n: number) => String(n).padStart(2, '0');
+  const [, year, month, day, hours, minutes, seconds] = match;
 
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}
-          ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 };
 </script>
 

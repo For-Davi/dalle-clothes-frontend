@@ -10,7 +10,6 @@ import type { PaymentType } from 'src/enums/payment-enum';
 import { PaymentTypeLabels } from 'src/enums/payment-enum';
 import ReturnManage from 'src/components/manage/ReturnManage.vue';
 import CommissionManage from 'src/components/manage/CommissionManage.vue';
-import ExchangeManage from 'src/components/manage/ExchangeManage.vue';
 import FormSaleCancellation from 'src/components/form/FormSaleCancellation.vue';
 import SaleCancellationDetails from 'src/components/details/SaleCancellationDetails.vue';
 import { formatDate } from 'src/composables/FormatData';
@@ -40,11 +39,6 @@ const showReturnManage = reactive({
 const showCommissionManage = reactive({
   open: false as boolean,
   saleID: null as number | null,
-});
-const showExchangeManage = reactive({
-  open: false as boolean,
-  saleID: null as number | null,
-  status: null as string | null,
 });
 const showFormCancellation = reactive({
   open: false as boolean,
@@ -109,17 +103,6 @@ const changeShowCommissionManage = (open: boolean, saleID: number | null = null)
   Object.assign(showCommissionManage, {
     open,
     saleID,
-  });
-};
-const changeShowExchangeManage = (
-  open: boolean,
-  saleID: number | null = null,
-  status: string | null = null,
-): void => {
-  Object.assign(showExchangeManage, {
-    open,
-    saleID,
-    status,
   });
 };
 const changeShowFormCancellation = (open: boolean, saleID: number | null = null): void => {
@@ -436,17 +419,6 @@ watch(open, async () => {
                 <q-tooltip>Devoluções</q-tooltip>
               </q-btn>
               <q-btn
-                @click="changeShowExchangeManage(true, props.data.saleID, Sale.status)"
-                color="secondary"
-                icon="payments"
-                round
-                unelevated
-                no-caps
-                class="q-ml-sm"
-              >
-                <q-tooltip>Estornos/Diferenças</q-tooltip>
-              </q-btn>
-              <q-btn
                 color="positive"
                 icon="redeem"
                 round
@@ -494,7 +466,6 @@ watch(open, async () => {
       :data="showCommissionManage"
       @update:open="changeShowCommissionManage(false)"
     />
-    <ExchangeManage :data="showExchangeManage" @update:open="changeShowExchangeManage(false)" />
     <FormSaleCancellation
       :data="showFormCancellation"
       @update:open="changeShowFormCancellation(false)"

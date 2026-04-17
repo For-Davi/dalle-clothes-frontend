@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import QuantityDeliveryCard from 'src/components/card/QuantityDeliveryCard.vue';
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, watch } from 'vue';
 import { actionsDelivery } from 'src/utils/actions';
 import AllDeliveries from 'src/components/fragments/delivery/AllDeliveries.vue';
 import DeliveryDelivered from 'src/components/fragments/delivery/DeliveryDelivered.vue';
@@ -11,6 +11,8 @@ import DeliveryGuyManage from 'src/components/manage/DeliveryGuyManage.vue';
 import { storeToRefs } from 'pinia';
 import { useDeliveryStore } from 'src/stores/delivery-store';
 import FilterDelivery from 'src/components/filter/FilterDelivery.vue';
+import Exports from 'src/components/export/Exports.vue';
+import { exportDeliveryService } from 'src/services/delivery-service';
 
 defineOptions({
   name: 'Delivery',
@@ -21,6 +23,7 @@ const showDeliveryGuyManage = ref<boolean>(false);
 
 const { Dashboard } = storeToRefs(useDeliveryStore());
 
+const showExport = ref<boolean>(false);
 const showFilterDelivery = ref<boolean>(false);
 const filter = reactive<IFilterDelivery>({
   startDate: '',
@@ -35,6 +38,9 @@ const changeShowDeliveryGuyManage = () => {
 };
 const changeShowFilterDelivery = (): void => {
   showFilterDelivery.value = !showFilterDelivery.value;
+};
+const changeShowExport = (): void => {
+  showExport.value = !showExport.value;
 };
 const actionFilter = async (data: 'close' | IFilterDelivery): Promise<void> => {
   changeShowFilterDelivery();
@@ -53,13 +59,23 @@ const actionFilter = async (data: 'close' | IFilterDelivery): Promise<void> => {
 const openAction = (type: IActionDelivery): void => {
   switch (type) {
     case 'export':
-      console.log('dsahdkjsahd');
+      changeShowExport();
       break;
     case 'delivery_guy':
-      console.log('Abrindo gerenciamento de entregadores');
       changeShowDeliveryGuyManage();
       break;
   }
+};
+const startExport = async (format: 'pdf' | 'excel'): Promise<void> => {
+  await exportDeliveryService({
+    status: tab.value,
+    startDate: filter.startDate,
+    endDate: filter.endDate,
+    startScheduledDate: filter.startScheduledDate,
+    endScheduledDate: filter.endScheduledDate,
+    deliveryGuy: filter.deliveryGuy,
+    format: format,
+  });
 };
 
 const hasFilter = computed(() => {
@@ -71,6 +87,19 @@ const hasFilter = computed(() => {
     filter.deliveryGuy !== null
   );
 });
+
+watch(
+  () => tab.value,
+  () => {
+    Object.assign(filter, {
+      startDate: '',
+      endDate: '',
+      startScheduledDate: '',
+      endScheduledDate: '',
+      deliveryGuy: null,
+    });
+  },
+);
 </script>
 <template>
   <main class="q-pa-lg">
@@ -189,5 +218,14 @@ const hasFilter = computed(() => {
     <!-- Modals -->
     <DeliveryGuyManage :open="showDeliveryGuyManage" @update:open="changeShowDeliveryGuyManage" />
     <FilterDelivery :open="showFilterDelivery" :filters="filter" @update:open="actionFilter" />
+    <Exports
+      :open="showExport"
+      title="Exportação de entregas"
+      message="Deseja exportar as entregas que estão sendo visualizadas agora?"
+      :allowExcel="false"
+      :allowPdf="true"
+      @choose-format="startExport"
+      @update:open="changeShowExport"
+    />
   </main>
 </template>

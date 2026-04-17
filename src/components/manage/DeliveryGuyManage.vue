@@ -5,7 +5,7 @@ import Loading from '../shared/Loading.vue';
 import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
 import { useDeliveryGuyStore } from 'src/stores/delivery-guy-store';
-import DeliveryGuyTable from '../table/DeliveryGuyTable.vue';
+import TableDeliveryGuy from '../table/TableDeliveryGuy.vue';
 import FormDeliveryGuy from '../form/FormDeliveryGuy.vue';
 
 defineOptions({
@@ -26,8 +26,8 @@ const showFormDeliveryGuy = reactive({
   deliveryGuyID: null as number | null,
 });
 
-const startEdit = (data: number) => {
-  changeShowFormDeliveryGuy(true, data);
+const startEdit = (id: number) => {
+  changeShowFormDeliveryGuy(true, id);
 };
 const changeShowFormDeliveryGuy = (show: boolean, deliveryGuyID: number | null = null): void => {
   Object.assign(showFormDeliveryGuy, {
@@ -54,7 +54,7 @@ const open = computed({
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingDeliveryGuy">
-          <DeliveryGuyTable
+          <TableDeliveryGuy
             v-show="listDeliveryGuy.length > 0"
             @show:show-form-delivery-guy="startEdit"
           />

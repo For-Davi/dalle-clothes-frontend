@@ -129,7 +129,7 @@ watch(
             bg-color="white"
             label-color="black"
             outlined
-            label="Filtre pela data inicial"
+            label="Filtre pela data inicial de criação"
             mask="##/##/####"
             dense
             input-class="text-black"
@@ -143,7 +143,7 @@ watch(
             bg-color="white"
             label-color="black"
             outlined
-            label="Filtre pela data final"
+            label="Filtre pela data final de criação"
             mask="##/##/####"
             dense
             input-class="text-black"

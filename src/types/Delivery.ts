@@ -58,3 +58,13 @@ export interface DeliveredProducts {
   quantitySaled: number;
   quantityDelivered: number;
 }
+
+export interface ExportDelivery {
+  status: string;
+  startDate: string;
+  endDate: string;
+  startScheduledDate: string;
+  endScheduledDate: string;
+  deliveryGuy: number | null;
+  format: 'pdf' | 'excel';
+}

@@ -1271,132 +1271,138 @@ export const checkDataCreateReturn = (
     }
   }
 
-  if (data.exchangeData.differenceValue > 0 || data.exchangeData.exchangeValue > 0) {
-    if (
-      data.paymentData.paymentExchangeOrDifferenceData.change.trim() === '' ||
-      isNaN(Number(data.paymentData.paymentExchangeOrDifferenceData.change.trim()))
-    ) {
-      return { status: false, message: 'O troco  do pagamento deve ser um número' };
-    }
-    if (
-      data.paymentData.paymentExchangeOrDifferenceData.fees?.trim() === '' ||
-      isNaN(Number(data.paymentData.paymentExchangeOrDifferenceData.fees?.trim()))
-    ) {
-      return { status: false, message: 'A fatura do pagamento deve ser um número' };
-    }
-    if (data.paymentData.paymentExchangeOrDifferenceData.payment.length === 0) {
-      return { status: false, message: 'Insira algum pagamento' };
-    }
-    if (
-      data.paymentData.paymentExchangeOrDifferenceData.payment.some((p) => p.paymentType === null)
-    ) {
-      return { status: false, message: 'Deve ser informado a forma de pagamento' };
-    }
-
-    //VALIDAÇÃO DE PIX
-    const hasPix = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.paymentType === 'PIX',
-    );
-    if (hasPix) {
-      if (hasPix.value.trim() === '') {
-        return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
-      }
-      if (hasPix.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
-        return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
-      }
-    }
-
-    //VALIDAÇÃO DE DINHEIRO
-    const hasMoney = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.paymentType === 'MONEY',
-    );
-    if (hasMoney) {
-      if (hasMoney.value.trim() === '') {
-        return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
-      }
-      if (hasMoney.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
-        return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
-      }
-    }
-
-    //VALIDAÇÃO DE CARTÃO DE DÉBITO
-    const hasDebitCard = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.paymentType === 'DEBIT_CARD',
-    );
-    if (hasDebitCard) {
-      if (hasDebitCard.value.trim() === '') {
-        return { status: false, message: 'Informe o valor para o pagamento com cartão de débito.' };
-      }
-      if (hasDebitCard.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
-        return {
-          status: false,
-          message: 'O valor do pagamento com cartão de débito não pode ser zero.',
-        };
-      }
-    }
-
-    //VALIDAÇÃO DE CARTÃO DE CRÉDITO
-    const hasCreditCard = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.paymentType === 'CREDIT_CARD',
-    );
-    if (hasCreditCard) {
+  if (data.exchangeData.generatesCredit === 0) {
+    if (data.exchangeData.differenceValue > 0 || data.exchangeData.exchangeValue > 0) {
       if (
-        hasCreditCard.value.trim() === '' &&
-        hasCreditCard.installment.value === null &&
-        hasCreditCard.installment.amount?.trim() === null
+        data.paymentData.paymentExchangeOrDifferenceData.change.trim() === '' ||
+        isNaN(Number(data.paymentData.paymentExchangeOrDifferenceData.change.trim()))
       ) {
-        return {
-          status: false,
-          message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
-        };
+        return { status: false, message: 'O troco  do pagamento deve ser um número' };
       }
       if (
-        hasCreditCard.value.trim() === '0.00' &&
-        !hasCreditCard.installment &&
-        missingAmount &&
-        missingAmount > 0
+        data.paymentData.paymentExchangeOrDifferenceData.fees?.trim() === '' ||
+        isNaN(Number(data.paymentData.paymentExchangeOrDifferenceData.fees?.trim()))
       ) {
-        return {
-          status: false,
-          message: 'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
-        };
+        return { status: false, message: 'A fatura do pagamento deve ser um número' };
+      }
+      if (data.paymentData.paymentExchangeOrDifferenceData.payment.length === 0) {
+        return { status: false, message: 'Insira algum pagamento' };
       }
       if (
-        hasCreditCard.installment.value !== null &&
-        hasCreditCard.installment.value > 0 &&
-        hasCreditCard.installment.amount?.trim() === null
+        data.paymentData.paymentExchangeOrDifferenceData.payment.some((p) => p.paymentType === null)
       ) {
+        return { status: false, message: 'Deve ser informado a forma de pagamento' };
+      }
+
+      //VALIDAÇÃO DE PIX
+      const hasPix = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.paymentType === 'PIX',
+      );
+      if (hasPix) {
+        if (hasPix.value.trim() === '') {
+          return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
+        }
+        if (hasPix.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
+          return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
+        }
+      }
+
+      //VALIDAÇÃO DE DINHEIRO
+      const hasMoney = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.paymentType === 'MONEY',
+      );
+      if (hasMoney) {
+        if (hasMoney.value.trim() === '') {
+          return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
+        }
+        if (hasMoney.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
+          return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
+        }
+      }
+
+      //VALIDAÇÃO DE CARTÃO DE DÉBITO
+      const hasDebitCard = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.paymentType === 'DEBIT_CARD',
+      );
+      if (hasDebitCard) {
+        if (hasDebitCard.value.trim() === '') {
+          return {
+            status: false,
+            message: 'Informe o valor para o pagamento com cartão de débito.',
+          };
+        }
+        if (hasDebitCard.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
+          return {
+            status: false,
+            message: 'O valor do pagamento com cartão de débito não pode ser zero.',
+          };
+        }
+      }
+
+      //VALIDAÇÃO DE CARTÃO DE CRÉDITO
+      const hasCreditCard = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.paymentType === 'CREDIT_CARD',
+      );
+      if (hasCreditCard) {
+        if (
+          hasCreditCard.value.trim() === '' &&
+          hasCreditCard.installment.value === null &&
+          hasCreditCard.installment.amount?.trim() === null
+        ) {
+          return {
+            status: false,
+            message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
+          };
+        }
+        if (
+          hasCreditCard.value.trim() === '0.00' &&
+          !hasCreditCard.installment &&
+          missingAmount &&
+          missingAmount > 0
+        ) {
+          return {
+            status: false,
+            message:
+              'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
+          };
+        }
+        if (
+          hasCreditCard.installment.value !== null &&
+          hasCreditCard.installment.value > 0 &&
+          hasCreditCard.installment.amount?.trim() === null
+        ) {
+          return {
+            status: false,
+            message: 'Deve ser informado o valor da parcela caso a parcela seja maior do que 0.',
+          };
+        }
+        if (
+          hasCreditCard.installment.amount?.trim() !== null &&
+          Number(hasCreditCard.installment.amount?.trim()) > 0 &&
+          hasCreditCard.installment.value === null
+        ) {
+          return {
+            status: false,
+            message:
+              'Deve ser informado a quantidade da parcela caso o valor da parcela seja maior que 0.00.',
+          };
+        }
+      }
+
+      //VALIDAÇÃO DE RECEBIMENTO
+      const notHaveReceipt = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.receiptID === null && p.paymentType !== 'CREDIT',
+      );
+      if (notHaveReceipt) {
+        return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
+      }
+
+      if (missingAmount && missingAmount > 0) {
         return {
           status: false,
-          message: 'Deve ser informado o valor da parcela caso a parcela seja maior do que 0.',
+          message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar o pagamento`,
         };
       }
-      if (
-        hasCreditCard.installment.amount?.trim() !== null &&
-        Number(hasCreditCard.installment.amount?.trim()) > 0 &&
-        hasCreditCard.installment.value === null
-      ) {
-        return {
-          status: false,
-          message:
-            'Deve ser informado a quantidade da parcela caso o valor da parcela seja maior que 0.00.',
-        };
-      }
-    }
-
-    //VALIDAÇÃO DE RECEBIMENTO
-    const notHaveReceipt = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.receiptID === null && p.paymentType !== 'CREDIT',
-    );
-    if (notHaveReceipt) {
-      return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
-    }
-
-    if (missingAmount && missingAmount > 0) {
-      return {
-        status: false,
-        message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar o pagamento`,
-      };
     }
   }
 

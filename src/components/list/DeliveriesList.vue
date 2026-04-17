@@ -356,8 +356,12 @@ const sortedDeliveries = computed(() => {
 
                   <div class="row items-center q-mb-sm">
                     <q-icon name="point_of_sale" color="secondary" size="xs" class="q-mr-sm" />
-                    <div class="text-grey-8 q-mr-xs">Venda:</div>
-                    <div class="text-grey-8">{{ props.row.sale_id }}</div>
+                    <div class="text-grey-8 q-mr-xs">
+                      {{ props.row.return_id ? 'Devolução' : 'Venda' }}:
+                    </div>
+                    <div class="text-grey-8">
+                      {{ props.row.return_id ? props.row.return_id : props.row.sale_id }}
+                    </div>
                   </div>
                 </section>
 
@@ -445,7 +449,9 @@ const sortedDeliveries = computed(() => {
                     <q-tooltip>Finalizar entrega parcialmente</q-tooltip>
                   </q-btn>
                   <q-btn
-                    v-if="props.row.status === 'pendent'"
+                    v-if="
+                      props.row.status === 'pendent' || props.row.status === 'partial_delivered'
+                    "
                     @click="changeShowFormScheduleDelivery(true, props.row.id)"
                     flat
                     round

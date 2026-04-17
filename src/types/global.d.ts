@@ -148,7 +148,7 @@ import type {
   ExchangeCouponData,
 } from './Exchange';
 import type { DataSellerRegistration } from './Seller';
-import {
+import type {
   ActionsDelivery,
   Delivery,
   DeliveryGuy,
@@ -156,6 +156,7 @@ import {
   DashboardDelivery,
   DeliveredProducts,
   FilterDelivery,
+  ExportDelivery,
 } from './Delivery';
 
 export {};
@@ -322,4 +323,5 @@ declare global {
   type IDashboardDelivery = DashboardDelivery;
   type IDeliveredProducts = DeliveredProducts;
   type IFilterDelivery = FilterDelivery;
+  type IExportDelivery = ExportDelivery;
 }
