@@ -59,6 +59,8 @@ export const useDeliveryGuyStore = defineStore('deliveryGuy', {
       try {
         const response = await createDeliveryGuyService(data);
         if (response.status === 201) {
+          this.clearListDeliveryGuy();
+          this.setListDeliveryGuy(response.data.deliveryGuys);
           createSuccess(response.data.message);
         }
         return response;

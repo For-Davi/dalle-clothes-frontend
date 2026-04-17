@@ -74,10 +74,10 @@ export const useReturnStore = defineStore('return', {
         this.setLoading(false);
       }
     },
-    async getReturnItems(returnID: number) {
+    async getReturnItems(returnID: number, notDelivered: number | null = null) {
       try {
         this.setLoading(true);
-        const response = await getReturnItemsService(returnID);
+        const response = await getReturnItemsService(returnID, notDelivered);
 
         if (response.status === 200) {
           this.clearListReturnItems();
@@ -100,7 +100,6 @@ export const useReturnStore = defineStore('return', {
       }
     },
     async createReturn(data: IDataCreateReturn) {
-      console.log('dados enviados', data);
       try {
         this.setLoading(true);
         const response = await createReturnService(data);

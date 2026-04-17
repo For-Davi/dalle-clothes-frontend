@@ -6,7 +6,7 @@ import { useDeliveryGuyStore } from 'src/stores/delivery-guy-store';
 import { columnsDeliveryGuy } from 'src/utils/columns';
 
 defineOptions({
-  name: 'DeliveryGuyTable',
+  name: 'TableDeliveryGuy',
 });
 
 const emit = defineEmits<{

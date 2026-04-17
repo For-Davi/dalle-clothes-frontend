@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watch, reactive } from 'vue';
+import { computed, ref, watch } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
-import { useExchangeStore } from 'src/stores/exchange-store';
 import { PaymentTypeLabels } from 'src/enums/payment-enum';
 import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 import { useReceiptstore } from 'src/stores/receipt-store';
@@ -29,7 +28,6 @@ const emit = defineEmits<{
   'new-request': [void];
 }>();
 
-const { loadingExchange } = storeToRefs(useExchangeStore());
 const { loadingClient } = storeToRefs(useClientStore());
 const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 const { listReceipt } = storeToRefs(useReceiptstore());
@@ -229,7 +227,7 @@ const totalPaid = computed(() =>
   ),
 );
 const getTypes = computed(() => {
-  if (hasExchange.value || (clientCredit.value ?? 0) === 0) {
+  if (hasExchange.value || clientCredit.value === 0) {
     return listTypesReceipt.value
       .filter((type: ITypesReceipt) => type.name !== 'CREDIT')
       .map((type: ITypesReceipt) => ({
@@ -275,6 +273,9 @@ const titlePage = computed(() => {
     return { title: 'Pagamento da diferença e cadastro da entrega', icon: 'attach_money' };
   }
   return { title: 'Cadastro da entrega', icon: 'local_shipping' };
+});
+const hasLoading = computed(() => {
+  return loadingClient.value || loadingReturn.value;
 });
 const open = computed({
   get: () => props.data.open,
@@ -383,6 +384,26 @@ watch(
         }
       }
     });
+  },
+);
+watch(
+  () => totalPaid.value,
+  () => {
+    let creditValue = 0;
+
+    model.value.paymentExchangeOrDifferenceData.payment.forEach((p) => {
+      if (p.paymentType === 'CREDIT') {
+        creditValue += Number(p.value);
+      }
+    });
+
+    const total = Number(totalPricePayment.value);
+    const nonCreditPayments = totalPaid.value - creditValue;
+    const remainingAfterCredit = Math.max(0, total - creditValue);
+    const change = nonCreditPayments - remainingAfterCredit;
+
+    model.value.paymentExchangeOrDifferenceData.change =
+      change > 0 ? change.toFixed(2).toString() : '0.00';
   },
 );
 //Caso o preço total mude com tarifas ou frete e caso seja pagar total ele ja coloca esse valor no payment.value
@@ -524,25 +545,6 @@ watch(
   { immediate: true },
 );
 watch(
-  () => totalPaid.value,
-  () => {
-    let creditValue = 0;
-
-    model.value.paymentExchangeOrDifferenceData.payment.forEach((p) => {
-      if (p.paymentType === 'CREDIT') {
-        creditValue += Number(p.value);
-      }
-    });
-    if (totalPaid.value > Number(totalPricePayment.value)) {
-      const change = totalPaid.value - Number(totalPricePayment.value) - creditValue;
-      model.value.paymentExchangeOrDifferenceData.change =
-        change > 0 ? change.toFixed(2).toString() : '0.00';
-    } else {
-      model.value.paymentExchangeOrDifferenceData.change = '0.00';
-    }
-  },
-);
-watch(
   () => props.data.open,
   async () => {
     if (props.data.open) {
@@ -556,17 +558,13 @@ watch(
   <q-dialog v-model="open">
     <q-card
       style="min-width: 80vw"
-      :class="
-        loadingExchange || loadingClient || loadingReturn
-          ? 'bg-grey-2 form-basic column justify-between'
-          : 'bg-grey-2 form-basic'
-      "
+      :class="hasLoading ? 'bg-grey-2 form-basic column justify-between' : 'bg-grey-2 form-basic'"
     >
       <q-card-section class="q-pa-none">
         <TitlePage :title="titlePage.title" :icon="titlePage.icon" />
       </q-card-section>
-      <Loading :show="loadingExchange || loadingClient || loadingReturn" />
-      <q-card-section class="q-pa-sm" v-show="!(loadingExchange || loadingClient || loadingReturn)">
+      <Loading :show="hasLoading" />
+      <q-card-section class="q-pa-sm" v-show="!hasLoading">
         <q-form class="q-gutter-y-lg q-pa-md">
           <section
             v-if="props.data.exchange?.hasExchangeItem"
@@ -752,7 +750,10 @@ watch(
               </template>
             </q-input>
           </section>
-          <section v-if="hasValue" class="border-blue-light q-pa-md q-gutter-y-sm">
+          <section
+            v-if="hasValue && props.data.exchange?.generateCredit === 0"
+            class="border-blue-light q-pa-md q-gutter-y-sm"
+          >
             <TitlePage title="Pagamentos" icon="payments" class="q-pa-none q-ma-none" />
             <div class="row q-gutter-x-md">
               <span class="text-bold text-h6 text-bold text-green"
@@ -765,7 +766,10 @@ watch(
                 >Faltando: {{ formatToReal(missingAmount.toString()) }}</span
               >
             </div>
-            <div v-if="clientCredit && clientCredit > 0" class="flex column q-pa-xs">
+            <div
+              v-if="clientCredit && clientCredit > 0 && !hasExchange"
+              class="flex column q-pa-xs"
+            >
               <span class="text-bold text-h6 text-bold text-black"
                 >Este cliente possui um crédito de {{ formatToReal(clientCredit) }}</span
               >
@@ -960,7 +964,7 @@ watch(
             <FormPaymentFreight
               v-if="
                 props.data.exchange?.hasExchangeItem &&
-                props.data.exchange.exchangeValue > 0 &&
+                props.data.exchange.differenceValue === 0 &&
                 Number(model.deliveryData.freightValue) > 0
               "
               v-model="model.freightPaymentData"
@@ -980,7 +984,7 @@ watch(
             size="md"
             flat
             @click="open = false"
-            :loading="loadingExchange || loadingClient || loadingReturn"
+            :loading="hasLoading"
             unelevated
             no-caps
           />
@@ -989,7 +993,7 @@ watch(
             color="primary"
             label="Salvar"
             size="md"
-            :loading="loadingExchange || loadingClient || loadingReturn"
+            :loading="hasLoading"
             unelevated
             no-caps
           />

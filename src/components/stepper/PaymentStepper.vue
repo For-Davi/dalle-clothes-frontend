@@ -153,6 +153,13 @@ const checkProducts = () => {
     createErrorData(check.message || 'Erro ao vincular os produtos ao cliente');
   }
 };
+const checkClient = () => {
+  if (!dataClient.id) {
+    createErrorData('Deve ser informado o cliente');
+  } else {
+    step.value = 2;
+  }
+};
 const sendData = async () => {
   const check = checkPaymentData(dataPayment, missingAmount.value);
   if (check.status) {
@@ -235,7 +242,7 @@ const newSale = () => {
   resetClient();
   resetProducts();
   resetPayment();
-  searchFilter.value = 'Consumidor final';
+  searchFilter.value = 'Nenhum cliente selecionado';
   changeModalOpen(false);
   step.value = 1;
 };
@@ -258,11 +265,11 @@ const listClientOptions = computed(() => {
   }));
 
   options.unshift({
-    label: 'Consumidor final',
+    label: 'Nenhum cliente selecionado',
     value: null,
   });
 
-  if (!searchFilter.value || searchFilter.value.toLowerCase() === 'consumidor final') {
+  if (!searchFilter.value || searchFilter.value.toLowerCase() === 'nenhum cliente selecionado') {
     return options;
   }
 
@@ -330,7 +337,7 @@ onMounted(async () => {
               no-caps
               @click="changeShowFormClient(true)"
             />
-            <q-btn label="Próximo" color="primary" no-caps unelevated @click="step = 2" />
+            <q-btn label="Próximo" color="primary" no-caps unelevated @click="checkClient" />
           </div>
         </q-stepper-navigation>
       </q-step>

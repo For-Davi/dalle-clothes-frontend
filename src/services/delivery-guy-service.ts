@@ -23,6 +23,7 @@ export const createDeliveryGuyService = (
 ): Promise<{
   status: number;
   data: {
+    deliveryGuys: IDeliveryGuy[];
     message: string;
   };
 }> => api.post(`${baseUrl}/`, data);

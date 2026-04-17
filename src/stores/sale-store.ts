@@ -96,7 +96,7 @@ export const useSaleStore = defineStore('sale', {
         this.setLoading(false);
       }
     },
-    async getSaleItens(saleID: number, notDelivered: number | null) {
+    async getSaleItens(saleID: number, notDelivered: number | null = null) {
       try {
         this.setLoadingListProduct(true);
         const response = await getSaleItensService(saleID, notDelivered);

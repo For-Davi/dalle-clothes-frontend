@@ -136,6 +136,7 @@ onMounted(async () => {
               <q-tooltip> Detalhes </q-tooltip>
             </q-btn>
             <q-btn
+              v-if="props.row.status !== 'Cancelada'"
               @click="emit('edit:return', props.row.id, saleID!, props.row.status)"
               size="sm"
               flat

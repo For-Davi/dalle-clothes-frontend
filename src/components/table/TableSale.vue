@@ -102,9 +102,6 @@ onMounted(async () => {
               }}</q-tooltip>
             </q-icon>
           </q-td>
-          <q-td key="sale_code" :props="props" class="text-left">
-            {{ props.row.id }}
-          </q-td>
           <q-td key="seller_name" :props="props" class="text-left">
             {{ props.row.seller_name ? props.row.seller_name : '-' }}
           </q-td>

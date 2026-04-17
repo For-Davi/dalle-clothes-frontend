@@ -20,8 +20,18 @@ export interface Return {
   updated_at: string;
   return_items: ReturnItem[];
   return_exchange_items: ReturnExchangeItem[];
+  exchange_payment_methods: ISalePaymentsMethods[];
+  sale_payment_methods: ISalePaymentsMethods[];
+  delivery: ISaleDelivery;
   seller_name: string;
   seller_email: string;
+  exchange_value: number;
+  difference_value: number;
+  current_value: number;
+  fees: number;
+  change: number;
+  freight_fees: number;
+  freight_change: number;
 }
 export interface ReturnExchangeItem {
   product_name: string;

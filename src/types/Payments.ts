@@ -144,6 +144,9 @@ export interface SaleDelivery {
   recipient_name: string;
   recipient_phone: string;
   observation: string;
+  delivery_guy_name: string | null;
+  delivery_guy_phone: string | null;
+  status: string;
 }
 
 export interface DataSaleCancellation {

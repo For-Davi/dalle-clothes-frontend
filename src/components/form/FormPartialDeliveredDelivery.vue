@@ -52,7 +52,7 @@ const fetchSaleProducts = async () => {
   await useSaleStore().getSaleItens(props.data.saleID ?? 0, 1);
 };
 const fetchReturnProducts = async () => {
-  await useReturnStore().getReturnItems(props.data.returnID ?? 0);
+  await useReturnStore().getReturnItems(props.data.returnID ?? 0, 1);
 };
 
 const listProducts = computed(() => {

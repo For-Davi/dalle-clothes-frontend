@@ -998,12 +998,6 @@ export const columnsSales: IQuasarTable[] = [
     align: 'left',
   },
   {
-    name: 'sale_code',
-    label: 'Cód. da venda',
-    field: 'sale_code',
-    align: 'left',
-  },
-  {
     name: 'seller_name',
     label: 'Vendedor',
     field: 'seller_name',
