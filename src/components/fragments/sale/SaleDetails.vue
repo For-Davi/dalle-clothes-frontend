@@ -367,9 +367,7 @@ watch(open, async () => {
                           <q-icon name="label" class="q-mr-sm text-primary" />
                           <b class="q-mr-sm">SKU:</b>{{ product.product_sku }}
                         </p>
-                      </div>
 
-                      <div class="col-12 col-sm-6">
                         <p class="flex items-center">
                           <q-icon name="palette" class="q-mr-sm text-primary" />
                           <b class="q-mr-sm">Cor:</b>
@@ -377,10 +375,23 @@ watch(open, async () => {
                             <q-tooltip>{{ product.color_name }}</q-tooltip>
                           </span>
                         </p>
+                      </div>
+
+                      <div class="col-12 col-sm-6">
+                        <p class="flex items-center">
+                          <q-icon name="payments" class="q-mr-sm text-primary" />
+                          <b class="q-mr-sm">Desconto:</b>{{ product.product_discount }}%
+                        </p>
 
                         <p class="flex items-center">
                           <q-icon name="payments" class="q-mr-sm text-primary" />
-                          <b class="q-mr-sm">Custo unitário:</b
+                          <b class="q-mr-sm">Valor do desconto:</b
+                          >{{ formatToReal(product.product_discount_value) }}
+                        </p>
+
+                        <p class="flex items-center">
+                          <q-icon name="payments" class="q-mr-sm text-primary" />
+                          <b class="q-mr-sm">Preço comprado:</b
                           >{{ formatToReal(product.product_price) }}
                         </p>
 
