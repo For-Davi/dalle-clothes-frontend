@@ -15,6 +15,8 @@ import {
   updateProductTagService,
   updateVariantService,
   createStockReentryMovementService,
+  getProductMovementService,
+  showProductMovementService,
 } from 'src/services/product-service';
 import { defineStore } from 'pinia';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
@@ -22,17 +24,35 @@ import { createError, createSuccess } from 'src/composables/CreateNotify';
 export const useProductStore = defineStore('product', {
   state: () => ({
     loadingProduct: false as boolean,
+    loadingProductMovement: false as boolean,
     listProduct: [] as IProduct[],
+    listProductMovement: [] as IProductMovement[],
+    productMovement: {} as IProductMovement,
   }),
   actions: {
     clearListProduct() {
       this.listProduct.splice(0, this.listProduct.length);
     },
+    clearListProductMovement() {
+      this.listProductMovement.splice(0, this.listProductMovement.length);
+    },
+    clearProductMovement() {
+      this.productMovement = {} as IProductMovement;
+    },
     setLoading(loading: boolean) {
       this.loadingProduct = loading;
     },
+    setLoadingProductMovement(loading: boolean) {
+      this.loadingProductMovement = loading;
+    },
     setListProduct(products: IProduct[]) {
       products.map((item) => this.listProduct.push(item));
+    },
+    setListProductMovement(products: IProductMovement[]) {
+      products.map((item) => this.listProductMovement.push(item));
+    },
+    setProductMovement(movement: IProductMovement) {
+      this.productMovement = movement;
     },
     async getProducts(filter: IFilterProduct | null = null) {
       try {
@@ -65,6 +85,21 @@ export const useProductStore = defineStore('product', {
         this.setLoading(false);
       }
     },
+    async getProductMovement(productVariantID: number) {
+      this.setLoadingProductMovement(true);
+      try {
+        const response = await getProductMovementService(productVariantID);
+        if (response.status === 200) {
+          this.clearListProductMovement();
+          this.setListProductMovement(response.data.movements);
+        }
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoadingProductMovement(false);
+      }
+    },
     async searchProduct(value: string) {
       this.setLoading(true);
       try {
@@ -84,6 +119,20 @@ export const useProductStore = defineStore('product', {
         createError(error);
       } finally {
         this.setLoading(false);
+      }
+    },
+    async showProductMovement(productMovementID: number) {
+      try {
+        this.setLoadingProductMovement(true);
+        const response = await showProductMovementService(productMovementID);
+        if (response.status === 200) {
+          this.clearProductMovement();
+          this.setProductMovement(response.data.movement);
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoadingProductMovement(false);
       }
     },
     async createProduct(data: IDataCreateProduct) {

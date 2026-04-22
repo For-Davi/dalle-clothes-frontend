@@ -15,6 +15,7 @@ import SupplierLinkedProductsManage from 'src/components/manage/SupplierLinkedPr
 import FormMovementProduct from 'src/components/form/FormMovementProduct.vue';
 import Exports from 'src/components/export/Exports.vue';
 import { exportProductsService } from 'src/services/product-service';
+import ProductMovementManage from 'src/components/manage/ProductMovementManage.vue';
 
 defineOptions({
   name: 'Stock',
@@ -45,6 +46,13 @@ const showFormProduct = reactive<{
   productID: null,
 });
 const showFormVariant = reactive<{
+  open: boolean;
+  variantID: number | null;
+}>({
+  open: false,
+  variantID: null,
+});
+const showProductMovementManage = reactive<{
   open: boolean;
   variantID: number | null;
 }>({
@@ -84,6 +92,13 @@ const makeProductEdit = (productID: number) => {
 const changeShowFormVariant = (show: boolean, variantID: number | null = null): void => {
   showFormVariant.variantID = variantID;
   showFormVariant.open = show;
+};
+const changeShowProductMovementManage = (show: boolean, variantID: number | null = null): void => {
+  showProductMovementManage.variantID = variantID;
+  showProductMovementManage.open = show;
+};
+const startOpenProductMovementManage = (variantID: number) => {
+  changeShowProductMovementManage(true, variantID);
 };
 const changeColorManage = (): void => {
   showColorManage.value = !showColorManage.value;
@@ -249,10 +264,15 @@ const hasFilter = computed(() => {
         @show:show-form-variant="makeEdit"
         @clear-filter="clearFilter"
         @show:show-modal-supplier="changeModalSupplierLinkedProductManage"
+        @show:product-movement="startOpenProductMovementManage"
       />
     </section>
 
     <!-- Modals -->
+    <ProductMovementManage
+      :data="showProductMovementManage"
+      @update:open="changeShowProductMovementManage(false)"
+    />
     <Exports
       :open="showExport"
       title="Exportação de produtos"

@@ -58,6 +58,7 @@ import type {
   VModelProductVariant,
   ProductColor,
   ListProduct,
+  ProductMovement,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -324,4 +325,5 @@ declare global {
   type IDeliveredProducts = DeliveredProducts;
   type IFilterDelivery = FilterDelivery;
   type IExportDelivery = ExportDelivery;
+  type IProductMovement = ProductMovement;
 }

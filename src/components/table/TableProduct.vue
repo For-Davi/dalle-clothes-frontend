@@ -21,6 +21,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   'show:showFormVariant': [number];
   'show:showModalSupplier': [number, number];
+  'show:productMovement': [number];
   clearFilter: [void];
 }>();
 
@@ -54,6 +55,9 @@ const startOpenModalSupplier = (variantID: number, supplierID: number) => {
 };
 const startExclude = (id: number) => {
   openConfirmAction(id);
+};
+const startShowProductMovement = (id: number) => {
+  emit('show:productMovement', id);
 };
 const fetchProducts = async (): Promise<void> => {
   await useProductStore().getProducts();
@@ -165,6 +169,17 @@ onMounted(async () => {
               icon="local_shipping"
             >
               <q-tooltip> Fornecedores </q-tooltip>
+            </q-btn>
+            <q-btn
+              @click="startShowProductMovement(props.row.product_variant_id)"
+              :disable="productMonitoring === props.row.product_variant_id"
+              size="sm"
+              flat
+              round
+              color="teal-6"
+              icon="sync_alt"
+            >
+              <q-tooltip> Movimentações </q-tooltip>
             </q-btn>
             <q-btn
               @click="startEdit(props.row.product_variant_id)"
