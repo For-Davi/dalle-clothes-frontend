@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { columnsTaxCoupon } from 'src/utils/columns';
 import { formatToReal } from 'src/composables/Money';
+import { formatToBrazilianDate } from 'src/composables/FormatData';
 
 defineOptions({
   name: 'TaxCoupon',
@@ -9,18 +10,6 @@ defineOptions({
 const props = defineProps<{
   couponData: ICouponData | null;
 }>();
-
-const formatToBrazilianDateTime = (value?: string | null): string => {
-  if (!value) return '';
-
-  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/);
-
-  if (!match) return value;
-
-  const [, year, month, day, hours, minutes, seconds] = match;
-
-  return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-};
 </script>
 
 <template>
@@ -32,7 +21,7 @@ const formatToBrazilianDateTime = (value?: string | null): string => {
             props.couponData?.enterprise.name.toUpperCase()
           }}</span>
           <span class="text-bold text-h6">{{
-            formatToBrazilianDateTime(props.couponData?.sale.date)
+            formatToBrazilianDate(props.couponData?.sale.date ?? '')
           }}</span>
         </div>
         <span
