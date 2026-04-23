@@ -295,6 +295,7 @@ export interface ClientCartProduct {
   variant_active: number;
   quantity: number;
   newQuantity?: number;
+  discount: number;
   color: {
     name: string;
     hex_color_code: string;

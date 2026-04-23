@@ -698,8 +698,13 @@ export const checkProductClientData = (
 export const checkSaleProductsData = (
   data: IClientCartProduct[],
 ): { status: boolean; message?: string } => {
+  const invalidDiscount = data.find((p) => Number(p.discount) > 100);
+
   if (data.length === 0) {
     return { status: false, message: 'O carrinho do cliente está vazio' };
+  }
+  if (invalidDiscount) {
+    return { status: false, message: 'O desconto informado não pode ser maior que 100' };
   }
 
   return { status: true };

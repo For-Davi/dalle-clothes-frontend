@@ -31,12 +31,20 @@ const getColorStyle = (hexColor: string) => {
   };
 };
 
+const returnPrice = (row: IClientCartProduct) => {
+  const unitPrice = row.offer ? Number(row.offer) : Number(row.price);
+  if (row.discount > 0 && row.discount <= 100) {
+    return unitPrice - unitPrice * (row.discount / 100);
+  }
+  return unitPrice;
+};
+
 watch(
   () => props.rows,
   (rows) => {
     total.value = 0;
     rows.forEach((p) => {
-      const unitPrice = p.offer && Number(p.offer) > 0 ? p.offer : p.price;
+      const unitPrice = returnPrice(p);
       total.value += Number(unitPrice) * (p.newQuantity ?? 0);
     });
     emit('send-total', total.value);
@@ -87,11 +95,7 @@ watch(
             {{ props.row.code }}
           </q-td>
           <q-td key="price" :props="props" class="text-left">
-            {{
-              formatToReal(
-                props.row.offer && props.row.offer > 0 ? props.row.offer : props.row.price,
-              )
-            }}
+            {{ formatToReal(returnPrice(props.row)) }}
           </q-td>
           <q-td key="color" :props="props" class="text-left">
             <div
@@ -109,6 +113,18 @@ watch(
           </q-td>
           <q-td key="action" :props="props">
             <div class="flex row justify-end">
+              <q-input
+                label="Porcentagem de desconto"
+                outlined
+                dense
+                v-model.number="props.row.discount"
+                input-class="text-right"
+                mask="#"
+                fill-mask="0"
+                reverse-fill-mask
+                class="q-mr-sm"
+                style="width: 150px"
+              />
               <q-btn
                 size="md"
                 flat
@@ -127,12 +143,7 @@ watch(
             <div class="text-left text-bold">
               Preço por linha:
               <span class="text-green text-bold">{{
-                formatToReal(
-                  (props.row.offer && props.row.offer > 0
-                    ? props.row.offer * props.row.newQuantity
-                    : props.row.price * props.row.newQuantity
-                  ).toString(),
-                )
+                formatToReal(returnPrice(props.row) * props.row.newQuantity)
               }}</span>
             </div>
           </q-td>
