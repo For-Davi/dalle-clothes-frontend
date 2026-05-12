@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 
 export default configure((ctx) => {
   return {
-    boot: ['i18n', 'axios'],
+    boot: ['i18n', 'axios', 'sellerApi'],
     css: ['app.scss'],
     extras: ['fontawesome-v6', 'roboto-font', 'material-icons'],
     build: {

@@ -5,6 +5,7 @@ import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
 import imageCompression from 'browser-image-compression';
 import { createErrorData } from 'src/composables/CreateNotify';
+import { useSellerStore } from 'src/stores/DalleAdm/seller-store';
 
 const emit = defineEmits<{
   updateMode: ['password'];
@@ -13,9 +14,11 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   type: 'data' | 'password';
+  isSeller?: boolean;
 }>();
 
 const { user, loadingAuth } = storeToRefs(useAuthStore());
+const { seller, loadingSeller } = storeToRefs(useSellerStore());
 
 const dataProfile = reactive({
   name: '' as string,
@@ -46,20 +49,31 @@ const clearImages = (): void => {
 };
 
 const mountData = () => {
-  dataProfile.name = user.value?.name ?? '';
-  dataProfile.email = user.value?.email ?? '';
-  localImage.value = user.value?.image ?? null;
+  if (props.isSeller) {
+    dataProfile.name = seller.value?.name ?? '';
+    dataProfile.email = seller.value?.email ?? '';
+  } else {
+    dataProfile.name = user.value?.name ?? '';
+    dataProfile.email = user.value?.email ?? '';
+    localImage.value = user.value?.image ?? null;
+  }
 };
 
 const update = async () => {
   const check = checkDataUpdateProfile(dataProfile);
   if (check.status) {
-    const response = await useAuthStore().updateUserData(
-      dataProfile.name,
-      dataProfile.email,
-      dataProfile.photoAdd,
-      dataProfile.photoDelete,
-    );
+    let response = null;
+
+    if (!props.isSeller) {
+      response = await useAuthStore().updateUserData(
+        dataProfile.name,
+        dataProfile.email,
+        dataProfile.photoAdd,
+        dataProfile.photoDelete,
+      );
+    } else {
+      response = await useSellerStore().updateSellerData(dataProfile.name, dataProfile.email);
+    }
 
     if (response?.status === 200) {
       emit('update:open');
@@ -127,7 +141,7 @@ watch(user, (newUser) => {
 
 <template>
   <section class="q-gutter-y-sm">
-    <div class="flex justify-center">
+    <div v-if="!props.isSeller" class="flex justify-center">
       <q-avatar
         color="grey-4"
         size="200px"
@@ -206,7 +220,7 @@ watch(user, (newUser) => {
           color="primary"
           label="Salvar"
           @click="update"
-          :loading="loadingAuth"
+          :loading="loadingAuth || loadingSeller"
           size="md"
           unelevated
           no-caps

@@ -1564,3 +1564,24 @@ export const columnsProductMovement: IQuasarTable[] = [
     align: 'right',
   },
 ];
+
+export const columnsSellerDashboardCommission: IQuasarTable[] = [
+  {
+    name: 'period',
+    label: 'Período',
+    field: 'period',
+    align: 'left',
+  },
+  {
+    name: 'sales_count',
+    label: 'Quantidade de vendas',
+    field: 'sales_count',
+    align: 'left',
+  },
+  {
+    name: 'total_commission',
+    label: 'Comissão',
+    field: 'total_commission',
+    align: 'left',
+  },
+];

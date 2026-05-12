@@ -18,6 +18,12 @@ const routes: RouteRecordRaw[] = [
     props: true,
   },
   {
+    path: '/seller/reset-password/:token(.*)',
+    name: 'sellerResetPassword',
+    component: () => import('src/pages/Seller/ResetPassword.vue'),
+    props: true,
+  },
+  {
     path: '/admin',
     component: () => import('src/layouts/MainLayout.vue'),
     meta: { requiresAuth: true },
@@ -120,6 +126,22 @@ const routes: RouteRecordRaw[] = [
         path: 'help',
         name: 'help',
         component: () => import('src/pages/Help.vue'),
+      },
+    ],
+  },
+  {
+    path: '/seller',
+    component: () => import('src/layouts/SellerLayout.vue'),
+    meta: { requiresAuth: true, roles: 'seller' },
+    children: [
+      {
+        path: '',
+        redirect: { name: 'dashboard-seller' },
+      },
+      {
+        path: 'dashboard',
+        name: 'dashboard-seller',
+        component: () => import('src/pages/Seller/Dashboard.vue'),
       },
     ],
   },

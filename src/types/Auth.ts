@@ -1,1 +1,1 @@
-export type RenderAuth = 'login' | 'reset' | 'register';
+export type RenderAuth = 'login' | 'reset' | 'register' | 'home';

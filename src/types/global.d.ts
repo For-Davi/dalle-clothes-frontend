@@ -148,7 +148,7 @@ import type {
   DifferencePaymentMethodData,
   ExchangeCouponData,
 } from './Exchange';
-import type { DataSellerRegistration } from './Seller';
+import type { DataSellerRegistration, Seller } from './Seller/Seller';
 import type {
   ActionsDelivery,
   Delivery,
@@ -159,6 +159,7 @@ import type {
   FilterDelivery,
   ExportDelivery,
 } from './Delivery';
+import type { Dashboard, FilterSellerDashboard } from './Seller/Dashboard';
 
 export {};
 
@@ -326,4 +327,7 @@ declare global {
   type IFilterDelivery = FilterDelivery;
   type IExportDelivery = ExportDelivery;
   type IProductMovement = ProductMovement;
+  type ISeller = Seller;
+  type ISellerDashboard = Dashboard;
+  type ISellerFilterDashboard = FilterSellerDashboard;
 }

@@ -6,6 +6,7 @@ import {
   createWebHistory,
 } from 'vue-router';
 import { useAuthStore } from 'src/stores/auth-store';
+import { useSellerStore } from 'src/stores/DalleAdm/seller-store';
 import routes from './routes';
 
 const createHistory = process.env.SERVER
@@ -22,16 +23,27 @@ const router: Router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
+  const sellerStore = useSellerStore();
 
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!authStore.token) {
-      next({ name: 'auth' });
-    } else {
-      next();
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+
+  if (!requiresAuth) {
+    return next();
+  }
+
+  const isSellerRoute = to.matched.some((record) => record.meta.roles === 'seller');
+
+  if (isSellerRoute) {
+    if (!sellerStore.token) {
+      return next({ name: 'home' });
     }
   } else {
-    next();
+    if (!authStore.token) {
+      return next({ name: 'auth' });
+    }
   }
+
+  next();
 });
 
 export default router;

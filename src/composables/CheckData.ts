@@ -1,3 +1,29 @@
+const isValidCPF = (cpf: string): boolean => {
+  const cleaned = cpf.replace(/[^\d]/g, '');
+
+  if (cleaned.length !== 11) return false;
+
+  if (/^(\d)\1+$/.test(cleaned)) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(cleaned[i]) * (10 - i);
+  }
+  let remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cleaned[9])) return false;
+
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(cleaned[i]) * (11 - i);
+  }
+  remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cleaned[10])) return false;
+
+  return true;
+};
+
 export const checkDataLogin = (data: {
   email: string;
   password: string;
@@ -1796,6 +1822,8 @@ export const checkDataSellerRegistration = (data: {
   name: string;
   phone: string;
   email: string;
+  cpf: string;
+  password: string;
   description: string;
 }): { status: boolean; message?: string } => {
   if (data.name === '') {
@@ -1817,6 +1845,24 @@ export const checkDataSellerRegistration = (data: {
   }
   if (data.phone.trim().length < 11) {
     return { status: false, message: 'Insira um número de telefone válido' };
+  }
+  if (data.cpf.trim() === '') {
+    return { status: false, message: 'Deve ser informado o CPF do associado' };
+  }
+  if (data.cpf.trim().length < 11 || data.cpf.trim().length > 11) {
+    return { status: false, message: 'Insira um CPF válido' };
+  }
+  if (isNaN(Number(data.cpf.trim()))) {
+    return { status: false, message: 'Insira um CPF válido' };
+  }
+  if (!isValidCPF(data.cpf)) {
+    return { status: false, message: 'Insira um CPF válido' };
+  }
+  if (data.password.trim() === '') {
+    return { status: false, message: 'Deve ser informada a senha do associado' };
+  }
+  if (data.password.trim().length < 8) {
+    return { status: false, message: 'A senha do associado deve ter 8 ou mais caracteres' };
   }
   if (data.description.trim().length > 500) {
     return { status: false, message: 'A descrição não pode exceder 500 caracteres' };
@@ -1973,6 +2019,29 @@ export const checkDataUpdateDeliveryStatus = (data: {
   }
   if (!data.deliveryGuyID) {
     return { status: false, message: 'Deve ser informado o ID do entregador' };
+  }
+
+  return { status: true };
+};
+
+export const checkSellerLogin = (data: {
+  cpf: string;
+  password: string;
+}): { status: boolean; message?: string | null } => {
+  if ((data.cpf.trim() === '' || !data.cpf) && (data.password.trim() === '' || !data.password)) {
+    return { status: false, message: 'Preencha os campos de login' };
+  }
+  if (data.cpf.trim() === '') {
+    return { status: false, message: 'Deve ser informado o cpf do associado' };
+  }
+  if (data.cpf.trim().length < 11 || data.cpf.trim().length > 11 || !isValidCPF(data.cpf)) {
+    return { status: false, message: 'Insira um cpf válido' };
+  }
+  if (data.password.trim() === '') {
+    return { status: false, message: 'Deve ser informado a senha do associado' };
+  }
+  if (data.password.trim().length < 8) {
+    return { status: false, message: 'A senha do associado deve ter no mínimo 8 caracteres' };
   }
 
   return { status: true };
