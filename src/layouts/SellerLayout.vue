@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+// import { useRoute } from 'vue-router';
 import Navbar from 'src/components/general/Seller/Navbar.vue';
 import ContactHelper from 'src/components/info/ContactHelper.vue';
 
-const route = useRoute();
+// const route = useRoute();
 
 const showInbox = ref<boolean>(false);
 const showContactHelper = ref<boolean>(false);
-const miniState = ref<boolean>(false);
-const drawer = ref<boolean>(false);
+// const miniState = ref<boolean>(false);
+// const drawer = ref<boolean>(false);
 
-const isActive = (routeName: string) => route.name === routeName;
+// const isActive = (routeName: string) => route.name === routeName;
 const changeShowInbox = () => {
   showInbox.value = !showInbox.value;
 };
@@ -30,7 +30,7 @@ const changeShowContactHelper = () => {
         />
       </q-header>
 
-      <q-drawer
+      <!-- <q-drawer
         v-model="drawer"
         show-if-above
         :mini="miniState"
@@ -61,7 +61,7 @@ const changeShowContactHelper = () => {
             </q-item>
           </q-list>
         </q-scroll-area>
-      </q-drawer>
+      </q-drawer> -->
       <q-page-container>
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">

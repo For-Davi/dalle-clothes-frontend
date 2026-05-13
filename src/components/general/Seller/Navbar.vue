@@ -31,7 +31,7 @@ const startOpenContactHelper = (): void => {
   <nav>
     <q-toolbar class="row items-center justify-between">
       <div class="row items-center q-gutter-x-sm">
-        <q-btn @click="emit('update:changeOpenMenu')" flat icon-right="menu" rounded />
+        <!-- <q-btn @click="emit('update:changeOpenMenu')" flat icon-right="menu" rounded /> -->
       </div>
       <div class="row justify-end">
         <div v-if="!$q.screen.lt.md">
