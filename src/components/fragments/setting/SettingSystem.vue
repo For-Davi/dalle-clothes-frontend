@@ -20,6 +20,9 @@ const dataSystem = reactive({
   quantityCreditExpireDays: 3 as number,
 });
 
+const clearCache = async () => {
+  await useSettingsStore().clearCache();
+};
 const update = async () => {
   await useSettingsStore().updateSystemSetting(dataSystem);
 };
@@ -130,13 +133,51 @@ watch(
             />
           </div>
         </div>
+
+        <q-separator class="q-my-md" />
+
+        <div class="settings-group">
+          <div class="group-label">
+            <q-icon name="cleaning_services" size="15px" class="q-mr-xs" />
+            Limpeza de Cache
+          </div>
+          <div class="setting-row row items-center justify-between">
+            <div class="col flex">
+              <q-btn
+                color="primary"
+                @click="clearCache"
+                icon="cleaning_services"
+                label="Limpar"
+                unelevated
+                no-caps
+                dense
+                class="q-pa-sm"
+              />
+              <div class="q-ml-md">
+                <div class="text-weight-medium text-body2">Cache do sistema</div>
+                <div class="text-caption text-grey-6">
+                  O cache é utilizado para deixar suas consultas mais rápidas. Limpe caso encontre
+                  dados desatualizados.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </q-form>
     </q-card-section>
 
     <q-separator v-show="!loadingSetting" />
 
     <q-card-actions align="right" v-show="!loadingSetting" class="q-pa-md">
-      <q-btn @click="update" color="primary" label="Atualizar" size="md" unelevated no-caps />
+      <q-btn
+        @click="update"
+        :loading="loadingSetting"
+        color="primary"
+        label="Atualizar"
+        size="md"
+        unelevated
+        no-caps
+      />
     </q-card-actions>
   </q-card>
 </template>

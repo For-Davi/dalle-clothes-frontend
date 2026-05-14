@@ -12,6 +12,15 @@ export const getProductVariantService = (
   };
 }> => api.get(`${baseUrl}/variant/${id}`);
 
+export const getProductMovementService = (
+  productVariantID: number,
+): Promise<{
+  status: number;
+  data: {
+    movements: IProductMovement[];
+  };
+}> => api.get(`${baseUrl}/variant/movement/${productVariantID}`);
+
 export const searchProductService = (
   value: string,
 ): Promise<{
@@ -36,6 +45,15 @@ export const showProductService = (
     product: IShowProdut;
   };
 }> => api.get(`${baseUrl}/${productID}}`);
+
+export const showProductMovementService = (
+  productMovementID: number,
+): Promise<{
+  status: number;
+  data: {
+    movement: IProductMovement;
+  };
+}> => api.get(`${baseUrl}/movement/${productMovementID}}`);
 
 export const exportProductsService = async (filter: IExportProduct) => {
   try {

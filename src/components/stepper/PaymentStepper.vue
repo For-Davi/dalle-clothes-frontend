@@ -11,6 +11,7 @@ import { checkPaymentData, checkSaleProductsData } from 'src/composables/CheckDa
 import { createErrorData } from 'src/composables/CreateNotify';
 import { useSaleStore } from 'src/stores/sale-store';
 import SaleMade from '../fragments/sale/SaleMade.vue';
+import Loading from '../shared/Loading.vue';
 
 defineOptions({
   name: 'PaymentStepper',
@@ -145,12 +146,22 @@ const resetClient = () => {
 const addTotal = (total: number) => {
   dataSale.totalPrice = total.toFixed(2).toString();
 };
-const checkProducts = () => {
+const checkProducts = async () => {
   const check = checkSaleProductsData(dataSale.products);
   if (check.status) {
-    step.value = 3;
+    const response = await useSaleStore().checkSaleProductsDiscount(dataSale.products);
+    if (response?.status === 200) {
+      step.value = 3;
+    }
   } else {
     createErrorData(check.message || 'Erro ao vincular os produtos ao cliente');
+  }
+};
+const checkClient = () => {
+  if (!dataClient.id) {
+    createErrorData('Deve ser informado o cliente');
+  } else {
+    step.value = 2;
   }
 };
 const sendData = async () => {
@@ -161,6 +172,7 @@ const sendData = async () => {
       productVariantID: p.product_variant_id,
       price: p.price,
       offer: p.offer ?? '',
+      discount: p.discount,
       newQuantity: p.newQuantity ?? 0,
       variantActive: p.variant_active,
     }));
@@ -235,7 +247,7 @@ const newSale = () => {
   resetClient();
   resetProducts();
   resetPayment();
-  searchFilter.value = 'Consumidor final';
+  searchFilter.value = 'Nenhum cliente selecionado';
   changeModalOpen(false);
   step.value = 1;
 };
@@ -258,11 +270,11 @@ const listClientOptions = computed(() => {
   }));
 
   options.unshift({
-    label: 'Consumidor final',
+    label: 'Nenhum cliente selecionado',
     value: null,
   });
 
-  if (!searchFilter.value || searchFilter.value.toLowerCase() === 'consumidor final') {
+  if (!searchFilter.value || searchFilter.value.toLowerCase() === 'nenhum cliente selecionado') {
     return options;
   }
 
@@ -330,7 +342,7 @@ onMounted(async () => {
               no-caps
               @click="changeShowFormClient(true)"
             />
-            <q-btn label="Próximo" color="primary" no-caps unelevated @click="step = 2" />
+            <q-btn label="Próximo" color="primary" no-caps unelevated @click="checkClient" />
           </div>
         </q-stepper-navigation>
       </q-step>
@@ -340,7 +352,8 @@ onMounted(async () => {
         icon="add_shopping_cart"
         :done="step > 2"
       >
-        <ClientCart v-model="dataSale.products" @add-total="addTotal" />
+        <ClientCart v-model="dataSale.products" v-if="!loadingSale" @add-total="addTotal" />
+        <Loading :show="loadingSale" v-show="loadingSale" />
         <q-stepper-navigation align="right">
           <div class="flex row justify-end items-center q-gutter-x-sm">
             <q-btn label="Resetar" color="red" no-caps unelevated outline @click="resetProducts" />

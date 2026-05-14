@@ -2,18 +2,23 @@
 import router from 'src/router';
 import { computed, ref } from 'vue';
 import FormSellerRegistration from 'src/components/form/FormSellerRegistration.vue';
+import FormSellerLogin from 'src/components/form/FormSellerLogin.vue';
 
 defineOptions({
   name: 'Index',
 });
 
 const showFormSellerRegistration = ref<boolean>(false);
+const showFormSellerLogin = ref<boolean>(false);
 
 const goLogin = () => {
   void router.push({ name: 'auth' });
 };
 const changeFormSellerRegistration = (): void => {
   showFormSellerRegistration.value = !showFormSellerRegistration.value;
+};
+const changeShowFormSellerLogin = (): void => {
+  showFormSellerLogin.value = !showFormSellerLogin.value;
 };
 
 const listFeatures = computed(() => [
@@ -52,7 +57,26 @@ const listFeatures = computed(() => [
           <q-btn flat class="text-dark" label="Recursos" href="#features-section" />
           <q-btn flat class="text-dark" label="Depoimentos" href="#testimonials-section" />
           <q-btn flat class="text-dark" label="Preços" href="#pricing-section" />
-          <q-btn flat class="text-dark" label="Associado" @click="changeFormSellerRegistration" />
+          <q-btn-dropdown flat class="q-pa-none q-px-md q-mr-sm" ref="dropdown" label="Associado">
+            <q-list>
+              <q-item clickable v-close-popup @click="changeFormSellerRegistration">
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon name="assignment_ind" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>Cadastrar</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="changeShowFormSellerLogin">
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon name="person" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>Login</q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
           <q-btn flat class="bg-primary text-white q-px-md" label="Entrar" @click="goLogin" />
         </div>
       </q-toolbar>
@@ -272,6 +296,7 @@ const listFeatures = computed(() => [
       :open="showFormSellerRegistration"
       @update:open="changeFormSellerRegistration()"
     />
+    <FormSellerLogin :open="showFormSellerLogin" @update:open="changeShowFormSellerLogin" />
   </main>
 </template>
 

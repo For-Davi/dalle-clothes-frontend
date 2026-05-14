@@ -110,6 +110,8 @@ export interface SaleItens {
   product_sku: string | null;
   product_code: number | null;
   product_price: number;
+  product_discount: number;
+  product_discount_value: number;
   quantity: number;
   returnQuantity?: number;
   total: number;
@@ -144,6 +146,9 @@ export interface SaleDelivery {
   recipient_name: string;
   recipient_phone: string;
   observation: string;
+  delivery_guy_name: string | null;
+  delivery_guy_phone: string | null;
+  status: string;
 }
 
 export interface DataSaleCancellation {

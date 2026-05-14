@@ -11,6 +11,7 @@ import {
   getSaleCancellationService,
   deleteSaleService,
   getSalesServiceFilterService,
+  checkSaleProductsDiscountService,
 } from 'src/services/sale-service';
 
 export const useSaleStore = defineStore('sale', {
@@ -96,7 +97,7 @@ export const useSaleStore = defineStore('sale', {
         this.setLoading(false);
       }
     },
-    async getSaleItens(saleID: number, notDelivered: number | null) {
+    async getSaleItens(saleID: number, notDelivered: number | null = null) {
       try {
         this.setLoadingListProduct(true);
         const response = await getSaleItensService(saleID, notDelivered);
@@ -138,6 +139,19 @@ export const useSaleStore = defineStore('sale', {
       this.setLoading(true);
       try {
         const response = await createSaleService(data);
+
+        return response;
+      } catch (error) {
+        createError(error);
+        return undefined;
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async checkSaleProductsDiscount(data: IClientCartProduct[]) {
+      this.setLoading(true);
+      try {
+        const response = await checkSaleProductsDiscountService(data);
 
         return response;
       } catch (error) {

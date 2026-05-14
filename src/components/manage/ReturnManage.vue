@@ -107,7 +107,7 @@ const open = computed({
 <template>
   <q-dialog v-model="open">
     <q-card
-      style="min-width: 70vw"
+      style="min-width: 75vw"
       :class="loadingReturns ? 'bg-grey-2 sub-page column justify-between' : 'bg-grey-2 sub-page'"
     >
       <q-card-section class="q-pa-none">

@@ -43,6 +43,7 @@ const showFormExchangePayment = reactive({
   open: false as boolean,
   exchange: null as IExchange | null,
   hasExchangeItem: false as boolean,
+  generateCredit: 0 as number,
 });
 const missingAmount = ref<number>(0);
 const missingAmountFreight = ref<number>(0);
@@ -221,6 +222,7 @@ const openFormPayment = (
   saleID: number | null,
   differenceValue: number,
   exchangeValue: number,
+  generateCredit: number,
 ) => {
   Object.assign(showFormExchangePayment, {
     open,
@@ -229,6 +231,7 @@ const openFormPayment = (
       differenceValue: differenceValue,
       exchangeValue: exchangeValue,
       hasExchangeItem: exchangeProducts.value.length > 0 ? true : false,
+      generateCredit: generateCredit,
     },
   });
 };
@@ -236,6 +239,8 @@ const closeFormPayment = (open: boolean) => {
   Object.assign(showFormExchangePayment, {
     open,
     exchange: null,
+    hasExchangeItem: false,
+    generateCredit: 0,
   });
 };
 const sendMissingsAmountsAndSave = async (amount: number, amountFreight: number) => {
@@ -580,7 +585,7 @@ watch(
             flat
           />
           <q-btn
-            v-if="generatesCredit"
+            v-if="generatesCredit && exchangeProducts.length === 0"
             @click="save()"
             :loading="loadingReturn"
             color="primary"
@@ -591,9 +596,17 @@ watch(
           />
           <q-btn
             v-else
-            @click="openFormPayment(true, props.data.saleID, differenceRefundValue, refundValue)"
+            @click="
+              openFormPayment(
+                true,
+                props.data.saleID,
+                differenceRefundValue,
+                refundValue,
+                generatesCredit,
+              )
+            "
             color="primary"
-            label="Realizar cadastro do frete e pagamento"
+            label="Avançar"
             size="md"
             unelevated
             no-caps

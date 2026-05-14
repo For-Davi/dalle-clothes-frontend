@@ -4,7 +4,8 @@ import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { checkDataSellerRegistration } from 'src/composables/CheckData';
-import { useSellerStore } from 'src/stores/seller-store';
+import { useSellerStore } from 'src/stores/DalleAdm/seller-store';
+import { ref } from 'vue';
 
 defineOptions({
   name: 'FormSellerRegistration',
@@ -19,10 +20,13 @@ const emit = defineEmits<{
 
 const { loadingSeller } = storeToRefs(useSellerStore());
 
+const isPwd = ref<boolean>(true);
 const dataSeller = reactive({
   name: '' as string,
   phone: '' as string,
   email: '' as string,
+  cpf: '' as string,
+  password: '' as string,
   description: '' as string,
 });
 
@@ -31,6 +35,8 @@ const clear = (): void => {
     name: '',
     phone: '',
     email: '',
+    cpf: '',
+    password: '',
     description: '',
   });
 };
@@ -41,6 +47,8 @@ const save = async () => {
       name: dataSeller.name,
       phone: dataSeller.phone,
       email: dataSeller.email,
+      cpf: dataSeller.cpf,
+      password: dataSeller.password,
       description: dataSeller.description.trim() === '' ? null : dataSeller.description,
     });
     if (response?.status === 201) {
@@ -132,6 +140,42 @@ watch(open, () => {
           >
             <template v-slot:prepend>
               <q-icon name="phone" color="black" size="20px" />
+            </template>
+          </q-input>
+          <q-input
+            v-model="dataSeller.cpf"
+            bg-color="white"
+            label-color="black"
+            outlined
+            label="CPF do associado"
+            dense
+            input-class="text-black"
+            maxlength="11"
+          >
+            <template v-slot:prepend>
+              <q-icon name="badge" color="black" size="20px" />
+            </template>
+          </q-input>
+          <q-input
+            v-model="dataSeller.password"
+            bg-color="white"
+            label-color="black"
+            outlined
+            label="Senha do associado"
+            dense
+            input-class="text-black"
+            :type="isPwd ? 'password' : 'text'"
+          >
+            <template v-slot:prepend>
+              <q-icon name="lock" color="black" size="20px" />
+            </template>
+            <template v-slot:append>
+              <q-icon
+                @click="isPwd = !isPwd"
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                size="20px"
+              />
             </template>
           </q-input>
           <q-input

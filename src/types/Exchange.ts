@@ -94,6 +94,7 @@ export interface Exchange {
   differenceValue: number;
   exchangeValue: number;
   hasExchangeItem: boolean;
+  generateCredit: number;
 }
 
 export interface ExchangeCouponData {
@@ -103,6 +104,8 @@ export interface ExchangeCouponData {
     exchange_value: string;
     difference_value: string;
     fees: string;
+    freight_fees: string;
+    freight_change: string;
     freight_value: string;
     change: string;
     date: string;

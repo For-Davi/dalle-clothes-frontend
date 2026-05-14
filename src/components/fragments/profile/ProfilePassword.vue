@@ -4,10 +4,15 @@ import { checkPasswordUpdateProfile } from 'src/composables/CheckData';
 import { createErrorData } from 'src/composables/CreateNotify';
 import { useAuthStore } from 'src/stores/auth-store';
 import { storeToRefs } from 'pinia';
+import { useSellerStore } from 'src/stores/DalleAdm/seller-store';
 
 const emit = defineEmits<{
   updateMode: ['data'];
   'update:open': [void];
+}>();
+
+const props = defineProps<{
+  isSeller?: boolean;
 }>();
 
 const dataPassword = reactive({
@@ -21,14 +26,20 @@ const isPwd2 = ref<boolean>(false);
 const isPwd3 = ref<boolean>(false);
 
 const { loadingAuth } = storeToRefs(useAuthStore());
+const { loadingSeller } = storeToRefs(useSellerStore());
 
 const update = async () => {
   const check = checkPasswordUpdateProfile(dataPassword);
   if (check.status) {
-    const response = await useAuthStore().updateUserPassword(
-      dataPassword.actualPassword,
-      dataPassword.newPassword,
-    );
+    const response = !props.isSeller
+      ? await useAuthStore().updateUserPassword(
+          dataPassword.actualPassword,
+          dataPassword.newPassword,
+        )
+      : await useSellerStore().updateSellerPassword(
+          dataPassword.actualPassword,
+          dataPassword.newPassword,
+        );
 
     if (response?.status === 200) {
       emit('update:open');
@@ -114,7 +125,7 @@ const update = async () => {
           color="primary"
           label="Salvar"
           @click="update"
-          :loading="loadingAuth"
+          :loading="loadingAuth || loadingSeller"
           size="md"
           unelevated
           no-caps

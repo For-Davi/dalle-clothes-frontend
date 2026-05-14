@@ -19,6 +19,12 @@ export const createSaleService = (
   };
 }> => api.post(`${baseUrl}/`, data);
 
+export const checkSaleProductsDiscountService = (
+  data: IClientCartProduct[],
+): Promise<{
+  status: number;
+}> => api.post(`${baseUrl}/check-products`, { products: data });
+
 export const showSaleService = (
   saleID: number,
 ): Promise<{

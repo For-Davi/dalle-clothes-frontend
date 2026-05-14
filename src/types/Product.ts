@@ -295,6 +295,7 @@ export interface ClientCartProduct {
   variant_active: number;
   quantity: number;
   newQuantity?: number;
+  discount: number;
   color: {
     name: string;
     hex_color_code: string;
@@ -336,4 +337,25 @@ export interface DataProductSale {
 export interface DataCheckCodeAndSku {
   skus: string[];
   codes: string[];
+}
+
+export interface ProductMovement {
+  id: number;
+  reason: string;
+  type: string;
+  document_number: string | null;
+  lot_number: string | null;
+  quantity: string;
+  previous_stock: string;
+  new_stock: string;
+  unit_cost: string;
+  total_cost: string;
+  description: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  created_by_name: string;
+  updated_by_name: string | null;
+  sale_id: number;
+  return_id: number | null;
 }

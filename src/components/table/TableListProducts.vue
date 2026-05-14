@@ -40,7 +40,11 @@ const fetchProducts = async (): Promise<void> => {
     category: null,
     stockCritical: null,
   });
-  localProducts.value = listProduct.value.map((p: IProduct) => ({ ...p, quantity: 0 }));
+  localProducts.value = listProduct.value.map((p: IProduct) => ({
+    ...p,
+    quantity: 0,
+    discount: 0,
+  }));
 };
 const getColorStyle = (hexColor: string) => {
   return {

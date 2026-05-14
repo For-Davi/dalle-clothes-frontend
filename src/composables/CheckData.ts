@@ -1,3 +1,29 @@
+const isValidCPF = (cpf: string): boolean => {
+  const cleaned = cpf.replace(/[^\d]/g, '');
+
+  if (cleaned.length !== 11) return false;
+
+  if (/^(\d)\1+$/.test(cleaned)) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(cleaned[i]) * (10 - i);
+  }
+  let remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cleaned[9])) return false;
+
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(cleaned[i]) * (11 - i);
+  }
+  remainder = (sum * 10) % 11;
+  if (remainder === 10 || remainder === 11) remainder = 0;
+  if (remainder !== parseInt(cleaned[10])) return false;
+
+  return true;
+};
+
 export const checkDataLogin = (data: {
   email: string;
   password: string;
@@ -698,8 +724,13 @@ export const checkProductClientData = (
 export const checkSaleProductsData = (
   data: IClientCartProduct[],
 ): { status: boolean; message?: string } => {
+  const invalidDiscount = data.find((p) => Number(p.discount) > 100);
+
   if (data.length === 0) {
     return { status: false, message: 'O carrinho do cliente está vazio' };
+  }
+  if (invalidDiscount) {
+    return { status: false, message: 'O desconto informado não pode ser maior que 100' };
   }
 
   return { status: true };
@@ -1271,132 +1302,138 @@ export const checkDataCreateReturn = (
     }
   }
 
-  if (data.exchangeData.differenceValue > 0 || data.exchangeData.exchangeValue > 0) {
-    if (
-      data.paymentData.paymentExchangeOrDifferenceData.change.trim() === '' ||
-      isNaN(Number(data.paymentData.paymentExchangeOrDifferenceData.change.trim()))
-    ) {
-      return { status: false, message: 'O troco  do pagamento deve ser um número' };
-    }
-    if (
-      data.paymentData.paymentExchangeOrDifferenceData.fees?.trim() === '' ||
-      isNaN(Number(data.paymentData.paymentExchangeOrDifferenceData.fees?.trim()))
-    ) {
-      return { status: false, message: 'A fatura do pagamento deve ser um número' };
-    }
-    if (data.paymentData.paymentExchangeOrDifferenceData.payment.length === 0) {
-      return { status: false, message: 'Insira algum pagamento' };
-    }
-    if (
-      data.paymentData.paymentExchangeOrDifferenceData.payment.some((p) => p.paymentType === null)
-    ) {
-      return { status: false, message: 'Deve ser informado a forma de pagamento' };
-    }
-
-    //VALIDAÇÃO DE PIX
-    const hasPix = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.paymentType === 'PIX',
-    );
-    if (hasPix) {
-      if (hasPix.value.trim() === '') {
-        return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
-      }
-      if (hasPix.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
-        return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
-      }
-    }
-
-    //VALIDAÇÃO DE DINHEIRO
-    const hasMoney = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.paymentType === 'MONEY',
-    );
-    if (hasMoney) {
-      if (hasMoney.value.trim() === '') {
-        return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
-      }
-      if (hasMoney.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
-        return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
-      }
-    }
-
-    //VALIDAÇÃO DE CARTÃO DE DÉBITO
-    const hasDebitCard = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.paymentType === 'DEBIT_CARD',
-    );
-    if (hasDebitCard) {
-      if (hasDebitCard.value.trim() === '') {
-        return { status: false, message: 'Informe o valor para o pagamento com cartão de débito.' };
-      }
-      if (hasDebitCard.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
-        return {
-          status: false,
-          message: 'O valor do pagamento com cartão de débito não pode ser zero.',
-        };
-      }
-    }
-
-    //VALIDAÇÃO DE CARTÃO DE CRÉDITO
-    const hasCreditCard = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.paymentType === 'CREDIT_CARD',
-    );
-    if (hasCreditCard) {
+  if (data.exchangeData.generatesCredit === 0) {
+    if (data.exchangeData.differenceValue > 0 || data.exchangeData.exchangeValue > 0) {
       if (
-        hasCreditCard.value.trim() === '' &&
-        hasCreditCard.installment.value === null &&
-        hasCreditCard.installment.amount?.trim() === null
+        data.paymentData.paymentExchangeOrDifferenceData.change.trim() === '' ||
+        isNaN(Number(data.paymentData.paymentExchangeOrDifferenceData.change.trim()))
       ) {
-        return {
-          status: false,
-          message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
-        };
+        return { status: false, message: 'O troco  do pagamento deve ser um número' };
       }
       if (
-        hasCreditCard.value.trim() === '0.00' &&
-        !hasCreditCard.installment &&
-        missingAmount &&
-        missingAmount > 0
+        data.paymentData.paymentExchangeOrDifferenceData.fees?.trim() === '' ||
+        isNaN(Number(data.paymentData.paymentExchangeOrDifferenceData.fees?.trim()))
       ) {
-        return {
-          status: false,
-          message: 'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
-        };
+        return { status: false, message: 'A fatura do pagamento deve ser um número' };
+      }
+      if (data.paymentData.paymentExchangeOrDifferenceData.payment.length === 0) {
+        return { status: false, message: 'Insira algum pagamento' };
       }
       if (
-        hasCreditCard.installment.value !== null &&
-        hasCreditCard.installment.value > 0 &&
-        hasCreditCard.installment.amount?.trim() === null
+        data.paymentData.paymentExchangeOrDifferenceData.payment.some((p) => p.paymentType === null)
       ) {
+        return { status: false, message: 'Deve ser informado a forma de pagamento' };
+      }
+
+      //VALIDAÇÃO DE PIX
+      const hasPix = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.paymentType === 'PIX',
+      );
+      if (hasPix) {
+        if (hasPix.value.trim() === '') {
+          return { status: false, message: 'Informe o valor para o pagamento via PIX.' };
+        }
+        if (hasPix.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
+          return { status: false, message: 'O valor do pagamento via PIX não pode ser zero.' };
+        }
+      }
+
+      //VALIDAÇÃO DE DINHEIRO
+      const hasMoney = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.paymentType === 'MONEY',
+      );
+      if (hasMoney) {
+        if (hasMoney.value.trim() === '') {
+          return { status: false, message: 'Informe o valor para o pagamento em dinheiro.' };
+        }
+        if (hasMoney.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
+          return { status: false, message: 'O valor do pagamento em dinheiro não pode ser zero.' };
+        }
+      }
+
+      //VALIDAÇÃO DE CARTÃO DE DÉBITO
+      const hasDebitCard = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.paymentType === 'DEBIT_CARD',
+      );
+      if (hasDebitCard) {
+        if (hasDebitCard.value.trim() === '') {
+          return {
+            status: false,
+            message: 'Informe o valor para o pagamento com cartão de débito.',
+          };
+        }
+        if (hasDebitCard.value.trim() === '0.00' && missingAmount && missingAmount > 0) {
+          return {
+            status: false,
+            message: 'O valor do pagamento com cartão de débito não pode ser zero.',
+          };
+        }
+      }
+
+      //VALIDAÇÃO DE CARTÃO DE CRÉDITO
+      const hasCreditCard = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.paymentType === 'CREDIT_CARD',
+      );
+      if (hasCreditCard) {
+        if (
+          hasCreditCard.value.trim() === '' &&
+          hasCreditCard.installment.value === null &&
+          hasCreditCard.installment.amount?.trim() === null
+        ) {
+          return {
+            status: false,
+            message: 'Informe o valor para o pagamento com cartão de crédito sem parcelamento.',
+          };
+        }
+        if (
+          hasCreditCard.value.trim() === '0.00' &&
+          !hasCreditCard.installment &&
+          missingAmount &&
+          missingAmount > 0
+        ) {
+          return {
+            status: false,
+            message:
+              'O valor do pagamento com cartão de crédito sem parcelamento não pode ser zero.',
+          };
+        }
+        if (
+          hasCreditCard.installment.value !== null &&
+          hasCreditCard.installment.value > 0 &&
+          hasCreditCard.installment.amount?.trim() === null
+        ) {
+          return {
+            status: false,
+            message: 'Deve ser informado o valor da parcela caso a parcela seja maior do que 0.',
+          };
+        }
+        if (
+          hasCreditCard.installment.amount?.trim() !== null &&
+          Number(hasCreditCard.installment.amount?.trim()) > 0 &&
+          hasCreditCard.installment.value === null
+        ) {
+          return {
+            status: false,
+            message:
+              'Deve ser informado a quantidade da parcela caso o valor da parcela seja maior que 0.00.',
+          };
+        }
+      }
+
+      //VALIDAÇÃO DE RECEBIMENTO
+      const notHaveReceipt = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
+        (p) => p.receiptID === null && p.paymentType !== 'CREDIT',
+      );
+      if (notHaveReceipt) {
+        return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
+      }
+
+      if (missingAmount && missingAmount > 0) {
         return {
           status: false,
-          message: 'Deve ser informado o valor da parcela caso a parcela seja maior do que 0.',
+          message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar o pagamento`,
         };
       }
-      if (
-        hasCreditCard.installment.amount?.trim() !== null &&
-        Number(hasCreditCard.installment.amount?.trim()) > 0 &&
-        hasCreditCard.installment.value === null
-      ) {
-        return {
-          status: false,
-          message:
-            'Deve ser informado a quantidade da parcela caso o valor da parcela seja maior que 0.00.',
-        };
-      }
-    }
-
-    //VALIDAÇÃO DE RECEBIMENTO
-    const notHaveReceipt = data.paymentData.paymentExchangeOrDifferenceData.payment.find(
-      (p) => p.receiptID === null && p.paymentType !== 'CREDIT',
-    );
-    if (notHaveReceipt) {
-      return { status: false, message: 'Há pagamentos que não estão vinculados a recebimentos.' };
-    }
-
-    if (missingAmount && missingAmount > 0) {
-      return {
-        status: false,
-        message: `Ainda faltam R$ ${missingAmount.toFixed(2)} para finalizar o pagamento`,
-      };
     }
   }
 
@@ -1785,6 +1822,8 @@ export const checkDataSellerRegistration = (data: {
   name: string;
   phone: string;
   email: string;
+  cpf: string;
+  password: string;
   description: string;
 }): { status: boolean; message?: string } => {
   if (data.name === '') {
@@ -1806,6 +1845,24 @@ export const checkDataSellerRegistration = (data: {
   }
   if (data.phone.trim().length < 11) {
     return { status: false, message: 'Insira um número de telefone válido' };
+  }
+  if (data.cpf.trim() === '') {
+    return { status: false, message: 'Deve ser informado o CPF do associado' };
+  }
+  if (data.cpf.trim().length < 11 || data.cpf.trim().length > 11) {
+    return { status: false, message: 'Insira um CPF válido' };
+  }
+  if (isNaN(Number(data.cpf.trim()))) {
+    return { status: false, message: 'Insira um CPF válido' };
+  }
+  if (!isValidCPF(data.cpf)) {
+    return { status: false, message: 'Insira um CPF válido' };
+  }
+  if (data.password.trim() === '') {
+    return { status: false, message: 'Deve ser informada a senha do associado' };
+  }
+  if (data.password.trim().length < 8) {
+    return { status: false, message: 'A senha do associado deve ter 8 ou mais caracteres' };
   }
   if (data.description.trim().length > 500) {
     return { status: false, message: 'A descrição não pode exceder 500 caracteres' };
@@ -1962,6 +2019,29 @@ export const checkDataUpdateDeliveryStatus = (data: {
   }
   if (!data.deliveryGuyID) {
     return { status: false, message: 'Deve ser informado o ID do entregador' };
+  }
+
+  return { status: true };
+};
+
+export const checkSellerLogin = (data: {
+  cpf: string;
+  password: string;
+}): { status: boolean; message?: string | null } => {
+  if ((data.cpf.trim() === '' || !data.cpf) && (data.password.trim() === '' || !data.password)) {
+    return { status: false, message: 'Preencha os campos de login' };
+  }
+  if (data.cpf.trim() === '') {
+    return { status: false, message: 'Deve ser informado o cpf do associado' };
+  }
+  if (data.cpf.trim().length < 11 || data.cpf.trim().length > 11 || !isValidCPF(data.cpf)) {
+    return { status: false, message: 'Insira um cpf válido' };
+  }
+  if (data.password.trim() === '') {
+    return { status: false, message: 'Deve ser informado a senha do associado' };
+  }
+  if (data.password.trim().length < 8) {
+    return { status: false, message: 'A senha do associado deve ter no mínimo 8 caracteres' };
   }
 
   return { status: true };

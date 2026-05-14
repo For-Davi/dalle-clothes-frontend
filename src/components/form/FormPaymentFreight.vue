@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watch, reactive } from 'vue';
+import { computed, ref, watch } from 'vue';
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import Loading from '../shared/Loading.vue';
-import { useExchangeStore } from 'src/stores/exchange-store';
 import { PaymentTypeLabels } from 'src/enums/payment-enum';
 import { useTypesReceiptStore } from 'src/stores/types-receipt-store';
 import { useReceiptstore } from 'src/stores/receipt-store';
@@ -26,7 +25,6 @@ const emit = defineEmits<{
   'new-request': [void];
 }>();
 
-const { loadingExchange } = storeToRefs(useExchangeStore());
 const { loadingClient } = storeToRefs(useClientStore());
 const { listTypesReceipt } = storeToRefs(useTypesReceiptStore());
 const { listReceipt } = storeToRefs(useReceiptstore());
@@ -442,8 +440,8 @@ watch(
 </script>
 <template>
   <section>
-    <Loading :show="loadingExchange || loadingClient || loadingReturn" />
-    <q-card-section class="q-pa-sm" v-show="!(loadingExchange || loadingClient || loadingReturn)">
+    <Loading :show="loadingClient || loadingReturn" />
+    <q-card-section class="q-pa-sm" v-show="!(loadingClient || loadingReturn)">
       <q-form class="q-gutter-y-lg q-pa-md">
         <section class="border-blue-light q-pa-md q-gutter-y-sm">
           <TitlePage title="Pagamentos do frete" icon="payments" class="q-pa-none q-ma-none" />

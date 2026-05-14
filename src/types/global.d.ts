@@ -58,6 +58,7 @@ import type {
   VModelProductVariant,
   ProductColor,
   ListProduct,
+  ProductMovement,
 } from './Product';
 import type { CustomFile } from './File';
 import type { Log } from './Log';
@@ -147,8 +148,8 @@ import type {
   DifferencePaymentMethodData,
   ExchangeCouponData,
 } from './Exchange';
-import type { DataSellerRegistration } from './Seller';
-import {
+import type { DataSellerRegistration, Seller } from './Seller/Seller';
+import type {
   ActionsDelivery,
   Delivery,
   DeliveryGuy,
@@ -156,7 +157,9 @@ import {
   DashboardDelivery,
   DeliveredProducts,
   FilterDelivery,
+  ExportDelivery,
 } from './Delivery';
+import type { Dashboard, FilterSellerDashboard } from './Seller/Dashboard';
 
 export {};
 
@@ -326,4 +329,9 @@ declare global {
   type IDeliveredProducts = DeliveredProducts;
   type IFilterDelivery = FilterDelivery;
   type IActionsUser = ActionsUser;
+  type IExportDelivery = ExportDelivery;
+  type IProductMovement = ProductMovement;
+  type ISeller = Seller;
+  type ISellerDashboard = Dashboard;
+  type ISellerFilterDashboard = FilterSellerDashboard;
 }

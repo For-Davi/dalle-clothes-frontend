@@ -23,12 +23,13 @@ export const showReturnService = (
 
 export const getReturnItemsService = (
   returnID: number,
+  notDelivered: number | null,
 ): Promise<{
   status: number;
   data: {
     products: IDataReturnItens[];
   };
-}> => api.get(`${baseUrl}/linked/${returnID}`);
+}> => api.post(`${baseUrl}/linked/${returnID}`, { notDelivered });
 
 export const getStockReentryReturnItemsService = (): Promise<{
   status: number;

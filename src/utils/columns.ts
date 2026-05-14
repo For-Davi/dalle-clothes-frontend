@@ -998,12 +998,6 @@ export const columnsSales: IQuasarTable[] = [
     align: 'left',
   },
   {
-    name: 'sale_code',
-    label: 'Cód. da venda',
-    field: 'sale_code',
-    align: 'left',
-  },
-  {
     name: 'seller_name',
     label: 'Vendedor',
     field: 'seller_name',
@@ -1497,5 +1491,97 @@ export const columnsDeliveryGuy: IQuasarTable[] = [
     label: 'Ação',
     field: 'action',
     align: 'right',
+  },
+];
+
+export const columnsProductMovement: IQuasarTable[] = [
+  {
+    name: 'reason',
+    label: 'Motivo',
+    field: 'reason',
+    align: 'left',
+  },
+  {
+    name: 'status',
+    label: 'Status',
+    field: 'status',
+    align: 'left',
+  },
+  {
+    name: 'type',
+    label: 'Tipo',
+    field: 'type',
+    align: 'left',
+  },
+  {
+    name: 'document_number',
+    label: 'Nº do documento',
+    field: 'document_number',
+    align: 'left',
+  },
+  {
+    name: 'lot_number',
+    label: 'Nº do lote',
+    field: 'lot_number',
+    align: 'left',
+  },
+  {
+    name: 'created_by_name',
+    label: 'Criado por',
+    field: 'created_by_name',
+    align: 'left',
+  },
+  {
+    name: 'updated_by_name',
+    label: 'Atualizado por',
+    field: 'updated_by_name',
+    align: 'left',
+  },
+  {
+    name: 'created_at',
+    label: 'Criado em',
+    field: 'created_at',
+    align: 'left',
+    sort: (a: string, b: string) => {
+      const toDate = (str: string) => {
+        const [date, time] = str.split(' ');
+        const [day, month, year] = date.split('/');
+        return new Date(`${year}-${month}-${day}T${time}`);
+      };
+      return toDate(a).getTime() - toDate(b).getTime();
+    },
+  },
+  {
+    name: 'updated_at',
+    label: 'Atualizado em',
+    field: 'updated_at',
+    align: 'left',
+  },
+  {
+    name: 'actions',
+    label: 'Ação',
+    field: 'actions',
+    align: 'right',
+  },
+];
+
+export const columnsSellerDashboardCommission: IQuasarTable[] = [
+  {
+    name: 'period',
+    label: 'Período',
+    field: 'period',
+    align: 'left',
+  },
+  {
+    name: 'sales_count',
+    label: 'Quantidade de vendas',
+    field: 'sales_count',
+    align: 'left',
+  },
+  {
+    name: 'total_commission',
+    label: 'Comissão',
+    field: 'total_commission',
+    align: 'left',
   },
 ];

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { columnsTaxCoupon } from 'src/utils/columns';
 import { formatToReal } from 'src/composables/Money';
+import { formatToBrazilianDate } from 'src/composables/FormatData';
 
 defineOptions({
   name: 'TaxCoupon',
@@ -9,19 +10,6 @@ defineOptions({
 const props = defineProps<{
   couponData: ICouponData | null;
 }>();
-
-const formatToBrazilianDateTime = (value?: string | null) => {
-  if (!value) return '';
-
-  const localValue = value.replace('Z', '');
-
-  const date = new Date(localValue);
-
-  const pad = (n: number) => String(n).padStart(2, '0');
-
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}
-          ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-};
 </script>
 
 <template>
@@ -33,7 +21,7 @@ const formatToBrazilianDateTime = (value?: string | null) => {
             props.couponData?.enterprise.name.toUpperCase()
           }}</span>
           <span class="text-bold text-h6">{{
-            formatToBrazilianDateTime(props.couponData?.sale.date)
+            formatToBrazilianDate(props.couponData?.sale.date ?? '')
           }}</span>
         </div>
         <span

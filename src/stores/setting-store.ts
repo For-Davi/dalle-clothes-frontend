@@ -7,6 +7,7 @@ import {
   updateSystemSettingService,
   getSystemSettingService,
 } from 'src/services/system-settings-service';
+import { clearCacheService } from 'src/services/cache-service';
 import { createError, createSuccess } from 'src/composables/CreateNotify';
 import { useStorage } from '@vueuse/core';
 
@@ -80,6 +81,19 @@ export const useSettingsStore = defineStore('settings', {
         const response = await getSystemSettingService();
         if (response.status === 200) {
           this.setSystem(response.data.system);
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async clearCache() {
+      try {
+        this.setLoading(true);
+        const response = await clearCacheService();
+        if (response.status === 200) {
+          createSuccess(response.data.message);
         }
       } catch (error) {
         createError(error);

@@ -55,42 +55,6 @@ const attributesStatus = (status: string) => {
     return { name: 'Entregue presencialmente', icon: 'check_circle' };
   return { name: 'Não definido', icon: 'help' };
 };
-const compareDeliveryDates = (updatedAt: string | null, scheduledDate: string | null) => {
-  if (!updatedAt || !scheduledDate) return null;
-
-  const dateDelivered = new Date(updatedAt);
-  dateDelivered.setHours(0, 0, 0, 0);
-
-  const dateScheduled = new Date(scheduledDate + 'T00:00:00');
-  dateScheduled.setHours(0, 0, 0, 0);
-
-  const diffInMs = dateDelivered.getTime() - dateScheduled.getTime();
-  const diffInDays = Math.round(diffInMs / (1000 * 60 * 60 * 24));
-
-  if (diffInDays === 0) {
-    return {
-      label: 'No prazo',
-      color: 'positive',
-      icon: 'check',
-      message: 'Entregue no dia agendado',
-    };
-  } else if (diffInDays > 0) {
-    return {
-      label: 'Atrasado',
-      color: 'negative',
-      icon: 'warning',
-      message: `Entregue depois de ${diffInDays} dia(s) do agendamento`,
-    };
-  } else {
-    const daysBefore = Math.abs(diffInDays);
-    return {
-      label: 'Adiantado',
-      color: 'info',
-      icon: 'auto_awesome',
-      message: `Entregue ${daysBefore} dia(s) antes do agendamento`,
-    };
-  }
-};
 const getColorStyle = (hexColor: string) => {
   return {
     backgroundColor: hexColor || 'transparent',
@@ -139,6 +103,15 @@ watch(open, async () => {
 
           <div class="row q-col-gutter-md">
             <div class="col-12 col-sm-6">
+              <p class="flex items-center">
+                <q-icon
+                  :name="Delivery.return_id ? 'assignment_return' : 'point_of_sale'"
+                  class="q-mr-sm text-primary"
+                />
+                <b>{{ Delivery.return_id ? 'Devolução' : 'Venda' }}:</b
+                >{{ Delivery.return_id ? Delivery.return_id : Delivery.sale_id }}
+              </p>
+
               <p class="flex items-center">
                 <q-icon
                   :name="attributesStatus(Delivery.status)?.icon"
@@ -192,22 +165,6 @@ watch(open, async () => {
                 <q-icon name="date_range" color="primary" class="q-mr-xs" />
                 <b>Data de criação:</b> {{ formatToBrazilianDate(Delivery.created_at) }}
               </p>
-              <p
-                v-if="Delivery.scheduled_date && Delivery.status === 'delivered'"
-                class="flex items-center"
-              >
-                <q-icon
-                  :name="compareDeliveryDates(Delivery.updated_at, Delivery.scheduled_date)?.icon"
-                  :color="compareDeliveryDates(Delivery.updated_at, Delivery.scheduled_date)?.color"
-                  class="q-mr-xs"
-                />
-                <b
-                  >{{
-                    compareDeliveryDates(Delivery.updated_at, Delivery.scheduled_date)?.label
-                  }}:</b
-                >
-                {{ compareDeliveryDates(Delivery.updated_at, Delivery.scheduled_date)?.message }}
-              </p>
             </div>
           </div>
         </q-card>
@@ -252,7 +209,10 @@ watch(open, async () => {
                 <template v-slot:avatar>
                   <q-icon name="description" color="primary" />
                 </template>
-                <div class="text-italic text-grey-9">
+                <div
+                  class="text-italic text-grey-9"
+                  style="word-break: break-word; white-space: normal"
+                >
                   <b>Observação:</b> {{ Delivery.observation ?? 'Nenhuma observação adicionada' }}
                 </div>
               </q-banner>

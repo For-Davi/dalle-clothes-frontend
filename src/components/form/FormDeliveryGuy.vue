@@ -73,14 +73,14 @@ const checkDataEdit = async () => {
   if (deliveryGuyID.value) {
     const response = await useDeliveryGuyStore().showDeliveryGuy(deliveryGuyID.value);
     if (response?.status === 200) {
-      const deliverGuy = response.data.deliveryGuy;
+      const deliveryGuy = response.data.deliveryGuy;
 
       Object.assign(deliveryGuyData, {
-        name: deliverGuy.name,
-        cpf: deliverGuy.cpf ?? '',
-        email: deliverGuy.email ?? '',
-        phone: deliverGuy.phone ?? '',
-        vehicle: deliverGuy.vehicle,
+        name: deliveryGuy.name,
+        cpf: deliveryGuy.cpf,
+        email: deliveryGuy.email,
+        phone: deliveryGuy.phone,
+        vehicle: deliveryGuy.vehicle,
       });
     }
   }
@@ -116,7 +116,7 @@ const open = computed({
 
 watch(open, async () => {
   clear();
-  if (open.value) {
+  if (deliveryGuyID.value) {
     await checkDataEdit();
   }
 });
@@ -124,7 +124,11 @@ watch(open, async () => {
 
 <template>
   <q-dialog v-model="open">
-    <q-card :class="loadingDeliveryGuy ? 'bg-grey-2 form-basic column' : 'bg-grey-2 sub-page'">
+    <q-card
+      :class="
+        loadingDeliveryGuy ? 'bg-grey-2 form-basic column justify-between' : 'bg-grey-2 sub-page'
+      "
+    >
       <q-card-section class="q-pa-none">
         <TitlePage
           :title="deliveryGuyID ? 'Edição do entregador' : 'Cadastro do entregador'"
