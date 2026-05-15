@@ -27,7 +27,7 @@ const allMenuItems = [
   { name: 'client', icon: 'groups', label: 'Clientes', permission: 'client.view' },
   { name: 'stock', icon: 'inventory', label: 'Estoque', permission: 'product.view' },
   { name: 'sale', icon: 'paid', label: 'Vendas', permission: 'sale.view' },
-  { name: 'results', icon: 'analytics', label: 'Resultados', permission: 'result.view' },
+  { name: 'results', icon: 'analytics', label: 'Resultados', permission: 'comission.view' },
   { name: 'user', icon: 'person', label: 'Usuários', permission: 'user.view' },
   { name: 'employee', icon: 'badge', label: 'Funcionários', permission: 'employee.view' },
   { name: 'transaction', icon: 'sync_alt', label: 'Transações', permission: 'transaction.view' },

@@ -23,6 +23,7 @@ const emit = defineEmits<{
 }>();
 
 const { loadingEnterprise } = storeToRefs(useEnterpriseStore());
+const { user } = storeToRefs(useAuthStore());
 const router = useRouter();
 
 const dataEnterprise = reactive({
@@ -118,6 +119,14 @@ const checkDataEdit = async () => {
   }
 };
 
+const hasEnterpriseUpdate = computed(() => {
+  if (!user.value?.role?.permissions) return false;
+  return user.value.role.permissions.some((p) => p.slug === 'enterprise.update');
+});
+const hasEnterpriseDelete = computed(() => {
+  if (!user.value?.role?.permissions) return false;
+  return user.value.role.permissions.some((p) => p.slug === 'enterprise.delete');
+});
 const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
@@ -395,6 +404,7 @@ watch(open, async () => {
         <q-btn flat color="red" label="Fechar" size="md" @click="open = false" unelevated no-caps />
         <q-btn
           color="red"
+          :disable="!hasEnterpriseDelete"
           :loading="loadingEnterprise"
           @click="changeShowConfirmAction"
           label="Apagar organização"
@@ -403,6 +413,7 @@ watch(open, async () => {
           no-caps
         />
         <q-btn
+          :disable="!hasEnterpriseUpdate"
           color="primary"
           :loading="loadingEnterprise"
           @click="update"
