@@ -13,6 +13,9 @@ export interface Enterprise {
   address: string | null;
   number_address: string | null;
   complement: string | null;
+  allow_test_free: number;
+  subscription: ISubscriptions;
+  expired_date: string | null;
 }
 
 export interface DataEnterprise {

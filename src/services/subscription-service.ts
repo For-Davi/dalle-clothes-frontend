@@ -9,6 +9,14 @@ export const getSubscriptionsService = (): Promise<{
   };
 }> => api.get(`${baseUrl}/`);
 
+export const activeSubscriptionFreeService = (): Promise<{
+  status: number;
+  data: {
+    user: IUser;
+    message: string;
+  };
+}> => api.post(`${baseUrl}/test`);
+
 export const generateQrCodeService = (
   subscriptionID: number,
 ): Promise<{

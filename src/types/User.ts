@@ -16,6 +16,7 @@ export interface User {
     }[];
   };
   enterprise_id: number;
+  enterprise: IEnterprise;
   department_id: number;
   image_id: number | null;
   image: IImage | null;

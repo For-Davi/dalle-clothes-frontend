@@ -5,6 +5,7 @@ import { useSubscriptionStore } from 'src/stores/subscription-store';
 import { computed, onMounted, reactive } from 'vue';
 import SubscriptionPayment from 'src/components/subscription/SubscriptionPayment.vue';
 import { useAuthStore } from 'src/stores/auth-store';
+import { date } from 'quasar';
 
 defineOptions({
   name: 'Subscription',
@@ -43,17 +44,70 @@ const showActionPayment = computed(() => {
   return user.value?.role?.permissions?.some((p) => p.slug === 'subscription.payment') ?? false;
 });
 
+const hasTestFree = computed(() => user.value?.enterprise?.allow_test_free === 1);
+
+const subscriptionLabel = computed(() => {
+  const name = user.value?.enterprise?.subscription?.name;
+  const map: Record<string, string> = {
+    free: 'Plano Gratuito',
+    basic: 'Plano Básico',
+    premium: 'Plano Premium',
+  };
+  return map[name ?? ''] ?? 'Plano Gratuito';
+});
+
+const currentPlanName = computed(() => user.value?.enterprise?.subscription?.name ?? 'free');
+
+const expiredDateFormatted = computed(() => {
+  const expired = user.value?.enterprise?.expired_date;
+  if (!expired || currentPlanName.value === 'free') return null;
+  return date.formatDate(expired, 'DD/MM/YYYY');
+});
+
 onMounted(async () => {
   await getSubscriptions();
 });
 </script>
+
 <template>
   <main class="q-pa-lg">
     <section class="row items-center justify-between">
       <TitlePage class="col-7" title="Assinatura" icon="credit_card" />
     </section>
     <section class="q-mt-sm">
-      <q-banner rounded class="bg-grey-4 q-mb-sm"> teste </q-banner>
+      <!-- Banner período gratuito -->
+      <q-banner
+        v-if="hasTestFree"
+        rounded
+        class="bg-teal-1 text-teal-9 q-mb-sm"
+        style="border: 1px solid #80cbc4"
+      >
+        <template #avatar>
+          <q-icon name="card_giftcard" color="teal" size="md" />
+        </template>
+        <div class="text-subtitle1 text-weight-bold">
+          🎉 Você tem um período gratuito disponível!
+        </div>
+        <div class="text-body2 q-mt-xs">
+          Experimente qualquer plano por <strong>7 dias sem custo</strong> e descubra tudo o que o
+          sistema pode fazer pela sua empresa. Aproveite essa oportunidade para explorar os recursos
+          premium antes de decidir.
+        </div>
+      </q-banner>
+
+      <!-- Banner plano atual -->
+      <q-banner rounded class="bg-blue-1 text-blue-9 q-mb-sm" style="border: 1px solid #90caf9">
+        <template #avatar>
+          <q-icon name="workspace_premium" color="blue" size="md" />
+        </template>
+        <span class="text-subtitle2">
+          Plano atual: <strong>{{ subscriptionLabel }}</strong>
+          <span v-if="expiredDateFormatted">
+            &mdash; válido até <strong>{{ expiredDateFormatted }}</strong>
+          </span>
+        </span>
+      </q-banner>
+
       <div class="q-mt-md row justify-center q-gutter-x-lg">
         <q-card class="col-5 bg-grey-1">
           <q-card-section>
@@ -65,11 +119,9 @@ onMounted(async () => {
               <q-item>
                 <q-item-section> Item </q-item-section>
               </q-item>
-
               <q-item>
                 <q-item-section> Item </q-item-section>
               </q-item>
-
               <q-item>
                 <q-item-section> Item </q-item-section>
               </q-item>
@@ -95,6 +147,7 @@ onMounted(async () => {
             />
           </q-card-actions>
         </q-card>
+
         <q-card class="col-5 bg-grey-1">
           <q-card-section>
             <div class="text-h6">Profissional</div>
@@ -105,11 +158,9 @@ onMounted(async () => {
               <q-item>
                 <q-item-section> Item </q-item-section>
               </q-item>
-
               <q-item>
                 <q-item-section> Item </q-item-section>
               </q-item>
-
               <q-item>
                 <q-item-section> Item </q-item-section>
               </q-item>
@@ -137,6 +188,7 @@ onMounted(async () => {
         </q-card>
       </div>
     </section>
+
     <!-- Modals -->
     <SubscriptionPayment
       :data="showSubscriptionPayment"

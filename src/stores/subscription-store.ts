@@ -2,9 +2,11 @@ import {
   getSubscriptionsService,
   generateQrCodeService,
   sendCreditCardData,
+  activeSubscriptionFreeService,
 } from 'src/services/subscription-service';
 import { defineStore } from 'pinia';
-import { createError } from 'src/composables/CreateNotify';
+import { createError, createSuccess } from 'src/composables/CreateNotify';
+import { useAuthStore } from './auth-store';
 
 export const useSubscriptionStore = defineStore('subscription', {
   state: () => ({
@@ -57,6 +59,22 @@ export const useSubscriptionStore = defineStore('subscription', {
         }
       } catch (error) {
         createError(error);
+      } finally {
+        this.setLoading(false);
+      }
+    },
+    async activeSubscriptionFree() {
+      this.setLoading(true);
+      try {
+        const response = await activeSubscriptionFreeService();
+        if (response.status === 200) {
+          useAuthStore().setUser(response.data.user);
+          createSuccess(response.data.message);
+          return response;
+        }
+      } catch (error) {
+        createError(error);
+      } finally {
         this.setLoading(false);
       }
     },

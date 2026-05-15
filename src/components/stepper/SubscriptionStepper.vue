@@ -64,6 +64,14 @@ const sendDataCreditCard = async (dataCreditCard: IVMPaymentSubscriptionCreditCa
     createErrorData(check.message || 'Erro ao enviar dados do cartão');
   }
 };
+const activeTest = async () => {
+  const response = await useSubscriptionStore().activeSubscriptionFree();
+  if (response?.status === 200) {
+    emit('update:open');
+  } else {
+    createErrorData('Erro ao ativar teste gratuito');
+  }
+};
 const changeType = (sendType: 'pix' | 'credit') => {
   type.value = sendType;
   step.value = 2;
@@ -117,6 +125,7 @@ const stepTitle = computed(() => {
             no-caps
             icon="credit_card"
             @click="changeType('credit')"
+            :disable="loadingSubscription"
           />
           <q-btn
             label="Gerar QR Code PIX"
@@ -125,6 +134,16 @@ const stepTitle = computed(() => {
             no-caps
             icon="qr_code_2"
             @click="changeType('pix')"
+            :disable="loadingSubscription"
+          />
+          <q-btn
+            label="Ativar teste de 7 dias"
+            color="orange"
+            unelevated
+            no-caps
+            icon="money_off"
+            @click="activeTest"
+            :loading="loadingSubscription"
           />
         </div>
       </q-stepper-navigation>
