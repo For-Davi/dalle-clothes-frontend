@@ -72,7 +72,7 @@ const confirmDeleteRole = async (): Promise<void> => {
   closeDeleteConfirm();
 };
 
-const onFormClose = async (): Promise<void> => {
+const onFormClose = () => {
   changeShowFormRole(false);
 };
 const fetcheRoles = async (): Promise<void> => {

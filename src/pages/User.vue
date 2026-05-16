@@ -64,11 +64,10 @@ const redirectPageRole = async () => {
 const openAction = (type: IActionsUser): void => {
   switch (type) {
     case 'role':
-      redirectPageRole();
+      void redirectPageRole();
       break;
     case 'department':
       changeShowDepartmentManage();
-      break;
   }
 };
 
