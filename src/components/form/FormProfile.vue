@@ -37,7 +37,7 @@ watch(open, () => {
 </script>
 
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card style="min-height: 200px; max-width: 500px" class="bg-grey-2 form-basic column">
       <q-card-section class="q-pa-none q-mb-sm">
         <TitlePage title="Dados do perfil" icon="person" />

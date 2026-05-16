@@ -70,9 +70,9 @@ const hasFilter = computed(() => {
 </script>
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Clientes" icon="person" />
-      <div>
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Clientes" icon="person" />
+      <div class="page-header-actions">
         <q-btn
           @click="changeShowFormClient(true)"
           color="white"
@@ -80,7 +80,6 @@ const hasFilter = computed(() => {
           label="Novo cliente"
           icon-right="add"
           no-caps
-          class="q-mr-sm"
         />
       </div>
     </section>
@@ -92,8 +91,7 @@ const hasFilter = computed(() => {
             outlined
             v-model="search"
             dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
+            class="search-input bg-white rounded-borders"
           >
             <template v-slot:prepend>
               <q-icon name="search" size="20px" color="black" />

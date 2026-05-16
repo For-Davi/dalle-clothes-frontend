@@ -233,25 +233,11 @@ const rows = [
 </script>
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Agenda" icon="calendar_month" />
-      <div>
-        <q-btn
-          color="white"
-          text-color="black"
-          label="Horários"
-          icon-right="alarm"
-          no-caps
-          class="q-mr-sm"
-        />
-        <q-btn
-          color="white"
-          text-color="black"
-          label="Nova agenda"
-          icon-right="add"
-          no-caps
-          class="q-mr-sm"
-        />
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Agenda" icon="calendar_month" />
+      <div class="page-header-actions">
+        <q-btn color="white" text-color="black" label="Horários" icon-right="alarm" no-caps />
+        <q-btn color="white" text-color="black" label="Nova agenda" icon-right="add" no-caps />
       </div>
     </section>
     <section class="q-mt-sm">
@@ -262,8 +248,7 @@ const rows = [
             outlined
             v-model="filterDiary"
             dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
+            class="search-input bg-white rounded-borders"
           >
             <template v-slot:prepend>
               <q-icon name="search" size="20px" color="black" />

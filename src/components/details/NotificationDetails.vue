@@ -29,7 +29,7 @@ watch(open, async () => {
 </script>
 
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card>
       <q-card-section class="q-pa-md">
         <span class="text-h5 text-bold">{{ props.data.notification?.title }}</span>

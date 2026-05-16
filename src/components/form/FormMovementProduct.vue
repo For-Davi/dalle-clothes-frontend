@@ -124,7 +124,7 @@ watch(open, async () => {
 });
 </script>
 <template>
-  <q-dialog v-model="open" persistent>
+  <q-dialog v-model="open" persistent :maximized="$q.screen.lt.sm">
     <q-card class="bg-grey-2" style="width: 900px; max-width: 98vw">
       <q-card-section class="q-pa-none">
         <TitlePage title="Atualização de estoque" icon="sync_alt" />

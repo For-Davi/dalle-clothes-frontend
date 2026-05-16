@@ -83,7 +83,7 @@ watch(open, () => {
 </script>
 
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card
       :class="
         loadingSeller

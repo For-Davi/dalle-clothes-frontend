@@ -555,7 +555,7 @@ watch(
 );
 </script>
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card
       style="min-width: 80vw"
       :class="hasLoading ? 'bg-grey-2 form-basic column justify-between' : 'bg-grey-2 form-basic'"

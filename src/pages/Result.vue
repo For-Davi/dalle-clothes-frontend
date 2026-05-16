@@ -65,8 +65,8 @@ const hasFilter = computed(() => {
 </script>
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Resultados" icon="analytics" />
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Resultados" icon="analytics" />
     </section>
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">

@@ -91,9 +91,9 @@ const hasFilter = computed(() => {
 </script>
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Funcionários" icon="badge" />
-      <div>
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Funcionários" icon="badge" />
+      <div class="page-header-actions">
         <q-btn
           @click="changeShowDepartmentManage"
           color="white"
@@ -101,7 +101,6 @@ const hasFilter = computed(() => {
           label="Departamentos"
           icon-right="group_work"
           no-caps
-          class="q-mr-sm"
         />
         <q-btn
           @click="changeShowFormEmployee(true)"
@@ -110,7 +109,6 @@ const hasFilter = computed(() => {
           label="Novo funcionário"
           icon-right="add"
           no-caps
-          class="q-mr-sm"
         />
       </div>
     </section>
@@ -122,8 +120,7 @@ const hasFilter = computed(() => {
             outlined
             v-model="filterEmployee"
             dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
+            class="search-input bg-white rounded-borders"
           >
             <template v-slot:prepend>
               <q-icon name="search" size="20px" color="black" />

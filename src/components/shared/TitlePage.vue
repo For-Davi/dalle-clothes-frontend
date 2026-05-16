@@ -2,6 +2,7 @@
 import { useSettingsStore } from 'src/stores/setting-store';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import { useQuasar } from 'quasar';
 
 defineOptions({
   name: 'TitlePage',
@@ -18,6 +19,8 @@ const props = withDefaults(
   },
 );
 
+const $q = useQuasar();
+
 const { appearanceSetting } = storeToRefs(useSettingsStore());
 
 const getTitleColor = computed(() => {
@@ -25,6 +28,11 @@ const getTitleColor = computed(() => {
     appearanceSetting.value.title_page_color_code
     ? appearanceSetting.value.title_page_color_code
     : '#0D47A1';
+});
+
+const responsiveTitleSize = computed(() => {
+  if (props.titleSize !== 'text-h5') return props.titleSize;
+  return $q.screen.lt.sm ? 'text-h6' : 'text-h5';
 });
 </script>
 
@@ -34,7 +42,7 @@ const getTitleColor = computed(() => {
       <q-icon :name="props.icon" :style="getTitleColor ? { color: getTitleColor } : '#0D47A1'" />
       <span
         :style="getTitleColor ? { color: getTitleColor } : '#0D47A1'"
-        :class="`text-weight-medium ${props.titleSize}`"
+        :class="`text-weight-medium ${responsiveTitleSize}`"
         >{{ props.title }}</span
       >
     </q-toolbar-title>

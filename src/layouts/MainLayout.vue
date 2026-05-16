@@ -63,6 +63,10 @@ const changeShowContactHelper = () => {
   showContactHelper.value = !showContactHelper.value;
 };
 
+const toggleDrawer = () => {
+  drawer.value = !drawer.value;
+};
+
 const getIconColor = (routeName: string) => {
   return isActive(routeName) ? colorIconSelected.value || '' : colorIconNotSelected.value || '';
 };
@@ -108,6 +112,7 @@ const backgroundSelected = computed(() => {
         <Navbar
           @update:open-inbox="changeShowInbox"
           @update:open-contact-helper="changeShowContactHelper"
+          @update:change-open-menu="toggleDrawer"
         />
       </q-header>
 
@@ -119,7 +124,7 @@ const backgroundSelected = computed(() => {
         @mouseleave="miniState = true"
         mini-to-overlay
         :width="200"
-        :breakpoint="500"
+        :breakpoint="1024"
         class="bg-grey-10"
       >
         <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: '0' }">

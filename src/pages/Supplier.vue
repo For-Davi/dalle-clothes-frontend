@@ -96,9 +96,9 @@ const hasFilter = computed(() => {
 </script>
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Fornecedores" icon="list_alt" />
-      <div>
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Fornecedores" icon="list_alt" />
+      <div class="page-header-actions">
         <q-btn
           @click="changeShowFormSupplier(true)"
           color="white"
@@ -106,9 +106,8 @@ const hasFilter = computed(() => {
           label="Novo fornecedor"
           icon-right="add"
           no-caps
-          class="q-mr-sm"
         />
-        <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
+        <q-btn-dropdown class="q-pa-none q-px-md" label="Ações" no-caps auto-close>
           <q-list dense>
             <q-item
               clickable
@@ -136,8 +135,7 @@ const hasFilter = computed(() => {
             outlined
             v-model="filterSupplier"
             dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
+            class="search-input bg-white rounded-borders"
           >
             <template v-slot:prepend>
               <q-icon name="search" size="20px" color="black" />
