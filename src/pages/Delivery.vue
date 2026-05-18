@@ -103,10 +103,10 @@ watch(
 </script>
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Entregas" icon="local_shipping" />
-      <div>
-        <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Entregas" icon="local_shipping" />
+      <div class="page-header-actions">
+        <q-btn-dropdown class="q-pa-none q-px-md" label="Ações" no-caps auto-close>
           <q-list dense>
             <q-item
               clickable
@@ -127,20 +127,26 @@ watch(
       </div>
     </section>
     <section class="q-mt-sm">
-      <div class="flex justify-around">
-        <QuantityDeliveryCard
-          title="Pendentes"
-          icon="timer"
-          color="#FFA000"
-          :data="Dashboard.pending"
-        />
-        <QuantityDeliveryCard title="Agendadas" icon="date_range" :data="Dashboard.scheduled" />
-        <QuantityDeliveryCard
-          title="Entregues"
-          icon="check_circle"
-          color="#66BB6A"
-          :data="Dashboard.delivered"
-        />
+      <div class="row q-col-gutter-sm">
+        <div class="col-12 col-sm-4">
+          <QuantityDeliveryCard
+            title="Pendentes"
+            icon="timer"
+            color="#FFA000"
+            :data="Dashboard.pending"
+          />
+        </div>
+        <div class="col-12 col-sm-4">
+          <QuantityDeliveryCard title="Agendadas" icon="date_range" :data="Dashboard.scheduled" />
+        </div>
+        <div class="col-12 col-sm-4">
+          <QuantityDeliveryCard
+            title="Entregues"
+            icon="check_circle"
+            color="#66BB6A"
+            :data="Dashboard.delivered"
+          />
+        </div>
       </div>
     </section>
     <section class="q-mt-lg">

@@ -26,7 +26,7 @@ const emailUrl = `mailto:${emailSupport}?subject=Suporte/Dúvidas - Cliente`;
 </script>
 
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card style="width: 400px; max-width: 90vw; border-radius: 5px">
       <q-card-section class="row items-center q-pb-none">
         <div class="text-h6 text-primary flex items-center">

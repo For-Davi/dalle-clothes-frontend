@@ -105,7 +105,7 @@ const open = computed({
 </script>
 
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card
       style="min-width: 75vw"
       :class="loadingReturns ? 'bg-grey-2 sub-page column justify-between' : 'bg-grey-2 sub-page'"

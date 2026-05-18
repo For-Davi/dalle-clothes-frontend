@@ -67,7 +67,7 @@ const open = computed({
 });
 </script>
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card :class="loadingReturn ? 'column justify-between sub-page' : 'bg-grey-2 sub-page'">
       <q-card-section class="q-pa-none">
         <TitlePage title="Troca finalizada" icon="point_of_sale" />

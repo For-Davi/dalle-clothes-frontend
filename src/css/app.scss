@@ -21,9 +21,6 @@
 .no-spinners {
   -moz-appearance: textfield;
 }
-.input-divider {
-  width: 49%;
-}
 .hover {
   transition: opacity 0.3s;
 
@@ -38,13 +35,16 @@
     text-transform: uppercase;
   }
 }
-.no-resize {
-  resize: none !important;
-}
 .form-auth {
   width: 500px;
   max-width: 96%;
   border-radius: 3px;
+
+  @media (max-width: 599px) {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 0;
+  }
 }
 .background-auth {
   background-image: url('/images/background/bg-auth.jpg');
@@ -93,6 +93,11 @@
   width: 800px !important;
   max-width: 98vw !important;
   min-height: 300px;
+
+  @media (max-width: 599px) {
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
 }
 
 .main-scroll {
@@ -103,6 +108,11 @@
   width: 900px;
   max-width: 99%;
   min-height: 300px;
+
+  @media (max-width: 599px) {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 .form-basic-no-modal {
@@ -113,10 +123,18 @@
 
 .input-divider {
   width: 49%;
+
+  @media (max-width: 599px) {
+    width: 100%;
+  }
 }
 
 .input-3-divider {
   width: 32%;
+
+  @media (max-width: 599px) {
+    width: 100%;
+  }
 }
 
 .no-resize {
@@ -148,6 +166,48 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+// Responsividade — padding de página reduzido em mobile
+@media (max-width: 599px) {
+  .q-pa-lg {
+    padding: 12px !important;
+  }
+  .q-pa-md {
+    padding: 8px !important;
+  }
+}
+
+// Input de pesquisa responsivo
+.search-input {
+  width: 200px;
+
+  @media (max-width: 599px) {
+    width: 100%;
+  }
+}
+
+// Cabeçalho de página responsivo
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+// Scroll areas fixas em mobile
+@media (max-width: 599px) {
+  .q-scroll-area[style*='height: 400px'] {
+    height: calc(100vh - 280px) !important;
+  }
 }
 
 .rank-gold {

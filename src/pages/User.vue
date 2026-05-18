@@ -64,11 +64,10 @@ const redirectPageRole = async () => {
 const openAction = (type: IActionsUser): void => {
   switch (type) {
     case 'role':
-      redirectPageRole();
+      void redirectPageRole();
       break;
     case 'department':
       changeShowDepartmentManage();
-      break;
   }
 };
 
@@ -84,9 +83,9 @@ const hasFilter = computed((): boolean => {
 </script>
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Usuários" icon="person" />
-      <div>
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Usuários" icon="person" />
+      <div class="page-header-actions">
         <q-btn
           @click="changeShowFormUser(true)"
           color="white"
@@ -94,9 +93,8 @@ const hasFilter = computed((): boolean => {
           label="Novo usuário"
           icon-right="add"
           no-caps
-          class="q-mr-sm"
         />
-        <q-btn-dropdown class="q-pa-none q-px-md q-mr-sm" label="Ações" no-caps auto-close>
+        <q-btn-dropdown class="q-pa-none q-px-md" label="Ações" no-caps auto-close>
           <q-list dense>
             <q-item
               clickable
@@ -124,8 +122,7 @@ const hasFilter = computed((): boolean => {
             outlined
             v-model="search"
             dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
+            class="search-input bg-white rounded-borders"
           >
             <template v-slot:prepend>
               <q-icon name="search" size="20px" color="black" />

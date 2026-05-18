@@ -71,8 +71,8 @@ onMounted(async () => {
 
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Assinatura" icon="credit_card" />
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Assinatura" icon="credit_card" />
     </section>
     <section class="q-mt-sm">
       <!-- Banner período gratuito -->
@@ -108,8 +108,8 @@ onMounted(async () => {
         </span>
       </q-banner>
 
-      <div class="q-mt-md row justify-center q-gutter-x-lg">
-        <q-card class="col-5 bg-grey-1">
+      <div class="q-mt-md row justify-center q-col-gutter-md">
+        <q-card class="col-12 col-sm-5 bg-grey-1">
           <q-card-section>
             <div class="text-h6">Básico</div>
           </q-card-section>
@@ -148,7 +148,7 @@ onMounted(async () => {
           </q-card-actions>
         </q-card>
 
-        <q-card class="col-5 bg-grey-1">
+        <q-card class="col-12 col-sm-5 bg-grey-1">
           <q-card-section>
             <div class="text-h6">Profissional</div>
           </q-card-section>

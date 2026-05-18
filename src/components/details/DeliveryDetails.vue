@@ -80,7 +80,7 @@ watch(open, async () => {
 </script>
 
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card
       :class="
         loadingDelivery ? 'bg-grey-2 form-basic column justify-between' : 'bg-grey-2 form-basic'

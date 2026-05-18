@@ -13,12 +13,12 @@ const tab = ref<ISettingModalTabs>('appearance');
 <template>
   <main class="setting-page q-pa-lg">
     <TitlePage title="Configurações" icon="settings" class="q-mb-lg" />
-    <div class="row q-col-gutter-md items-start">
-      <div class="col-auto">
+    <div :class="$q.screen.lt.sm ? 'column q-col-gutter-md' : 'row q-col-gutter-md items-start'">
+      <div :class="$q.screen.lt.sm ? 'col-12' : 'col-auto'">
         <q-card flat bordered class="setting-nav">
           <q-tabs
             v-model="tab"
-            vertical
+            :vertical="!$q.screen.lt.sm"
             inline-label
             active-color="primary"
             indicator-color="primary"

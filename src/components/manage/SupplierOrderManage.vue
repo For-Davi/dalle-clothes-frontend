@@ -90,7 +90,7 @@ watch(open, async () => {
 });
 </script>
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card class="bg-grey-2 sub-page column justify-between" style="min-width: 90vw">
       <q-card-section class="q-pa-none">
         <TitlePage title="Gerenciamento de pedidos" icon="fa-solid fa-list" />

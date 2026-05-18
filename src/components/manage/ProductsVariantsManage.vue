@@ -48,7 +48,7 @@ watch(open, () => {
 });
 </script>
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card class="bg-grey-2 sub-page column justify-between">
       <q-card-section class="q-pa-none">
         <TitlePage title="Produtos e variantes" icon="fa-solid fa-box" />

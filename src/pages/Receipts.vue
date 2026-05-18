@@ -34,9 +34,9 @@ onMounted(async () => {
 
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Recebimentos" icon="account_balance" />
-      <div>
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Recebimentos" icon="account_balance" />
+      <div class="page-header-actions">
         <q-btn
           color="white"
           text-color="black"
@@ -56,8 +56,7 @@ onMounted(async () => {
             outlined
             v-model="filterReceipt"
             dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
+            class="search-input bg-white rounded-borders"
           >
             <template v-slot:prepend>
               <q-icon name="search" size="20px" color="black" />

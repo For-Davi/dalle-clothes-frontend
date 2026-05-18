@@ -333,7 +333,7 @@ watch(
 );
 </script>
 <template>
-  <q-dialog v-model="open" persistent>
+  <q-dialog v-model="open" persistent :maximized="$q.screen.lt.sm">
     <q-card class="bg-grey-2 form-basic column justify-between">
       <q-card-section class="q-pa-none">
         <TitlePage title="Filtro de vendas" icon="attach_money" />

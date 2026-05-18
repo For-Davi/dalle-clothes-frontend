@@ -22,7 +22,7 @@ const open = computed({
 });
 </script>
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card class="bg-grey-2 column justify-between" style="width: 600px; max-width: 98vw">
       <q-card-section class="q-pa-none">
         <TitlePage title="Descrição" icon="fa-solid fa-file-lines" />

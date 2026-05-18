@@ -184,7 +184,7 @@ watch(
 );
 </script>
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card class="bg-grey-2" style="width: 800px; max-width: 98vw">
       <q-card-section class="q-pa-none">
         <TitlePage title="Configuração de variantes" icon="arrow_split" />

@@ -64,8 +64,7 @@ const hasFilter = computed(() => {
             outlined
             v-model="search"
             dense
-            style="width: 200px"
-            class="bg-white rounded-borders"
+            class="search-input bg-white rounded-borders"
           >
             <template v-slot:prepend>
               <q-icon name="search" size="20px" color="black" />

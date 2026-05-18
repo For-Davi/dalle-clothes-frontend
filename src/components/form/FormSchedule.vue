@@ -239,7 +239,7 @@ watch(open, async () => {
 });
 </script>
 <template>
-  <q-dialog v-model="open">
+  <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
     <q-card
       class="bg-grey-2 form-basic column justify-between"
       style="width: 800px; max-width: 98vw"

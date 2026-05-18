@@ -12,8 +12,8 @@ const tab = ref<'movement' | 'schedule'>('movement');
 </script>
 <template>
   <main class="q-pa-lg">
-    <section class="row items-center justify-between">
-      <TitlePage class="col-7" title="Transações" icon="sync_alt" />
+    <section class="page-header q-mb-xs">
+      <TitlePage title="Transações" icon="sync_alt" />
     </section>
     <section class="q-mt-sm">
       <q-tabs
