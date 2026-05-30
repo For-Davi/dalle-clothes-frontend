@@ -74,6 +74,7 @@ const hasFilter = computed(() => {
       <TitlePage title="Clientes" icon="person" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('client.create')"
           @click="changeShowFormClient(true)"
           color="white"
           text-color="black"

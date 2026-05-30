@@ -564,9 +564,9 @@ export const columnsCategoryTransaction: IQuasarTable[] = [
     align: 'left',
   },
   {
-    name: 'actions',
+    name: 'action',
     label: 'Ações',
-    field: 'actions',
+    field: 'action',
     align: 'right',
   },
 ];

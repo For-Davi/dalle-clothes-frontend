@@ -130,6 +130,7 @@ const list = computed(() => {
               <q-space />
               <div class="q-gutter-x-sm">
                 <q-btn
+                  v-if="hasPermission('grid.update')"
                   @click="startEdit(grid)"
                   size="sm"
                   round
@@ -138,6 +139,7 @@ const list = computed(() => {
                   unelevated
                 />
                 <q-btn
+                  v-if="hasPermission('grid.delete')"
                   @click="startExclude(grid.id)"
                   size="sm"
                   round

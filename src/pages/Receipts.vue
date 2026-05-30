@@ -38,6 +38,7 @@ onMounted(async () => {
       <TitlePage title="Recebimentos" icon="account_balance" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('receipt.create')"
           color="white"
           text-color="black"
           label="Novo recebimento"

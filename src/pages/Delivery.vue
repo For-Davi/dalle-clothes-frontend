@@ -108,20 +108,21 @@ watch(
       <div class="page-header-actions">
         <q-btn-dropdown class="q-pa-none q-px-md" label="Ações" no-caps auto-close>
           <q-list dense>
-            <q-item
-              clickable
-              v-ripple
-              v-for="(item, index) in actionsDelivery"
-              :key="index"
-              @click="openAction(item.type)"
-            >
-              <q-item-section avatar>
-                <q-avatar>
-                  <q-icon :name="item.icon" />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>{{ item.label }}</q-item-section>
-            </q-item>
+            <template v-for="(item, index) in actionsDelivery" :key="index">
+              <q-item
+                clickable
+                v-ripple
+                v-if="item.type !== 'delivery_guy' || hasPermission('delivery-guy.view')"
+                @click="openAction(item.type)"
+              >
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon :name="item.icon" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>{{ item.label }}</q-item-section>
+              </q-item>
+            </template>
           </q-list>
         </q-btn-dropdown>
       </div>

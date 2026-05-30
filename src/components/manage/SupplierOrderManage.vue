@@ -142,6 +142,7 @@ watch(open, async () => {
             flat
           />
           <q-btn
+            v-if="hasPermission('supplier-order.create')"
             @click="changeShowFormSupplierOrder(true)"
             color="primary"
             label="Adicionar"

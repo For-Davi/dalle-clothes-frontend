@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { columnsCategorySupplier } from 'src/utils/columns';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { useCategorySupplierStore } from 'src/stores/category-supplier-store';
+import { usePermission } from 'src/composables/usePermission.js';
 
 defineOptions({
   name: 'TableCategorySupplier',
@@ -13,6 +14,7 @@ const emit = defineEmits<{
   'show:showFormCategory': [ICategorySupplier];
 }>();
 
+const { hasPermission } = usePermission();
 const { loadingCategorySupplier, listCategorySupplier } = storeToRefs(useCategorySupplierStore());
 
 const showConfirmAction = ref<boolean>(false);
@@ -45,6 +47,17 @@ const fetchCategories = async (): Promise<void> => {
   await useCategorySupplierStore().getCategoriesSupplier();
 };
 
+const columnsFiltered = computed(() => {
+  const canSeeActions =
+    hasPermission('supplier-category.update') || hasPermission('supplier-category.delete');
+
+  if (!canSeeActions) {
+    return columnsCategorySupplier.filter((col) => col.name !== 'action');
+  }
+
+  return columnsCategorySupplier;
+});
+
 onMounted(async () => {
   await fetchCategories();
 });
@@ -54,7 +67,7 @@ onMounted(async () => {
     <q-table
       v-show="!loadingCategorySupplier"
       :rows="loadingCategorySupplier ? [] : listCategorySupplier"
-      :columns="columnsCategorySupplier"
+      :columns="columnsFiltered"
       :filter="filter"
       :loading="loadingCategorySupplier"
       title="Lista de categorias"
@@ -97,6 +110,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
+              v-if="hasPermission('supplier-category.update')"
               @click="startEdit(props.row)"
               :disable="categoryMonitoring === props.row.id"
               size="sm"
@@ -106,6 +120,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('supplier-category.delete')"
               @click="startExclude(props.row.id)"
               :disable="categoryMonitoring === props.row.id"
               size="sm"

@@ -12,6 +12,7 @@ import {
 } from 'src/services/auth-service';
 import router from 'src/router';
 import { useSettingsStore } from './setting-store';
+import { getFirstAllowedRoute } from 'src/router/helper';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -41,7 +42,8 @@ export const useAuthStore = defineStore('auth', {
           this.setToken(response.data.token);
           this.enterpriseName = response.data.enterprise_name;
 
-          await router.push({ name: 'dashboard' });
+          const firstRoute = getFirstAllowedRoute(response.data.user);
+          await router.push({ name: firstRoute });
           await useSettingsStore().getAppearanceSetting();
         }
         return response;

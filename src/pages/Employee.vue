@@ -95,6 +95,7 @@ const hasFilter = computed(() => {
       <TitlePage title="Funcionários" icon="badge" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('department.view')"
           @click="changeShowDepartmentManage"
           color="white"
           text-color="black"
@@ -103,6 +104,7 @@ const hasFilter = computed(() => {
           no-caps
         />
         <q-btn
+          v-if="hasPermission('employee.create')"
           @click="changeShowFormEmployee(true)"
           color="white"
           text-color="black"

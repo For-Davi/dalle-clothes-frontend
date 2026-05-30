@@ -91,6 +91,7 @@ watch(open, () => {
             flat
           />
           <q-btn
+            v-if="hasPermission('product-category.create')"
             @click="changeShowFormCategoryProduct(true)"
             color="primary"
             label="Adicionar"

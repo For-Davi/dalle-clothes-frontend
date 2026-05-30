@@ -493,6 +493,7 @@ watch(open, async () => {
         <div class="row no-wrap">
           <div v-if="!showSupplierOrderReceipt && mode === 'details'">
             <q-btn
+              v-if="hasPermission('supplier-order.update')"
               @click="setMode('status')"
               color="primary"
               icon="list_alt"
@@ -529,7 +530,12 @@ watch(open, async () => {
           </div>
           <div>
             <q-btn
-              v-if="!showSupplierOrderReceipt && hasItemForReceived && mode === 'details'"
+              v-if="
+                !showSupplierOrderReceipt &&
+                hasItemForReceived &&
+                mode === 'details' &&
+                hasPermission('supplier-order.update')
+              "
               color="green"
               icon="fa-solid fa-box-archive"
               round

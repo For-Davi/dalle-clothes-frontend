@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import Loading from '../shared/Loading.vue';
 import { columnsTag } from 'src/utils/columns';
 import { useTagStore } from 'src/stores/tag-store';
+import { usePermission } from 'src/composables/usePermission.js';
 
 defineOptions({
   name: 'TableTag',
@@ -14,6 +15,7 @@ const emit = defineEmits<{
   'show:showFormTag': [ITag];
 }>();
 
+const { hasPermission } = usePermission();
 const { loadingTag, listTag } = storeToRefs(useTagStore());
 
 const showConfirmAction = ref<boolean>(false);
@@ -46,6 +48,16 @@ const fetchTags = async (): Promise<void> => {
   await useTagStore().getTags();
 };
 
+const columnsFiltered = computed(() => {
+  const canSeeActions = hasPermission('product-tag.update') || hasPermission('product-tag.delete');
+
+  if (!canSeeActions) {
+    return columnsTag.filter((col) => col.name !== 'action');
+  }
+
+  return columnsTag;
+});
+
 onMounted(async () => {
   await fetchTags();
 });
@@ -55,7 +67,7 @@ onMounted(async () => {
     <q-table
       v-show="!loadingTag"
       :rows="loadingTag ? [] : listTag"
-      :columns="columnsTag"
+      :columns="columnsFiltered"
       :filter="filter"
       :loading="loadingTag"
       title="Lista de tags"
@@ -106,6 +118,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
+              v-if="hasPermission('product-tag.update')"
               @click="startEdit(props.row)"
               :disable="tagMonitoring === props.row.id"
               size="sm"
@@ -115,6 +128,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('product-tag.delete')"
               @click="startExclude(props.row.id)"
               :disable="tagMonitoring === props.row.id"
               size="sm"

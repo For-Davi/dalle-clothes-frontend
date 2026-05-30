@@ -207,6 +207,8 @@ watch(open, async () => {
       <q-card-section class="q-pa-sm">
         <q-form class="q-gutter-y-sm" v-show="!loadingEnterprise">
           <q-input
+            :disable="!hasPermission('enterprise.update')"
+            :readonly="!hasPermission('enterprise.update')"
             v-model="dataEnterprise.name"
             bg-color="white"
             label-color="black"
@@ -219,7 +221,10 @@ watch(open, async () => {
               <q-icon name="person" color="black" size="20px" />
             </template>
           </q-input>
+
           <q-input
+            :disable="!hasPermission('enterprise.update')"
+            :readonly="!hasPermission('enterprise.update')"
             v-model="dataEnterprise.email"
             bg-color="white"
             label-color="black"
@@ -233,7 +238,10 @@ watch(open, async () => {
               <q-icon name="mail" color="black" size="20px" />
             </template>
           </q-input>
+
           <q-input
+            :disable="!hasPermission('enterprise.update')"
+            :readonly="!hasPermission('enterprise.update')"
             v-model="formattedPhone"
             bg-color="white"
             label-color="black"
@@ -246,8 +254,10 @@ watch(open, async () => {
               <q-icon name="phone" color="black" size="20px" />
             </template>
           </q-input>
+
           <div class="row justify-between">
             <q-select
+              :disable="!hasPermission('enterprise.update')"
               v-model="selectedIdentifier"
               :options="optionsIdentifier"
               label="Selecione o documento"
@@ -262,7 +272,10 @@ watch(open, async () => {
                 <q-icon name="info" color="black" size="20px" />
               </template>
             </q-select>
+
             <q-input
+              :disable="!hasPermission('enterprise.update')"
+              :readonly="!hasPermission('enterprise.update')"
               v-if="selectedIdentifier === 'CNPJ'"
               v-model="dataEnterprise.cnpj"
               bg-color="white"
@@ -278,7 +291,10 @@ watch(open, async () => {
                 <q-icon name="badge" color="black" size="20px" />
               </template>
             </q-input>
+
             <q-input
+              :disable="!hasPermission('enterprise.update')"
+              :readonly="!hasPermission('enterprise.update')"
               v-else
               v-model="dataEnterprise.cpf"
               bg-color="white"
@@ -295,7 +311,10 @@ watch(open, async () => {
               </template>
             </q-input>
           </div>
+
           <q-input
+            :disable="!hasPermission('enterprise.update')"
+            :readonly="!hasPermission('enterprise.update')"
             v-model="dataEnterprise.cep"
             bg-color="white"
             label-color="black"
@@ -310,8 +329,11 @@ watch(open, async () => {
               <q-icon name="search" color="black" size="20px" />
             </template>
           </q-input>
+
           <div class="row justify-between">
             <q-input
+              :disable="!hasPermission('enterprise.update')"
+              :readonly="!hasPermission('enterprise.update')"
               v-model="dataEnterprise.state"
               bg-color="white"
               label-color="black"
@@ -325,7 +347,10 @@ watch(open, async () => {
                 <q-icon name="map" color="black" size="20px" />
               </template>
             </q-input>
+
             <q-input
+              :disable="!hasPermission('enterprise.update')"
+              :readonly="!hasPermission('enterprise.update')"
               v-model="dataEnterprise.city"
               bg-color="white"
               label-color="black"
@@ -340,7 +365,10 @@ watch(open, async () => {
               </template>
             </q-input>
           </div>
+
           <q-input
+            :disable="!hasPermission('enterprise.update')"
+            :readonly="!hasPermission('enterprise.update')"
             v-model="dataEnterprise.neighborhood"
             bg-color="white"
             label-color="black"
@@ -353,7 +381,10 @@ watch(open, async () => {
               <q-icon name="pin_drop" color="black" size="20px" />
             </template>
           </q-input>
+
           <q-input
+            :disable="!hasPermission('enterprise.update')"
+            :readonly="!hasPermission('enterprise.update')"
             v-model="dataEnterprise.address"
             bg-color="white"
             label-color="black"
@@ -366,8 +397,11 @@ watch(open, async () => {
               <q-icon name="pin_drop" color="black" size="20px" />
             </template>
           </q-input>
+
           <div class="row justify-between">
             <q-input
+              :disable="!hasPermission('enterprise.update')"
+              :readonly="!hasPermission('enterprise.update')"
               v-model="dataEnterprise.numberAddress"
               bg-color="white"
               label-color="black"
@@ -383,7 +417,10 @@ watch(open, async () => {
                 <q-icon name="numbers" color="black" size="20px" />
               </template>
             </q-input>
+
             <q-input
+              :disable="!hasPermission('enterprise.update')"
+              :readonly="!hasPermission('enterprise.update')"
               v-model="dataEnterprise.complement"
               bg-color="white"
               label-color="black"
@@ -403,8 +440,9 @@ watch(open, async () => {
       <q-card-actions align="right">
         <q-btn flat color="red" label="Fechar" size="md" @click="open = false" unelevated no-caps />
         <q-btn
+          v-if="hasPermission('enterprise.delete')"
           color="red"
-          :disable="!hasEnterpriseDelete"
+          :disable="!hasEnterpriseDelete || !hasPermission('enterprise.delete')"
           :loading="loadingEnterprise"
           @click="changeShowConfirmAction"
           label="Apagar organização"
@@ -413,7 +451,8 @@ watch(open, async () => {
           no-caps
         />
         <q-btn
-          :disable="!hasEnterpriseUpdate"
+          v-if="hasPermission('enterprise.update')"
+          :disable="!hasEnterpriseUpdate || !hasPermission('enterprise.update')"
           color="primary"
           :loading="loadingEnterprise"
           @click="update"

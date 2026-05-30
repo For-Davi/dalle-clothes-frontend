@@ -109,6 +109,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
+              v-if="hasPermission('delivery-guy.update')"
               @click="startEdit(props.row.id)"
               :disable="deliveryGuyMonitoring === props.row.id"
               size="sm"
@@ -118,6 +119,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('delivery-guy.delete')"
               @click="startExclude(props.row.id)"
               :disable="deliveryGuyMonitoring === props.row.id"
               size="sm"

@@ -41,6 +41,15 @@ router.beforeEach((to, from, next) => {
     if (!authStore.token) {
       return next({ name: 'auth' });
     }
+    const requiredPermission = to.meta.permission as string | undefined;
+
+    if (requiredPermission) {
+      const userPermissions = authStore.user?.role?.permissions?.map((p) => p.slug) ?? [];
+
+      if (!userPermissions.includes(requiredPermission)) {
+        return next({ name: 'auth' });
+      }
+    }
   }
 
   next();

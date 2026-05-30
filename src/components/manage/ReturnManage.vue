@@ -146,6 +146,7 @@ const open = computed({
             flat
           />
           <q-btn
+            v-if="hasPermission('return.create')"
             @click="changeShowFormReturn(true, props.data.saleID)"
             :loading="loadingReturns"
             color="primary"

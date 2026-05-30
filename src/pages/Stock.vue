@@ -204,6 +204,7 @@ const hasFilter = computed(() => {
       <TitlePage title="Estoque" icon="inventory" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('product.create')"
           @click="changeShowFormProduct(true)"
           color="white"
           text-color="black"
@@ -213,20 +214,21 @@ const hasFilter = computed(() => {
         />
         <q-btn-dropdown class="q-pa-none q-px-md" label="Ações" no-caps auto-close>
           <q-list dense>
-            <q-item
-              clickable
-              v-ripple
-              v-for="(item, index) in actionsStock"
-              :key="index"
-              @click="openAction(item.type)"
-            >
-              <q-item-section avatar>
-                <q-avatar>
-                  <q-icon :name="item.icon" />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>{{ item.label }}</q-item-section>
-            </q-item>
+            <template v-for="(item, index) in actionsStock" :key="index">
+              <q-item
+                clickable
+                v-ripple
+                v-if="!item.permission || hasPermission(item.permission)"
+                @click="openAction(item.type)"
+              >
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon :name="item.icon" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>{{ item.label }}</q-item-section>
+              </q-item>
+            </template>
           </q-list>
         </q-btn-dropdown>
       </div>

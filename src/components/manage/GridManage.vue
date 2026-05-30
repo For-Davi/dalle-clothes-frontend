@@ -107,6 +107,7 @@ watch(open, async () => {
             flat
           />
           <q-btn
+            v-if="hasPermission('grid.create')"
             @click="changeShowFormGrid(true)"
             color="primary"
             label="Adicionar"

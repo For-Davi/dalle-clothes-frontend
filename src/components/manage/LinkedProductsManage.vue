@@ -104,6 +104,7 @@ const open = computed({
             flat
           />
           <q-btn
+            v-if="hasPermission('supplier-catalog.create')"
             @click="changeShowProductVariantsManage()"
             color="primary"
             label="Adicionar"

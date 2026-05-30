@@ -82,6 +82,7 @@ watch(open, () => {
             flat
           />
           <q-btn
+            v-if="hasPermission('product-color.create')"
             @click="changeShowFormColor(true)"
             color="primary"
             label="Adicionar"

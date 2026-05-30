@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia';
 import { useSellerStore } from 'src/stores/DalleAdm/seller-store';
 
 const emit = defineEmits<{
-  updateMode: ['data'];
+  'update:mode': ['data'];
   'update:open': [void];
 }>();
 
@@ -116,7 +116,7 @@ const update = async () => {
         <q-btn
           color="grey-8"
           label="Alterar dados"
-          @click="emit('updateMode', 'data')"
+          @click="emit('update:mode', 'data')"
           size="md"
           unelevated
           no-caps

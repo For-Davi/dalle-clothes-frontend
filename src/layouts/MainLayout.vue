@@ -27,14 +27,14 @@ const allMenuItems = [
   { name: 'client', icon: 'groups', label: 'Clientes', permission: 'client.view' },
   { name: 'stock', icon: 'inventory', label: 'Estoque', permission: 'product.view' },
   { name: 'sale', icon: 'paid', label: 'Vendas', permission: 'sale.view' },
-  { name: 'results', icon: 'analytics', label: 'Resultados', permission: 'comission.view' },
+  { name: 'results', icon: 'analytics', label: 'Resultados', permission: 'commission.view' },
   { name: 'user', icon: 'person', label: 'Usuários', permission: 'user.view' },
   { name: 'employee', icon: 'badge', label: 'Funcionários', permission: 'employee.view' },
   { name: 'transaction', icon: 'sync_alt', label: 'Transações', permission: 'transaction.view' },
   { name: 'receipt', icon: 'account_balance', label: 'Recebimentos', permission: 'receipt.view' },
   { name: 'supplier', icon: 'list_alt', label: 'Fornecedores', permission: 'supplier.view' },
-  { name: 'setting', icon: 'settings', label: 'Configurações', permission: 'setting.view' },
-  { name: 'help', icon: 'help', label: 'Ajuda' }, // Sem permission sempre aparece
+  { name: 'setting', icon: 'settings', label: 'Configurações', permission: 'config.view' },
+  { name: 'help', icon: 'help', label: 'Ajuda' },
 ];
 
 const filteredMenuItems = computed(() => {

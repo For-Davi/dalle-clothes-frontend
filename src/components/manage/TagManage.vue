@@ -82,6 +82,7 @@ watch(open, () => {
             flat
           />
           <q-btn
+            v-if="hasPermission('product-tag.create')"
             @click="changeShowFormTag(true)"
             color="primary"
             label="Adicionar"

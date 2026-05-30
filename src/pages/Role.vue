@@ -89,6 +89,7 @@ onMounted(async () => {
       <TitlePage title="Permissões" icon="admin_panel_settings" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('role.create')"
           @click="changeShowFormRole(true)"
           color="primary"
           label="Nova permissão"
@@ -140,6 +141,7 @@ onMounted(async () => {
                 </div>
                 <div class="row q-gutter-x-xs">
                   <q-btn
+                    v-if="hasPermission('role.update')"
                     flat
                     round
                     dense
@@ -151,6 +153,7 @@ onMounted(async () => {
                     <q-tooltip>Editar</q-tooltip>
                   </q-btn>
                   <q-btn
+                    v-if="hasPermission('role.delete')"
                     flat
                     round
                     dense

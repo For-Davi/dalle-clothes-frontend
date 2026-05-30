@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSupplierStore } from 'src/stores/supplier-store';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { columnsSupplier } from 'src/utils/columns';
 import LinkedProductsManage from '../manage/LinkedProductsManage.vue';
+import { usePermission } from 'src/composables/usePermission.js';
 
 defineOptions({
   name: 'TableSupplier',
@@ -22,6 +23,7 @@ const emit = defineEmits<{
   'show:showFormSupplier': [number];
 }>();
 
+const { hasPermission } = usePermission();
 const { loadingSupplier, listSupplier } = storeToRefs(useSupplierStore());
 
 const showCatalogSupplier = ref<boolean>(false);
@@ -67,6 +69,19 @@ const setShowInformation = (index: number) => {
   showInformation.value = showInformation.value === index + 1 ? 0 : index + 1;
 };
 
+const columnsFiltered = computed(() => {
+  const canSeeActions =
+    hasPermission('supplier.update') ||
+    hasPermission('supplier.delete') ||
+    hasPermission('supplier-catalog.view');
+
+  if (!canSeeActions) {
+    return columnsSupplier.filter((col) => col.name !== 'action');
+  }
+
+  return columnsSupplier;
+});
+
 onMounted(async () => {
   await fetchSuppliers();
 });
@@ -75,7 +90,7 @@ onMounted(async () => {
   <section>
     <q-table
       :rows="loadingSupplier ? [] : listSupplier"
-      :columns="columnsSupplier"
+      :columns="columnsFiltered"
       :filter="props.filter"
       :loading="loadingSupplier"
       title="Lista de fornecedores"
@@ -131,6 +146,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
+              v-if="hasPermission('supplier-catalog.view')"
               :disable="false"
               @click="openCatalogSupplier(props.row.id)"
               size="sm"
@@ -142,6 +158,7 @@ onMounted(async () => {
               <q-tooltip>Catálogo</q-tooltip>
             </q-btn>
             <q-btn
+              v-if="hasPermission('supplier.update')"
               @click="startEdit(props.row.id)"
               :disable="supplierMonitoring === props.row.id"
               size="sm"
@@ -151,6 +168,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('supplier.delete')"
               @click="startExclude(props.row.id)"
               :disable="supplierMonitoring === props.row.id"
               size="sm"

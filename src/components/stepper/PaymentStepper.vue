@@ -12,11 +12,13 @@ import { createErrorData } from 'src/composables/CreateNotify';
 import { useSaleStore } from 'src/stores/sale-store';
 import SaleMade from '../fragments/sale/SaleMade.vue';
 import Loading from '../shared/Loading.vue';
+import { usePermission } from 'src/composables/usePermission.js';
 
 defineOptions({
   name: 'PaymentStepper',
 });
 
+const { hasPermission } = usePermission();
 const { listClient } = storeToRefs(useClientStore());
 const { loadingSale } = storeToRefs(useSaleStore());
 
@@ -147,14 +149,18 @@ const addTotal = (total: number) => {
   dataSale.totalPrice = total.toFixed(2).toString();
 };
 const checkProducts = async () => {
-  const check = checkSaleProductsData(dataSale.products);
-  if (check.status) {
-    const response = await useSaleStore().checkSaleProductsDiscount(dataSale.products);
-    if (response?.status === 200) {
-      step.value = 3;
+  if (hasPermission('sale-discount.create')) {
+    const check = checkSaleProductsData(dataSale.products);
+    if (check.status) {
+      const response = await useSaleStore().checkSaleProductsDiscount(dataSale.products);
+      if (response?.status === 200) {
+        step.value = 3;
+      }
+    } else {
+      createErrorData(check.message || 'Erro ao vincular os produtos ao cliente');
     }
   } else {
-    createErrorData(check.message || 'Erro ao vincular os produtos ao cliente');
+    step.value = 3;
   }
 };
 const checkClient = () => {

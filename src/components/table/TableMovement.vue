@@ -116,6 +116,7 @@ onMounted(async () => {
               <q-tooltip>Descrição</q-tooltip>
             </q-btn>
             <q-btn
+              v-if="hasPermission('transaction.update')"
               @click="startEdit(props.row.id)"
               :disable="movementMonitoring === props.row.id"
               size="sm"
@@ -125,6 +126,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('transaction.delete')"
               @click="startExclude(props.row.id)"
               :disable="movementMonitoring === props.row.id"
               size="sm"

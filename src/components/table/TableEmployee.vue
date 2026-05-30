@@ -144,7 +144,7 @@ onMounted(async () => {
 
                 <div class="row">
                   <q-btn
-                    v-if="props.row.has_login_access === 1"
+                    v-if="props.row.has_login_access === 1 && hasPermission('employee.update')"
                     flat
                     round
                     color="orange"
@@ -156,7 +156,7 @@ onMounted(async () => {
                     <q-tooltip>Remover acesso do sistema</q-tooltip>
                   </q-btn>
                   <q-btn
-                    v-else
+                    v-if="props.row.has_login_access === 0 && hasPermission('employee.update')"
                     flat
                     round
                     color="green"
@@ -168,6 +168,7 @@ onMounted(async () => {
                     <q-tooltip>Criar acesso do sistema</q-tooltip>
                   </q-btn>
                   <q-btn
+                    v-if="hasPermission('employee.update')"
                     flat
                     round
                     color="primary"
@@ -179,6 +180,7 @@ onMounted(async () => {
                     <q-tooltip>Editar Funcionário</q-tooltip>
                   </q-btn>
                   <q-btn
+                    v-if="hasPermission('employee.delete')"
                     flat
                     round
                     color="negative"

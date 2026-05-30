@@ -96,6 +96,7 @@ watch(open, () => {
         <div class="row justify-end items-center q-gutter-x-sm">
           <q-btn color="red" label="Fechar" size="md" @click="open = false" flat no-caps />
           <q-btn
+            v-if="hasPermission('department.create')"
             color="primary"
             label="Adicionar"
             size="md"
