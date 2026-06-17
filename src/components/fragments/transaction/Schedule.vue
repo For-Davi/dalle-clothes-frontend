@@ -9,10 +9,15 @@ import { useScheduleStore } from 'src/stores/schedule-store';
 import FilterSchedule from 'src/components/filter/FilterSchedule.vue';
 import Exports from 'src/components/export/Exports.vue';
 import { exportSchedulesService } from 'src/services/schedule-service';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'Schedule',
 });
+
+const { listSchedule } = storeToRefs(useScheduleStore());
 
 const showFilterSchedule = ref<boolean>(false);
 const showCategoryTransactionManage = ref<boolean>(false);
@@ -97,6 +102,9 @@ const startExport = async (format: 'excel' | 'pdf'): Promise<void> => {
   });
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('movements_schedules', listSchedule.value.length);
+});
 const getTitleTableSchedule = computed((): string => {
   if (filter.period === null) {
     const now = new Date();
@@ -116,9 +124,10 @@ const hasFilter = computed(() => {
 <template>
   <main>
     <section class="row items-center justify-end">
+      <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="agendamentos" />
       <div>
         <q-btn
-          v-if="hasPermission('transaction.create')"
+          v-if="hasPermission('transaction.create') && planValidation.canAdd"
           @click="changeShowFormSchedule(true)"
           color="white"
           text-color="black"

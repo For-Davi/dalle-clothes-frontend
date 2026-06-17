@@ -13,6 +13,7 @@ import { useSaleStore } from 'src/stores/sale-store';
 import SaleMade from '../fragments/sale/SaleMade.vue';
 import Loading from '../shared/Loading.vue';
 import { usePermission } from 'src/composables/usePermission.js';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'PaymentStepper',
@@ -20,7 +21,7 @@ defineOptions({
 
 const { hasPermission } = usePermission();
 const { listClient } = storeToRefs(useClientStore());
-const { loadingSale } = storeToRefs(useSaleStore());
+const { loadingSale, listSale } = storeToRefs(useSaleStore());
 
 const showSaleMade = reactive<{
   open: boolean;
@@ -290,6 +291,9 @@ const listClientOptions = computed(() => {
 const selectedClient = computed(() => {
   return listClient.value.find((c) => c.id === dataClient.id) || null;
 });
+const planValidation = computed(() => {
+  return checkRegisterLimit('sales', listSale.value.length);
+});
 
 watch(selectedClient, (newClient) => {
   if (newClient) {
@@ -348,7 +352,14 @@ onMounted(async () => {
               no-caps
               @click="changeShowFormClient(true)"
             />
-            <q-btn label="Próximo" color="primary" no-caps unelevated @click="checkClient" />
+            <q-btn
+              v-if="planValidation.canAdd"
+              label="Próximo"
+              color="primary"
+              no-caps
+              unelevated
+              @click="checkClient"
+            />
           </div>
         </q-stepper-navigation>
       </q-step>
@@ -364,7 +375,13 @@ onMounted(async () => {
           <div class="flex row justify-end items-center q-gutter-x-sm">
             <q-btn label="Resetar" color="red" no-caps unelevated outline @click="resetProducts" />
             <q-btn label="Voltar" color="primary" flat no-caps @click="step = 1" />
-            <q-btn label="Próximo" color="primary" no-caps @click="checkProducts" />
+            <q-btn
+              v-if="planValidation.canAdd"
+              label="Próximo"
+              color="primary"
+              no-caps
+              @click="checkProducts"
+            />
           </div>
         </q-stepper-navigation>
       </q-step>
@@ -398,6 +415,7 @@ onMounted(async () => {
               @click="step = 2"
             />
             <q-btn
+              v-if="planValidation.canAdd"
               label="Finalizar venda"
               color="primary"
               no-caps

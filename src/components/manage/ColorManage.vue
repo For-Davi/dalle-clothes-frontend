@@ -7,6 +7,8 @@ import Loading from '../shared/Loading.vue';
 import Empty from '../info/Empty.vue';
 import { useColorStore } from 'src/stores/color-store';
 import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'ColorManage',
@@ -50,6 +52,9 @@ const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
 });
+const planValidation = computed(() => {
+  return checkRegisterLimit('colors', listColor.value.length);
+});
 
 watch(open, () => {
   if (open.value) {
@@ -65,6 +70,7 @@ watch(open, () => {
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingColor">
+          <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="cores" />
           <TableColor v-show="listColor.length > 0" @show:show-form-color="startEdit" />
           <Empty v-show="listColor.length <= 0" message="Sem cores cadastradas" color="bg-red-3" />
         </div>
@@ -82,7 +88,7 @@ watch(open, () => {
             flat
           />
           <q-btn
-            v-if="hasPermission('product-color.create')"
+            v-if="hasPermission('product-color.create') && planValidation.canAdd"
             @click="changeShowFormColor(true)"
             color="primary"
             label="Adicionar"

@@ -9,12 +9,16 @@ import FilterSupplier from 'src/components/filter/FilterSupplier.vue';
 import { actionsSupplier } from 'src/utils/actions';
 import SupplierOrderManage from 'src/components/manage/SupplierOrderManage.vue';
 import { usePermission } from 'src/composables/usePermission';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'Supplier',
 });
 
 const { hasPermission } = usePermission();
+const { listSupplier } = storeToRefs(useSupplierStore());
 
 const filterSupplier = ref<string>('');
 const showCategorySupplierManage = ref<boolean>(false);
@@ -83,6 +87,9 @@ const openAction = (type: IActionsSupplier): void => {
   }
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('suppliers', listSupplier.value.length);
+});
 const hasAnyAction = computed(() =>
   actionsSupplier.some((item) => !item.permission || hasPermission(item.permission)),
 );
@@ -106,7 +113,7 @@ const hasFilter = computed(() => {
       <TitlePage title="Fornecedores" icon="list_alt" />
       <div class="page-header-actions">
         <q-btn
-          v-if="hasPermission('supplier.create')"
+          v-if="hasPermission('supplier.create') && planValidation.canAdd"
           @click="changeShowFormSupplier(true)"
           color="white"
           text-color="black"
@@ -141,6 +148,7 @@ const hasFilter = computed(() => {
         </q-btn-dropdown>
       </div>
     </section>
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="fornecedores" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

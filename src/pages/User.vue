@@ -9,12 +9,16 @@ import router from 'src/router';
 import { useUserStore } from 'src/stores/user-store';
 import { actionsUser } from 'src/utils/actions';
 import { usePermission } from 'src/composables/usePermission';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'User',
 });
 
 const { hasPermission } = usePermission();
+const { listUserSystem } = storeToRefs(useUserStore());
 
 const search = ref<string>('');
 const filter = reactive<IFilterUser>({
@@ -74,6 +78,9 @@ const openAction = (type: IActionsUser): void => {
   }
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('users', listUserSystem.value.length);
+});
 const hasAnyAction = computed(() =>
   actionsUser.some((item) => !item.permission || hasPermission(item.permission)),
 );
@@ -93,7 +100,7 @@ const hasFilter = computed((): boolean => {
       <TitlePage title="Usuários" icon="person" />
       <div class="page-header-actions">
         <q-btn
-          v-if="hasPermission('user.create')"
+          v-if="hasPermission('user.create') && planValidation.canAdd"
           @click="changeShowFormUser(true)"
           color="white"
           text-color="black"
@@ -128,6 +135,7 @@ const hasFilter = computed((): boolean => {
         </q-btn-dropdown>
       </div>
     </section>
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="usuários" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

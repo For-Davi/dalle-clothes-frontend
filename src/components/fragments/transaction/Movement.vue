@@ -9,10 +9,14 @@ import { useMovementStore } from 'src/stores/movement-store';
 import FilterMovement from 'src/components/filter/FilterMovement.vue';
 import Exports from 'src/components/export/Exports.vue';
 import { exportMovementService } from 'src/services/movement-service';
+import { storeToRefs } from 'pinia';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'Movement',
 });
+
+const { listMovement } = storeToRefs(useMovementStore());
 
 const showFilterMovement = ref<boolean>(false);
 const showCategoryTransactionManage = ref<boolean>(false);
@@ -97,6 +101,9 @@ const startExport = async (format: 'excel' | 'pdf'): Promise<void> => {
   });
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('movements_schedules', listMovement.value.length);
+});
 const getTitleTableMovement = computed((): string => {
   if (filter.period === null) {
     const now = new Date();
@@ -118,7 +125,7 @@ const hasFilter = computed(() => {
     <section class="row items-center justify-end">
       <div>
         <q-btn
-          v-if="hasPermission('transaction.create')"
+          v-if="hasPermission('transaction.create') && planValidation.canAdd"
           @click="changeShowFormMovement(true)"
           color="white"
           text-color="black"

@@ -6,6 +6,8 @@ import { storeToRefs } from 'pinia';
 import FormRole from 'src/components/form/FormRole.vue';
 import Loading from 'src/components/shared/Loading.vue';
 import Empty from 'src/components/info/Empty.vue';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'Role',
@@ -79,6 +81,10 @@ const fetcheRoles = async (): Promise<void> => {
   await useRoleStore().getRoles();
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('roles', listRole.value.length);
+});
+
 onMounted(async () => {
   await fetcheRoles();
 });
@@ -89,7 +95,7 @@ onMounted(async () => {
       <TitlePage title="Permissões" icon="admin_panel_settings" />
       <div class="page-header-actions">
         <q-btn
-          v-if="hasPermission('role.create')"
+          v-if="hasPermission('role.create') && planValidation.canAdd"
           @click="changeShowFormRole(true)"
           color="primary"
           label="Nova permissão"
@@ -99,7 +105,7 @@ onMounted(async () => {
         />
       </div>
     </section>
-
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="permissões" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

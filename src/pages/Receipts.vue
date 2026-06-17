@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import FormReceipt from 'src/components/form/FormReceipt.vue';
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, computed } from 'vue';
 import { useReceiptstore } from 'src/stores/receipt-store';
 import TableReceipt from 'src/components/table/TableReceipt.vue';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({ name: 'Receipts' });
+
+const { listReceipt } = storeToRefs(useReceiptstore());
 
 const filterReceipt = ref('');
 const showFormReceipt = reactive<{
@@ -27,6 +32,10 @@ const fetchReceipts = async (): Promise<void> => {
   await useReceiptstore().getReceipt();
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('receipts', listReceipt.value.length);
+});
+
 onMounted(async () => {
   await fetchReceipts();
 });
@@ -38,7 +47,7 @@ onMounted(async () => {
       <TitlePage title="Recebimentos" icon="account_balance" />
       <div class="page-header-actions">
         <q-btn
-          v-if="hasPermission('receipt.create')"
+          v-if="hasPermission('receipt.create') && planValidation.canAdd"
           color="white"
           text-color="black"
           label="Novo recebimento"
@@ -48,7 +57,7 @@ onMounted(async () => {
         />
       </div>
     </section>
-
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="recebimentos" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

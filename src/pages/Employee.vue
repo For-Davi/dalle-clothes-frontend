@@ -7,10 +7,15 @@ import FormEmployee from 'src/components/form/FormEmployee.vue';
 import TableEmployee from 'src/components/table/TableEmployee.vue';
 import FormAccessLogin from 'src/components/form/FormAccessLogin.vue';
 import FilterEmployee from 'src/components/filter/FilterEmployee.vue';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'Employee',
 });
+
+const { listEmployee } = storeToRefs(useEmployeeStore());
 
 const filterEmployee = ref<string>('');
 const showDepartmentManage = ref<boolean>(false);
@@ -76,6 +81,9 @@ const changeShowDepartmentManage = (): void => {
   showDepartmentManage.value = !showDepartmentManage.value;
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('employees', listEmployee.value.length);
+});
 const hasFilter = computed(() => {
   return (
     filter.name !== '' ||
@@ -104,7 +112,7 @@ const hasFilter = computed(() => {
           no-caps
         />
         <q-btn
-          v-if="hasPermission('employee.create')"
+          v-if="hasPermission('employee.create') && planValidation.canAdd"
           @click="changeShowFormEmployee(true)"
           color="white"
           text-color="black"
@@ -114,6 +122,7 @@ const hasFilter = computed(() => {
         />
       </div>
     </section>
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="funcionários" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

@@ -7,6 +7,8 @@ import { useGridStore } from 'src/stores/grid-store';
 import { storeToRefs } from 'pinia';
 import Empty from '../info/Empty.vue';
 import Loading from '../shared/Loading.vue';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'GridManage',
@@ -55,6 +57,9 @@ const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
 });
+const planValidation = computed(() => {
+  return checkRegisterLimit('grids', listGrid.value.length);
+});
 
 watch(open, async () => {
   if (open.value) {
@@ -71,6 +76,11 @@ watch(open, async () => {
       </q-card-section>
       <q-card-section class="q-pa-none">
         <div v-if="!loadingGrid">
+          <SubscriptionBanner
+            v-if="planValidation.showUpgradeBanner"
+            resource-name="grades"
+            class="q-ma-md"
+          />
           <div style="padding-right: 60px; padding-left: 60px">
             <q-input
               v-show="listGrid.length > 0"
@@ -107,7 +117,7 @@ watch(open, async () => {
             flat
           />
           <q-btn
-            v-if="hasPermission('grid.create')"
+            v-if="hasPermission('grid.create') && planValidation.canAdd"
             @click="changeShowFormGrid(true)"
             color="primary"
             label="Adicionar"

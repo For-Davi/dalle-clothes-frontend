@@ -114,6 +114,7 @@ import type {
   QrCode,
   VMPaymentSubscriptionCreditCard,
   PaymentSubscriptionCreditCard,
+  Plans,
 } from './Subscription';
 import type { DashboardData, RecordsData, FilterDashboard } from './Dashboard';
 import type {
@@ -334,4 +335,5 @@ declare global {
   type ISeller = Seller;
   type ISellerDashboard = Dashboard;
   type ISellerFilterDashboard = FilterSellerDashboard;
+  type IPlans = Plans;
 }

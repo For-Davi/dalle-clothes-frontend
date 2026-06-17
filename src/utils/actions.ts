@@ -84,7 +84,7 @@ export const actionsSupplier: {
   label: string;
   icon: string;
   type: IActionsSupplier;
-  permission: string | null;
+  permission?: string | null;
 }[] = [
   {
     label: 'Categorias',
