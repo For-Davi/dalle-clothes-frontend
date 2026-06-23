@@ -11,6 +11,25 @@ const { listSubscription } = storeToRefs(useSubscriptionStore());
 const { user } = storeToRefs(useAuthStore());
 
 const plansConfig = {
+  free: {
+    title: 'Plano Gratuito',
+    color: 'grey-6',
+    isBest: false,
+    features: [
+      { label: 'Clientes', val: '5' },
+      { label: 'Usuários / Funcionários', val: '1 / 1' },
+      { label: 'Fornecedores', val: '1' },
+      { label: 'Departamentos', val: '1' },
+      { label: 'Cargos (Roles)', val: '1' },
+      { label: 'Produtos', val: '5' },
+      { label: 'Grade de Produtos', val: '1' },
+      { label: 'Cores / Tags', val: '5 / 5' },
+      { label: 'Agendamentos', val: '5' },
+      { label: 'Vendas', val: '50' },
+      { label: 'Receitas', val: '2' },
+      { label: 'Pedidos de Fornecedor', val: 'Bloqueado' },
+    ],
+  },
   basic: {
     title: 'Plano Básico',
     color: 'green-7',
@@ -60,12 +79,22 @@ const changeShowSubscriptionPayment = (show: boolean, id: number | null = null) 
   showSubscriptionPayment.subscriptionID = id;
 };
 
+const freeSubscriptionId = computed(
+  () => listSubscription.value.find((s) => s.name === 'free')?.id || null,
+);
 const basicSubscriptionId = computed(
   () => listSubscription.value.find((s) => s.name === 'basic')?.id || null,
 );
 const premiumSubscriptionId = computed(
   () => listSubscription.value.find((s) => s.name === 'premium')?.id || null,
 );
+
+const resolveSubscriptionId = (key: string) => {
+  if (key === 'free') return freeSubscriptionId.value;
+  if (key === 'basic') return basicSubscriptionId.value;
+  return premiumSubscriptionId.value;
+};
+
 const showActionPayment = computed(
   () => user.value?.role?.permissions?.some((p) => p.slug === 'subscription.payment') ?? false,
 );
@@ -100,7 +129,7 @@ const expiredDateFormatted = computed(() =>
     </div>
 
     <div class="row q-col-gutter-lg q-mt-sm">
-      <div v-for="(config, key) in plansConfig" :key="key" class="col-12 col-md-6">
+      <div v-for="(config, key) in plansConfig" :key="key" class="col-12 col-md-4">
         <q-card flat bordered class="full-height">
           <q-card-section :class="`bg-${config.color} text-white`">
             <div class="text-h5 text-weight-bold text-center">{{ config.title }}</div>
@@ -110,25 +139,24 @@ const expiredDateFormatted = computed(() =>
             <q-list separator>
               <q-item v-for="feat in config.features" :key="feat.label">
                 <q-item-section class="text-weight-medium">{{ feat.label }}</q-item-section>
-                <q-item-section side class="text-weight-bold text-grey-9">{{
-                  feat.val
-                }}</q-item-section>
+                <q-item-section side class="text-weight-bold text-grey-9">
+                  {{ feat.val }}
+                </q-item-section>
               </q-item>
             </q-list>
           </q-card-section>
 
-          <q-card-actions vertical class="q-pa-md" v-if="showActionPayment">
+          <q-card-actions
+            vertical
+            class="q-pa-md"
+            v-if="showActionPayment && config.title !== 'Plano Gratuito'"
+          >
             <q-btn
               unelevated
               color="primary"
               class="full-width q-mb-sm"
               label="ASSINAR AGORA"
-              @click="
-                changeShowSubscriptionPayment(
-                  true,
-                  key === 'basic' ? basicSubscriptionId : premiumSubscriptionId,
-                )
-              "
+              @click="changeShowSubscriptionPayment(true, resolveSubscriptionId(key))"
             />
             <q-btn outline color="primary" label="TESTAR POR 3 DIAS" class="full-width" />
           </q-card-actions>
