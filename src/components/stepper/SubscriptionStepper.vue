@@ -154,7 +154,10 @@ const stepTitle = computed(() => {
       </div>
       <div v-show="!loadingSubscription">
         <div v-if="type === 'credit'">
-          <FormCreditCard v-model="dataPaymentCreditCard" />
+          <FormCreditCard
+            :model-value="dataPaymentCreditCard"
+            @update:model-value="(val) => Object.assign(dataPaymentCreditCard, val)"
+          />
         </div>
         <div v-else>
           <QrCodePix :subscriptionID="props.subscriptionID" />

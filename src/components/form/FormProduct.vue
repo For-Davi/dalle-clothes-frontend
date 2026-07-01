@@ -414,7 +414,11 @@ watch(open, async () => {
           <q-tab-panel name="basic" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
               <Loading :show="isLoading" />
-              <ProductBasic v-model="dataBasic" :loading="isLoading" />
+              <ProductBasic
+                :model-value="dataBasic"
+                @update:model-value="(val) => Object.assign(dataBasic, val)"
+                :loading="isLoading"
+              />
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="variant" class="q-px-none">
@@ -455,7 +459,11 @@ watch(open, async () => {
           <q-tab-panel name="advanced" class="q-px-none">
             <q-scroll-area style="height: 400px" class="full-width row justify-center items-center">
               <Loading :show="isLoading" />
-              <ProductAdvanced v-model:dataAdvanced="dataAdvanced" :loading="isLoading" />
+              <ProductAdvanced
+                :dataAdvanced="dataAdvanced"
+                @update:dataAdvanced="(val) => Object.assign(dataAdvanced, val)"
+                :loading="isLoading"
+              />
             </q-scroll-area>
           </q-tab-panel>
           <q-tab-panel name="log" class="q-px-none">

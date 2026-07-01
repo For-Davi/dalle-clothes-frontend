@@ -337,7 +337,11 @@ onMounted(async () => {
           />
         </div>
         <div v-if="selectedClient">
-          <FormClientPayment v-model="dataClient" :data="showFormClientPayment" />
+          <FormClientPayment
+            :model-value="dataClient"
+            @update:model-value="(val) => Object.assign(dataClient, val)"
+            :data="showFormClientPayment"
+          />
         </div>
         <div v-else class="q-mt-md">
           <Empty message="Nenhum cliente selecionado" color="bg-red-3" />
@@ -391,7 +395,8 @@ onMounted(async () => {
           :checkPaymentsReset="checkPaymentsReset"
           :credit="Number(dataClient.credits)"
           :loadingSale="loadingSale"
-          v-model="dataPayment"
+          :model-value="dataPayment"
+          @update:model-value="(val) => Object.assign(dataPayment, val)"
           @send-missing-amount="setMissingAmount"
         />
         <q-stepper-navigation align="right" class="q-mt-xl">

@@ -618,7 +618,8 @@ watch(
   <!-- Modals -->
   <FormExchangePayment
     :data="showFormExchangePayment"
-    v-model="formExchangeModel"
+    :model-value="formExchangeModel"
+    @update:model-value="(val) => Object.assign(formExchangeModel, val)"
     @update:open="closeFormPayment(false)"
     @send:missings-amounts="sendMissingsAmountsAndSave"
   />
