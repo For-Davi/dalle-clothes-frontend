@@ -8,10 +8,17 @@ import FilterUser from 'src/components/filter/FilterUser.vue';
 import router from 'src/router';
 import { useUserStore } from 'src/stores/user-store';
 import { actionsUser } from 'src/utils/actions';
+import { usePermission } from 'src/composables/usePermission';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'User',
 });
+
+const { hasPermission } = usePermission();
+const { listUserSystem } = storeToRefs(useUserStore());
 
 const search = ref<string>('');
 const filter = reactive<IFilterUser>({
@@ -71,6 +78,12 @@ const openAction = (type: IActionsUser): void => {
   }
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('users', listUserSystem.value.length);
+});
+const hasAnyAction = computed(() =>
+  actionsUser.some((item) => !item.permission || hasPermission(item.permission)),
+);
 const hasFilter = computed((): boolean => {
   return (
     filter.name !== '' ||
@@ -87,6 +100,7 @@ const hasFilter = computed((): boolean => {
       <TitlePage title="Usuários" icon="person" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('user.create') && planValidation.canAdd"
           @click="changeShowFormUser(true)"
           color="white"
           text-color="black"
@@ -94,26 +108,34 @@ const hasFilter = computed((): boolean => {
           icon-right="add"
           no-caps
         />
-        <q-btn-dropdown class="q-pa-none q-px-md" label="Ações" no-caps auto-close>
+        <q-btn-dropdown
+          v-if="hasAnyAction"
+          class="q-pa-none q-px-md"
+          label="Ações"
+          no-caps
+          auto-close
+        >
           <q-list dense>
-            <q-item
-              clickable
-              v-ripple
-              v-for="(item, index) in actionsUser"
-              :key="index"
-              @click="openAction(item.type)"
-            >
-              <q-item-section avatar>
-                <q-avatar>
-                  <q-icon :name="item.icon" />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>{{ item.label }}</q-item-section>
-            </q-item>
+            <template v-for="(item, index) in actionsUser" :key="index">
+              <q-item
+                clickable
+                v-ripple
+                v-if="!item.permission || hasPermission(item.permission)"
+                @click="openAction(item.type)"
+              >
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon :name="item.icon" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>{{ item.label }}</q-item-section>
+              </q-item>
+            </template>
           </q-list>
         </q-btn-dropdown>
       </div>
     </section>
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="usuários" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

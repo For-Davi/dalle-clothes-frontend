@@ -455,6 +455,7 @@ watch(
 
     <q-card-actions align="right" v-show="!loadingSetting" class="q-pa-md">
       <q-btn
+        v-if="hasPermission('config.update')"
         @click="update"
         color="primary"
         label="Atualizar"

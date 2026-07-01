@@ -23,6 +23,7 @@ export const doResetService = (
     message: string;
   };
 }> => api.post('/reset', { email });
+
 export const doVerifyService = (
   code: string,
   email: string,
@@ -33,6 +34,7 @@ export const doVerifyService = (
     valid: false;
   };
 }> => api.post('/verify', { code, email });
+
 export const setNewPasswordService = (
   password: string,
   token: string,

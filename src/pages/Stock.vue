@@ -16,10 +16,15 @@ import FormMovementProduct from 'src/components/form/FormMovementProduct.vue';
 import Exports from 'src/components/export/Exports.vue';
 import { exportProductsService } from 'src/services/product-service';
 import ProductMovementManage from 'src/components/manage/ProductMovementManage.vue';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'Stock',
 });
+
+const { listProduct } = storeToRefs(useProductStore());
 
 const showExport = ref<boolean>(false);
 const filterStock = ref<string>('');
@@ -188,6 +193,9 @@ const fetchProducts = async (): Promise<void> => {
   await useProductStore().getProducts();
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('products', listProduct.value.length);
+});
 const hasFilter = computed(() => {
   return (
     (filter.name !== '' && filter.name !== null) ||
@@ -204,6 +212,7 @@ const hasFilter = computed(() => {
       <TitlePage title="Estoque" icon="inventory" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('product.create') && planValidation.canAdd"
           @click="changeShowFormProduct(true)"
           color="white"
           text-color="black"
@@ -213,24 +222,26 @@ const hasFilter = computed(() => {
         />
         <q-btn-dropdown class="q-pa-none q-px-md" label="Ações" no-caps auto-close>
           <q-list dense>
-            <q-item
-              clickable
-              v-ripple
-              v-for="(item, index) in actionsStock"
-              :key="index"
-              @click="openAction(item.type)"
-            >
-              <q-item-section avatar>
-                <q-avatar>
-                  <q-icon :name="item.icon" />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>{{ item.label }}</q-item-section>
-            </q-item>
+            <template v-for="(item, index) in actionsStock" :key="index">
+              <q-item
+                clickable
+                v-ripple
+                v-if="!item.permission || hasPermission(item.permission)"
+                @click="openAction(item.type)"
+              >
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon :name="item.icon" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>{{ item.label }}</q-item-section>
+              </q-item>
+            </template>
           </q-list>
         </q-btn-dropdown>
       </div>
     </section>
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="produtos" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

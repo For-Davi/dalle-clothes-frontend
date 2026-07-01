@@ -419,6 +419,7 @@ watch(open, async () => {
           <div class="row no-wrap">
             <div>
               <q-btn
+                v-if="hasPermission('return.view')"
                 @click="changeShowReturnManage(true, props.data.saleID, Sale.status)"
                 color="primary"
                 icon="assignment_return"
@@ -441,6 +442,7 @@ watch(open, async () => {
                 <q-tooltip>Comissões</q-tooltip>
               </q-btn>
               <q-btn
+                v-if="Sale.status === 'canceled' || hasPermission('sale.cancel')"
                 color="red"
                 icon="money_off"
                 round

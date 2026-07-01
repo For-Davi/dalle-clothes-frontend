@@ -116,6 +116,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
+              v-if="hasPermission('return.create')"
               @click="if (saleID) emit('open:form-linked-return', saleID, props.row.id);"
               size="sm"
               flat
@@ -136,7 +137,7 @@ onMounted(async () => {
               <q-tooltip> Detalhes </q-tooltip>
             </q-btn>
             <q-btn
-              v-if="props.row.status !== 'Cancelada'"
+              v-if="props.row.status !== 'Cancelada' && hasPermission('return.update')"
               @click="emit('edit:return', props.row.id, saleID!, props.row.status)"
               size="sm"
               flat
@@ -145,6 +146,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('return.delete')"
               @click="startExclude(props.row.id)"
               size="sm"
               flat

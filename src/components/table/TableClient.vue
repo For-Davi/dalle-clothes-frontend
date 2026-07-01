@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import { useClientStore } from 'src/stores/client-store';
 import { columnsClient } from 'src/utils/columns';
 import { formatToReal } from 'src/composables/Money';
 import { formatToBrazilianDate } from 'src/composables/FormatData';
+import { usePermission } from 'src/composables/usePermission.js';
 
 defineOptions({
   name: 'TableClient',
@@ -23,6 +24,7 @@ const emit = defineEmits<{
   'show:showFormClient': [number];
 }>();
 
+const { hasPermission } = usePermission();
 const { loadingClient, listClient } = storeToRefs(useClientStore());
 
 const showConfirmAction = ref<boolean>(false);
@@ -54,6 +56,16 @@ const fetchClients = async (): Promise<void> => {
   await useClientStore().getClients();
 };
 
+const columnsFiltered = computed(() => {
+  const canSeeActions = hasPermission('client.update') || hasPermission('client.delete');
+
+  if (!canSeeActions) {
+    return columnsClient.filter((col) => col.name !== 'action');
+  }
+
+  return columnsClient;
+});
+
 onMounted(async () => {
   await fetchClients();
 });
@@ -62,7 +74,7 @@ onMounted(async () => {
   <section>
     <q-table
       :rows="loadingClient ? [] : listClient"
-      :columns="columnsClient"
+      :columns="columnsFiltered"
       :filter="props.filter"
       :loading="loadingClient"
       title="Lista de clientes"
@@ -102,6 +114,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="action" :props="props">
             <q-btn
+              v-if="hasPermission('client.update')"
               @click="startEdit(props.row.id)"
               :disable="clientMonitoring === props.row.id"
               size="sm"
@@ -111,6 +124,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('client.delete')"
               @click="startExclude(props.row.id)"
               :disable="clientMonitoring === props.row.id"
               size="sm"

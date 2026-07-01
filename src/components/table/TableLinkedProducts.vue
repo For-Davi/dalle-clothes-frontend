@@ -161,6 +161,7 @@ onMounted(async () => {
               <q-tooltip>Descrição</q-tooltip>
             </q-btn>
             <q-btn
+              v-if="hasPermission('supplier-catalog.update')"
               @click="startEdit(props.row)"
               :disable="linkedProductMonitoring === props.row.variant_id"
               size="sm"
@@ -170,6 +171,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('supplier-catalog.delete')"
               @click="startExclude(props.row.variant_id)"
               :disable="linkedProductMonitoring === props.row.variant_id"
               size="sm"

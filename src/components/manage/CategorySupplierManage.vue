@@ -80,6 +80,7 @@ const open = computed({
             unelevated
           />
           <q-btn
+            v-if="hasPermission('supplier-category.create')"
             color="primary"
             label="Adicionar"
             size="md"

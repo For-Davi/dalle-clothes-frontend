@@ -1,3 +1,4 @@
+export type Plans = 'free' | 'basic' | 'premium';
 export interface Subscriptions {
   id: number;
   name: string;

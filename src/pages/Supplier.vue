@@ -8,10 +8,17 @@ import { useSupplierStore } from 'src/stores/supplier-store';
 import FilterSupplier from 'src/components/filter/FilterSupplier.vue';
 import { actionsSupplier } from 'src/utils/actions';
 import SupplierOrderManage from 'src/components/manage/SupplierOrderManage.vue';
+import { usePermission } from 'src/composables/usePermission';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'Supplier',
 });
+
+const { hasPermission } = usePermission();
+const { listSupplier } = storeToRefs(useSupplierStore());
 
 const filterSupplier = ref<string>('');
 const showCategorySupplierManage = ref<boolean>(false);
@@ -80,6 +87,12 @@ const openAction = (type: IActionsSupplier): void => {
   }
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('suppliers', listSupplier.value.length);
+});
+const hasAnyAction = computed(() =>
+  actionsSupplier.some((item) => !item.permission || hasPermission(item.permission)),
+);
 const hasFilter = computed(() => {
   return (
     filter.name !== '' ||
@@ -100,6 +113,7 @@ const hasFilter = computed(() => {
       <TitlePage title="Fornecedores" icon="list_alt" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('supplier.create') && planValidation.canAdd"
           @click="changeShowFormSupplier(true)"
           color="white"
           text-color="black"
@@ -107,26 +121,34 @@ const hasFilter = computed(() => {
           icon-right="add"
           no-caps
         />
-        <q-btn-dropdown class="q-pa-none q-px-md" label="Ações" no-caps auto-close>
+        <q-btn-dropdown
+          v-if="hasAnyAction"
+          class="q-pa-none q-px-md q-mr-sm"
+          label="Ações"
+          no-caps
+          auto-close
+        >
           <q-list dense>
-            <q-item
-              clickable
-              v-ripple
-              v-for="(item, index) in actionsSupplier"
-              :key="index"
-              @click="openAction(item.type)"
-            >
-              <q-item-section avatar>
-                <q-avatar>
-                  <q-icon :name="item.icon" />
-                </q-avatar>
-              </q-item-section>
-              <q-item-section>{{ item.label }}</q-item-section>
-            </q-item>
+            <template v-for="(item, index) in actionsSupplier" :key="index">
+              <q-item
+                clickable
+                v-ripple
+                v-if="!item.permission || hasPermission(item.permission)"
+                @click="openAction(item.type)"
+              >
+                <q-item-section avatar>
+                  <q-avatar>
+                    <q-icon :name="item.icon" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>{{ item.label }}</q-item-section>
+              </q-item>
+            </template>
           </q-list>
         </q-btn-dropdown>
       </div>
     </section>
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="fornecedores" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

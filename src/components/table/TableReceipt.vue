@@ -154,6 +154,7 @@ onMounted(async () => {
                     <q-tooltip>Ver descrição</q-tooltip>
                   </q-btn>
                   <q-btn
+                    v-if="hasPermission('receipt.update')"
                     flat
                     round
                     color="primary"
@@ -164,6 +165,7 @@ onMounted(async () => {
                     <q-tooltip>Editar recebimento</q-tooltip>
                   </q-btn>
                   <q-btn
+                    v-if="hasPermission('receipt.delete')"
                     flat
                     round
                     color="negative"

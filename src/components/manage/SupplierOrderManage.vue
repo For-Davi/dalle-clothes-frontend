@@ -8,6 +8,8 @@ import { useSupplierOrderStore } from 'src/stores/supplier-order-store';
 import FormSupplierOrder from '../form/FormSupplierOrder.vue';
 import TableSupplierOrder from '../table/TableSupplierOrder.vue';
 import SupplierOrderDetails from '../fragments/supplier/SupplierOrderDetails.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
 
 defineOptions({
   name: 'SupplierOrderManage',
@@ -77,6 +79,9 @@ const changeShowFilterSupplierOrder = (): void => {
   showFilterSupplierOrder.value = !showFilterSupplierOrder.value;
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('supplier_orders', listSupplierOrder.value.length);
+});
 const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
@@ -97,6 +102,7 @@ watch(open, async () => {
       </q-card-section>
       <q-card-section class="q-py-sm">
         <div v-show="!loadingSupplierOrder">
+          <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="pedidos" />
           <q-banner rounded class="bg-grey-4 q-mb-sm">
             <div class="row q-gutter-x-sm justify-end items-center">
               <q-input
@@ -142,6 +148,7 @@ watch(open, async () => {
             flat
           />
           <q-btn
+            v-if="hasPermission('supplier-order.create') && planValidation.canAdd"
             @click="changeShowFormSupplierOrder(true)"
             color="primary"
             label="Adicionar"

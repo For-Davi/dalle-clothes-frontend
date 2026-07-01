@@ -182,6 +182,7 @@ onMounted(async () => {
               <q-tooltip> Movimentações </q-tooltip>
             </q-btn>
             <q-btn
+              v-if="hasPermission('product.update')"
               @click="startEdit(props.row.product_variant_id)"
               :disable="productMonitoring === props.row.product_variant_id"
               size="sm"
@@ -191,6 +192,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('product.delete')"
               @click="startExclude(props.row.product_variant_id)"
               :disable="productMonitoring === props.row.product_variant_id"
               size="sm"

@@ -44,7 +44,12 @@ const open = computed({
 
 <template>
   <q-dialog v-model="open" :maximized="$q.screen.lt.sm">
-    <q-card class="bg-grey-2 sub-page column justify-between" style="min-width: 90vw">
+    <q-card
+      :class="
+        loadingDeliveryGuy ? 'bg-grey-2 sub-page column justify-between' : 'bg-grey-2 sub-page'
+      "
+      style="min-width: 90vw"
+    >
       <q-card-section class="q-pa-none">
         <TitlePage title="Entregadores" icon="local_shipping" />
       </q-card-section>
@@ -74,6 +79,7 @@ const open = computed({
             flat
           />
           <q-btn
+            v-if="hasPermission('delivery-guy.create')"
             color="primary"
             label="Adicionar"
             size="md"

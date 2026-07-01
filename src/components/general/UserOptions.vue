@@ -107,7 +107,12 @@ watch(user, (newUser) => {
         </q-item-section>
         <q-item-section>Perfil</q-item-section>
       </q-item>
-      <q-item clickable v-ripple :to="{ name: 'subscription' }">
+      <q-item
+        v-if="hasPermission('subscription.payment')"
+        clickable
+        v-ripple
+        :to="{ name: 'subscription' }"
+      >
         <q-item-section avatar>
           <q-avatar>
             <q-icon name="attach_money" />

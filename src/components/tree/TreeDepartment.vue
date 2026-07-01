@@ -96,6 +96,7 @@ onMounted(async () => {
               <q-separator />
               <div class="row items-center justify-center">
                 <q-btn
+                  v-if="hasPermission('department.create')"
                   @click="openFormDepartment(prop.key)"
                   :disable="loadingDepartment"
                   round
@@ -107,6 +108,7 @@ onMounted(async () => {
                   <q-tooltip>Sub-departamento</q-tooltip>
                 </q-btn>
                 <q-btn
+                  v-if="hasPermission('department.update')"
                   @click="handleEdit(prop.node)"
                   :disable="loadingDepartment"
                   size="xs"
@@ -116,6 +118,7 @@ onMounted(async () => {
                   <q-icon name="edit" color="black" size="xs" />
                 </q-btn>
                 <q-btn
+                  v-if="hasPermission('department.delete')"
                   @click="openConfirmAction(prop.node.id)"
                   :disable="loadingDepartment"
                   size="xs"

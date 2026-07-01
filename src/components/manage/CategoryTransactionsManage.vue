@@ -93,6 +93,7 @@ watch(open, () => {
             flat
           />
           <q-btn
+            v-if="hasPermission('transaction-category.create')"
             @click="changeShowFormCategoryTransaction(true)"
             color="primary"
             label="Adicionar"

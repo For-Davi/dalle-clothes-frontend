@@ -114,6 +114,7 @@ watch(
           <q-td key="action" :props="props">
             <div class="flex row justify-end">
               <q-input
+                v-if="hasPermission('sale-discount.create')"
                 label="Porcentagem de desconto"
                 outlined
                 dense

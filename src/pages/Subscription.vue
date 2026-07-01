@@ -2,194 +2,168 @@
 import TitlePage from 'src/components/shared/TitlePage.vue';
 import { storeToRefs } from 'pinia';
 import { useSubscriptionStore } from 'src/stores/subscription-store';
-import { computed, onMounted, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import SubscriptionPayment from 'src/components/subscription/SubscriptionPayment.vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import { date } from 'quasar';
 
-defineOptions({
-  name: 'Subscription',
-});
-
 const { listSubscription } = storeToRefs(useSubscriptionStore());
 const { user } = storeToRefs(useAuthStore());
 
-const showSubscriptionPayment = reactive<{
-  open: boolean;
-  subscriptionID: number | null;
-}>({
+const plansConfig = {
+  free: {
+    title: 'Plano Gratuito',
+    color: 'grey-6',
+    isBest: false,
+    features: [
+      { label: 'Clientes', val: '5' },
+      { label: 'Usuários / Funcionários', val: '1 / 1' },
+      { label: 'Fornecedores', val: '1' },
+      { label: 'Departamentos', val: '1' },
+      { label: 'Cargos (Roles)', val: '1' },
+      { label: 'Produtos', val: '5' },
+      { label: 'Grade de Produtos', val: '1' },
+      { label: 'Cores / Tags', val: '5 / 5' },
+      { label: 'Agendamentos', val: '5' },
+      { label: 'Vendas', val: '50' },
+      { label: 'Receitas', val: '2' },
+      { label: 'Pedidos de Fornecedor', val: 'Bloqueado' },
+    ],
+  },
+  basic: {
+    title: 'Plano Básico',
+    color: 'green-7',
+    isBest: false,
+    features: [
+      { label: 'Clientes', val: '10' },
+      { label: 'Usuários / Funcionários', val: '5 / 10' },
+      { label: 'Fornecedores', val: '10' },
+      { label: 'Departamentos', val: '10' },
+      { label: 'Cargos (Roles)', val: '5' },
+      { label: 'Produtos', val: '100' },
+      { label: 'Grade de Produtos', val: '2' },
+      { label: 'Cores / Tags', val: '10 / 10' },
+      { label: 'Agendamentos', val: '20' },
+      { label: 'Vendas', val: 'Ilimitado' },
+      { label: 'Receitas', val: 'Ilimitado' },
+      { label: 'Pedidos de Fornecedor', val: 'Bloqueado' },
+    ],
+  },
+  premium: {
+    title: 'Plano Profissional',
+    color: 'indigo-8',
+    isBest: true,
+    features: [
+      { label: 'Clientes', val: 'Ilimitado' },
+      { label: 'Usuários / Funcionários', val: 'Ilimitado' },
+      { label: 'Fornecedores', val: 'Ilimitado' },
+      { label: 'Departamentos', val: 'Ilimitado' },
+      { label: 'Cargos (Roles)', val: 'Ilimitado' },
+      { label: 'Produtos', val: '10.000' },
+      { label: 'Grade de Produtos', val: 'Ilimitado' },
+      { label: 'Cores / Tags', val: 'Ilimitado' },
+      { label: 'Agendamentos', val: 'Ilimitado' },
+      { label: 'Vendas', val: 'Ilimitado' },
+      { label: 'Receitas', val: 'Ilimitado' },
+      { label: 'Pedidos de Fornecedor', val: 'Ilimitado' },
+    ],
+  },
+};
+
+const showSubscriptionPayment = reactive<{ open: boolean; subscriptionID: number | null }>({
   open: false,
   subscriptionID: null,
 });
-const changeShowSubscriptionPayment = (show: boolean, subscriptionID: number | null = null) => {
-  Object.assign(showSubscriptionPayment, {
-    open: show,
-    subscriptionID: subscriptionID,
-  });
+const changeShowSubscriptionPayment = (show: boolean, id: number | null = null) => {
+  showSubscriptionPayment.open = show;
+  showSubscriptionPayment.subscriptionID = id;
 };
 
-const getSubscriptions = async () => {
-  await useSubscriptionStore().getSubscriptions();
+const freeSubscriptionId = computed(
+  () => listSubscription.value.find((s) => s.name === 'free')?.id || null,
+);
+const basicSubscriptionId = computed(
+  () => listSubscription.value.find((s) => s.name === 'basic')?.id || null,
+);
+const premiumSubscriptionId = computed(
+  () => listSubscription.value.find((s) => s.name === 'premium')?.id || null,
+);
+
+const resolveSubscriptionId = (key: string) => {
+  if (key === 'free') return freeSubscriptionId.value;
+  if (key === 'basic') return basicSubscriptionId.value;
+  return premiumSubscriptionId.value;
 };
 
-const basicSubscriptionId = computed(() => {
-  const basic = listSubscription.value.find((basic) => basic.name === 'basic');
-  return basic ? basic.id : null;
-});
-const premiumSubscriptionId = computed(() => {
-  const premium = listSubscription.value.find((premium) => premium.name === 'premium');
-  return premium ? premium.id : null;
-});
-const showActionPayment = computed(() => {
-  return user.value?.role?.permissions?.some((p) => p.slug === 'subscription.payment') ?? false;
-});
-
+const showActionPayment = computed(
+  () => user.value?.role?.permissions?.some((p) => p.slug === 'subscription.payment') ?? false,
+);
 const hasTestFree = computed(() => user.value?.enterprise?.allow_test_free === 1);
-
-const subscriptionLabel = computed(() => {
-  const name = user.value?.enterprise?.subscription?.name;
-  const map: Record<string, string> = {
-    free: 'Plano Gratuito',
-    basic: 'Plano Básico',
-    premium: 'Plano Premium',
-  };
-  return map[name ?? ''] ?? 'Plano Gratuito';
-});
-
-const currentPlanName = computed(() => user.value?.enterprise?.subscription?.name ?? 'free');
-
-const expiredDateFormatted = computed(() => {
-  const expired = user.value?.enterprise?.expired_date;
-  if (!expired || currentPlanName.value === 'free') return null;
-  return date.formatDate(expired, 'DD/MM/YYYY');
-});
-
-onMounted(async () => {
-  await getSubscriptions();
-});
+const subscriptionLabel = computed(() =>
+  user.value?.enterprise?.subscription?.name === 'premium' ? 'Premium' : 'Básico',
+);
+const expiredDateFormatted = computed(() =>
+  user.value?.enterprise?.expired_date
+    ? date.formatDate(user.value?.enterprise?.expired_date, 'DD/MM/YYYY')
+    : null,
+);
 </script>
 
 <template>
   <main class="q-pa-lg">
-    <section class="page-header q-mb-xs">
-      <TitlePage title="Assinatura" icon="credit_card" />
-    </section>
-    <section class="q-mt-sm">
-      <!-- Banner período gratuito -->
-      <q-banner
-        v-if="hasTestFree"
-        rounded
-        class="bg-teal-1 text-teal-9 q-mb-sm"
-        style="border: 1px solid #80cbc4"
-      >
-        <template #avatar>
-          <q-icon name="card_giftcard" color="teal" size="md" />
-        </template>
-        <div class="text-subtitle1 text-weight-bold">
-          🎉 Você tem um período gratuito disponível!
-        </div>
-        <div class="text-body2 q-mt-xs">
-          Experimente qualquer plano por <strong>7 dias sem custo</strong> e descubra tudo o que o
-          sistema pode fazer pela sua empresa. Aproveite essa oportunidade para explorar os recursos
-          premium antes de decidir.
-        </div>
+    <TitlePage title="Assinatura" icon="credit_card" />
+
+    <div class="q-mt-md">
+      <q-banner v-if="hasTestFree" rounded class="bg-teal-1 text-teal-9 q-mb-md shadow-1">
+        <template v-slot:avatar><q-icon name="card_giftcard" /></template>
+        <strong>Aproveite seu período de teste!</strong> Você tem 7 dias para explorar todos os
+        recursos premium.
       </q-banner>
 
-      <!-- Banner plano atual -->
-      <q-banner rounded class="bg-blue-1 text-blue-9 q-mb-sm" style="border: 1px solid #90caf9">
-        <template #avatar>
-          <q-icon name="workspace_premium" color="blue" size="md" />
-        </template>
-        <span class="text-subtitle2">
-          Plano atual: <strong>{{ subscriptionLabel }}</strong>
-          <span v-if="expiredDateFormatted">
-            &mdash; válido até <strong>{{ expiredDateFormatted }}</strong>
-          </span>
-        </span>
+      <q-banner rounded class="bg-blue-1 text-blue-9 shadow-1">
+        <template v-slot:avatar><q-icon name="workspace_premium" /></template>
+        Você está no <strong>{{ subscriptionLabel }}</strong
+        >.
+        <span v-if="expiredDateFormatted">Válido até: {{ expiredDateFormatted }}</span>
       </q-banner>
+    </div>
 
-      <div class="q-mt-md row justify-center q-col-gutter-md">
-        <q-card class="col-12 col-sm-5 bg-grey-1">
-          <q-card-section>
-            <div class="text-h6">Básico</div>
+    <div class="row q-col-gutter-lg q-mt-sm">
+      <div v-for="(config, key) in plansConfig" :key="key" class="col-12 col-md-4">
+        <q-card flat bordered class="full-height">
+          <q-card-section :class="`bg-${config.color} text-white`">
+            <div class="text-h5 text-weight-bold text-center">{{ config.title }}</div>
           </q-card-section>
-          <q-separator />
+
           <q-card-section>
-            <q-list dense padding>
-              <q-item>
-                <q-item-section> Item </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section> Item </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section> Item </q-item-section>
+            <q-list separator>
+              <q-item v-for="feat in config.features" :key="feat.label">
+                <q-item-section class="text-weight-medium">{{ feat.label }}</q-item-section>
+                <q-item-section side class="text-weight-bold text-grey-9">
+                  {{ feat.val }}
+                </q-item-section>
               </q-item>
             </q-list>
           </q-card-section>
-          <q-separator />
-          <q-card-actions align="right" v-if="showActionPayment">
-            <q-btn
-              icon-right="paid"
-              label="VAMOS INICIAR NO BÁSICO"
-              color="green"
-              unelevated
-              class="full-width"
-              @click="changeShowSubscriptionPayment(true, basicSubscriptionId)"
-            />
-            <q-btn
-              icon-right="verified"
-              label="QUERO EXPERIMENTAR POR 3 DIAS"
-              color="green"
-              unelevated
-              class="full-width q-mt-sm"
-              outline
-            />
-          </q-card-actions>
-        </q-card>
 
-        <q-card class="col-12 col-sm-5 bg-grey-1">
-          <q-card-section>
-            <div class="text-h6">Profissional</div>
-          </q-card-section>
-          <q-separator />
-          <q-card-section>
-            <q-list dense padding>
-              <q-item>
-                <q-item-section> Item </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section> Item </q-item-section>
-              </q-item>
-              <q-item>
-                <q-item-section> Item </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-          <q-separator />
-          <q-card-actions v-if="showActionPayment">
+          <q-card-actions
+            vertical
+            class="q-pa-md"
+            v-if="showActionPayment && config.title !== 'Plano Gratuito'"
+          >
             <q-btn
-              icon-right="paid"
-              label="QUERO TODAS AS VANTAGENS"
-              color="blue"
               unelevated
-              class="full-width"
-              @click="changeShowSubscriptionPayment(true, premiumSubscriptionId)"
+              color="primary"
+              class="full-width q-mb-sm"
+              label="ASSINAR AGORA"
+              @click="changeShowSubscriptionPayment(true, resolveSubscriptionId(key))"
             />
-            <q-btn
-              icon-right="verified"
-              label="QUERO EXPERIMENTAR POR 3 DIAS"
-              color="blue"
-              unelevated
-              class="full-width q-mt-sm"
-              outline
-            />
+            <q-btn outline color="primary" label="TESTAR POR 3 DIAS" class="full-width" />
           </q-card-actions>
         </q-card>
       </div>
-    </section>
+    </div>
 
-    <!-- Modals -->
     <SubscriptionPayment
       :data="showSubscriptionPayment"
       @update:open="changeShowSubscriptionPayment(false)"

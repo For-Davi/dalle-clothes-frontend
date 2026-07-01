@@ -7,6 +7,8 @@ import Empty from '../info/Empty.vue';
 import { storeToRefs } from 'pinia';
 import { useTagStore } from 'src/stores/tag-store';
 import TableTag from '../table/TableTag.vue';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
 
 defineOptions({
   name: 'TagManage',
@@ -50,6 +52,9 @@ const open = computed({
   get: () => props.open,
   set: () => emit('update:open'),
 });
+const planValidation = computed(() => {
+  return checkRegisterLimit('tags', listTag.value.length);
+});
 
 watch(open, () => {
   if (open.value) {
@@ -65,6 +70,7 @@ watch(open, () => {
       </q-card-section>
       <q-card-section>
         <div v-show="!loadingTag">
+          <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="tags" />
           <TableTag v-show="listTag.length > 0" @show:show-form-tag="startEdit" />
           <Empty v-show="listTag.length <= 0" message="Sem tags cadastradas" color="bg-red-3" />
         </div>
@@ -82,6 +88,7 @@ watch(open, () => {
             flat
           />
           <q-btn
+            v-if="hasPermission('product-tag.create') && planValidation.canAdd"
             @click="changeShowFormTag(true)"
             color="primary"
             label="Adicionar"

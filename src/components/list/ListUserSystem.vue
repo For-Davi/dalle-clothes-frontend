@@ -121,6 +121,7 @@ onMounted(async () => {
 
                 <div class="row">
                   <q-btn
+                    v-if="hasPermission('user.update')"
                     flat
                     round
                     color="primary"
@@ -131,6 +132,7 @@ onMounted(async () => {
                     <q-tooltip>Editar Usuário</q-tooltip>
                   </q-btn>
                   <q-btn
+                    v-if="hasPermission('user.delete')"
                     flat
                     round
                     color="negative"

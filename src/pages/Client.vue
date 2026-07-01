@@ -5,10 +5,15 @@ import { useClientStore } from 'src/stores/client-store';
 import TableClient from 'src/components/table/TableClient.vue';
 import FormClient from 'src/components/form/FormClient.vue';
 import FilterClient from 'src/components/filter/FilterClient.vue';
+import { checkRegisterLimit } from 'src/composables/Plans';
+import { storeToRefs } from 'pinia';
+import SubscriptionBanner from 'src/components/banner/SubscriptionBanner.vue';
 
 defineOptions({
   name: 'Client',
 });
+
+const { listClient } = storeToRefs(useClientStore());
 
 const search = ref<string>('');
 const filter = reactive<IFilterClient>({
@@ -56,6 +61,9 @@ const actionFilter = async (data: 'close' | IFilterClient): Promise<void> => {
   }
 };
 
+const planValidation = computed(() => {
+  return checkRegisterLimit('clients', listClient.value.length);
+});
 const hasFilter = computed(() => {
   return (
     filter.name !== '' ||
@@ -74,6 +82,7 @@ const hasFilter = computed(() => {
       <TitlePage title="Clientes" icon="person" />
       <div class="page-header-actions">
         <q-btn
+          v-if="hasPermission('client.create') && planValidation.canAdd"
           @click="changeShowFormClient(true)"
           color="white"
           text-color="black"
@@ -83,6 +92,7 @@ const hasFilter = computed(() => {
         />
       </div>
     </section>
+    <SubscriptionBanner v-if="planValidation.showUpgradeBanner" resource-name="clientes" />
     <section class="q-mt-sm">
       <q-banner rounded class="bg-grey-4 q-mb-sm">
         <div class="row q-gutter-x-sm justify-end items-center">

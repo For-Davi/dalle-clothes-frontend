@@ -159,6 +159,7 @@ onMounted(async () => {
           </q-td>
           <q-td key="actions" :props="props">
             <q-btn
+              v-if="hasPermission('transaction.update')"
               @click="startFinishSchedule(props.row.id, props.row.date)"
               :disable="scheduleMonitoring === props.row.id"
               size="sm"
@@ -182,6 +183,7 @@ onMounted(async () => {
               <q-tooltip>Descrição</q-tooltip>
             </q-btn>
             <q-btn
+              v-if="hasPermission('transaction.update')"
               @click="startEdit(props.row.id)"
               :disable="scheduleMonitoring === props.row.id"
               size="sm"
@@ -191,6 +193,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('transaction.delete')"
               @click="startExclude(props.row.id)"
               :disable="scheduleMonitoring === props.row.id"
               size="sm"

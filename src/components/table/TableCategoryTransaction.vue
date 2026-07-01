@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import Loading from '../shared/Loading.vue';
 import { columnsCategoryTransaction } from 'src/utils/columns';
 import { useCategoryTransactionStore } from 'src/stores/category-transaction-store';
+import { usePermission } from 'src/composables/usePermission.js';
 
 defineOptions({
   name: 'TableCategoryTransaction',
@@ -14,6 +15,7 @@ const emit = defineEmits<{
   'show:showFormCategoryTransaction': [ICategoryTransaction];
 }>();
 
+const { hasPermission } = usePermission();
 const { loadingCategoryTransaction, listCategoryTransaction } = storeToRefs(
   useCategoryTransactionStore(),
 );
@@ -48,6 +50,17 @@ const fetchCategories = async (): Promise<void> => {
   await useCategoryTransactionStore().getCategoriesTransaction();
 };
 
+const columnsFiltered = computed(() => {
+  const canSeeActions =
+    hasPermission('transaction-category.update') || hasPermission('transaction-category.delete');
+
+  if (!canSeeActions) {
+    return columnsCategoryTransaction.filter((col) => col.name !== 'action');
+  }
+
+  return columnsCategoryTransaction;
+});
+
 onMounted(async () => {
   await fetchCategories();
 });
@@ -57,7 +70,7 @@ onMounted(async () => {
     <q-table
       v-show="!loadingCategoryTransaction"
       :rows="loadingCategoryTransaction ? [] : listCategoryTransaction"
-      :columns="columnsCategoryTransaction"
+      :columns="columnsFiltered"
       :filter="filter"
       :loading="loadingCategoryTransaction"
       title="Lista de categorias"
@@ -99,8 +112,9 @@ onMounted(async () => {
           <q-td key="name" :props="props" class="text-left">
             {{ props.row.name }}
           </q-td>
-          <q-td key="actions" :props="props">
+          <q-td key="action" :props="props">
             <q-btn
+              v-if="hasPermission('transaction-category.update')"
               @click="startEdit(props.row)"
               :disable="categoryMonitoring === props.row.id"
               size="sm"
@@ -110,6 +124,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('transaction-category.delete')"
               @click="startExclude(props.row.id)"
               :disable="categoryMonitoring === props.row.id"
               size="sm"

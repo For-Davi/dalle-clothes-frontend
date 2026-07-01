@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import ConfirmAction from '../confirm/ConfirmAction.vue';
 import Loading from '../shared/Loading.vue';
 import { useColorStore } from 'src/stores/color-store';
 import { columnsColor } from 'src/utils/columns';
+import { usePermission } from 'src/composables/usePermission.js';
 
 defineOptions({
   name: 'TableColor',
@@ -14,6 +15,7 @@ const emit = defineEmits<{
   'show:showFormColor': [IColor];
 }>();
 
+const { hasPermission } = usePermission();
 const { loadingColor, listColor } = storeToRefs(useColorStore());
 
 const showConfirmAction = ref<boolean>(false);
@@ -57,6 +59,17 @@ const getColorStyle = (hexColor: string) => {
   };
 };
 
+const columnsFiltered = computed(() => {
+  const canSeeActions =
+    hasPermission('product-color.update') || hasPermission('product-color.delete');
+
+  if (!canSeeActions) {
+    return columnsColor.filter((col) => col.name !== 'action');
+  }
+
+  return columnsColor;
+});
+
 onMounted(async () => {
   await fetchColors();
 });
@@ -66,7 +79,7 @@ onMounted(async () => {
     <q-table
       v-show="!loadingColor"
       :rows="loadingColor ? [] : listColor"
-      :columns="columnsColor"
+      :columns="columnsFiltered"
       :filter="filter"
       :loading="loadingColor"
       title="Lista de cores"
@@ -120,8 +133,13 @@ onMounted(async () => {
               size="17px"
             />
           </q-td>
-          <q-td key="action" :props="props">
+          <q-td
+            v-if="hasPermission('product-color.update') || hasPermission('product-color.delete')"
+            key="action"
+            :props="props"
+          >
             <q-btn
+              v-if="hasPermission('product-color.update')"
               @click="startEdit(props.row)"
               :disable="colorMonitoring === props.row.id"
               size="sm"
@@ -131,6 +149,7 @@ onMounted(async () => {
               icon="edit"
             />
             <q-btn
+              v-if="hasPermission('product-color.delete')"
               @click="startExclude(props.row.id)"
               :disable="colorMonitoring === props.row.id"
               size="sm"

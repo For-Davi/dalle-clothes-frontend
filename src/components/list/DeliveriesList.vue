@@ -403,7 +403,10 @@ const sortedDeliveries = computed(() => {
               <div class="row justify-end items-end">
                 <div class="row">
                   <q-btn
-                    v-if="props.row.status === 'scheduled' || props.row.status === 'pendent'"
+                    v-if="
+                      (props.row.status === 'scheduled' || props.row.status === 'pendent') &&
+                      hasPermission('delivery.update')
+                    "
                     @click="hasDeliveryGuyId(props.row.id, props.row.delivery_guy_id, 'delivered')"
                     flat
                     round
@@ -415,7 +418,10 @@ const sortedDeliveries = computed(() => {
                   </q-btn>
 
                   <q-btn
-                    v-if="props.row.status === 'scheduled' || props.row.status === 'pendent'"
+                    v-if="
+                      (props.row.status === 'scheduled' || props.row.status === 'pendent') &&
+                      hasPermission('delivery.update')
+                    "
                     @click="changeShowConfirmAction(props.row.id, 'delivered_in_person')"
                     flat
                     round
@@ -428,9 +434,10 @@ const sortedDeliveries = computed(() => {
 
                   <q-btn
                     v-if="
-                      props.row.status === 'scheduled' ||
-                      props.row.status === 'pendent' ||
-                      props.row.status === 'partial_delivered'
+                      (props.row.status === 'scheduled' ||
+                        props.row.status === 'pendent' ||
+                        props.row.status === 'partial_delivered') &&
+                      hasPermission('delivery.update')
                     "
                     @click="
                       changeShowFormPartialDelivered(
@@ -450,7 +457,9 @@ const sortedDeliveries = computed(() => {
                   </q-btn>
                   <q-btn
                     v-if="
-                      props.row.status === 'pendent' || props.row.status === 'partial_delivered'
+                      (props.row.status === 'pendent' ||
+                        props.row.status === 'partial_delivered') &&
+                      hasPermission('delivery.update')
                     "
                     @click="changeShowFormScheduleDelivery(true, props.row.id)"
                     flat

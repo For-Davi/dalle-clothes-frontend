@@ -92,6 +92,7 @@ onMounted(async () => {
             <q-tooltip>Detalhes</q-tooltip>
           </q-btn>
           <q-btn
+            v-if="hasPermission('supplier-order.delete')"
             @click="startExclude(props.row.id)"
             size="sm"
             flat
