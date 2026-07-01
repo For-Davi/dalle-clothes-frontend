@@ -27,13 +27,15 @@ jobs:
       - name: Compilar o Projeto (Build)
         run: quasar build
 
+      - name: Configurar chave SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DM_FRONT_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p 22 ${{ secrets.DM_FRONT_SSH_HOST }} >> ~/.ssh/known_hosts
+
       - name: Enviar Arquivos para o Servidor via Rsync/SSH
-        uses: burnett01/rsync-deployments@8.0.0
-        with:
-          switches: -avzr --delete
-          path: dist/spa/
-          remote_path: ${{ secrets.DM_FRONT_DEPLOY_PATH }}
-          remote_host: ${{ secrets.DM_FRONT_SSH_HOST }}
-          remote_user: ${{ secrets.DM_FRONT_SSH_USER }}
-          remote_key: ${{ secrets.DM_FRONT_SSH_KEY }}
-          debug: true
+        run: |
+          rsync -avzr --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p 22" \
+            dist/spa/ ${{ secrets.DM_FRONT_SSH_USER }}@${{ secrets.DM_FRONT_SSH_HOST }}:${{ secrets.DM_FRONT_DEPLOY_PATH }}
