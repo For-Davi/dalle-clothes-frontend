@@ -1,0 +1,38 @@
+name: Deploy Frontend (dev)
+
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Instalar Dependências
+        run: npm ci
+
+      - name: Instalar o Quasar CLI Globalmente
+        run: npm install -g @quasar/cli
+
+      - name: Compilar o Projeto (Build)
+        run: quasar build
+
+      - name: Enviar Arquivos para o Servidor via Rsync/SSH
+        uses: Continous-Deployment-Infrastructure/action-rsync@v1.1.0
+        with:
+          host: ${{ secrets.DM_FRONT_SSH_HOST }}
+          username: ${{ secrets.DM_FRONT_SSH_USER }}
+          key: ${{ secrets.DM_FRONT_SSH_KEY }}
+          source: 'dist/spa/'
+          target: ${{ secrets.DM_FRONT_DEPLOY_PATH }}
+          args: '-avzr --delete'
