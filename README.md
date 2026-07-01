@@ -1,6 +1,6 @@
 # Quasar App (quasar-project)
 
-A Quasar Project
+A Quasar Project 1
 
 ## Install the dependencies
 
