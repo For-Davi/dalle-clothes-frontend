@@ -32,13 +32,8 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.DM_FRONT_SSH_KEY }}
 
-      - name: Adicionar host aos known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -p 22 ${{ secrets.DM_FRONT_SSH_HOST }} >> ~/.ssh/known_hosts
-
       - name: Enviar Arquivos para o Servidor via Rsync/SSH
         run: |
           rsync -avzr --delete \
-            -e "ssh -o StrictHostKeyChecking=no -p 22" \
+            -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 22" \
             dist/spa/ ${{ secrets.DM_FRONT_SSH_USER }}@${{ secrets.DM_FRONT_SSH_HOST }}:${{ secrets.DM_FRONT_DEPLOY_PATH }}
