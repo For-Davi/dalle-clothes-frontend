@@ -27,15 +27,18 @@ jobs:
       - name: Compilar o Projeto (Build)
         run: quasar build
 
-      - name: Configurar chave SSH
+      - name: Configurar SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.DM_FRONT_SSH_KEY }}
+
+      - name: Adicionar host aos known_hosts
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DM_FRONT_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -p 22 ${{ secrets.DM_FRONT_SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Enviar Arquivos para o Servidor via Rsync/SSH
         run: |
           rsync -avzr --delete \
-            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -p 22" \
+            -e "ssh -o StrictHostKeyChecking=no -p 22" \
             dist/spa/ ${{ secrets.DM_FRONT_SSH_USER }}@${{ secrets.DM_FRONT_SSH_HOST }}:${{ secrets.DM_FRONT_DEPLOY_PATH }}
