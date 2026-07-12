@@ -84,7 +84,7 @@ export const PLAN_LIMITS: Record<string, PlanConfig> = {
 export const checkRegisterLimit = (resourceKey: string, currentCount: number) => {
   const { user } = storeToRefs(useAuthStore());
 
-  const userPlan = user.value?.enterprise.subscription.name as keyof PlanConfig;
+  const userPlan = user.value?.enterprise?.subscription?.name as keyof PlanConfig;
 
   const resourceConfig = PLAN_LIMITS[resourceKey];
   if (!resourceConfig || !userPlan || !resourceConfig[userPlan]) {
