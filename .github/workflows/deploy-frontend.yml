@@ -25,7 +25,7 @@ jobs:
         run: npm install -g @quasar/cli
 
       - name: Compilar o Projeto (Build)
-        run: quasar build
+        run: APP_ENV=development quasar build -m spa
 
       - name: Configurar SSH Agent
         uses: webfactory/ssh-agent@v0.9.0
