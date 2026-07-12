@@ -30,7 +30,6 @@ yarn-error.log*
 *.sln
 
 # local .env files
-.env.local*
 *.lock
 bun.lockb
 pnpm-lock.yaml

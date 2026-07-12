@@ -1,5 +1,9 @@
 import { configure } from 'quasar/wrappers';
 import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
+
+const envFile = `.env.${process.env.APP_ENV || 'local'}`;
+dotenv.config({ path: envFile });
 
 export default configure((ctx) => {
   return {
@@ -7,6 +11,13 @@ export default configure((ctx) => {
     css: ['app.scss'],
     extras: ['fontawesome-v6', 'roboto-font', 'material-icons'],
     build: {
+      env: {
+        VITE_API_BASE_URL: process.env.VITE_API_BASE_URL,
+        VUE_ROUTER_MODE: process.env.VUE_ROUTER_MODE,
+        VUE_ROUTER_BASE: process.env.VUE_ROUTER_BASE,
+        VITE_WHATSAPP_HELPER: process.env.VITE_WHATSAPP_HELPER,
+        VITE_EMAIL_HELPER: process.env.VITE_EMAIL_HELPER,
+      },
       target: {
         browser: ['es2022', 'firefox115', 'chrome115', 'safari14'],
         node: 'node20',
